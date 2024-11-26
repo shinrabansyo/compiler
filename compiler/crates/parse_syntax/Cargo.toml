@@ -6,3 +6,7 @@ edition = "2021"
 [dependencies]
 anyhow = { workspace = true }
 thiserror = { workspace = true }
+copager = { workspace = true, features = ["derive", "template", "lalr1"] }
+
+[dev-dependencies]
+copager = { workspace = true, features = ["derive", "void"] }
