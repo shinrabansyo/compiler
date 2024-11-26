@@ -1,6 +1,11 @@
-[package]
-name = "sb_compiler"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+resolver = "2"
+members = [
+    "./compiler",
+]
 
-[dependencies]
+[workspace.dependencies]
+anyhow = "1.0.93"
+thiserror = "2.0.3"
+serde = "1.0.215"
+copager = { git = "https://github.com/Tsukuba-Programming-Lab/Copager", rev = "fdce90d13b5ca3103b7ce9851f3c2982754438f9" }
