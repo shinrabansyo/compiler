@@ -26,11 +26,13 @@ dependencies = [
  "copager_core",
  "copager_core_macros",
  "copager_ir",
+ "copager_ir_tree",
  "copager_ir_void",
  "copager_lex",
  "copager_lex_regex",
  "copager_parse",
  "copager_parse_lr_lalr1",
+ "serde_json",
 ]
 
 [[package]]
@@ -91,8 +93,35 @@ source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5
 dependencies = [
  "anyhow",
  "copager_cfl",
+ "copager_ir_derive",
  "copager_lex",
  "copager_parse",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "copager_ir_derive"
+version = "0.3.0"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+dependencies = [
+ "anyhow",
+ "proc-macro2",
+ "quote",
+ "syn",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "copager_ir_tree"
+version = "0.3.0"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+dependencies = [
+ "anyhow",
+ "copager_cfl",
+ "copager_ir",
+ "copager_lex",
+ "copager_parse",
+ "serde",
  "thiserror 1.0.69",
 ]
 
@@ -204,6 +233,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1b43ede17f21864e81be2fa654110bf1e793774238d86ef8555c37e6519c0403"
 
 [[package]]
+name = "itoa"
+version = "1.0.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d75a2a4b1b190afb6f5425f10f6a8f959d2ea0b9c2b1d79553551850539e4674"
+
+[[package]]
 name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -273,6 +308,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 
 [[package]]
+name = "ryu"
+version = "1.0.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f3cb5ba0dc43242ce17de99c180e96db90b235b8a9fdc9543c96d2209116bd9f"
+
+[[package]]
 name = "sb_compiler"
 version = "0.1.0"
 dependencies = [
@@ -296,6 +337,7 @@ name = "sb_compiler_parse_ast"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "copager",
  "sb_compiler_parse_syntax",
  "thiserror 2.0.3",
 ]
@@ -306,6 +348,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "copager",
+ "serde",
  "thiserror 2.0.3",
 ]
 
@@ -337,6 +380,18 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "serde_json"
+version = "1.0.133"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c7fceb2473b9166b2294ef05efcb65a3db80803f0b03ef86a5fc88a2b85ee377"
+dependencies = [
+ "itoa",
+ "memchr",
+ "ryu",
+ "serde",
 ]
 
 [[package]]
