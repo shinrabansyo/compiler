@@ -31,6 +31,34 @@ name = "sb_compiler"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "sb_compiler_parse",
+ "thiserror",
+]
+
+[[package]]
+name = "sb_compiler_parse"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "sb_compiler_parse_ast",
+ "sb_compiler_parse_syntax",
+ "thiserror",
+]
+
+[[package]]
+name = "sb_compiler_parse_ast"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "sb_compiler_parse_syntax",
+ "thiserror",
+]
+
+[[package]]
+name = "sb_compiler_parse_syntax"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
  "thiserror",
 ]
 

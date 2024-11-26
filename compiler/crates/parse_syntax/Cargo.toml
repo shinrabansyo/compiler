@@ -1,9 +1,8 @@
 [package]
-name = "sb_compiler"
+name = "sb_compiler_parse_syntax"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 anyhow = { workspace = true }
 thiserror = { workspace = true }
-sb_compiler_parse = { path = "./crates/parse" }
