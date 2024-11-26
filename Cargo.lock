@@ -327,6 +327,7 @@ name = "sb_compiler_parse"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "copager",
  "sb_compiler_parse_ast",
  "sb_compiler_parse_syntax",
  "thiserror 2.0.3",

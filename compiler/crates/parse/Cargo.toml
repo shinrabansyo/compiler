@@ -6,5 +6,11 @@ edition = "2021"
 [dependencies]
 anyhow = { workspace = true }
 thiserror = { workspace = true }
+copager = { workspace = true, features = ["prebuild", "tree"] }
 sb_compiler_parse_ast = { path = "../parse_ast" }
+sb_compiler_parse_syntax = { path = "../parse_syntax" }
+
+[build-dependencies]
+anyhow = { workspace = true }
+copager = { workspace = true, features = ["prebuild"] }
 sb_compiler_parse_syntax = { path = "../parse_syntax" }

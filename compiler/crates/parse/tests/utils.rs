@@ -7,9 +7,9 @@ pub enum Expect {
     Err,
 }
 
-pub fn test_dir<T>(dir: &str, expect: Expect, test_fn: &T)
+pub fn test_dir<T, U>(dir: &str, expect: Expect, test_fn: &T)
 where
-    T: Fn(&str) -> anyhow::Result<()> + panic::RefUnwindSafe,
+    T: Fn(&str) -> anyhow::Result<U> + panic::RefUnwindSafe,
 {
     let mut entries = fs::read_dir(dir)
         .unwrap()
