@@ -1,4 +1,4 @@
-use sb_compiler_parse_ast::{AST, TopLevel, ConstDecl};
+use sb_compiler_parse_ast::{AST, Top, ConstDecl};
 
 use crate::utils::LayeredTable;
 use crate::NodeInfo;
@@ -7,18 +7,18 @@ type Table<'a> = LayeredTable<NodeInfo<'a>>;
 
 pub fn analyze_defs(ast: &AST) -> anyhow::Result<Table> {
     let mut table = LayeredTable::new();
-    for top_level in &ast.top_level_elems {
-        analyze_def_top_level(&mut table, top_level)?;
+    for top in &ast.top_elems {
+        analyze_def_top(&mut table, top)?;
     }
     Ok(table)
 }
 
-fn analyze_def_top_level<'ast>(
+fn analyze_def_top<'ast>(
     table: &mut Table<'ast>,
-    ast: &'ast TopLevel,
+    ast: &'ast Top,
 ) -> anyhow::Result<()> {
     match ast {
-        TopLevel::ConstDecl { const_decl, .. } => {
+        Top::ConstDecl { const_decl, .. } => {
             analyze_defs_const_decl(table, const_decl)?;
         }
     }

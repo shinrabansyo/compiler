@@ -1,5 +1,5 @@
 use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_parse_ast::{AST, TopLevel, ConstDecl, Expr, Value};
+use sb_compiler_parse_ast::{AST, Top, ConstDecl, Expr, Value};
 use sb_compiler_lirgen_ir::{LIR, Li, Add, Sub, Push, Pop, Sw};
 
 const ZERO_REG: u8  = 0;  // r0
@@ -29,14 +29,14 @@ impl<'ast> From<AnalyzeResult<'ast>> for LirGenState<'ast> {
 
 impl<'ast> LirGenState<'ast> {
     fn lirgen_ast(&mut self, ast: &'ast AST) {
-        for top_level in &ast.top_level_elems {
-            self.lirgen_top_level(top_level);
+        for top in &ast.top_elems {
+            self.lirgen_top(top);
         }
     }
 
-    fn lirgen_top_level(&mut self, ast: &TopLevel) {
+    fn lirgen_top(&mut self, ast: &Top) {
         match ast {
-            TopLevel::ConstDecl { const_decl, .. } => {
+            Top::ConstDecl { const_decl, .. } => {
                 self.lirgen_const_decl(const_decl);
             }
         }
