@@ -1,6 +1,6 @@
 use sb_compiler_analyze::AnalyzeResult;
 use sb_compiler_parse_ast::{AST, Top, ConstDecl, Expr, Value};
-use sb_compiler_lirgen_ir::{LIR, Li, Add, Sub, Push, Pop, Sw};
+use sb_compiler_lirgen_ir::{LIR, Li, Add, Sub, Push, Pop, Sw, Lw};
 
 const ZERO_REG: u8  = 0;  // r0
 const TMP_REG: u8   = 4;  // r4
@@ -90,6 +90,20 @@ impl<'ast> LirGenState<'ast> {
             }
             Value::Const { value, .. } => {
                 self.lirs.push(LIR::Li(Li::new(TMP_REG, *value)));
+                self.lirs.push(LIR::Push(Push::new(TMP_REG)));
+            }
+            Value::Var { namespace, name } => {
+                let addr = self
+                    .analyze_result
+                    .find(namespace, name)
+                    .local_addr;
+                let base_reg = if namespace == "global" {
+                    ZERO_REG
+                } else {
+                    unimplemented!()
+                };
+
+                self.lirs.push(LIR::Lw(Lw::new(addr, base_reg, TMP_REG)));
                 self.lirs.push(LIR::Push(Push::new(TMP_REG)));
             }
         }

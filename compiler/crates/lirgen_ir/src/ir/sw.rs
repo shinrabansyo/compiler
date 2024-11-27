@@ -8,7 +8,7 @@ pub struct Sw {
 
 impl Debug for Sw {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "r{}[{:<08X}], {}", self.base_reg, self.addr, self.src_reg)
+        write!(f, "r{}[{:<08X}], r{}", self.base_reg, self.addr, self.src_reg)
     }
 }
 

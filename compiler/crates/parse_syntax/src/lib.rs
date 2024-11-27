@@ -78,5 +78,6 @@ pub enum SBRules {
 
     #[rule("<value> ::= ParenL <expr> ParenR")]
     #[rule("<value> ::= Num")]
+    #[rule("<value> ::= Ident")]
     Value,
 }

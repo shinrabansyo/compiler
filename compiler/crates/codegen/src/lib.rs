@@ -48,6 +48,9 @@ fn codegen_imem(asms: &mut Vec<String>, indent: usize, lirs: &[LIR]) {
             LIR::Sw(sw) => {
                 asm!("sw r{}[{}] = r{}", sw.base_reg, sw.addr, sw.src_reg);
             }
+            LIR::Lw(lw) => {
+                asm!("lw r{} = r{}[{}]", lw.dst_reg, lw.base_reg, lw.addr);
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 use copager::ir::Tree;
 
-use sb_compiler_parse_syntax::SBLangDef;
+use sb_compiler_parse_syntax::{SBLangDef, SBTokens};
 
 use crate::utils::unwrap_node;
 use super::Expr;
@@ -15,6 +15,10 @@ pub enum Value {
         namespace: String,
         value: i32,
     },
+    Var {
+        namespace: String,
+        name: String,
+    }
 }
 
 impl From<(String, Tree<'_, SBLangDef>)> for Value {
@@ -28,10 +32,16 @@ impl From<(String, Tree<'_, SBLangDef>)> for Value {
                 Value::Expr{ namespace, expr }
             }
             // 定数
-            Tree::Leaf { text, .. } => {
+            Tree::Leaf { tag: SBTokens::Num, text, .. } => {
                 let value = text.parse().unwrap();
                 Value::Const{ namespace, value }
             }
+            // 変数
+            Tree::Leaf { tag: SBTokens::Ident, text, .. } => {
+                let name = text.to_string();
+                Value::Var{ namespace, name }
+            }
+            _ => unreachable!(),
         }
     }
 }
