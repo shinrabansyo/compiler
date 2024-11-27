@@ -1,5 +1,6 @@
 // トップ要素
-mod toplevel;   pub use toplevel::TopLevel as AST;
+mod program;    pub use program::Program as AST;
+mod toplevel;   pub use toplevel::TopLevel;
 
 // 変数宣言
 mod const_decl; pub use const_decl::ConstDecl;

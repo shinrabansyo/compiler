@@ -1,1 +1,3 @@
-const a: i32 = 10 + (50 - 20);
+const a: i32 = 10;
+const b: i32 = 20;
+const c: i32 = 30;

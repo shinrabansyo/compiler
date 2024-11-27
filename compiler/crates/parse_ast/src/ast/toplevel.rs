@@ -13,10 +13,8 @@ pub enum TopLevel {
     },
 }
 
-impl From<Tree<'_, SBLangDef>> for TopLevel  {
-    fn from(tree: Tree<'_, SBLangDef>) -> Self {
-        let namespace = "global".to_string();
-
+impl From<(String, Tree<'_, SBLangDef>)> for TopLevel  {
+    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
         let (_, mut children) = unwrap_node(tree);
         let rhs = children.pop_front().unwrap();
         match rhs {

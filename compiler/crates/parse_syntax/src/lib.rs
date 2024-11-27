@@ -61,6 +61,10 @@ pub enum SBTokens {
 )]
 pub enum SBRules {
     #[default]
+    #[rule("<program> ::= <program> <top>")]
+    #[rule("<program> ::= <top>")]
+    Program,
+
     #[rule("<top> ::= <const_decl>")]
     Top,
 
