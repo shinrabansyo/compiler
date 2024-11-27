@@ -1,4 +1,4 @@
-mod ast;        pub use ast::lirgen_ast;
+mod program;    pub use program::lirgen_program;
 mod top;        pub use top::lirgen_top;
 mod const_decl; pub use const_decl::lirgen_const_decl;
 mod expr;       pub use expr::lirgen_expr;

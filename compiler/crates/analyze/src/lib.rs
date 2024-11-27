@@ -2,7 +2,7 @@ mod addr;
 mod def;
 mod utils;
 
-use sb_compiler_parse_ast::AST;
+use sb_compiler_parse_ast::Program;
 
 use addr::analyze_addr;
 use def::analyze_defs;
@@ -23,8 +23,8 @@ impl<'ast> AnalyzeResult<'ast> {
     }
 }
 
-pub fn analyze(ast: &AST) -> anyhow::Result<AnalyzeResult> {
-    let table = analyze_defs(ast)?;
+pub fn analyze(program: &Program) -> anyhow::Result<AnalyzeResult> {
+    let table = analyze_defs(program)?;
     let table = analyze_addr(table);
     Ok(AnalyzeResult { table })
 }
