@@ -33,12 +33,16 @@ pub enum SBTokens {
     ParenR,
     #[token(r"=", ir_omit)]
     Assign,
+    #[token(":", ir_omit)]
+    Colon,
     #[token(r";", ir_omit)]
     Semicolon,
 
-    // キーワード
+    // 予約語
     #[token("const", ir_omit)]
     Const,
+    #[token("i32")]
+    Type,
 
     // リテラル
     #[token(r"[a-zA-Z_][a-zA-Z0-9_]*")]
@@ -60,7 +64,7 @@ pub enum SBRules {
     #[rule("<top> ::= <const_decl>")]
     Top,
 
-    #[rule("<const_decl> ::= Const Ident Assign <expr> Semicolon")]
+    #[rule("<const_decl> ::= Const Ident Colon Type Assign <expr> Semicolon")]
     ConstDecl,
 
     #[rule("<expr> ::= <expr> Plus <value>")]
