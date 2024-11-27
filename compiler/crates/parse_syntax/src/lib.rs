@@ -39,8 +39,6 @@ pub enum SBTokens {
     // 制御用
     #[token(r"[ |\t|\n]+", trivia)]
     Trivia,
-    #[token(r".+")]
-    Unknown,
 }
 
 #[derive(
@@ -49,6 +47,9 @@ pub enum SBTokens {
 )]
 pub enum SBRules {
     #[default]
+    #[rule("<top> ::= <expr>")]
+    Top,
+
     #[rule("<expr> ::= <expr> Plus <value>")]
     #[rule("<expr> ::= <expr> Minus <value>")]
     #[rule("<expr> ::= <value>")]
