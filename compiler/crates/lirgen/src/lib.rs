@@ -18,7 +18,7 @@ pub fn lirgen(ast: AST) -> Vec<LIR> {
 
 fn lirgen_expr(insts: &mut Vec<LIR>, expr: Expr) {
     match expr {
-        Expr::Plus(lhs, rhs) => {
+        Expr::Plus { lhs, rhs, .. }=> {
             lirgen_expr(insts, *lhs);
             lirgen_value(insts, rhs);
             insts.push(LIR::Pop(Pop::new(TMP_REG_R)));
@@ -26,7 +26,7 @@ fn lirgen_expr(insts: &mut Vec<LIR>, expr: Expr) {
             insts.push(LIR::Add(Add::new(TMP_REG_L, TMP_REG_R)));
             insts.push(LIR::Push(Push::new(TMP_REG_L)));
         }
-        Expr::Minus(lhs, rhs) => {
+        Expr::Minus { lhs, rhs, .. } => {
             lirgen_expr(insts, *lhs);
             lirgen_value(insts, rhs);
             insts.push(LIR::Pop(Pop::new(TMP_REG_R)));
@@ -34,7 +34,7 @@ fn lirgen_expr(insts: &mut Vec<LIR>, expr: Expr) {
             insts.push(LIR::Sub(Sub::new(TMP_REG_L, TMP_REG_R)));
             insts.push(LIR::Push(Push::new(TMP_REG_L)));
         }
-        Expr::Value(value) => {
+        Expr::Value { value, .. } => {
             lirgen_value(insts, value);
         }
     }
@@ -42,10 +42,10 @@ fn lirgen_expr(insts: &mut Vec<LIR>, expr: Expr) {
 
 fn lirgen_value(insts: &mut Vec<LIR>, value: Value) {
     match value {
-        Value::Expr(expr) => {
+        Value::Expr { expr, .. } => {
             lirgen_expr(insts, *expr);
         }
-        Value::Const(value) => {
+        Value::Const { value, .. } => {
             insts.push(LIR::Li(Li::new(TMP_REG, value)));
             insts.push(LIR::Push(Push::new(TMP_REG)));
         }

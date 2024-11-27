@@ -7,16 +7,17 @@ use super::Expr;
 
 #[derive(Debug)]
 pub struct ConstDecl {
+    pub namespace: String,
     pub ident: String,
     pub expr: Expr,
 }
 
-impl From<Tree<'_, SBLangDef>> for ConstDecl  {
-    fn from(tree: Tree<'_, SBLangDef>) -> Self {
+impl From<(String, Tree<'_, SBLangDef>)> for ConstDecl  {
+    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
         let (_, mut children) = unwrap_node(tree);
         let (_, ident) = unwrap_leaf(children.pop_front().unwrap());
         let ident = ident.to_string();
-        let expr = Expr::from(children.pop_front().unwrap());
-        ConstDecl { ident, expr }
+        let expr = Expr::from((namespace.clone(), children.pop_front().unwrap()));
+        ConstDecl { namespace, ident, expr }
     }
 }
