@@ -1,5 +1,5 @@
 // トップ要素
-mod program;    pub use program::Program as AST;
+mod program;    pub use program::Program;
 mod top;        pub use top::Top;
 
 // 変数宣言

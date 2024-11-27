@@ -21,3 +21,10 @@ pub enum LIR {
     Sw(Sw),
     Lw(Lw),
 }
+
+#[macro_export]
+macro_rules! lir {
+    ($name:ident : $($arg:expr),* ) => {
+        LIR::$name($name::new($($arg),*))
+    };
+}
