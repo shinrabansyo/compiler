@@ -1,8 +1,8 @@
 use std::fmt::Debug;
 
 pub struct Sw {
-    pub addr: u32,
     pub base_reg: u8,
+    pub addr: u32,
     pub src_reg: u8,
 }
 
@@ -13,7 +13,7 @@ impl Debug for Sw {
 }
 
 impl Sw {
-    pub fn new(addr: u32, base_reg: u8, src_reg: u8) -> Self {
-        Sw { addr, base_reg, src_reg }
+    pub fn new(base_reg: u8, addr: u32, src_reg: u8) -> Self {
+        Sw { base_reg, addr, src_reg }
     }
 }

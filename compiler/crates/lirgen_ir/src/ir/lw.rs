@@ -1,9 +1,9 @@
 use std::fmt::Debug;
 
 pub struct Lw {
-    pub addr: u32,
-    pub base_reg: u8,
     pub dst_reg: u8,
+    pub base_reg: u8,
+    pub addr: u32,
 }
 
 impl Debug for Lw {
@@ -13,7 +13,7 @@ impl Debug for Lw {
 }
 
 impl Lw {
-    pub fn new(addr: u32, base_reg: u8, dst_reg: u8) -> Self {
-        Lw { addr, base_reg, dst_reg }
+    pub fn new(dst_reg: u8, base_reg: u8, addr: u32) -> Self {
+        Lw { dst_reg, base_reg, addr }
     }
 }

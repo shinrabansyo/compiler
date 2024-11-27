@@ -56,7 +56,7 @@ impl<'ast> LirGenState<'ast> {
         };
 
         self.lirs.push(LIR::Pop(Pop::new(TMP_REG)));
-        self.lirs.push(LIR::Sw(Sw::new(addr, base_reg, TMP_REG)));
+        self.lirs.push(LIR::Sw(Sw::new(base_reg, addr, TMP_REG)));
     }
 
     fn lirgen_expr(&mut self, expr: &Expr) {
@@ -103,7 +103,7 @@ impl<'ast> LirGenState<'ast> {
                     unimplemented!()
                 };
 
-                self.lirs.push(LIR::Lw(Lw::new(addr, base_reg, TMP_REG)));
+                self.lirs.push(LIR::Lw(Lw::new(TMP_REG, base_reg, addr)));
                 self.lirs.push(LIR::Push(Push::new(TMP_REG)));
             }
         }
