@@ -45,6 +45,12 @@ fn codegen_imem(asms: &mut Vec<String>, indent: usize, lirs: &[LIR]) {
                 asm!("lw r{} = r2[0]", pop.reg);
                 asm!("addi r2 = r2, 4");
             }
+            LIR::Sw(sw) => {
+                asm!("sw r{}[{}] = r{}", sw.base_reg, sw.addr, sw.src_reg);
+            }
+            LIR::Lw(lw) => {
+                asm!("lw r{} = r{}[{}]", lw.dst_reg, lw.base_reg, lw.addr);
+            }
         }
     }
 }

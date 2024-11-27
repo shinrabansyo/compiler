@@ -1,5 +1,5 @@
 [package]
-name = "sb_compiler_lirgen"
+name = "sb_compiler_analyze"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,5 +7,3 @@ edition = "2021"
 anyhow = { workspace = true }
 thiserror = { workspace = true }
 sb_compiler_parse_ast = { path = "../parse_ast" }
-sb_compiler_analyze = { path = "../analyze" }
-sb_compiler_lirgen_ir = { path = "../lirgen_ir" }

@@ -7,19 +7,30 @@ use super::Value;
 
 #[derive(Debug)]
 pub enum Expr {
-    Plus(Box<Expr>, Value),
-    Minus(Box<Expr>, Value),
-    Value(Value),
+    Plus {
+        namespace: String,
+        lhs: Box<Expr>,
+        rhs: Value,
+    },
+    Minus {
+        namespace: String,
+        lhs: Box<Expr>,
+        rhs: Value,
+    },
+    Value {
+        namespace: String,
+        value: Value
+    },
 }
 
-impl From<Tree<'_, SBLangDef>> for Expr {
-    fn from(tree: Tree<'_, SBLangDef>) -> Self {
+impl From<(String, Tree<'_, SBLangDef>)> for Expr {
+    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
         let (_, mut children) = unwrap_node(tree);
 
         // 数値のみ
         if children.len() == 1 {
-            let value = Value::from(children.pop_front().unwrap());
-            return Expr::Value(value);
+            let value = Value::from((namespace.clone(), children.pop_front().unwrap()));
+            return Expr::Value { namespace, value };
         }
 
         // 演算子付き
@@ -28,10 +39,14 @@ impl From<Tree<'_, SBLangDef>> for Expr {
         let rhs = children.pop_front().unwrap();
         match unwrap_leaf(op).0 {
             SBTokens::Plus => {
-                Expr::Plus(Box::new(Expr::from(lhs)), Value::from(rhs))
+                let lhs = Box::new(Expr::from((namespace.clone(), lhs)));
+                let rhs = Value::from((namespace.clone(), rhs));
+                Expr::Plus { namespace, lhs, rhs }
             }
             SBTokens::Minus => {
-                Expr::Minus(Box::new(Expr::from(lhs)), Value::from(rhs))
+                let lhs = Box::new(Expr::from((namespace.clone(), lhs)));
+                let rhs = Value::from((namespace.clone(), rhs));
+                Expr::Minus { namespace, lhs, rhs }
             }
             _=> unreachable!(),
         }
