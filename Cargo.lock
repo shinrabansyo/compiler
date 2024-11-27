@@ -330,6 +330,16 @@ name = "sb_compiler_analyze"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "sb_compiler_analyze_def",
+ "sb_compiler_parse_ast",
+ "thiserror 2.0.3",
+]
+
+[[package]]
+name = "sb_compiler_analyze_def"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
  "sb_compiler_parse_ast",
  "thiserror 2.0.3",
 ]
