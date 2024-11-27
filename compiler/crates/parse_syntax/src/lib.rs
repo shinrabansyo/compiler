@@ -31,8 +31,18 @@ pub enum SBTokens {
     ParenL,
     #[token(r"\)", ir_omit)]
     ParenR,
+    #[token(r"=", ir_omit)]
+    Assign,
+    #[token(r";", ir_omit)]
+    Semicolon,
+
+    // キーワード
+    #[token("const", ir_omit)]
+    Const,
 
     // リテラル
+    #[token(r"[a-zA-Z_][a-zA-Z0-9_]*")]
+    Ident,
     #[token(r"[0-9]+")]
     Num,
 
@@ -47,8 +57,11 @@ pub enum SBTokens {
 )]
 pub enum SBRules {
     #[default]
-    #[rule("<top> ::= <expr>")]
+    #[rule("<top> ::= <const_decl>")]
     Top,
+
+    #[rule("<const_decl> ::= Const Ident Assign <expr> Semicolon")]
+    ConstDecl,
 
     #[rule("<expr> ::= <expr> Plus <value>")]
     #[rule("<expr> ::= <expr> Minus <value>")]

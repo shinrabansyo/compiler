@@ -7,11 +7,12 @@ const TMP_REG_R: u8 = 5;  // r5
 
 pub fn lirgen(ast: AST) -> Vec<LIR> {
     match ast {
-        AST::Expr(expr) => {
-            let mut insts = Vec::new();
-            lirgen_expr(&mut insts, *expr);
-            insts
-        }
+        // AST::Expr(expr) => {
+        //     let mut insts = Vec::new();
+        //     lirgen_expr(&mut insts, *expr);
+        //     insts
+        // }
+        _ => unimplemented!(),
     }
 }
 
