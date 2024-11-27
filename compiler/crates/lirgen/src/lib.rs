@@ -1,6 +1,6 @@
 use sb_compiler_analyze::AnalyzeResult;
 use sb_compiler_parse_ast::{AST, Top, ConstDecl, Expr, Value};
-use sb_compiler_lirgen_ir::{LIR, Li, Add, Sub, Push, Pop, Sw, Lw};
+use sb_compiler_lirgen_ir::{lir, LIR, Li, Add, Sub, Push, Pop, Sw, Lw};
 
 const ZERO_REG: u8  = 0;  // r0
 const TMP_REG: u8   = 4;  // r4
@@ -55,8 +55,8 @@ impl<'ast> LirGenState<'ast> {
             unimplemented!()
         };
 
-        self.lirs.push(LIR::Pop(Pop::new(TMP_REG)));
-        self.lirs.push(LIR::Sw(Sw::new(base_reg, addr, TMP_REG)));
+        self.lirs.push(lir!(Pop: TMP_REG));
+        self.lirs.push(lir!(Sw: base_reg, addr, TMP_REG));
     }
 
     fn lirgen_expr(&mut self, expr: &Expr) {
@@ -64,18 +64,18 @@ impl<'ast> LirGenState<'ast> {
             Expr::Plus { lhs, rhs, .. }=> {
                 self.lirgen_expr(lhs);
                 self.lirgen_value(rhs);
-                self.lirs.push(LIR::Pop(Pop::new(TMP_REG_R)));
-                self.lirs.push(LIR::Pop(Pop::new(TMP_REG_L)));
-                self.lirs.push(LIR::Add(Add::new(TMP_REG_L, TMP_REG_R)));
-                self.lirs.push(LIR::Push(Push::new(TMP_REG_L)));
+                self.lirs.push(lir!(Pop: TMP_REG_R));
+                self.lirs.push(lir!(Pop: TMP_REG_L));
+                self.lirs.push(lir!(Add: TMP_REG_L, TMP_REG_R));
+                self.lirs.push(lir!(Push: TMP_REG_L));
             }
             Expr::Minus { lhs, rhs, .. } => {
                 self.lirgen_expr(lhs);
                 self.lirgen_value(rhs);
-                self.lirs.push(LIR::Pop(Pop::new(TMP_REG_R)));
-                self.lirs.push(LIR::Pop(Pop::new(TMP_REG_L)));
-                self.lirs.push(LIR::Sub(Sub::new(TMP_REG_L, TMP_REG_R)));
-                self.lirs.push(LIR::Push(Push::new(TMP_REG_L)));
+                self.lirs.push(lir!(Pop: TMP_REG_R));
+                self.lirs.push(lir!(Pop: TMP_REG_L));
+                self.lirs.push(lir!(Sub: TMP_REG_L, TMP_REG_R));
+                self.lirs.push(lir!(Push: TMP_REG_L));
             }
             Expr::Value { value, .. } => {
                 self.lirgen_value(value);
@@ -89,8 +89,8 @@ impl<'ast> LirGenState<'ast> {
                 self.lirgen_expr(expr);
             }
             Value::Const { value, .. } => {
-                self.lirs.push(LIR::Li(Li::new(TMP_REG, *value)));
-                self.lirs.push(LIR::Push(Push::new(TMP_REG)));
+                self.lirs.push(lir!(Li: TMP_REG, *value));
+                self.lirs.push(lir!(Push: TMP_REG));
             }
             Value::Var { namespace, name } => {
                 let addr = self
@@ -103,8 +103,8 @@ impl<'ast> LirGenState<'ast> {
                     unimplemented!()
                 };
 
-                self.lirs.push(LIR::Lw(Lw::new(TMP_REG, base_reg, addr)));
-                self.lirs.push(LIR::Push(Push::new(TMP_REG)));
+                self.lirs.push(lir!(Lw: TMP_REG, base_reg, addr));
+                self.lirs.push(lir!(Push: TMP_REG));
             }
         }
     }
