@@ -8,7 +8,6 @@ use super::Expr;
 #[derive(Debug)]
 pub enum TopLevel {
     Expr(Box<Expr>),
-    Const(i32),
 }
 
 impl From<Tree<'_, SBLangDef>> for TopLevel  {
