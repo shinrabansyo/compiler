@@ -8,4 +8,4 @@ members = [
 anyhow = "1.0.93"
 thiserror = "2.0.3"
 serde = "1.0.215"
-copager = { git = "https://github.com/Tsukuba-Programming-Lab/Copager", rev = "fdce90d13b5ca3103b7ce9851f3c2982754438f9" }
+copager = { git = "https://github.com/Tsukuba-Programming-Lab/Copager", rev = "0e26c8373c5a0bff919d807026f141224e19a036" }

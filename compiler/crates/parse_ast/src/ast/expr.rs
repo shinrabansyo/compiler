@@ -13,7 +13,7 @@ impl From<Tree<'_, SBLangDef>> for Expr {
     fn from(tree: Tree<'_, SBLangDef>) -> Self {
         match tree {
             Tree::Node { mut children, .. } => {
-                let value = Value::from(children.pop().unwrap());
+                let value = Value::from(children.pop_front().unwrap());
                 Expr { value }
             }
             _ => unreachable!(),
