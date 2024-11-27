@@ -7,7 +7,7 @@ const TMP_REG: u8   = 4;  // r4
 const TMP_REG_L: u8 = 4;  // r4
 const TMP_REG_R: u8 = 5;  // r5
 
-pub fn lirgen(ast: &AST, analyze_result: AnalyzeResult) -> Vec<LIR> {
+pub fn lirgen<'ast>(ast: &'ast AST, analyze_result: AnalyzeResult<'ast>) -> Vec<LIR> {
     let mut lirgen_state = LirGenState::from(analyze_result);
     lirgen_state.lirgen_ast(ast);
     lirgen_state.lirs
@@ -41,10 +41,8 @@ impl<'ast> LirGenState<'ast> {
 
         let addr = self
             .analyze_result
-            .define_table
             .find(&const_decl.namespace, &const_decl.ident)
-            .unwrap()
-            .local_id;
+            .local_addr;
         let base_reg = if const_decl.namespace == "global" {
             ZERO_REG
         } else {

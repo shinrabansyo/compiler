@@ -1,12 +1,30 @@
+mod addr;
+mod def;
+mod utils;
+
 use sb_compiler_parse_ast::AST;
-use sb_compiler_analyze_def::DefineTable;
+
+use addr::analyze_addr;
+use def::analyze_defs;
+use utils::LayeredTable;
+
+pub struct NodeInfo<'ast> {
+    pub ty: &'ast str,
+    pub local_addr: u32,
+}
 
 pub struct AnalyzeResult<'ast> {
-    pub define_table: DefineTable<'ast>,
+    table: LayeredTable<NodeInfo<'ast>>,
+}
+
+impl<'ast> AnalyzeResult<'ast> {
+    pub fn find(&self, namespace: &str, name: &str) -> &NodeInfo<'ast> {
+        self.table.find_name(namespace, name).unwrap()
+    }
 }
 
 pub fn analyze(ast: &AST) -> anyhow::Result<AnalyzeResult> {
-    Ok(AnalyzeResult {
-        define_table: DefineTable::from(ast)?,
-    })
+    let table = analyze_defs(ast)?;
+    let table = analyze_addr(table);
+    Ok(AnalyzeResult { table })
 }
