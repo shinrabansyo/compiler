@@ -1,3 +1,0 @@
-const a: i32 = 10;
-const b: i32 = a + 20;
-const c: i32 = b + 30;
