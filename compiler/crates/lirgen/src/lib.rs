@@ -1,111 +1,11 @@
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_parse_ast::{AST, Top, ConstDecl, Expr, Value};
-use sb_compiler_lirgen_ir::{lir, LIR, Li, Add, Sub, Push, Pop, Sw, Lw};
+mod gen;
 
-const ZERO_REG: u8  = 0;  // r0
-const TMP_REG: u8   = 4;  // r4
-const TMP_REG_L: u8 = 4;  // r4
-const TMP_REG_R: u8 = 5;  // r5
+use sb_compiler_parse_ast::AST;
+use sb_compiler_analyze::AnalyzeResult;
+use sb_compiler_lirgen_ir::LIR;
 
 pub fn lirgen<'ast>(ast: &'ast AST, analyze_result: AnalyzeResult<'ast>) -> Vec<LIR> {
-    let mut lirgen_state = LirGenState::from(analyze_result);
-    lirgen_state.lirgen_ast(ast);
-    lirgen_state.lirs
-}
-
-struct LirGenState<'ast> {
-    lirs: Vec<LIR>,
-    analyze_result: AnalyzeResult<'ast>,
-}
-
-impl<'ast> From<AnalyzeResult<'ast>> for LirGenState<'ast> {
-    fn from(analyze_result: AnalyzeResult<'ast>) -> Self {
-        LirGenState {
-            lirs: Vec::new(),
-            analyze_result,
-        }
-    }
-}
-
-impl<'ast> LirGenState<'ast> {
-    fn lirgen_ast(&mut self, ast: &'ast AST) {
-        for top in &ast.top_elems {
-            self.lirgen_top(top);
-        }
-    }
-
-    fn lirgen_top(&mut self, ast: &Top) {
-        match ast {
-            Top::ConstDecl { const_decl, .. } => {
-                self.lirgen_const_decl(const_decl);
-            }
-        }
-    }
-
-    fn lirgen_const_decl(&mut self, const_decl: &ConstDecl) {
-        self.lirgen_expr(&const_decl.expr);
-
-        let addr = self
-            .analyze_result
-            .find(&const_decl.namespace, &const_decl.ident)
-            .local_addr;
-        let base_reg = if const_decl.namespace == "global" {
-            ZERO_REG
-        } else {
-            unimplemented!()
-        };
-
-        self.lirs.push(lir!(Pop: TMP_REG));
-        self.lirs.push(lir!(Sw: base_reg, addr, TMP_REG));
-    }
-
-    fn lirgen_expr(&mut self, expr: &Expr) {
-        match expr {
-            Expr::Plus { lhs, rhs, .. }=> {
-                self.lirgen_expr(lhs);
-                self.lirgen_value(rhs);
-                self.lirs.push(lir!(Pop: TMP_REG_R));
-                self.lirs.push(lir!(Pop: TMP_REG_L));
-                self.lirs.push(lir!(Add: TMP_REG_L, TMP_REG_R));
-                self.lirs.push(lir!(Push: TMP_REG_L));
-            }
-            Expr::Minus { lhs, rhs, .. } => {
-                self.lirgen_expr(lhs);
-                self.lirgen_value(rhs);
-                self.lirs.push(lir!(Pop: TMP_REG_R));
-                self.lirs.push(lir!(Pop: TMP_REG_L));
-                self.lirs.push(lir!(Sub: TMP_REG_L, TMP_REG_R));
-                self.lirs.push(lir!(Push: TMP_REG_L));
-            }
-            Expr::Value { value, .. } => {
-                self.lirgen_value(value);
-            }
-        }
-    }
-
-    fn lirgen_value(&mut self, value: &Value) {
-        match value {
-            Value::Expr { expr, .. } => {
-                self.lirgen_expr(expr);
-            }
-            Value::Const { value, .. } => {
-                self.lirs.push(lir!(Li: TMP_REG, *value));
-                self.lirs.push(lir!(Push: TMP_REG));
-            }
-            Value::Var { namespace, name } => {
-                let addr = self
-                    .analyze_result
-                    .find(namespace, name)
-                    .local_addr;
-                let base_reg = if namespace == "global" {
-                    ZERO_REG
-                } else {
-                    unimplemented!()
-                };
-
-                self.lirs.push(lir!(Lw: TMP_REG, base_reg, addr));
-                self.lirs.push(lir!(Push: TMP_REG));
-            }
-        }
-    }
+    let mut lirs = vec![];
+    gen::lirgen_ast(&mut lirs, ast,  &analyze_result);
+    lirs
 }
