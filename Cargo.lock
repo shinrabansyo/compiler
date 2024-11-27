@@ -325,6 +325,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "sb_compiler_cli"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "sb_compiler",
+ "thiserror 2.0.3",
+]
+
+[[package]]
 name = "sb_compiler_codegen"
 version = "0.1.0"
 dependencies = [
