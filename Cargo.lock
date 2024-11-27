@@ -318,7 +318,26 @@ name = "sb_compiler"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "sb_compiler_lirgen",
  "sb_compiler_parse",
+ "thiserror 2.0.3",
+]
+
+[[package]]
+name = "sb_compiler_lirgen"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "sb_compiler_lirgen_ir",
+ "sb_compiler_parse_ast",
+ "thiserror 2.0.3",
+]
+
+[[package]]
+name = "sb_compiler_lirgen_ir"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
  "thiserror 2.0.3",
 ]
 
