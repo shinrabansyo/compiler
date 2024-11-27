@@ -14,10 +14,11 @@ pub enum Value {
 impl From<Tree<'_, SBLangDef>> for Value {
     fn from(tree: Tree<'_, SBLangDef>) -> Self {
         let (_, mut children) = unwrap_node(tree);
-        match children.pop_front().unwrap() {
+        let rhs = children.pop_front().unwrap();
+        match rhs {
             // 括弧
-            Tree::Node { mut children, .. } => {
-                let expr = Expr::from(children.pop_front().unwrap());
+            Tree::Node { .. } => {
+                let expr = Expr::from(rhs);
                 Value::Expr(Box::new(expr))
             }
             // 定数
