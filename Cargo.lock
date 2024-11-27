@@ -20,7 +20,7 @@ checksum = "4c95c10ba0b00a02636238b814946408b1322d5ac4760326e6fb8ec956d85775"
 [[package]]
 name = "copager"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "copager_cfl",
  "copager_core",
@@ -38,7 +38,7 @@ dependencies = [
 [[package]]
 name = "copager_cfl"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl_derive",
@@ -49,7 +49,7 @@ dependencies = [
 [[package]]
 name = "copager_cfl_derive"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "proc-macro2",
@@ -61,7 +61,7 @@ dependencies = [
 [[package]]
 name = "copager_core"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl",
@@ -77,7 +77,7 @@ dependencies = [
 [[package]]
 name = "copager_core_macros"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "proc-macro2",
@@ -89,7 +89,7 @@ dependencies = [
 [[package]]
 name = "copager_ir"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl",
@@ -102,7 +102,7 @@ dependencies = [
 [[package]]
 name = "copager_ir_derive"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "proc-macro2",
@@ -114,7 +114,7 @@ dependencies = [
 [[package]]
 name = "copager_ir_tree"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl",
@@ -128,7 +128,7 @@ dependencies = [
 [[package]]
 name = "copager_ir_void"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl",
@@ -141,7 +141,7 @@ dependencies = [
 [[package]]
 name = "copager_lex"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl",
@@ -152,7 +152,7 @@ dependencies = [
 [[package]]
 name = "copager_lex_regex"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl",
@@ -166,7 +166,7 @@ dependencies = [
 [[package]]
 name = "copager_parse"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl",
@@ -178,7 +178,7 @@ dependencies = [
 [[package]]
 name = "copager_parse_common"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl",
@@ -188,7 +188,7 @@ dependencies = [
 [[package]]
 name = "copager_parse_lr_common"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl",
@@ -202,7 +202,7 @@ dependencies = [
 [[package]]
 name = "copager_parse_lr_lalr1"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl",
@@ -218,7 +218,7 @@ dependencies = [
 [[package]]
 name = "copager_utils"
 version = "0.3.0"
-source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=fdce90d13b5ca3103b7ce9851f3c2982754438f9#fdce90d13b5ca3103b7ce9851f3c2982754438f9"
+source = "git+https://github.com/Tsukuba-Programming-Lab/Copager?rev=0e26c8373c5a0bff919d807026f141224e19a036#0e26c8373c5a0bff919d807026f141224e19a036"
 dependencies = [
  "anyhow",
  "copager_cfl",
