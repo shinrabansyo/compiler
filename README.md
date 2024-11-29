@@ -2,10 +2,10 @@
 
 ## Examples
 
-- [examples/const](examples/const)
+- [examples/expr](examples/expr)
 
 ```
-$ cargo run examples/const/main.sb out.asm
+$ cargo run examples/expr/main.sb out.asm
 ```
 
 ## Test
