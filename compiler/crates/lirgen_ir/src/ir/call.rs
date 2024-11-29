@@ -1,23 +1,23 @@
 use std::fmt::{Debug, Display};
 
-pub struct Jmp {
+pub struct Call {
     pub label: String,
 }
 
-impl Debug for Jmp {
+impl Debug for Call {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.label)
     }
 }
 
-impl Display for Jmp {
+impl Display for Call {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "beq r0, (r0, r0) -> @{}", self.label)
+        write!(f, "beq r1, (r0, r0) -> @{}", self.label)
     }
 }
 
-impl Jmp {
+impl Call {
     pub fn new(label: String) -> Self {
-        Jmp { label }
+        Call { label }
     }
 }

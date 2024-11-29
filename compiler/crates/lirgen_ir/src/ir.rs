@@ -1,7 +1,7 @@
 mod li;         pub use li::Li;
 mod add;        pub use add::Add;
 mod sub;        pub use sub::Sub;
-mod jmp;        pub use jmp::Jmp;
+mod call;       pub use call::Call;
 mod push;       pub use push::Push;
 mod pop;        pub use pop::Pop;
 mod sw;         pub use sw::Sw;
@@ -28,7 +28,7 @@ pub enum LIR {
     Sub(Sub),
 
     // 分岐
-    Jmp(Jmp),
+    Call(Call),
 
     // スタック操作
     Push(Push),
@@ -51,7 +51,7 @@ impl Display for LIR {
             LIR::Li(li) => write!(f, "{}", li),
             LIR::Add(add) => write!(f, "{}", add),
             LIR::Sub(sub) => write!(f, "{}", sub),
-            LIR::Jmp(jmp) => write!(f, "{}", jmp),
+            LIR::Call(jmp) => write!(f, "{}", jmp),
             LIR::Push(push) => write!(f, "{}", push),
             LIR::Pop(pop) => write!(f, "{}", pop),
             LIR::Sw(sw) => write!(f, "{}", sw),

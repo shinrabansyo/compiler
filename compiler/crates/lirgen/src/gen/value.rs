@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast::Value;
 use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Li, Jmp, Push, Lw};
+use sb_compiler_lirgen_ir::{lir, LIR, Li, Call, Push, Lw};
 
 use super::{lirgen_expr, TMP_REG, ZERO_REG};
 
@@ -26,7 +26,7 @@ pub fn lirgen_value(lirs: &mut Vec<LIR>, value: &Value, analyze_result: &Analyze
         }
         Value::Call { ident, .. } => {
             let jmp_to = format!("{}.{}", ident, "global");
-            lirs.push(lir!(Jmp: jmp_to))
+            lirs.push(lir!(Call: jmp_to))
         }
     }
 }
