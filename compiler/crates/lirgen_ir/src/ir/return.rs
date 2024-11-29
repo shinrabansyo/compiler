@@ -10,7 +10,7 @@ impl Debug for Return {
 
 impl Display for Return {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "jal r0, r1[0]")
+        write!(f, "jal r0, r1[0]")
     }
 }
 

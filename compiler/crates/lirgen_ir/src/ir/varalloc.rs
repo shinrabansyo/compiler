@@ -16,7 +16,7 @@ impl Display for VarAlloc {
         writeln!(f, "add r6 = r0, r2")?;
         writeln!(f, "subi r2 = r2, 4")?;
         writeln!(f, "addi r4 = r0, {}",self.bytes)?;
-        writeln!(f, "sw r2[0] = r4")
+        write!(f, "sw r2[0] = r4")
     }
 }
 
