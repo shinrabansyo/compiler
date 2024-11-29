@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 
-use copager::cfl::{CFLRules, CFLTokens, CFL};
+use copager::cfl::{rule, CFLRules, CFLTokens, CFL};
 use copager::template::LALR1;
 use copager::prelude::*;
 
@@ -119,6 +119,9 @@ pub enum SBRules {
     #[rule("<value> ::= <call>")]
     Value,
 
-    #[rule("<call> ::= Ident ParenL ParenR")]
+    #[rule("<call> ::= Ident ParenL <arg_list> ParenR")]
+    #[rule("<arg_list> ::= <arg_list> Comma <value>")]
+    #[rule("<arg_list> ::= <value>")]
+    #[rule("<arg_list> ::= ")]
     Call,
 }

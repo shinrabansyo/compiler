@@ -1,8 +1,8 @@
 use sb_compiler_parse_ast::Value;
 use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Li, Call, Push, Lw};
+use sb_compiler_lirgen_ir::{lir, LIR, Li, Add, Call, Push, Pop, Lw};
 
-use super::{lirgen_expr, TMP_REG, ZERO_REG, VARBASE_REG};
+use super::{lirgen_expr, TMP_REG, ZERO_REG, VARBASE_REG, RET_REG};
 
 pub fn lirgen_value(lirs: &mut Vec<LIR>, value: &Value, analyze_result: &AnalyzeResult) {
     match value {
@@ -24,10 +24,19 @@ pub fn lirgen_value(lirs: &mut Vec<LIR>, value: &Value, analyze_result: &Analyze
         Value::Expr { expr, .. } => {
             lirgen_expr(lirs, expr, analyze_result);
         }
-        Value::Call { ident, .. } => {
-            let jmp_to = format!("{}.{}", ident, "global");
+        Value::Call { call, .. } => {
+            for (idx, value) in call.args.iter().enumerate() {
+                lirgen_value(lirs, value, analyze_result);
+                lirs.push(lir!(Pop TMP_REG));
+
+                let reg = (idx + 10) as u8;
+                lirs.push(lir!(Li reg, 0));
+                lirs.push(lir!(Add reg, TMP_REG));
+            }
+
+            let jmp_to = format!("{}.{}", call.ident, "global");
             lirs.push(lir!(Call jmp_to));
-            lirs.push(lir!(Push TMP_REG));
+            lirs.push(lir!(Push RET_REG));
         }
     }
 }
