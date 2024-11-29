@@ -13,7 +13,7 @@ impl Debug for Add {
 
 impl Display for Add {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "r{} = r{}, r{}", self.lhs_reg, self.lhs_reg, self.rhs_reg)
+        write!(f, "add r{} = r{}, r{}", self.lhs_reg, self.lhs_reg, self.rhs_reg)
     }
 }
 

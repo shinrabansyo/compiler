@@ -9,6 +9,8 @@ mod lw;         pub use lw::Lw;
 mod label;      pub use label::Label;
 mod fsave;      pub use fsave::FSave;
 mod fload;      pub use fload::FLoad;
+mod varalloc;   pub use varalloc::VarAlloc;
+mod varfree;    pub use varfree::VarFree;
 mod r#return;   pub use r#return::Return;
 
 use std::fmt::Display;
@@ -38,10 +40,12 @@ pub enum LIR {
     Sw(Sw),
     Lw(Lw),
 
-    // その他
+    // 関数
     Label(Label),
     FSave(FSave),
     FLoad(FLoad),
+    VarAlloc(VarAlloc),
+    VarFree(VarFree),
     Return(Return),
 }
 
@@ -59,6 +63,8 @@ impl Display for LIR {
             LIR::Label(label) => write!(f, "{}", label),
             LIR::FSave(fsave) => write!(f, "{}", fsave),
             LIR::FLoad(fload) => write!(f, "{}", fload),
+            LIR::VarAlloc(varalloc) => write!(f, "{}", varalloc),
+            LIR::VarFree(varfree) => write!(f, "{}", varfree),
             LIR::Return(r#return) => write!(f, "{}", r#return),
         }
     }

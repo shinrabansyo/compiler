@@ -2,7 +2,7 @@ use sb_compiler_parse_ast::Value;
 use sb_compiler_analyze::AnalyzeResult;
 use sb_compiler_lirgen_ir::{lir, LIR, Li, Call, Push, Lw};
 
-use super::{lirgen_expr, TMP_REG, ZERO_REG};
+use super::{lirgen_expr, TMP_REG, ZERO_REG, VARBASE_REG};
 
 pub fn lirgen_value(lirs: &mut Vec<LIR>, value: &Value, analyze_result: &AnalyzeResult) {
     match value {
@@ -15,7 +15,7 @@ pub fn lirgen_value(lirs: &mut Vec<LIR>, value: &Value, analyze_result: &Analyze
             let base_reg = if namespace == "global" {
                 ZERO_REG
             } else {
-                unimplemented!()
+                VARBASE_REG
             };
 
             lirs.push(lir!(Lw TMP_REG, base_reg, addr));

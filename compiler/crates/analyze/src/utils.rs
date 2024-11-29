@@ -32,6 +32,13 @@ impl<T> LayeredTable<T> {
         self.elems_map.get_mut(namespace)
     }
 
+    pub(crate) fn find_name_mut(&mut self, namespace: &str, name: &str) -> Option<&mut T> {
+        self.elems_map
+            .get_mut(namespace)
+            .unwrap()
+            .get_mut(name)
+    }
+
     pub fn find_name(&self, namespace: &str, name: &str) -> Option<&T> {
         if let Some(elems) = self.elems_map.get(namespace) {
             if let Some(elem) = elems.get(name) {
