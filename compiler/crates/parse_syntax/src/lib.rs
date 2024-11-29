@@ -99,8 +99,12 @@ pub enum SBRules {
     #[rule("<expr> ::= <value>")]
     Expr,
 
-    #[rule("<value> ::= ParenL <expr> ParenR")]
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]
+    #[rule("<value> ::= ParenL <expr> ParenR")]
+    #[rule("<value> ::= <call>")]
     Value,
+
+    #[rule("<call> ::= Ident ParenL ParenR")]
+    Call,
 }

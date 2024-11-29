@@ -34,6 +34,9 @@ fn codegen_imem(asms: &mut Vec<String>, lirs: &[LIR]) {
             LIR::Sub(sub) => {
                 asm!("sub r{} = r{}, r{}", sub.lhs_reg, sub.lhs_reg, sub.rhs_reg);
             }
+            LIR::Jmp(jmp) => {
+                asm!("beq r0, (r0, r0) -> @{}", jmp.label);
+            }
             LIR::Push(push) => {
                 asm!("subi r2 = r2, 4");
                 asm!("sw r2[0] = r{}", push.reg);

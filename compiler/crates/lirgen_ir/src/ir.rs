@@ -1,6 +1,7 @@
 mod li;         pub use li::Li;
 mod add;        pub use add::Add;
 mod sub;        pub use sub::Sub;
+mod jmp;        pub use jmp::Jmp;
 mod push;       pub use push::Push;
 mod pop;        pub use pop::Pop;
 mod sw;         pub use sw::Sw;
@@ -16,6 +17,9 @@ pub enum LIR {
     Li(Li),
     Add(Add),
     Sub(Sub),
+
+    // 分岐
+    Jmp(Jmp),
 
     // スタック操作
     Push(Push),
