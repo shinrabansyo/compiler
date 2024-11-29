@@ -7,10 +7,9 @@ use super::{lirgen_expr, TMP_REG, VARBASE_REG, ZERO_REG};
 pub fn lirgen_const_decl(lirs: &mut Vec<LIR>, const_decl: &ConstDecl, analyze_result: &AnalyzeResult) {
     lirgen_expr(lirs, &const_decl.expr, analyze_result);
 
-    let namespace = &const_decl.namespace;
-    let name = &const_decl.ident;
-    let addr = analyze_result.find(namespace, name).local_addr;
-    let base_reg = if const_decl.namespace == "global" {
+    let node_info = analyze_result.find(&const_decl.namespace, &const_decl.ident);
+    let addr = node_info.local_addr;
+    let base_reg = if node_info.namespace == "global" {
         ZERO_REG
     } else {
         VARBASE_REG
