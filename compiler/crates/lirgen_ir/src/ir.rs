@@ -15,7 +15,7 @@ use std::fmt::Display;
 
 #[macro_export]
 macro_rules! lir {
-    ($name:ident : $($arg:expr),* ) => {
+    ($name:ident $($arg:expr),* ) => {
         LIR::$name($name::new($($arg),*))
     };
 }

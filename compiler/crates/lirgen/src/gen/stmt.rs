@@ -16,7 +16,7 @@ pub fn lirgen_stmt(lirs: &mut Vec<LIR>, stmt: &Stmt, analyze_result: &AnalyzeRes
         }
         Stmt::Expr { expr, .. } => {
             lirgen_expr(lirs, expr, analyze_result);
-            lirs.push(lir!(Pop: TMP_REG));
+            lirs.push(lir!(Pop TMP_REG));
         }
     }
 }

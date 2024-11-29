@@ -16,6 +16,6 @@ pub fn lirgen_const_decl(lirs: &mut Vec<LIR>, const_decl: &ConstDecl, analyze_re
         unimplemented!()
     };
 
-    lirs.push(lir!(Pop: TMP_REG));
-    lirs.push(lir!(Sw: base_reg, addr, TMP_REG));
+    lirs.push(lir!(Pop TMP_REG));
+    lirs.push(lir!(Sw base_reg, addr, TMP_REG));
 }

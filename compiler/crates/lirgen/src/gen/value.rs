@@ -7,8 +7,8 @@ use super::{lirgen_expr, TMP_REG, ZERO_REG};
 pub fn lirgen_value(lirs: &mut Vec<LIR>, value: &Value, analyze_result: &AnalyzeResult) {
     match value {
         Value::Const { value, .. } => {
-            lirs.push(lir!(Li: TMP_REG, *value));
-            lirs.push(lir!(Push: TMP_REG));
+            lirs.push(lir!(Li TMP_REG, *value));
+            lirs.push(lir!(Push TMP_REG));
         }
         Value::Var { namespace, name } => {
             let addr = analyze_result.find(namespace, name).local_addr;
@@ -18,16 +18,16 @@ pub fn lirgen_value(lirs: &mut Vec<LIR>, value: &Value, analyze_result: &Analyze
                 unimplemented!()
             };
 
-            lirs.push(lir!(Lw: TMP_REG, base_reg, addr));
-            lirs.push(lir!(Push: TMP_REG));
+            lirs.push(lir!(Lw TMP_REG, base_reg, addr));
+            lirs.push(lir!(Push TMP_REG));
         }
         Value::Expr { expr, .. } => {
             lirgen_expr(lirs, expr, analyze_result);
         }
         Value::Call { ident, .. } => {
             let jmp_to = format!("{}.{}", ident, "global");
-            lirs.push(lir!(Call: jmp_to));
-            lirs.push(lir!(Push: TMP_REG));
+            lirs.push(lir!(Call jmp_to));
+            lirs.push(lir!(Push TMP_REG));
         }
     }
 }
