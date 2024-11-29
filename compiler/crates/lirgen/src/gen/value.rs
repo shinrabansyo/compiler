@@ -26,7 +26,8 @@ pub fn lirgen_value(lirs: &mut Vec<LIR>, value: &Value, analyze_result: &Analyze
         }
         Value::Call { ident, .. } => {
             let jmp_to = format!("{}.{}", ident, "global");
-            lirs.push(lir!(Call: jmp_to))
+            lirs.push(lir!(Call: jmp_to));
+            lirs.push(lir!(Push: TMP_REG));
         }
     }
 }

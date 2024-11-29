@@ -1,6 +1,8 @@
 use sb_compiler_parse_ast::Stmt;
 use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::LIR;
+use sb_compiler_lirgen_ir::{lir, LIR, Pop};
+
+use super::TMP_REG;
 
 use super::{lirgen_const_decl, lirgen_block, lirgen_expr};
 
@@ -14,6 +16,7 @@ pub fn lirgen_stmt(lirs: &mut Vec<LIR>, stmt: &Stmt, analyze_result: &AnalyzeRes
         }
         Stmt::Expr { expr, .. } => {
             lirgen_expr(lirs, expr, analyze_result);
+            lirs.push(lir!(Pop: TMP_REG));
         }
     }
 }
