@@ -1,1 +1,8 @@
-const A: i32 = 10;
+fn main() {
+    const value: i32 = 10;
+    return assert_eq(value, 10);
+}
+
+fn assert_eq(result: i32, expect: i32) {
+    return result - expect;
+}
