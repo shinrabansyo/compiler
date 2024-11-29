@@ -40,6 +40,16 @@ fn analyze_defs_func_def<'ast>(
     };
     table.put(&func_def.namespace, &func_def.ident, info)?;
 
+    // 引数
+    for arg in &func_def.args {
+        let info = NodeInfo {
+            ty: &arg.ty,
+            local_addr: 0,
+            size: 0,
+        };
+        table.put(&arg.namespace, &arg.ident, info)?;
+    }
+
     // 文
     for stmt in &func_def.block.stmts {
         analyze_defs_stmt(table, stmt)?;
