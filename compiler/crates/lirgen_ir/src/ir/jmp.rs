@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::fmt::{Debug, Display};
 
 pub struct Jmp {
     pub label: String,
@@ -7,6 +7,12 @@ pub struct Jmp {
 impl Debug for Jmp {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.label)
+    }
+}
+
+impl Display for Jmp {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "beq r0, (r0, r0) -> @{}", self.label)
     }
 }
 

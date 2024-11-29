@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::fmt::{Debug, Display};
 
 pub struct Sw {
     pub base_reg: u8,
@@ -9,6 +9,12 @@ pub struct Sw {
 impl Debug for Sw {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "r{}[{:<08X}], r{}", self.base_reg, self.addr, self.src_reg)
+    }
+}
+
+impl Display for Sw {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "sw r{}[{}] =  r{}", self.base_reg, self.addr, self.src_reg)
     }
 }
 
