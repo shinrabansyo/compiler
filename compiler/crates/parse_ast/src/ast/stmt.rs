@@ -3,7 +3,7 @@ use copager::ir::Tree;
 use sb_compiler_parse_syntax::{SBLangDef, SBRules};
 
 use crate::utils::unwrap_node;
-use super::{ConstDecl, Expr};
+use super::{ConstDecl, Block, Expr};
 
 #[derive(Debug)]
 pub enum Stmt {
@@ -13,7 +13,7 @@ pub enum Stmt {
     },
     Block {
         namespace: String,
-        block: (),
+        block: Block,
     },
     Expr {
         namespace: String,
@@ -31,7 +31,8 @@ impl From<(String, Tree<'_, SBLangDef>)> for Stmt {
                 Stmt::ConstDecl { namespace, const_decl }
             }
             Tree::Node { tag: SBRules::Block, .. } => {
-                todo!()
+                let block = Block::from((namespace.clone(), rhs));
+                Stmt::Block { namespace, block }
             }
             Tree::Node { tag: SBRules::Expr, .. } => {
                 let expr = Expr::from((namespace.clone(), rhs));
