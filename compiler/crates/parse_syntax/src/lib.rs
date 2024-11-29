@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 
-use copager::cfl::{rule, CFLRules, CFLTokens, CFL};
+use copager::cfl::{CFLRules, CFLTokens, CFL};
 use copager::template::LALR1;
 use copager::prelude::*;
 
@@ -23,6 +23,8 @@ pub enum SBTokens {
     #[default]
 
     // 記号
+    #[token(r"->", ir_omit)]
+    Allow,
     #[token(r"\+")]
     Plus,
     #[token(r"\-")]
@@ -81,6 +83,7 @@ pub enum SBRules {
 
     // 定義
     #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR <block>")]
+    #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR Allow Type <block>")]
     #[rule("<arg_def_list> ::= <arg_def_list> Comma <arg_def>")]
     #[rule("<arg_def_list> ::= <arg_def>")]
     #[rule("<arg_def_list> ::= ")]
