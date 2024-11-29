@@ -10,6 +10,8 @@ use utils::LayeredTable;
 
 #[derive(Debug)]
 pub struct NodeInfo<'ast> {
+    pub namespace: &'ast str,
+    pub name: &'ast str,
     pub ty: &'ast str,
     pub local_addr: u32,
     pub size: u32,

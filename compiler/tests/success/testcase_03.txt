@@ -1,3 +1,0 @@
-const A: i32 = 10;
-const B: i32 = 20;
-const C: i32 = 30;

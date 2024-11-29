@@ -11,8 +11,9 @@ pub fn lirgen_value(lirs: &mut Vec<LIR>, value: &Value, analyze_result: &Analyze
             lirs.push(lir!(Push TMP_REG));
         }
         Value::Var { namespace, name } => {
-            let addr = analyze_result.find(namespace, name).local_addr;
-            let base_reg = if namespace == "global" {
+            let node_info = analyze_result.find(namespace, name);
+            let addr = node_info.local_addr;
+            let base_reg = if node_info.namespace == "global" {
                 ZERO_REG
             } else {
                 VARBASE_REG

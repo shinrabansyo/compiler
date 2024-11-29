@@ -34,6 +34,8 @@ fn analyze_defs_func_def<'ast>(
 ) -> anyhow::Result<()> {
     // 関数シグネチャ
     let info = NodeInfo {
+        namespace: &func_def.namespace,
+        name: &func_def.ident,
         ty: &func_def.ident,
         local_addr: 0,
         size: 0,
@@ -43,6 +45,8 @@ fn analyze_defs_func_def<'ast>(
     // 引数
     for arg in &func_def.args {
         let info = NodeInfo {
+            namespace: &arg.namespace,
+            name: &arg.ident,
             ty: &arg.ty,
             local_addr: 0,
             size: 0,
@@ -82,6 +86,8 @@ fn analyze_defs_const_decl<'ast>(
 ) -> anyhow::Result<()> {
     // 定数名
     let info = NodeInfo {
+        namespace: &const_decl.namespace,
+        name: &const_decl.ident,
         ty: &const_decl.ty,
         local_addr: 0,
         size: 0,
