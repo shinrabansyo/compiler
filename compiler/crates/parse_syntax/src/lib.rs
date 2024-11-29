@@ -47,6 +47,8 @@ pub enum SBTokens {
     Fn,
     #[token("const", ir_omit)]
     Const,
+    #[token("return", ir_omit)]
+    Return,
     #[token("i32")]
     Type,
 
@@ -83,6 +85,7 @@ pub enum SBRules {
     #[rule("<stmt> ::= <const_decl>")]
     #[rule("<stmt> ::= <block>")]
     #[rule("<stmt> ::= <expr> Semicolon")]
+    #[rule("<stmt> ::= <return> Semicolon")]
     Stmt,
 
     #[rule("<block> ::= BraceL <stmt_list> BraceR")]
@@ -92,6 +95,9 @@ pub enum SBRules {
 
     #[rule("<const_decl> ::= Const Ident Colon Type Assign <expr> Semicolon")]
     ConstDecl,
+
+    #[rule("<return> ::= Return <expr>")]
+    Return,
 
     // 式
     #[rule("<expr> ::= <expr> Plus <value>")]

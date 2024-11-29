@@ -34,14 +34,15 @@ pub fn analyze_addr_top(table: &mut Table, top: &Top) {
 }
 
 pub fn analyze_addr_func_def(table: &mut Table, func_def: &FuncDef) {
-    let func_name = format!("{}.{}", func_def.ident, func_def.namespace);
-
     // 関数内の各変数のアドレス
+    let func_name = format!("{}.{}", func_def.ident, func_def.namespace);
     let mut addr = 0;
-    for (_, info) in table.find_namespace_mut(&func_name).unwrap().iter_mut() {
-        info.local_addr = addr;
-        info.size = 4;
-        addr += 4;
+    if let Some(func_namespace) = table.find_namespace_mut(&func_name) {
+        for (_, info) in func_namespace.iter_mut() {
+            info.local_addr = addr;
+            info.size = 4;
+            addr += 4;
+        }
     }
 
     // 関数のサイズ

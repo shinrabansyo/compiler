@@ -13,7 +13,10 @@ impl Debug for VarAlloc {
 impl Display for VarAlloc {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "subi r2 = r2, {}", self.bytes)?;
-        write!(f, "add r6 = r0, r2")
+        writeln!(f, "add r6 = r0, r2")?;
+        writeln!(f, "subi r2 = r2, 4")?;
+        writeln!(f, "addi r4 = r0, {}",self.bytes)?;
+        writeln!(f, "sw r2[0] = r4")
     }
 }
 

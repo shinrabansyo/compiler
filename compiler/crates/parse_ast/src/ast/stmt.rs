@@ -18,6 +18,10 @@ pub enum Stmt {
     Expr {
         namespace: String,
         expr: Expr,
+    },
+    Return {
+        namespace: String,
+        expr: Expr,
     }
 }
 
@@ -37,6 +41,10 @@ impl From<(String, Tree<'_, SBLangDef>)> for Stmt {
             Tree::Node { tag: SBRules::Expr, .. } => {
                 let expr = Expr::from((namespace.clone(), rhs));
                 Stmt::Expr { namespace, expr }
+            }
+            Tree::Node { tag: SBRules::Return, mut children } => {
+                let expr = Expr::from((namespace.clone(), children.pop_front().unwrap()));
+                Stmt::Return { namespace, expr }
             }
             _ => unreachable!(),
         }

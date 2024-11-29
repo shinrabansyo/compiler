@@ -12,7 +12,7 @@ pub fn lirgen_func_def(lirs: &mut Vec<LIR>, func: &FuncDef, analyze_result: &Ana
     let var_size = analyze_result.find(&func.namespace, &func.ident).size;
     lirs.push(lir!(VarAlloc var_size));
     lirgen_block(lirs, &func.block, analyze_result);
-    lirs.push(lir!(VarFree var_size));
+    lirs.push(lir!(VarFree));
 
     lirs.push(lir!(FLoad));
     lirs.push(lir!(Return));
