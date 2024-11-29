@@ -23,11 +23,13 @@ where
     T: From<(String, Tree<'a, SBLangDef>)>,
 {
     let (_, mut children) = unwrap_node(tree);
-    if children.len() == 1 {
-        vec![T::from((namespace, children.pop_front().unwrap()))]
-    } else {
-        let mut elems = expand_lrec(namespace.clone(),children.pop_front().unwrap());
-        elems.push(T::from((namespace, children.pop_front().unwrap())));
-        elems
+    match children.len() {
+        0 => vec![],
+        1 => vec![T::from((namespace, children.pop_front().unwrap()))],
+        _ => {
+            let mut elems = expand_lrec(namespace.clone(),children.pop_front().unwrap());
+            elems.push(T::from((namespace, children.pop_front().unwrap())));
+            elems
+        }
     }
 }
