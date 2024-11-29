@@ -21,6 +21,7 @@ fn analyze_def_top<'ast>(
         Top::ConstDecl { const_decl, .. } => {
             analyze_defs_const_decl(table, const_decl)?;
         }
+        _ => unreachable!(),
     }
     Ok(())
 }

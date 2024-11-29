@@ -31,6 +31,10 @@ pub enum SBTokens {
     ParenL,
     #[token(r"\)", ir_omit)]
     ParenR,
+    #[token(r"\{", ir_omit)]
+    BraceL,
+    #[token(r"\}", ir_omit)]
+    BraceR,
     #[token(r"=", ir_omit)]
     Assign,
     #[token(":", ir_omit)]
@@ -39,6 +43,8 @@ pub enum SBTokens {
     Semicolon,
 
     // 予約語
+    #[token("fn" ir_omit)]
+    Fn,
     #[token("const", ir_omit)]
     Const,
     #[token("i32")]
@@ -66,11 +72,28 @@ pub enum SBRules {
     Program,
 
     #[rule("<top> ::= <const_decl>")]
+    #[rule("<top> ::= <func_def>")]
     Top,
+
+    // 定義
+    #[rule("<func_def> ::= Fn Ident ParenL ParenR <block>")]
+    FuncDef,
+
+    // 文
+    #[rule("<stmt> ::= <const_decl>")]
+    #[rule("<stmt> ::= <block>")]
+    #[rule("<stmt> ::= <expr> Semicolon")]
+    Stmt,
+
+    #[rule("<block> ::= BraceL <stmt_list> BraceR")]
+    #[rule("<stmt_list> ::= <stmt_list> <stmt>")]
+    #[rule("<stmt_list> ::= <stmt>")]
+    Block,
 
     #[rule("<const_decl> ::= Const Ident Colon Type Assign <expr> Semicolon")]
     ConstDecl,
 
+    // 式
     #[rule("<expr> ::= <expr> Plus <value>")]
     #[rule("<expr> ::= <expr> Minus <value>")]
     #[rule("<expr> ::= <value>")]

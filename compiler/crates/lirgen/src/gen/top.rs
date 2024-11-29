@@ -9,5 +9,6 @@ pub fn lirgen_top(lirs: &mut Vec<LIR>, top: &Top, analyze_result: &AnalyzeResult
         Top::ConstDecl { const_decl, .. } => {
             lirgen_const_decl(lirs, const_decl, analyze_result);
         }
+        _ => unreachable!(),
     }
 }
