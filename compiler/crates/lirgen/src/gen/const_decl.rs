@@ -2,7 +2,7 @@ use sb_compiler_parse_ast::ConstDecl;
 use sb_compiler_analyze::AnalyzeResult;
 use sb_compiler_lirgen_ir::{lir, LIR, Pop, Sw};
 
-use super::{lirgen_expr, TMP_REG, ZERO_REG};
+use super::{lirgen_expr, TMP_REG, VARBASE_REG, ZERO_REG};
 
 pub fn lirgen_const_decl(lirs: &mut Vec<LIR>, const_decl: &ConstDecl, analyze_result: &AnalyzeResult) {
     lirgen_expr(lirs, &const_decl.expr, analyze_result);
@@ -13,9 +13,9 @@ pub fn lirgen_const_decl(lirs: &mut Vec<LIR>, const_decl: &ConstDecl, analyze_re
     let base_reg = if const_decl.namespace == "global" {
         ZERO_REG
     } else {
-        unimplemented!()
+        VARBASE_REG
     };
 
-    lirs.push(lir!(Pop: TMP_REG));
-    lirs.push(lir!(Sw: base_reg, addr, TMP_REG));
+    lirs.push(lir!(Pop TMP_REG));
+    lirs.push(lir!(Sw base_reg, addr, TMP_REG));
 }

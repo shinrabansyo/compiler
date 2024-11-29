@@ -3,7 +3,7 @@ use sb_compiler_analyze::analyze;
 use sb_compiler_lirgen::lirgen;
 use sb_compiler_codegen::codegen;
 
-pub fn compile(input: &str) -> anyhow::Result<Vec<String>> {
+pub fn compile(input: &str) -> anyhow::Result<String> {
     // 1. 構文解析 (&str -> AST)
     let ast = parse(input)?;
 
@@ -13,8 +13,8 @@ pub fn compile(input: &str) -> anyhow::Result<Vec<String>> {
     // 3. LIR生成 (AST + NodeInfo -> LIR)
     let lirs = lirgen(&ast, analyze_result);
 
-    // 4. コード生成 (LIR -> Vec<String>)
-    let asms = codegen(lirs);
+    // 4. コード生成 (LIR -> String)
+    let asm = codegen(lirs);
 
-    Ok(asms)
+    Ok(asm)
 }

@@ -17,3 +17,19 @@ pub(crate) fn unwrap_leaf(leaf: Tree<'_, SBLangDef>) -> (SBTokens, &str) {
         _ => unreachable!(),
     }
 }
+
+pub(crate) fn expand_lrec<'a, T>(namespace: String, tree: Tree<'a, SBLangDef>) -> Vec<T>
+where
+    T: From<(String, Tree<'a, SBLangDef>)>,
+{
+    let (_, mut children) = unwrap_node(tree);
+    match children.len() {
+        0 => vec![],
+        1 => vec![T::from((namespace, children.pop_front().unwrap()))],
+        _ => {
+            let mut elems = expand_lrec(namespace.clone(),children.pop_front().unwrap());
+            elems.push(T::from((namespace, children.pop_front().unwrap())));
+            elems
+        }
+    }
+}

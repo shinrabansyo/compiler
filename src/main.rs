@@ -8,11 +8,10 @@ fn main() -> anyhow::Result<()> {
 
     let path = std::env::args().nth(1).unwrap();
     let input = std::fs::read_to_string(&path)?;
-    let asms = compile(&input)?;
+    let asm = compile(&input)?;
 
     let path = std::env::args().nth(2).unwrap();
-    let output = asms.join("\n");
-    std::fs::write(&path, output)?;
+    std::fs::write(&path, asm)?;
 
     Ok(())
 }

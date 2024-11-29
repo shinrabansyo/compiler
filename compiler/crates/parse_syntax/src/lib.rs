@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 
-use copager::cfl::{CFL, CFLTokens, CFLRules};
+use copager::cfl::{CFLRules, CFLTokens, CFL};
 use copager::template::LALR1;
 use copager::prelude::*;
 
@@ -23,14 +23,22 @@ pub enum SBTokens {
     #[default]
 
     // 記号
+    #[token(r"->", ir_omit)]
+    Allow,
     #[token(r"\+")]
     Plus,
     #[token(r"\-")]
     Minus,
+    #[token(r",", ir_omit)]
+    Comma,
     #[token(r"\(", ir_omit)]
     ParenL,
     #[token(r"\)", ir_omit)]
     ParenR,
+    #[token(r"\{", ir_omit)]
+    BraceL,
+    #[token(r"\}", ir_omit)]
+    BraceR,
     #[token(r"=", ir_omit)]
     Assign,
     #[token(":", ir_omit)]
@@ -39,8 +47,12 @@ pub enum SBTokens {
     Semicolon,
 
     // 予約語
+    #[token("fn" ir_omit)]
+    Fn,
     #[token("const", ir_omit)]
     Const,
+    #[token("return", ir_omit)]
+    Return,
     #[token("i32")]
     Type,
 
@@ -66,18 +78,53 @@ pub enum SBRules {
     Program,
 
     #[rule("<top> ::= <const_decl>")]
+    #[rule("<top> ::= <func_def>")]
     Top,
+
+    // 定義
+    #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR <block>")]
+    #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR Allow Type <block>")]
+    #[rule("<arg_def_list> ::= <arg_def_list> Comma <arg_def>")]
+    #[rule("<arg_def_list> ::= <arg_def>")]
+    #[rule("<arg_def_list> ::= ")]
+    FuncDef,
+
+    #[rule("<arg_def> ::= Ident Colon Type")]
+    ArgumentDef,
+
+    // 文
+    #[rule("<stmt> ::= <const_decl>")]
+    #[rule("<stmt> ::= <block>")]
+    #[rule("<stmt> ::= <expr> Semicolon")]
+    #[rule("<stmt> ::= <return> Semicolon")]
+    Stmt,
+
+    #[rule("<block> ::= BraceL <stmt_list> BraceR")]
+    #[rule("<stmt_list> ::= <stmt_list> <stmt>")]
+    #[rule("<stmt_list> ::= <stmt>")]
+    Block,
 
     #[rule("<const_decl> ::= Const Ident Colon Type Assign <expr> Semicolon")]
     ConstDecl,
 
+    #[rule("<return> ::= Return <expr>")]
+    Return,
+
+    // 式
     #[rule("<expr> ::= <expr> Plus <value>")]
     #[rule("<expr> ::= <expr> Minus <value>")]
     #[rule("<expr> ::= <value>")]
     Expr,
 
-    #[rule("<value> ::= ParenL <expr> ParenR")]
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]
+    #[rule("<value> ::= ParenL <expr> ParenR")]
+    #[rule("<value> ::= <call>")]
     Value,
+
+    #[rule("<call> ::= Ident ParenL <arg_list> ParenR")]
+    #[rule("<arg_list> ::= <arg_list> Comma <value>")]
+    #[rule("<arg_list> ::= <value>")]
+    #[rule("<arg_list> ::= ")]
+    Call,
 }
