@@ -4,7 +4,7 @@ mod top;            pub use top::Top;
 
 // 定義
 mod func_def;       pub use func_def::FuncDef;
-mod argument;       pub use argument::Argument;
+mod argument_def;   pub use argument_def::ArgumentDef;
 
 // 文
 mod stmt;           pub use stmt::Stmt;

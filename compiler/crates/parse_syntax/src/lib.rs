@@ -80,14 +80,14 @@ pub enum SBRules {
     Top,
 
     // 定義
-    #[rule("<func_def> ::= Fn Ident ParenL <arg_list> ParenR <block>")]
-    #[rule("<arg_list> ::= <arg_list> Comma <arg>")]
-    #[rule("<arg_list> ::= <arg>")]
-    #[rule("<arg_list> ::= ")]
+    #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR <block>")]
+    #[rule("<arg_def_list> ::= <arg_def_list> Comma <arg_def>")]
+    #[rule("<arg_def_list> ::= <arg_def>")]
+    #[rule("<arg_def_list> ::= ")]
     FuncDef,
 
-    #[rule("<arg> ::= Ident Colon Type")]
-    Argument,
+    #[rule("<arg_def> ::= Ident Colon Type")]
+    ArgumentDef,
 
     // 文
     #[rule("<stmt> ::= <const_decl>")]

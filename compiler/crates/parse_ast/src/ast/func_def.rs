@@ -3,13 +3,13 @@ use copager::ir::Tree;
 use sb_compiler_parse_syntax::SBLangDef;
 
 use crate::utils::{unwrap_node, unwrap_leaf, expand_lrec};
-use super::{Block, Argument};
+use super::{Block, ArgumentDef};
 
 #[derive(Debug)]
 pub struct FuncDef {
     pub namespace: String,
     pub ident: String,
-    pub args: Vec<Argument>,
+    pub args: Vec<ArgumentDef>,
     pub block: Block,
 }
 
@@ -21,7 +21,7 @@ impl From<(String, Tree<'_, SBLangDef>)> for FuncDef {
         let ident = ident.to_string();
         let func_namespace = format!("{}.{}", ident, namespace);
 
-        let args = expand_lrec::<Argument>(
+        let args = expand_lrec::<ArgumentDef>(
             func_namespace.clone(),
             children.pop_front().unwrap()
         );
