@@ -22,6 +22,24 @@ pub struct SBLangDef (
 pub enum SBTokens {
     #[default]
 
+    // 記号
+    #[token(r"->", ir_omit)]
+    Allow,
+    #[token(r",", ir_omit)]
+    Comma,
+    #[token(r"\(", ir_omit)]
+    ParenL,
+    #[token(r"\)", ir_omit)]
+    ParenR,
+    #[token(r"\{", ir_omit)]
+    BraceL,
+    #[token(r"\}", ir_omit)]
+    BraceR,
+    #[token(":", ir_omit)]
+    Colon,
+    #[token(r";", ir_omit)]
+    Semicolon,
+
     // 演算子
     #[token(r"==")]
     Eq,
@@ -67,24 +85,6 @@ pub enum SBTokens {
     Plus,
     #[token(r"\-")]
     Minus,
-
-    // 記号
-    #[token(r"->", ir_omit)]
-    Allow,
-    #[token(r",", ir_omit)]
-    Comma,
-    #[token(r"\(", ir_omit)]
-    ParenL,
-    #[token(r"\)", ir_omit)]
-    ParenR,
-    #[token(r"\{", ir_omit)]
-    BraceL,
-    #[token(r"\}", ir_omit)]
-    BraceR,
-    #[token(":", ir_omit)]
-    Colon,
-    #[token(r";", ir_omit)]
-    Semicolon,
 
     // 予約語
     #[token("fn" ir_omit)]
