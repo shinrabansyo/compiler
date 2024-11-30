@@ -22,9 +22,9 @@ pub struct SBLangDef (
 pub enum SBTokens {
     #[default]
 
-    // 記号
-    #[token(r"->", ir_omit)]
-    Allow,
+    // 演算子
+    #[token(r"=", ir_omit)]
+    Assign,
     #[token(r"lor")]
     LogicOr,
     #[token(r"land")]
@@ -57,6 +57,10 @@ pub enum SBTokens {
     Plus,
     #[token(r"\-")]
     Minus,
+
+    // 記号
+    #[token(r"->", ir_omit)]
+    Allow,
     #[token(r",", ir_omit)]
     Comma,
     #[token(r"\(", ir_omit)]
@@ -67,8 +71,6 @@ pub enum SBTokens {
     BraceL,
     #[token(r"\}", ir_omit)]
     BraceR,
-    #[token(r"=", ir_omit)]
-    Assign,
     #[token(":", ir_omit)]
     Colon,
     #[token(r";", ir_omit)]
