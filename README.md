@@ -3,6 +3,7 @@
 ## Examples
 
 - [examples/helloworld](examples/helloworld)
+- [examples/fizzbuzz](examples/fizzbuzz)
 - [examples/expr](examples/expr)
 
 ```
