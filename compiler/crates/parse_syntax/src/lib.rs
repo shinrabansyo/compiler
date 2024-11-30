@@ -103,7 +103,8 @@ pub enum SBTokens {
     Num,
 
     // 制御用
-    #[token(r"[ |\t|\n]+", trivia)]
+    #[token(r"^( |\t|\n|(//(.*)\n))*", pre_trivia)]
+    #[token(r"^( |\t|)*(//(.*)\n)", post_trivia)]
     Trivia,
 }
 
