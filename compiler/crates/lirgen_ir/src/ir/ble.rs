@@ -3,7 +3,7 @@ use std::fmt::{Debug, Display};
 pub struct Ble {
     pub lhs_reg: u8,
     pub rhs_reg: u8,
-    pub diff: u32,
+    pub diff: i32,
 }
 
 impl Debug for Ble {
@@ -19,7 +19,7 @@ impl Display for Ble {
 }
 
 impl Ble {
-    pub fn new(lhs_reg: u8, rhs_reg: u8, diff: u32) -> Self {
+    pub fn new(lhs_reg: u8, rhs_reg: u8, diff: i32) -> Self {
         Ble { lhs_reg, rhs_reg, diff }
     }
 }

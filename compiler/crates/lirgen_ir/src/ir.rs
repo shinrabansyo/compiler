@@ -11,6 +11,7 @@ mod beq;        pub use beq::Beq;
 mod bne;        pub use bne::Bne;
 mod blt;        pub use blt::Blt;
 mod ble;        pub use ble::Ble;
+mod jmp;        pub use jmp::Jmp;
 mod call;       pub use call::Call;
 mod push;       pub use push::Push;
 mod pop;        pub use pop::Pop;
@@ -50,6 +51,7 @@ pub enum LIR {
     Bne(Bne),
     Blt(Blt),
     Ble(Ble),
+    Jmp(Jmp),
     Call(Call),
 
     // スタック操作
@@ -85,6 +87,7 @@ impl Display for LIR {
             LIR::Bne(bne) => write!(f, "{}", bne),
             LIR::Blt(blt) => write!(f, "{}", blt),
             LIR::Ble(ble) => write!(f, "{}", ble),
+            LIR::Jmp(jmp) => write!(f, "{}", jmp),
             LIR::Call(jmp) => write!(f, "{}", jmp),
             LIR::Push(push) => write!(f, "{}", push),
             LIR::Pop(pop) => write!(f, "{}", pop),

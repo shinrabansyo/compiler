@@ -3,7 +3,7 @@ use copager::ir::Tree;
 use sb_compiler_parse_syntax::{SBLangDef, SBRules};
 
 use crate::utils::unwrap_node;
-use super::{VarDecl, Block, Expr};
+use super::{VarDecl, Block, If, While, For, Expr};
 
 #[derive(Debug)]
 pub enum Stmt {
@@ -22,7 +22,19 @@ pub enum Stmt {
     Return {
         namespace: String,
         expr: Expr,
-    }
+    },
+    If {
+        namespace: String,
+        r#if: If,
+    },
+    While {
+        namespace: String,
+        r#while: While,
+    },
+    For {
+        namespace: String,
+        r#for: For,
+    },
 }
 
 impl From<(String, Tree<'_, SBLangDef>)> for Stmt {
@@ -45,6 +57,18 @@ impl From<(String, Tree<'_, SBLangDef>)> for Stmt {
             Tree::Node { tag: SBRules::Return, mut children } => {
                 let expr = Expr::from((namespace.clone(), children.pop_front().unwrap()));
                 Stmt::Return { namespace, expr }
+            }
+            Tree::Node { tag: SBRules::If, .. } => {
+                let r#if = If::from((namespace.clone(), rhs));
+                Stmt::If { namespace, r#if }
+            }
+            Tree::Node { tag: SBRules::While, .. } => {
+                let r#while = While::from((namespace.clone(), rhs));
+                Stmt::While { namespace, r#while }
+            }
+            Tree::Node { tag: SBRules::For, .. } => {
+                let r#for = For::from((namespace.clone(), rhs));
+                Stmt::For { namespace, r#for }
             }
             _ => unreachable!(),
         }
