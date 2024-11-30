@@ -89,8 +89,8 @@ pub enum SBTokens {
     // 予約語
     #[token("fn" ir_omit)]
     Fn,
-    #[token("const", ir_omit)]
-    Const,
+    #[token("var", ir_omit)]
+    Var,
     #[token("return", ir_omit)]
     Return,
     #[token("i32")]
@@ -117,7 +117,7 @@ pub enum SBRules {
     #[rule("<program> ::= <top>")]
     Program,
 
-    #[rule("<top> ::= <const_decl>")]
+    #[rule("<top> ::= <var_decl>")]
     #[rule("<top> ::= <func_def>")]
     Top,
 
@@ -133,7 +133,7 @@ pub enum SBRules {
     ArgumentDef,
 
     // 文
-    #[rule("<stmt> ::= <const_decl>")]
+    #[rule("<stmt> ::= <var_decl>")]
     #[rule("<stmt> ::= <block>")]
     #[rule("<stmt> ::= <expr> Semicolon")]
     #[rule("<stmt> ::= <return> Semicolon")]
@@ -144,8 +144,8 @@ pub enum SBRules {
     #[rule("<stmt_list> ::= <stmt>")]
     Block,
 
-    #[rule("<const_decl> ::= Const Ident Colon Type Assign <expr> Semicolon")]
-    ConstDecl,
+    #[rule("<var_decl> ::= Var Ident Colon Type Assign <expr> Semicolon")]
+    VarDecl,
 
     #[rule("<return> ::= Return <expr>")]
     Return,

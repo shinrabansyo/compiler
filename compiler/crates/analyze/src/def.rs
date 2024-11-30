@@ -1,4 +1,4 @@
-use sb_compiler_parse_ast::{Program, Top, FuncDef, Stmt, ConstDecl};
+use sb_compiler_parse_ast::{Program, Top, FuncDef, Stmt, VarDecl};
 
 use crate::utils::LayeredTable;
 use crate::NodeInfo;
@@ -21,8 +21,8 @@ fn analyze_def_top<'ast>(
         Top::FuncDef { func_def, .. } => {
             analyze_defs_func_def(table, func_def)?;
         }
-        Top::ConstDecl { const_decl, .. } => {
-            analyze_defs_const_decl(table, const_decl)?;
+        Top::VarDecl { var_decl, .. } => {
+            analyze_defs_var_decl(table, var_decl)?;
         }
     }
     Ok(())
@@ -67,8 +67,8 @@ fn analyze_defs_stmt<'ast>(
     stmt: &'ast Stmt,
 ) -> anyhow::Result<()> {
     match stmt {
-        Stmt::ConstDecl { const_decl, .. } => {
-            analyze_defs_const_decl(table, const_decl)
+        Stmt::VarDecl { var_decl, .. } => {
+            analyze_defs_var_decl(table, var_decl)
         }
         Stmt::Block { block, .. } => {
             for stmt in &block.stmts {
@@ -80,17 +80,17 @@ fn analyze_defs_stmt<'ast>(
     }
 }
 
-fn analyze_defs_const_decl<'ast>(
+fn analyze_defs_var_decl<'ast>(
     table: &mut Table<'ast>,
-    const_decl: &'ast ConstDecl,
+    var_decl: &'ast VarDecl,
 ) -> anyhow::Result<()> {
     // 定数名
     let info = NodeInfo {
-        namespace: &const_decl.namespace,
-        name: &const_decl.ident,
-        ty: &const_decl.ty,
+        namespace: &var_decl.namespace,
+        name: &var_decl.ident,
+        ty: &var_decl.ty,
         local_addr: 0,
         size: 0,
     };
-    table.put(&const_decl.namespace, &const_decl.ident, info)
+    table.put(&var_decl.namespace, &var_decl.ident, info)
 }

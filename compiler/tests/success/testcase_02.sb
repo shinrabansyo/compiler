@@ -1,5 +1,5 @@
 fn main() {
-    const value: i32 = (10 + 20) - 30;
+    var value: i32 = (10 + 20) - 30;
     return assert_eq(value, 0);
 }
 

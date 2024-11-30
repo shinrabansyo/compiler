@@ -3,7 +3,7 @@ mod top;        pub use top::lirgen_top;
 mod func_def;   pub use func_def::lirgen_func_def;
 mod stmt;       pub use stmt::lirgen_stmt;
 mod block;      pub use block::lirgen_block;
-mod const_decl; pub use const_decl::lirgen_const_decl;
+mod var_decl;   pub use var_decl::lirgen_var_decl;
 mod expr;       pub use expr::lirgen_expr;
 mod assign;     pub use assign::lirgen_assign;
 mod logic_or;   pub use logic_or::lirgen_logic_or;

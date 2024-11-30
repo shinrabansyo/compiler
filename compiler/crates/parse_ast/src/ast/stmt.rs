@@ -3,13 +3,13 @@ use copager::ir::Tree;
 use sb_compiler_parse_syntax::{SBLangDef, SBRules};
 
 use crate::utils::unwrap_node;
-use super::{ConstDecl, Block, Expr};
+use super::{VarDecl, Block, Expr};
 
 #[derive(Debug)]
 pub enum Stmt {
-    ConstDecl {
+    VarDecl {
         namespace: String,
-        const_decl: ConstDecl,
+        var_decl: VarDecl,
     },
     Block {
         namespace: String,
@@ -30,9 +30,9 @@ impl From<(String, Tree<'_, SBLangDef>)> for Stmt {
         let (_, mut children) = unwrap_node(tree);
         let rhs = children.pop_front().unwrap();
         match rhs {
-            Tree::Node { tag: SBRules::ConstDecl, .. } => {
-                let const_decl = ConstDecl::from((namespace.clone(), rhs));
-                Stmt::ConstDecl { namespace, const_decl }
+            Tree::Node { tag: SBRules::VarDecl, .. } => {
+                let var_decl = VarDecl::from((namespace.clone(), rhs));
+                Stmt::VarDecl { namespace, var_decl }
             }
             Tree::Node { tag: SBRules::Block, .. } => {
                 let block = Block::from((namespace.clone(), rhs));

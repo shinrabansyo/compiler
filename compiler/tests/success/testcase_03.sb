@@ -1,9 +1,9 @@
 
 fn main() {
-    const value_1: i32 = 10;
-    const value_2: i32 = 20;
-    const value_3: i32 = 30;
-    const sum: i32 = value_1 + value_2 + value_3;
+    var value_1: i32 = 10;
+    var value_2: i32 = 20;
+    var value_3: i32 = 30;
+    var sum: i32 = value_1 + value_2 + value_3;
     return assert_eq(sum, 60);
 }
 

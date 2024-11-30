@@ -9,7 +9,7 @@ mod argument_def;   pub use argument_def::ArgumentDef;
 // 文
 mod stmt;           pub use stmt::Stmt;
 mod block;          pub use block::Block;
-mod const_decl;     pub use const_decl::ConstDecl;
+mod var_decl;       pub use var_decl::VarDecl;
 
 // 式
 mod expr;           pub use expr::Expr;
