@@ -1,25 +1,40 @@
-// for 文のテスト
+// 代入のテスト
 
 fn main() {
     if (test_01() != 1) { return 1; }
     if (test_02() != 1) { return 2; }
+    if (test_03() != 1) { return 3; }
+    if (test_04() != 1) { return 4; }
+    if (test_05() != 1) { return 5; }
     return 0;
 }
 
 fn test_01() {
-    var idx: i32 = 0;
-    var sum: i32 = 0;
-    for (idx = 0; idx < 10; idx += 1) {
-        sum += 1;
-    }
-    return sum == 10;
+    var value: i32 = 10;
+    value = 20;
+    return value == 20;
 }
 
 fn test_02() {
-    var idx: i32 = 0;
-    var sum: i32 = 0;
-    for (idx = 1; idx <= 10; idx += 1) {
-        sum += idx;
-    }
-    return sum == 55;
+    var value: i32 = 10;
+    value += 20;
+    return value == 30;
+}
+
+fn test_03() {
+    var value: i32 = 10;
+    value -= 20;
+    return value == (0-10);
+}
+
+fn test_04() {
+    var value: i32 = 1;
+    value <<= 4;
+    return value == 16;
+}
+
+fn test_05() {
+    var value: i32 = 16;
+    value >>= 4;
+    return value == 1;
 }
