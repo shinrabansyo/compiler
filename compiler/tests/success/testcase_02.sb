@@ -1,8 +1,53 @@
+// 論理式のテスト
+
 fn main() {
-    var value: i32 = (10 + 20) - 30;
-    return assert_eq(value, 0);
+    if (test_01() != 1) { return 1; }
+    if (test_02() != 1) { return 2; }
+    if (test_03() != 1) { return 3; }
+    if (test_04() != 1) { return 4; }
+    if (test_05() != 1) { return 5; }
+    if (test_06() != 1) { return 6; }
+    if (test_07() != 1) { return 7; }
+    if (test_08() != 1) { return 8; }
+    return 0;
 }
 
-fn assert_eq(result: i32, expect: i32) {
-    return result - expect;
+fn test_01() {
+    return 10 == 10;
+}
+
+fn test_02() {
+    return 10 >= 10;
+}
+
+fn test_03() {
+    if (10 >= 11) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+fn test_04() {
+    return 10 > 5;
+}
+
+fn test_05() {
+    if (10 > 10) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+fn test_06() {
+    return 1 lor 0;
+}
+
+fn test_07() {
+    return 1 land 1;
+}
+
+fn test_08() {
+    return ((1 lor 0) land (0 lor 1)) land 1;
 }

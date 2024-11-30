@@ -1,12 +1,40 @@
+// 代入のテスト
 
 fn main() {
-    var value_1: i32 = 10;
-    var value_2: i32 = 20;
-    var value_3: i32 = 30;
-    var sum: i32 = value_1 + value_2 + value_3;
-    return assert_eq(sum, 60);
+    if (test_01() != 1) { return 1; }
+    if (test_02() != 1) { return 2; }
+    if (test_03() != 1) { return 3; }
+    if (test_04() != 1) { return 4; }
+    if (test_05() != 1) { return 5; }
+    return 0;
 }
 
-fn assert_eq(result: i32, expect: i32) {
-    return result - expect;
+fn test_01() {
+    var value: i32 = 10;
+    value = 20;
+    return value == 20;
+}
+
+fn test_02() {
+    var value: i32 = 10;
+    value += 20;
+    return value == 30;
+}
+
+fn test_03() {
+    var value: i32 = 10;
+    value -= 20;
+    return value == (0-10);
+}
+
+fn test_04() {
+    var value: i32 = 1;
+    value <<= 4;
+    return value == 16;
+}
+
+fn test_05() {
+    var value: i32 = 16;
+    value >>= 4;
+    return value == 1;
 }

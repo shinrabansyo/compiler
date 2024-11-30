@@ -12,5 +12,5 @@ sb_compiler_lirgen = { path = "./crates/lirgen" }
 sb_compiler_codegen = { path = "./crates/codegen" }
 
 [dev-dependencies]
-sb_asm = { git = "https://github.com/shinrabansyo/assembler.git", rev = "c8a40d83604608857eaf98fccfe18aca22261739" }
+sb_asm = { git = "https://github.com/shinrabansyo/assembler.git", rev = "16955a950b30a2c879f4acd7dff661db6d2bf741" }
 sb_emu = { git = "https://github.com/shinrabansyo/debugger.git", rev = "42a188476d8acae250a77a39bc5db409c5a60a56" }
