@@ -1,5 +1,5 @@
 fn main() {
-    const value: i32 = 10;
+    var value: i32 = 10;
     return assert_eq(value, 10);
 }
 
