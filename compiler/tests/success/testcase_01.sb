@@ -1,8 +1,35 @@
+// 変数，式のテスト
+
 fn main() {
-    var value: i32 = 10;
-    return assert_eq(value, 10);
+    if (test_01() != 1) { return 1; }
+    if (test_02() != 1) { return 2; }
+    if (test_03() != 1) { return 3; }
+    if (test_04() != 1) { return 4; }
+    return 0;
 }
 
-fn assert_eq(result: i32, expect: i32) {
-    return result - expect;
+fn test_01() {
+    var value: i32 = 10;
+    return value == 10;
+}
+
+fn test_02() {
+    var value: i32 = (10 + 20) - 30;
+    return value == 0;
+}
+
+fn test_03() {
+    var value_1: i32 = 10;
+    var value_2: i32 = 20;
+    var value_3: i32 = 30;
+    var sum: i32 = value_1 + value_2 + value_3;
+    return sum == 60;
+}
+
+fn test_04() {
+    var value_1: i32 = 10;
+    var value_2: i32 = 20;
+    var sum_1: i32 = value_1 + value_2;
+    var sum_2: i32 = 10 + sum_1;
+    return sum_2 == 40;
 }
