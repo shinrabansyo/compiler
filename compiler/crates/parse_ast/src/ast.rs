@@ -10,6 +10,8 @@ mod argument_def;   pub use argument_def::ArgumentDef;
 mod stmt;           pub use stmt::Stmt;
 mod block;          pub use block::Block;
 mod var_decl;       pub use var_decl::VarDecl;
+mod r#while;        pub use r#while::While;
+
 
 // 式
 mod expr;           pub use expr::Expr;

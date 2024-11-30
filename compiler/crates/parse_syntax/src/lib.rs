@@ -93,6 +93,8 @@ pub enum SBTokens {
     Var,
     #[token("return", ir_omit)]
     Return,
+    #[token("while", ir_omit)]
+    While,
     #[token("i32")]
     Type,
 
@@ -138,6 +140,7 @@ pub enum SBRules {
     #[rule("<stmt> ::= <block>")]
     #[rule("<stmt> ::= <expr> Semicolon")]
     #[rule("<stmt> ::= <return> Semicolon")]
+    #[rule("<stmt> ::= <while>")]
     Stmt,
 
     #[rule("<block> ::= BraceL <stmt_list> BraceR")]
@@ -150,6 +153,9 @@ pub enum SBRules {
 
     #[rule("<return> ::= Return <expr>")]
     Return,
+
+    #[rule("<while> ::= While ParenL <expr> ParenR <stmt>")]
+    While,
 
     // 式
     #[rule("<expr> ::= <assign>")]

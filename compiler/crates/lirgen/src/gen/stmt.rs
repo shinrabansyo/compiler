@@ -4,7 +4,7 @@ use sb_compiler_lirgen_ir::{lir, LIR, Li, Add, Pop, FLoad, VarFree, Return};
 
 use super::{TMP_REG, RET_REG};
 
-use super::{lirgen_var_decl, lirgen_block, lirgen_expr};
+use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_while};
 
 pub fn lirgen_stmt(lirs: &mut Vec<LIR>, stmt: &Stmt, analyze_result: &AnalyzeResult) {
     match stmt {
@@ -26,6 +26,9 @@ pub fn lirgen_stmt(lirs: &mut Vec<LIR>, stmt: &Stmt, analyze_result: &AnalyzeRes
             lirs.push(lir!(VarFree));
             lirs.push(lir!(FLoad));
             lirs.push(lir!(Return));
+        }
+        Stmt::While { r#while, .. } => {
+            lirgen_while(lirs, r#while, analyze_result);
         }
     }
 }
