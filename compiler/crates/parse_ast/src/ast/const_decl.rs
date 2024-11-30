@@ -23,6 +23,8 @@ impl From<(String, Tree<'_, SBLangDef>)> for ConstDecl  {
         let (_, ty) = unwrap_leaf(children.pop_front().unwrap());
         let ty = ty.to_string();
 
+        let _assign = children.pop_front().unwrap();
+
         let expr = Expr::from((namespace.clone(), children.pop_front().unwrap()));
 
         ConstDecl { namespace, ident, ty, expr }

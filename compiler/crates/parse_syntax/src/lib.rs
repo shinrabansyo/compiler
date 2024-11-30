@@ -22,13 +22,55 @@ pub struct SBLangDef (
 pub enum SBTokens {
     #[default]
 
-    // 記号
-    #[token(r"->", ir_omit)]
-    Allow,
+    // 演算子
+    #[token(r"==")]
+    Eq,
+    #[token(r"!=")]
+    Neq,
+    #[token(r"=")]
+    Assign,
+    #[token(r"\+=")]
+    PlusAssign,
+    #[token(r"\-=")]
+    MinusAssign,
+    #[token(r"<<=")]
+    ShiftLAssign,
+    #[token(r">>>=")]
+    ShiftRaAssign,
+    #[token(r">>=")]
+    ShiftRAssign,
+    #[token(r"lor")]
+    LogicOr,
+    #[token(r"land")]
+    LogicAnd,
+    #[token(r"bor")]
+    BitOr,
+    #[token(r"bxor")]
+    BitXor,
+    #[token(r"band")]
+    BitAnd,
+    #[token(r"<<")]
+    ShiftL,
+    #[token(r">>>")]
+    ShiftRa,
+    #[token(r">>")]
+    ShiftR,
+    #[token(r"<=")]
+    Lte,
+    #[token(r"<")]
+    Lt,
+    #[token(r">=")]
+    Gte,
+    #[token(r">")]
+    Gt,
     #[token(r"\+")]
     Plus,
     #[token(r"\-")]
     Minus,
+
+    // 記号
+    #[token(r"->", ir_omit)]
+    Allow,
     #[token(r",", ir_omit)]
     Comma,
     #[token(r"\(", ir_omit)]
@@ -39,8 +81,6 @@ pub enum SBTokens {
     BraceL,
     #[token(r"\}", ir_omit)]
     BraceR,
-    #[token(r"=", ir_omit)]
-    Assign,
     #[token(":", ir_omit)]
     Colon,
     #[token(r";", ir_omit)]
@@ -111,10 +151,57 @@ pub enum SBRules {
     Return,
 
     // 式
-    #[rule("<expr> ::= <expr> Plus <value>")]
-    #[rule("<expr> ::= <expr> Minus <value>")]
-    #[rule("<expr> ::= <value>")]
+    #[rule("<expr> ::= <assign>")]
     Expr,
+
+    #[rule("<assign> ::= Ident Assign <assign>")]
+    #[rule("<assign> ::= Ident PlusAssign <assign>")]
+    #[rule("<assign> ::= Ident MinusAssign <assign>")]
+    #[rule("<assign> ::= Ident ShiftLAssign <assign>")]
+    #[rule("<assign> ::= Ident ShiftRaAssign <assign>")]
+    #[rule("<assign> ::= Ident ShiftRAssign <assign>")]
+    #[rule("<assign> ::= <logic_or>")]
+    Assign,
+
+    #[rule("<logic_or> ::= <logic_or> LogicOr <logic_and>")]
+    #[rule("<logic_or> ::= <logic_and>")]
+    LogicOr,
+
+    #[rule("<logic_and> ::= <logic_and> LogicAnd <bit_or>")]
+    #[rule("<logic_and> ::= <bit_or>")]
+    LogicAnd,
+
+    #[rule("<bit_or> ::= <bit_or> BitOr <bit_xor>")]
+    #[rule("<bit_or> ::= <bit_xor>")]
+    BitOr,
+
+    #[rule("<bit_xor> ::= <bit_xor> BitXor <bit_and>")]
+    #[rule("<bit_xor> ::= <bit_and>")]
+    BitXor,
+
+    #[rule("<bit_and> ::= <bit_and> BitAnd <cond>")]
+    #[rule("<bit_and> ::= <cond>")]
+    BitAnd,
+
+    #[rule("<cond> ::= <cond> Eq <bit_shift>")]
+    #[rule("<cond> ::= <cond> Neq <bit_shift>")]
+    #[rule("<cond> ::= <cond> Lt <bit_shift>")]
+    #[rule("<cond> ::= <cond> Lte <bit_shift>")]
+    #[rule("<cond> ::= <cond> Gt <bit_shift>")]
+    #[rule("<cond> ::= <cond> Gte <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift>")]
+    Cond,
+
+    #[rule("<bit_shift> ::= <bit_shift> ShiftL <add>")]
+    #[rule("<bit_shift> ::= <bit_shift> ShiftR <add>")]
+    #[rule("<bit_shift> ::= <bit_shift> ShiftRa <add>")]
+    #[rule("<bit_shift> ::= <add>")]
+    BitShift,
+
+    #[rule("<add> ::= <add> Plus <value>")]
+    #[rule("<add> ::= <add> Minus <value>")]
+    #[rule("<add> ::= <value>")]
+    Add,
 
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]
