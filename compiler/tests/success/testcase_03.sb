@@ -1,0 +1,25 @@
+// for 文のテスト
+
+fn main() {
+    if (test_01() != 1) { return 1; }
+    if (test_02() != 1) { return 2; }
+    return 0;
+}
+
+fn test_01() {
+    var idx: i32 = 0;
+    var sum: i32 = 0;
+    for (idx = 0; idx < 10; idx += 1) {
+        sum += 1;
+    }
+    return sum == 10;
+}
+
+fn test_02() {
+    var idx: i32 = 0;
+    var sum: i32 = 0;
+    for (idx = 1; idx <= 10; idx += 1) {
+        sum += idx;
+    }
+    return sum == 55;
+}
