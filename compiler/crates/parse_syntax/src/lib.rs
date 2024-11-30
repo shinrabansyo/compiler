@@ -25,6 +25,18 @@ pub enum SBTokens {
     // 記号
     #[token(r"->", ir_omit)]
     Allow,
+    #[token(r"==")]
+    Eq,
+    #[token(r"!=")]
+    Neq,
+    #[token(r"<=")]
+    Lte,
+    #[token(r"<")]
+    Lt,
+    #[token(r">=")]
+    Gte,
+    #[token(r">")]
+    Gt,
     #[token(r"\+")]
     Plus,
     #[token(r"\-")]
@@ -111,10 +123,22 @@ pub enum SBRules {
     Return,
 
     // 式
-    #[rule("<expr> ::= <expr> Plus <value>")]
-    #[rule("<expr> ::= <expr> Minus <value>")]
-    #[rule("<expr> ::= <value>")]
+    #[rule("<expr> ::= <logic>")]
     Expr,
+
+    #[rule("<logic> ::= <logic> Eq <add>")]
+    #[rule("<logic> ::= <logic> Neq <add>")]
+    #[rule("<logic> ::= <logic> Lt <add>")]
+    #[rule("<logic> ::= <logic> Lte <add>")]
+    #[rule("<logic> ::= <logic> Gt <add>")]
+    #[rule("<logic> ::= <logic> Gte <add>")]
+    #[rule("<logic> ::= <add>")]
+    Logic,
+
+    #[rule("<add> ::= <add> Plus <value>")]
+    #[rule("<add> ::= <add> Minus <value>")]
+    #[rule("<add> ::= <value>")]
+    Add,
 
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]

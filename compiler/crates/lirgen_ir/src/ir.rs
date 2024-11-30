@@ -1,6 +1,10 @@
 mod li;         pub use li::Li;
 mod add;        pub use add::Add;
 mod sub;        pub use sub::Sub;
+mod beq;        pub use beq::Beq;
+mod bne;        pub use bne::Bne;
+mod blt;        pub use blt::Blt;
+mod ble;        pub use ble::Ble;
 mod call;       pub use call::Call;
 mod push;       pub use push::Push;
 mod pop;        pub use pop::Pop;
@@ -30,6 +34,10 @@ pub enum LIR {
     Sub(Sub),
 
     // 分岐
+    Beq(Beq),
+    Bne(Bne),
+    Blt(Blt),
+    Ble(Ble),
     Call(Call),
 
     // スタック操作
@@ -55,6 +63,10 @@ impl Display for LIR {
             LIR::Li(li) => write!(f, "{}", li),
             LIR::Add(add) => write!(f, "{}", add),
             LIR::Sub(sub) => write!(f, "{}", sub),
+            LIR::Beq(beq) => write!(f, "{}", beq),
+            LIR::Bne(bne) => write!(f, "{}", bne),
+            LIR::Blt(blt) => write!(f, "{}", blt),
+            LIR::Ble(ble) => write!(f, "{}", ble),
             LIR::Call(jmp) => write!(f, "{}", jmp),
             LIR::Push(push) => write!(f, "{}", push),
             LIR::Pop(pop) => write!(f, "{}", pop),
