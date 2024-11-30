@@ -23,6 +23,8 @@ mod fload;      pub use fload::FLoad;
 mod varalloc;   pub use varalloc::VarAlloc;
 mod varfree;    pub use varfree::VarFree;
 mod r#return;   pub use r#return::Return;
+mod r#in;       pub use r#in::In;
+mod out;        pub use out::Out;
 
 use std::fmt::Display;
 
@@ -69,6 +71,10 @@ pub enum LIR {
     VarAlloc(VarAlloc),
     VarFree(VarFree),
     Return(Return),
+
+    // デバイス操作
+    In(In),
+    Out(Out),
 }
 
 impl Display for LIR {
@@ -99,6 +105,8 @@ impl Display for LIR {
             LIR::VarAlloc(varalloc) => write!(f, "{}", varalloc),
             LIR::VarFree(varfree) => write!(f, "{}", varfree),
             LIR::Return(r#return) => write!(f, "{}", r#return),
+            LIR::In(r#in) => write!(f, "{}", r#in),
+            LIR::Out(r#out) => write!(f, "{}", r#out),
         }
     }
 }

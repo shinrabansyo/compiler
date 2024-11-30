@@ -101,6 +101,10 @@ pub enum SBTokens {
     While,
     #[token("for", ir_omit)]
     For,
+    #[token("in")]
+    In,
+    #[token("out")]
+    Out,
     #[token("i32")]
     Type,
 
@@ -154,6 +158,7 @@ pub enum SBRules {
     #[rule("<stmt> ::= <if>")]
     #[rule("<stmt> ::= <while>")]
     #[rule("<stmt> ::= <for>")]
+    #[rule("<stmt> ::= <dev_io> Semicolon")]
     Stmt,
 
     #[rule("<var_decl> ::= Var Ident Colon Type Assign <expr> Semicolon")]
@@ -171,6 +176,10 @@ pub enum SBRules {
 
     #[rule("<for> ::= For ParenL <expr> Semicolon <expr> Semicolon <expr> ParenR <block>")]
     For,
+
+    #[rule("<dev_io> ::= In ParenL <expr> ParenR")]
+    #[rule("<dev_io> ::= Out ParenL <expr> Comma <expr> ParenR")]
+    DevIO,
 
     // 式
     #[rule("<expr> ::= <assign>")]

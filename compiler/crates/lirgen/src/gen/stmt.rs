@@ -3,7 +3,7 @@ use sb_compiler_analyze::AnalyzeResult;
 use sb_compiler_lirgen_ir::{lir, LIR, Li, Add, Pop, FLoad, VarFree, Return};
 
 use super::{RET_REG, TMP_REG};
-use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_if, lirgen_while, lirgen_for};
+use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_if, lirgen_while, lirgen_for, lirgen_dev_io};
 
 pub fn lirgen_stmt(lirs: &mut Vec<LIR>, stmt: &Stmt, analyze_result: &AnalyzeResult) {
     match stmt {
@@ -34,6 +34,9 @@ pub fn lirgen_stmt(lirs: &mut Vec<LIR>, stmt: &Stmt, analyze_result: &AnalyzeRes
         }
         Stmt::For { r#for, .. } => {
             lirgen_for(lirs, r#for, analyze_result);
+        }
+        Stmt::DevIO { dev_io, .. } => {
+            lirgen_dev_io(lirs, dev_io, analyze_result);
         }
     }
 }
