@@ -3,7 +3,7 @@ use copager::ir::Tree;
 use sb_compiler_parse_syntax::{SBLangDef, SBRules};
 
 use crate::utils::unwrap_node;
-use super::{VarDecl, Block, While, For,Expr};
+use super::{VarDecl, Block, If, While, For, Expr};
 
 #[derive(Debug)]
 pub enum Stmt {
@@ -23,6 +23,10 @@ pub enum Stmt {
         namespace: String,
         expr: Expr,
     },
+    If {
+        namespace: String,
+        r#if: If,
+    },
     While {
         namespace: String,
         r#while: While,
@@ -30,7 +34,7 @@ pub enum Stmt {
     For {
         namespace: String,
         r#for: For,
-    }
+    },
 }
 
 impl From<(String, Tree<'_, SBLangDef>)> for Stmt {
@@ -53,6 +57,10 @@ impl From<(String, Tree<'_, SBLangDef>)> for Stmt {
             Tree::Node { tag: SBRules::Return, mut children } => {
                 let expr = Expr::from((namespace.clone(), children.pop_front().unwrap()));
                 Stmt::Return { namespace, expr }
+            }
+            Tree::Node { tag: SBRules::If, .. } => {
+                let r#if = If::from((namespace.clone(), rhs));
+                Stmt::If { namespace, r#if }
             }
             Tree::Node { tag: SBRules::While, .. } => {
                 let r#while = While::from((namespace.clone(), rhs));

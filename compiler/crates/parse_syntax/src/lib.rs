@@ -93,6 +93,8 @@ pub enum SBTokens {
     Var,
     #[token("return", ir_omit)]
     Return,
+    #[token("if", ir_omit)]
+    If,
     #[token("while", ir_omit)]
     While,
     #[token("for", ir_omit)]
@@ -142,6 +144,7 @@ pub enum SBRules {
     #[rule("<stmt> ::= <block>")]
     #[rule("<stmt> ::= <expr> Semicolon")]
     #[rule("<stmt> ::= <return> Semicolon")]
+    #[rule("<stmt> ::= <if>")]
     #[rule("<stmt> ::= <while>")]
     #[rule("<stmt> ::= <for>")]
     Stmt,
@@ -156,6 +159,9 @@ pub enum SBRules {
 
     #[rule("<return> ::= Return <expr>")]
     Return,
+
+    #[rule("<if> ::= If ParenL <expr> ParenR <stmt>")]
+    If,
 
     #[rule("<while> ::= While ParenL <expr> ParenR <stmt>")]
     While,

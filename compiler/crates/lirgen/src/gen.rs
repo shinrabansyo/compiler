@@ -4,6 +4,7 @@ mod func_def;   pub use func_def::lirgen_func_def;
 mod stmt;       pub use stmt::lirgen_stmt;
 mod block;      pub use block::lirgen_block;
 mod var_decl;   pub use var_decl::lirgen_var_decl;
+mod r#if;       pub use r#if::lirgen_if;
 mod r#while;    pub use r#while::lirgen_while;
 mod r#for;      pub use r#for::lirgen_for;
 mod expr;       pub use expr::lirgen_expr;
