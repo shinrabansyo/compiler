@@ -4,12 +4,12 @@ use sb_compiler_lirgen_ir::{lir, LIR, Li, Add, Pop, FLoad, VarFree, Return};
 
 use super::{TMP_REG, RET_REG};
 
-use super::{lirgen_const_decl, lirgen_block, lirgen_expr};
+use super::{lirgen_var_decl, lirgen_block, lirgen_expr};
 
 pub fn lirgen_stmt(lirs: &mut Vec<LIR>, stmt: &Stmt, analyze_result: &AnalyzeResult) {
     match stmt {
-        Stmt::ConstDecl { const_decl, .. } => {
-            lirgen_const_decl(lirs, const_decl, analyze_result);
+        Stmt::VarDecl { var_decl, .. } => {
+            lirgen_var_decl(lirs, var_decl, analyze_result);
         }
         Stmt::Block { block, .. } => {
             lirgen_block(lirs, block, analyze_result);

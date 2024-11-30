@@ -1,8 +1,8 @@
 fn main() {
-    const value_1: i32 = 10;
-    const value_2: i32 = 20;
-    const sum_1: i32 = value_1 + value_2;
-    const sum_2: i32 = 10 + sum_1;
+    var value_1: i32 = 10;
+    var value_2: i32 = 20;
+    var sum_1: i32 = value_1 + value_2;
+    var sum_2: i32 = 10 + sum_1;
     return assert_eq(sum_2, 40);
 }
 
