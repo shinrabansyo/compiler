@@ -316,7 +316,7 @@ checksum = "f3cb5ba0dc43242ce17de99c180e96db90b235b8a9fdc9543c96d2209116bd9f"
 [[package]]
 name = "sb_asm"
 version = "0.1.0"
-source = "git+https://github.com/shinrabansyo/assembler.git?rev=c8a40d83604608857eaf98fccfe18aca22261739#c8a40d83604608857eaf98fccfe18aca22261739"
+source = "git+https://github.com/shinrabansyo/assembler.git?rev=16955a950b30a2c879f4acd7dff661db6d2bf741#16955a950b30a2c879f4acd7dff661db6d2bf741"
 dependencies = [
  "anyhow",
  "thiserror 2.0.3",
