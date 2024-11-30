@@ -127,8 +127,12 @@ pub enum SBRules {
     Return,
 
     // 式
-    #[rule("<expr> ::= <logic_or>")]
+    #[rule("<expr> ::= <assign>")]
     Expr,
+
+    #[rule("<assign> ::= Ident Assign <assign>")]
+    #[rule("<assign> ::= <logic_or>")]
+    Assign,
 
     #[rule("<logic_or> ::= <logic_or> LogicOr <logic_and>")]
     #[rule("<logic_or> ::= <logic_and>")]

@@ -13,6 +13,7 @@ mod const_decl;     pub use const_decl::ConstDecl;
 
 // 式
 mod expr;           pub use expr::Expr;
+mod assign;         pub use assign::Assign;
 mod logic_or;       pub use logic_or::LogicOr;
 mod logic_and;      pub use logic_and::LogicAnd;
 mod cond;           pub use cond::Cond;
