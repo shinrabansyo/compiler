@@ -95,6 +95,8 @@ pub enum SBTokens {
     Return,
     #[token("if", ir_omit)]
     If,
+    #[token("else", ir_omit)]
+    Else,
     #[token("while", ir_omit)]
     While,
     #[token("for", ir_omit)]
@@ -161,6 +163,7 @@ pub enum SBRules {
     Return,
 
     #[rule("<if> ::= If ParenL <expr> ParenR <block>")]
+    #[rule("<if> ::= If ParenL <expr> ParenR <block> Else <stmt>")]
     If,
 
     #[rule("<while> ::= While ParenL <expr> ParenR <block>")]
