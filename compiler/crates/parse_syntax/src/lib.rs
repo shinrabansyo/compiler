@@ -23,8 +23,22 @@ pub enum SBTokens {
     #[default]
 
     // 演算子
-    #[token(r"=", ir_omit)]
+    #[token(r"==")]
+    Eq,
+    #[token(r"!=")]
+    Neq,
+    #[token(r"=")]
     Assign,
+    #[token(r"\+=")]
+    PlusAssign,
+    #[token(r"\-=")]
+    MinusAssign,
+    #[token(r"<<=")]
+    ShiftLAssign,
+    #[token(r">>>=")]
+    ShiftRaAssign,
+    #[token(r">>=")]
+    ShiftRAssign,
     #[token(r"lor")]
     LogicOr,
     #[token(r"land")]
@@ -35,10 +49,6 @@ pub enum SBTokens {
     BitXor,
     #[token(r"band")]
     BitAnd,
-    #[token(r"==")]
-    Eq,
-    #[token(r"!=")]
-    Neq,
     #[token(r"<<")]
     ShiftL,
     #[token(r">>>")]
@@ -145,6 +155,11 @@ pub enum SBRules {
     Expr,
 
     #[rule("<assign> ::= Ident Assign <assign>")]
+    #[rule("<assign> ::= Ident PlusAssign <assign>")]
+    #[rule("<assign> ::= Ident MinusAssign <assign>")]
+    #[rule("<assign> ::= Ident ShiftLAssign <assign>")]
+    #[rule("<assign> ::= Ident ShiftRaAssign <assign>")]
+    #[rule("<assign> ::= Ident ShiftRAssign <assign>")]
     #[rule("<assign> ::= <logic_or>")]
     Assign,
 
