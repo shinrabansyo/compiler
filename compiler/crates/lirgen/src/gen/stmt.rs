@@ -2,9 +2,8 @@ use sb_compiler_parse_ast::Stmt;
 use sb_compiler_analyze::AnalyzeResult;
 use sb_compiler_lirgen_ir::{lir, LIR, Li, Add, Pop, FLoad, VarFree, Return};
 
-use super::{TMP_REG, RET_REG};
-
-use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_while};
+use super::{RET_REG, TMP_REG};
+use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_while, lirgen_for};
 
 pub fn lirgen_stmt(lirs: &mut Vec<LIR>, stmt: &Stmt, analyze_result: &AnalyzeResult) {
     match stmt {
@@ -29,6 +28,9 @@ pub fn lirgen_stmt(lirs: &mut Vec<LIR>, stmt: &Stmt, analyze_result: &AnalyzeRes
         }
         Stmt::While { r#while, .. } => {
             lirgen_while(lirs, r#while, analyze_result);
+        }
+        Stmt::For { r#for, .. } => {
+            lirgen_for(lirs, r#for, analyze_result);
         }
     }
 }
