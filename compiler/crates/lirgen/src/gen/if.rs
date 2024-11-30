@@ -2,7 +2,7 @@ use sb_compiler_parse_ast::If;
 use sb_compiler_analyze::AnalyzeResult;
 use sb_compiler_lirgen_ir::{lir, LIR, Pop, Bne, Jmp, Label};
 
-use super::{lirgen_expr, lirgen_stmt, TMP_REG, ZERO_REG};
+use super::{lirgen_expr, lirgen_block, TMP_REG, ZERO_REG};
 
 pub fn lirgen_if(lirs: &mut Vec<LIR>, r#if: &If, analyze_result: &AnalyzeResult) {
     let end_label = format!("ifend_stmt.{}.{}", lirs.len(), r#if.namespace);
@@ -14,6 +14,6 @@ pub fn lirgen_if(lirs: &mut Vec<LIR>, r#if: &If, analyze_result: &AnalyzeResult)
     lirs.push(lir!(Jmp end_label.clone()));
 
     // 実行節
-    lirgen_stmt(lirs, &r#if.stmt, analyze_result);
+    lirgen_block(lirs, &r#if.block, analyze_result);
     lirs.push(lir!(Label end_label));
 }

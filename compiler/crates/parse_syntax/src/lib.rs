@@ -140,6 +140,11 @@ pub enum SBRules {
     ArgumentDef,
 
     // 文
+    #[rule("<block> ::= BraceL <stmt_list> BraceR")]
+    #[rule("<stmt_list> ::= <stmt_list> <stmt>")]
+    #[rule("<stmt_list> ::= <stmt>")]
+    Block,
+
     #[rule("<stmt> ::= <var_decl>")]
     #[rule("<stmt> ::= <block>")]
     #[rule("<stmt> ::= <expr> Semicolon")]
@@ -149,24 +154,19 @@ pub enum SBRules {
     #[rule("<stmt> ::= <for>")]
     Stmt,
 
-    #[rule("<block> ::= BraceL <stmt_list> BraceR")]
-    #[rule("<stmt_list> ::= <stmt_list> <stmt>")]
-    #[rule("<stmt_list> ::= <stmt>")]
-    Block,
-
     #[rule("<var_decl> ::= Var Ident Colon Type Assign <expr> Semicolon")]
     VarDecl,
 
     #[rule("<return> ::= Return <expr>")]
     Return,
 
-    #[rule("<if> ::= If ParenL <expr> ParenR <stmt>")]
+    #[rule("<if> ::= If ParenL <expr> ParenR <block>")]
     If,
 
-    #[rule("<while> ::= While ParenL <expr> ParenR <stmt>")]
+    #[rule("<while> ::= While ParenL <expr> ParenR <block>")]
     While,
 
-    #[rule("<for> ::= For ParenL <expr> Semicolon <expr> Semicolon <expr> ParenR <stmt>")]
+    #[rule("<for> ::= For ParenL <expr> Semicolon <expr> Semicolon <expr> ParenR <block>")]
     For,
 
     // 式

@@ -2,7 +2,7 @@ use sb_compiler_parse_ast::While;
 use sb_compiler_analyze::AnalyzeResult;
 use sb_compiler_lirgen_ir::{lir, LIR, Pop, Beq, Jmp, Label};
 
-use super::{lirgen_expr, lirgen_stmt, TMP_REG, ZERO_REG};
+use super::{lirgen_expr, lirgen_block, TMP_REG, ZERO_REG};
 
 pub fn lirgen_while(lirs: &mut Vec<LIR>, r#while: &While, analyze_result: &AnalyzeResult) {
     let stmt_label = format!("while_stmt.{}.{}", lirs.len(), r#while.namespace);
@@ -13,7 +13,7 @@ pub fn lirgen_while(lirs: &mut Vec<LIR>, r#while: &While, analyze_result: &Analy
 
     // 実行部
     lirs.push(lir!(Label stmt_label.clone()));
-    lirgen_stmt(lirs, &r#while.stmt, analyze_result);
+    lirgen_block(lirs, &r#while.block, analyze_result);
 
     // 継続判定
     lirs.push(lir!(Label cond_label));

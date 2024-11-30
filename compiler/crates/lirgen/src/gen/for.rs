@@ -2,7 +2,7 @@ use sb_compiler_parse_ast::For;
 use sb_compiler_analyze::AnalyzeResult;
 use sb_compiler_lirgen_ir::{lir, LIR, Pop, Beq, Jmp, Label};
 
-use super::{lirgen_expr, lirgen_stmt, TMP_REG, ZERO_REG};
+use super::{lirgen_expr, lirgen_block, TMP_REG, ZERO_REG};
 
 pub fn lirgen_for(lirs: &mut Vec<LIR>, r#for: &For, analyze_result: &AnalyzeResult) {
     let stmt_label = format!("for_stmt.{}.{}", lirs.len(), r#for.namespace);
@@ -17,7 +17,7 @@ pub fn lirgen_for(lirs: &mut Vec<LIR>, r#for: &For, analyze_result: &AnalyzeResu
 
     // 実行節
     lirs.push(lir!(Label stmt_label.clone()));
-    lirgen_stmt(lirs, &r#for.stmt, analyze_result);
+    lirgen_block(lirs, &r#for.block, analyze_result);
 
     // 更新節
     lirgen_expr(lirs, &r#for.incr, analyze_result);

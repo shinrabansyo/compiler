@@ -7,8 +7,8 @@ mod func_def;       pub use func_def::FuncDef;
 mod argument_def;   pub use argument_def::ArgumentDef;
 
 // 文
-mod stmt;           pub use stmt::Stmt;
 mod block;          pub use block::Block;
+mod stmt;           pub use stmt::Stmt;
 mod var_decl;       pub use var_decl::VarDecl;
 mod r#if;           pub use r#if::If;
 mod r#while;        pub use r#while::While;

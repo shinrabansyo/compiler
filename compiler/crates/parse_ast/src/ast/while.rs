@@ -3,13 +3,13 @@ use copager::ir::Tree;
 use sb_compiler_parse_syntax::SBLangDef;
 
 use crate::utils::unwrap_node;
-use super::{Stmt, Expr};
+use super::{Block, Expr};
 
 #[derive(Debug)]
 pub struct While {
     pub namespace: String,
     pub cond: Expr,
-    pub stmt: Box<Stmt>,
+    pub block: Block,
 }
 
 impl From<(String, Tree<'_, SBLangDef>)> for While  {
@@ -18,7 +18,7 @@ impl From<(String, Tree<'_, SBLangDef>)> for While  {
         While {
             namespace: namespace.clone(),
             cond: Expr::from((namespace.clone(), children.pop_front().unwrap())),
-            stmt: Box::new(Stmt::from((namespace, children.pop_front().unwrap()))),
+            block: Block::from((namespace, children.pop_front().unwrap())),
         }
     }
 }
