@@ -2,10 +2,11 @@
 
 ## Examples
 
+- [examples/helloworld](examples/helloworld)
 - [examples/expr](examples/expr)
 
 ```
-$ cargo run examples/expr/main.sb out.asm
+$ cargo run examples/helloworld/main.sb out.asm
 ```
 
 ## Test
