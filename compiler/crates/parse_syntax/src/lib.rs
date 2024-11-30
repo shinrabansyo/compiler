@@ -123,17 +123,17 @@ pub enum SBRules {
     Return,
 
     // 式
-    #[rule("<expr> ::= <logic>")]
+    #[rule("<expr> ::= <cond>")]
     Expr,
 
-    #[rule("<logic> ::= <logic> Eq <add>")]
-    #[rule("<logic> ::= <logic> Neq <add>")]
-    #[rule("<logic> ::= <logic> Lt <add>")]
-    #[rule("<logic> ::= <logic> Lte <add>")]
-    #[rule("<logic> ::= <logic> Gt <add>")]
-    #[rule("<logic> ::= <logic> Gte <add>")]
-    #[rule("<logic> ::= <add>")]
-    Logic,
+    #[rule("<cond> ::= <cond> Eq <add>")]
+    #[rule("<cond> ::= <cond> Neq <add>")]
+    #[rule("<cond> ::= <cond> Lt <add>")]
+    #[rule("<cond> ::= <cond> Lte <add>")]
+    #[rule("<cond> ::= <cond> Gt <add>")]
+    #[rule("<cond> ::= <cond> Gte <add>")]
+    #[rule("<cond> ::= <add>")]
+    Cond,
 
     #[rule("<add> ::= <add> Plus <value>")]
     #[rule("<add> ::= <add> Minus <value>")]

@@ -1,13 +1,13 @@
-use sb_compiler_parse_ast::Logic;
+use sb_compiler_parse_ast::Cond;
 use sb_compiler_analyze::AnalyzeResult;
 use sb_compiler_lirgen_ir::{lir, LIR, Li, Beq, Bne, Blt, Ble, Push, Pop};
 
 use super::{lirgen_add, TMP_REG_L, TMP_REG_R, ZERO_REG};
 
-pub fn lirgen_logic(lirs: &mut Vec<LIR>, logic: &Logic, analyze_result: &AnalyzeResult) {
-    match logic {
-        Logic::Eq { lhs, rhs, .. }=> {
-            lirgen_logic(lirs, lhs, analyze_result);
+pub fn lirgen_cond(lirs: &mut Vec<LIR>, cond: &Cond, analyze_result: &AnalyzeResult) {
+    match cond {
+        Cond::Eq { lhs, rhs, .. }=> {
+            lirgen_cond(lirs, lhs, analyze_result);
             lirgen_add(lirs, rhs, analyze_result);
             lirs.push(lir!(Pop TMP_REG_R));
             lirs.push(lir!(Pop TMP_REG_L));
@@ -17,8 +17,8 @@ pub fn lirgen_logic(lirs: &mut Vec<LIR>, logic: &Logic, analyze_result: &Analyze
             lirs.push(lir!(Li TMP_REG_L, 0));
             lirs.push(lir!(Push TMP_REG_L));
         }
-        Logic::Neq { lhs, rhs, .. } => {
-            lirgen_logic(lirs, lhs, analyze_result);
+        Cond::Neq { lhs, rhs, .. } => {
+            lirgen_cond(lirs, lhs, analyze_result);
             lirgen_add(lirs, rhs, analyze_result);
             lirs.push(lir!(Pop TMP_REG_R));
             lirs.push(lir!(Pop TMP_REG_L));
@@ -28,8 +28,8 @@ pub fn lirgen_logic(lirs: &mut Vec<LIR>, logic: &Logic, analyze_result: &Analyze
             lirs.push(lir!(Li TMP_REG_L, 0));
             lirs.push(lir!(Push TMP_REG_L));
         }
-        Logic::Lt { lhs, rhs, .. } => {
-            lirgen_logic(lirs, lhs, analyze_result);
+        Cond::Lt { lhs, rhs, .. } => {
+            lirgen_cond(lirs, lhs, analyze_result);
             lirgen_add(lirs, rhs, analyze_result);
             lirs.push(lir!(Pop TMP_REG_R));
             lirs.push(lir!(Pop TMP_REG_L));
@@ -39,8 +39,8 @@ pub fn lirgen_logic(lirs: &mut Vec<LIR>, logic: &Logic, analyze_result: &Analyze
             lirs.push(lir!(Li TMP_REG_L, 0));
             lirs.push(lir!(Push TMP_REG_L));
         }
-        Logic::Lte { lhs, rhs, .. } => {
-            lirgen_logic(lirs, lhs, analyze_result);
+        Cond::Lte { lhs, rhs, .. } => {
+            lirgen_cond(lirs, lhs, analyze_result);
             lirgen_add(lirs, rhs, analyze_result);
             lirs.push(lir!(Pop TMP_REG_R));
             lirs.push(lir!(Pop TMP_REG_L));
@@ -50,8 +50,8 @@ pub fn lirgen_logic(lirs: &mut Vec<LIR>, logic: &Logic, analyze_result: &Analyze
             lirs.push(lir!(Li TMP_REG_L, 0));
             lirs.push(lir!(Push TMP_REG_L));
         }
-        Logic::Gt { lhs, rhs, .. } => {
-            lirgen_logic(lirs, lhs, analyze_result);
+        Cond::Gt { lhs, rhs, .. } => {
+            lirgen_cond(lirs, lhs, analyze_result);
             lirgen_add(lirs, rhs, analyze_result);
             lirs.push(lir!(Pop TMP_REG_R));
             lirs.push(lir!(Pop TMP_REG_L));
@@ -61,8 +61,8 @@ pub fn lirgen_logic(lirs: &mut Vec<LIR>, logic: &Logic, analyze_result: &Analyze
             lirs.push(lir!(Li TMP_REG_L, 0));
             lirs.push(lir!(Push TMP_REG_L));
         }
-        Logic::Gte { lhs, rhs, .. } => {
-            lirgen_logic(lirs, lhs, analyze_result);
+        Cond::Gte { lhs, rhs, .. } => {
+            lirgen_cond(lirs, lhs, analyze_result);
             lirgen_add(lirs, rhs, analyze_result);
             lirs.push(lir!(Pop TMP_REG_R));
             lirs.push(lir!(Pop TMP_REG_L));
@@ -72,7 +72,7 @@ pub fn lirgen_logic(lirs: &mut Vec<LIR>, logic: &Logic, analyze_result: &Analyze
             lirs.push(lir!(Li TMP_REG_L, 0));
             lirs.push(lir!(Push TMP_REG_L));
         }
-        Logic::Add { add, .. } => {
+        Cond::Add { add, .. } => {
             lirgen_add(lirs, add,  analyze_result);
         }
     }
