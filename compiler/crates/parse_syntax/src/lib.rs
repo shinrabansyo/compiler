@@ -25,10 +25,16 @@ pub enum SBTokens {
     // 記号
     #[token(r"->", ir_omit)]
     Allow,
-    #[token(r"or")]
+    #[token(r"lor")]
     LogicOr,
-    #[token(r"and")]
+    #[token(r"land")]
     LogicAnd,
+    #[token(r"bor")]
+    BitOr,
+    #[token(r"bxor")]
+    BitXor,
+    #[token(r"band")]
+    BitAnd,
     #[token(r"==")]
     Eq,
     #[token(r"!=")]
@@ -138,9 +144,21 @@ pub enum SBRules {
     #[rule("<logic_or> ::= <logic_and>")]
     LogicOr,
 
-    #[rule("<logic_and> ::= <logic_and> LogicAnd <cond>")]
-    #[rule("<logic_and> ::= <cond>")]
+    #[rule("<logic_and> ::= <logic_and> LogicAnd <bit_or>")]
+    #[rule("<logic_and> ::= <bit_or>")]
     LogicAnd,
+
+    #[rule("<bit_or> ::= <bit_or> BitOr <bit_xor>")]
+    #[rule("<bit_or> ::= <bit_xor>")]
+    BitOr,
+
+    #[rule("<bit_xor> ::= <bit_xor> BitXor <bit_and>")]
+    #[rule("<bit_xor> ::= <bit_and>")]
+    BitXor,
+
+    #[rule("<bit_and> ::= <bit_and> BitAnd <cond>")]
+    #[rule("<bit_and> ::= <cond>")]
+    BitAnd,
 
     #[rule("<cond> ::= <cond> Eq <add>")]
     #[rule("<cond> ::= <cond> Neq <add>")]

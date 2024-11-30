@@ -1,6 +1,9 @@
 mod li;         pub use li::Li;
 mod add;        pub use add::Add;
 mod sub;        pub use sub::Sub;
+mod and;        pub use and::And;
+mod or;         pub use or::Or;
+mod xor;        pub use xor::Xor;
 mod beq;        pub use beq::Beq;
 mod bne;        pub use bne::Bne;
 mod blt;        pub use blt::Blt;
@@ -32,6 +35,9 @@ pub enum LIR {
     Li(Li),
     Add(Add),
     Sub(Sub),
+    And(And),
+    Xor(Xor),
+    Or(Or),
 
     // 分岐
     Beq(Beq),
@@ -63,6 +69,9 @@ impl Display for LIR {
             LIR::Li(li) => write!(f, "{}", li),
             LIR::Add(add) => write!(f, "{}", add),
             LIR::Sub(sub) => write!(f, "{}", sub),
+            LIR::And(and) => write!(f, "{}", and),
+            LIR::Xor(xor) => write!(f, "{}", xor),
+            LIR::Or(or) => write!(f, "{}", or),
             LIR::Beq(beq) => write!(f, "{}", beq),
             LIR::Bne(bne) => write!(f, "{}", bne),
             LIR::Blt(blt) => write!(f, "{}", blt),
