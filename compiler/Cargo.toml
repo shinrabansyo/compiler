@@ -1,0 +1,16 @@
+[package]
+name = "sb_compiler"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+sb_compiler_parse = { path = "./crates/parse" }
+sb_compiler_analyze = { path = "./crates/analyze" }
+sb_compiler_lirgen = { path = "./crates/lirgen" }
+sb_compiler_codegen = { path = "./crates/codegen" }
+
+[dev-dependencies]
+sb_asm = { git = "https://github.com/shinrabansyo/assembler.git", rev = "16955a950b30a2c879f4acd7dff661db6d2bf741" }
+sb_emu = { git = "https://github.com/shinrabansyo/debugger.git", rev = "42a188476d8acae250a77a39bc5db409c5a60a56" }
