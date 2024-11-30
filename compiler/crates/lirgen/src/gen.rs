@@ -5,6 +5,8 @@ mod stmt;       pub use stmt::lirgen_stmt;
 mod block;      pub use block::lirgen_block;
 mod const_decl; pub use const_decl::lirgen_const_decl;
 mod expr;       pub use expr::lirgen_expr;
+mod logic_or;   pub use logic_or::lirgen_logic_or;
+mod logic_and;  pub use logic_and::lirgen_logic_and;
 mod cond;       pub use cond::lirgen_cond;
 mod add;        pub use add::lirgen_add;
 mod value;      pub use value::lirgen_value;

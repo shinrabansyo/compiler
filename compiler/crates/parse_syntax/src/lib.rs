@@ -25,6 +25,10 @@ pub enum SBTokens {
     // 記号
     #[token(r"->", ir_omit)]
     Allow,
+    #[token(r"or")]
+    LogicOr,
+    #[token(r"and")]
+    LogicAnd,
     #[token(r"==")]
     Eq,
     #[token(r"!=")]
@@ -123,8 +127,16 @@ pub enum SBRules {
     Return,
 
     // 式
-    #[rule("<expr> ::= <cond>")]
+    #[rule("<expr> ::= <logic_or>")]
     Expr,
+
+    #[rule("<logic_or> ::= <logic_or> LogicOr <logic_and>")]
+    #[rule("<logic_or> ::= <logic_and>")]
+    LogicOr,
+
+    #[rule("<logic_and> ::= <logic_and> LogicAnd <cond>")]
+    #[rule("<logic_and> ::= <cond>")]
+    LogicAnd,
 
     #[rule("<cond> ::= <cond> Eq <add>")]
     #[rule("<cond> ::= <cond> Neq <add>")]
