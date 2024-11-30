@@ -20,6 +20,7 @@ mod bit_or;         pub use bit_or::BitOr;
 mod bit_xor;        pub use bit_xor::BitXor;
 mod bit_and;        pub use bit_and::BitAnd;
 mod cond;           pub use cond::Cond;
+mod bit_shift;      pub use bit_shift::BitShift;
 mod add;            pub use add::Add;
 mod value;          pub use value::Value;
 mod call;           pub use call::Call;

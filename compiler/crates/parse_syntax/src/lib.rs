@@ -39,6 +39,12 @@ pub enum SBTokens {
     Eq,
     #[token(r"!=")]
     Neq,
+    #[token(r"<<")]
+    ShiftL,
+    #[token(r">>>")]
+    ShiftRa,
+    #[token(r">>")]
+    ShiftR,
     #[token(r"<=")]
     Lte,
     #[token(r"<")]
@@ -160,14 +166,20 @@ pub enum SBRules {
     #[rule("<bit_and> ::= <cond>")]
     BitAnd,
 
-    #[rule("<cond> ::= <cond> Eq <add>")]
-    #[rule("<cond> ::= <cond> Neq <add>")]
-    #[rule("<cond> ::= <cond> Lt <add>")]
-    #[rule("<cond> ::= <cond> Lte <add>")]
-    #[rule("<cond> ::= <cond> Gt <add>")]
-    #[rule("<cond> ::= <cond> Gte <add>")]
-    #[rule("<cond> ::= <add>")]
+    #[rule("<cond> ::= <cond> Eq <bit_shift>")]
+    #[rule("<cond> ::= <cond> Neq <bit_shift>")]
+    #[rule("<cond> ::= <cond> Lt <bit_shift>")]
+    #[rule("<cond> ::= <cond> Lte <bit_shift>")]
+    #[rule("<cond> ::= <cond> Gt <bit_shift>")]
+    #[rule("<cond> ::= <cond> Gte <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift>")]
     Cond,
+
+    #[rule("<bit_shift> ::= <bit_shift> ShiftL <add>")]
+    #[rule("<bit_shift> ::= <bit_shift> ShiftR <add>")]
+    #[rule("<bit_shift> ::= <bit_shift> ShiftRa <add>")]
+    #[rule("<bit_shift> ::= <add>")]
+    BitShift,
 
     #[rule("<add> ::= <add> Plus <value>")]
     #[rule("<add> ::= <add> Minus <value>")]
