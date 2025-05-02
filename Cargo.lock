@@ -332,6 +332,7 @@ dependencies = [
  "sb_compiler_codegen",
  "sb_compiler_lirgen",
  "sb_compiler_parse",
+ "sb_compiler_utils",
  "sb_emu",
  "thiserror 2.0.3",
 ]
@@ -371,6 +372,7 @@ dependencies = [
  "sb_compiler_analyze",
  "sb_compiler_lirgen_ir",
  "sb_compiler_parse_ast",
+ "sb_compiler_utils",
  "thiserror 2.0.3",
 ]
 
@@ -410,6 +412,14 @@ dependencies = [
  "anyhow",
  "copager",
  "serde",
+ "thiserror 2.0.3",
+]
+
+[[package]]
+name = "sb_compiler_utils"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
  "thiserror 2.0.3",
 ]
 
