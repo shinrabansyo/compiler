@@ -14,7 +14,7 @@ pub fn lirgen_logic_or(ctx: &mut GenContext, logic_or: &LogicOr) -> LirTree {
             let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
 
             let lir_rhs = lirgen_logic_and(ctx, rhs);
-            let reg_rhs = lir_lhs.reserved_reg_range().1 - 1;
+            let reg_rhs = lir_rhs.reserved_reg_range().1 - 1;
 
             let reg_result = ctx.alloc_reg();
 

@@ -6,7 +6,7 @@
     bne  t0, (t0 != t5) -> 12
     jmp  t0, @local.0
     add  t6 = t0 + t4
-    bne  t0, (t0 != t5) -> 12
+    bne  t0, (t0 != t6) -> 12
     jmp  t0, @local.0
     li   t7 = 1
     jmp  t0, @local.1

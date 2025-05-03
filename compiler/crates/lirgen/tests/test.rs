@@ -111,6 +111,10 @@ fn test_code(input: &str) -> anyhow::Result<String> {
 
     // 2. LIR生成 (AST -> LIR)
     let lirs = lirgen(&ast);
+    let lirs = match lirs {
+        LirTree::Node { lirs, .. } => lirs,
+        _ => unreachable!(),
+    };
 
     // 3. 文字列へ変換 (LIR -> String)
     let mut lir_str = String::new();

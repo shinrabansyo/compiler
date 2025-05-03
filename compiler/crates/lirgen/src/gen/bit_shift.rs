@@ -14,7 +14,7 @@ pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirTree {
             let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
 
             let lir_rhs = lirgen_add(ctx, rhs);
-            let reg_rhs = lir_lhs.reserved_reg_range().1 - 1;
+            let reg_rhs = lir_rhs.reserved_reg_range().1 - 1;
 
             vec![
                 lir_lhs,
@@ -27,7 +27,7 @@ pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirTree {
             let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
 
             let lir_rhs = lirgen_add(ctx, rhs);
-            let reg_rhs = lir_lhs.reserved_reg_range().1 - 1;
+            let reg_rhs = lir_rhs.reserved_reg_range().1 - 1;
 
             vec![
                 lir_lhs,
@@ -40,7 +40,7 @@ pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirTree {
             let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
 
             let lir_rhs = lirgen_add(ctx, rhs);
-            let reg_rhs = lir_lhs.reserved_reg_range().1 - 1;
+            let reg_rhs = lir_rhs.reserved_reg_range().1 - 1;
 
             vec![
                 lir_lhs,

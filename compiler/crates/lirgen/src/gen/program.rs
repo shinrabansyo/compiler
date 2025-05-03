@@ -4,10 +4,21 @@ use sb_compiler_lirgen_ir::LirTree;
 use crate::GenContext;
 use super::lirgen_top;
 
-pub fn lirgen_program(program: &Program) -> Vec<LirTree> {
-    let mut ctx = GenContext::default();
-    program.top_elems
+pub fn lirgen_program(ctx: &mut GenContext, program: &Program) -> LirTree {
+    let reserved_reg_range_start = ctx.reserved_regs;
+    let reserved_label_range_start = ctx.reserved_labels;
+
+    let lirs = program.top_elems
         .iter()
-        .map(|ast| lirgen_top(&mut ctx, ast))
-        .collect()
+        .map(|ast| lirgen_top(ctx, ast))
+        .collect();
+
+    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
+    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
+
+    LirTree::Node {
+        reserved_reg_range,
+        reserved_label_range,
+        lirs,
+    }
 }

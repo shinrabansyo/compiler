@@ -14,7 +14,7 @@ pub fn lirgen_bit_and(ctx: &mut GenContext, bit_and: &BitAnd) -> LirTree {
             let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
 
             let lir_rhs = lirgen_cond(ctx, rhs);
-            let reg_rhs = lir_lhs.reserved_reg_range().1 - 1;
+            let reg_rhs = lir_rhs.reserved_reg_range().1 - 1;
 
             vec![
                 lir_lhs,
