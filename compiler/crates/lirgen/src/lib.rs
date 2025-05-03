@@ -37,6 +37,7 @@ impl GenContext {
     }
 }
 
-pub fn lirgen<'ast>(program: &'ast Program) -> Vec<LirTree> {
-    gen::lirgen_program(program)
+pub fn lirgen<'ast>(program: &'ast Program) -> LirTree {
+    let mut ctx = GenContext::default();
+    gen::lirgen_program(&mut ctx, program)
 }

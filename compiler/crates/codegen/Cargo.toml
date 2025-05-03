@@ -8,3 +8,7 @@ anyhow = { workspace = true }
 thiserror = { workspace = true }
 sb_compiler_lirgen_ir = { path = "../lirgen_ir" }
 sb_compiler_codegen_asm = { path = "../codegen_asm" }
+
+[dev-dependencies]
+sb_compiler_parse = { path = "../parse" }
+sb_compiler_lirgen = { path = "../lirgen" }

@@ -1,16 +1,14 @@
-use std::fmt::Write;
+mod reg_mapping;
 
-use sb_compiler_lirgen_ir::LIR;
+use sb_compiler_lirgen_ir::LirTree;
+use sb_compiler_codegen_asm::Asm;
 
-pub fn codegen(lirs: Vec<LIR>) -> String {
-    let dmem = "";
+pub fn codegen(lir_tree: LirTree) -> Asm {
+    // 1. レジスタ割り付け (LirTree -> RegMap)
+    let reg_map = reg_mapping::mapping(&lir_tree);
 
-    let mut imem = String::new();
-    writeln!(&mut imem, "addi r2 = r0, 0x100").unwrap();
-    writeln!(&mut imem, "beq r0, (r0, r0) -> @main.global\n").unwrap();
-    for lir in lirs {
-        writeln!(&mut imem, "{}", lir).unwrap();
-    }
+    // 2. コード生成 (LirTree + RegMap -> Asm)
+    let asm = todo!();
 
-    format!("{}\n===\n{}", dmem, imem)
+    asm
 }
