@@ -1,5 +1,5 @@
 [package]
-name = "sb_compiler_codegen"
+name = "sb_compiler_codegen_asm"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,4 +7,3 @@ edition = "2021"
 anyhow = { workspace = true }
 thiserror = { workspace = true }
 sb_compiler_lirgen_ir = { path = "../lirgen_ir" }
-sb_compiler_codegen_asm = { path = "../codegen_asm" }
