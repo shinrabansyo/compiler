@@ -1,21 +1,38 @@
 use sb_compiler_parse_ast::BitXor;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Xor, Push, Pop};
+use sb_compiler_lirgen_ir::{lir, LirTree, Xor};
 
-use super::{lirgen_bit_and, TMP_REG_L, TMP_REG_R};
+use crate::GenContext;
+use super::lirgen_bit_and;
 
-pub fn lirgen_bit_xor(lirs: &mut Vec<LIR>, bit_xor: &BitXor, analyze_result: &AnalyzeResult) {
-    match bit_xor {
+pub fn lirgen_bit_xor(ctx: &mut GenContext, bit_xor: &BitXor) -> LirTree {
+    let reserved_reg_range_start = ctx.reserved_regs;
+    let reserved_label_range_start = ctx.reserved_labels;
+
+    let lirs = match bit_xor {
         BitXor::Xor { lhs, rhs, .. } => {
-            lirgen_bit_xor(lirs, lhs, analyze_result);
-            lirgen_bit_and(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(Xor TMP_REG_L, TMP_REG_R));
-            lirs.push(lir!(Push TMP_REG_L));
+            let lir_lhs = lirgen_bit_xor(ctx, lhs);
+            let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
+
+            let lir_rhs = lirgen_bit_and(ctx, rhs);
+            let reg_rhs = lir_lhs.reserved_reg_range().1 - 1;
+
+            vec![
+                lir_lhs,
+                lir_rhs,
+                lir!(Xor ctx.alloc_reg(), reg_lhs, reg_rhs),
+            ]
         }
         BitXor::BitAnd { and, .. } => {
-            lirgen_bit_and(lirs, and, analyze_result);
+            return lirgen_bit_and(ctx, and);
         }
+    };
+
+    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
+    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
+
+    LirTree::Node {
+        reserved_reg_range,
+        reserved_label_range,
+        lirs,
     }
 }

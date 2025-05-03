@@ -1,25 +1,55 @@
 use sb_compiler_parse_ast::LogicAnd;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Li, Beq, Push, Pop};
+use sb_compiler_lirgen_ir::{lir, LirTree, Bne, JmpLabel, Li};
 
-use super::{lirgen_bit_or, TMP_REG, TMP_REG_L, TMP_REG_R, ZERO_REG};
+use crate::{GenContext, ZERO_REG};
+use super::lirgen_bit_or;
 
-pub fn lirgen_logic_and(lirs: &mut Vec<LIR>, logic_and: &LogicAnd, analyze_result: &AnalyzeResult) {
-    match logic_and {
+pub fn lirgen_logic_and(ctx: &mut GenContext, logic_and: &LogicAnd) -> LirTree {
+    let reserved_reg_range_start = ctx.reserved_regs;
+    let reserved_label_range_start = ctx.reserved_labels;
+
+    let lirs = match logic_and {
         LogicAnd::And { lhs, rhs, .. } => {
-            lirgen_logic_and(lirs, lhs, analyze_result);
-            lirgen_bit_or(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(Beq ZERO_REG, TMP_REG_L, 24));
-            lirs.push(lir!(Beq ZERO_REG, TMP_REG_R, 18));
-            lirs.push(lir!(Li TMP_REG, 1));
-            lirs.push(lir!(Beq ZERO_REG, ZERO_REG, 12));
-            lirs.push(lir!(Li TMP_REG, 0));
-            lirs.push(lir!(Push TMP_REG));
+            let lir_lhs = lirgen_logic_and(ctx, lhs);
+            let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
+
+            let lir_rhs = lirgen_bit_or(ctx, rhs);
+            let reg_rhs = lir_lhs.reserved_reg_range().1 - 1;
+
+            let reg_result = ctx.alloc_reg();
+
+            let label_false = ctx.alloc_label();
+            let label_end = ctx.alloc_label();
+
+            vec![
+                lir_lhs,
+                lir!(Bne(12) ZERO_REG, ZERO_REG, reg_lhs),
+                lir!(JmpLabel(label_false)),
+
+                lir_rhs,
+                lir!(Bne(12) ZERO_REG, ZERO_REG, reg_rhs),
+                lir!(JmpLabel(label_false)),
+
+                lir!(Li(1) reg_result),
+                lir!(JmpLabel(label_end)),
+
+                lir!(Label label_false),
+                lir!(Li(0) reg_result),
+
+                lir!(Label label_end),
+            ]
         }
-        LogicAnd::BitOr{ or, .. } => {
-            lirgen_bit_or(lirs, or, analyze_result);
+        LogicAnd::BitOr { or, .. } => {
+            return lirgen_bit_or(ctx, or);
         }
+    };
+
+    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
+    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
+
+    LirTree::Node {
+        reserved_reg_range,
+        reserved_label_range,
+        lirs,
     }
 }

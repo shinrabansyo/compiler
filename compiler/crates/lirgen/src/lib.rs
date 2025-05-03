@@ -1,11 +1,42 @@
 mod gen;
 
 use sb_compiler_parse_ast::Program;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::LIR;
+use sb_compiler_lirgen_ir::LirTree;
+use sb_compiler_utils::collections::LayeredTable;
 
-pub fn lirgen<'ast>(program: &'ast Program, analyze_result: AnalyzeResult<'ast>) -> Vec<LIR> {
-    let mut lirs = vec![];
-    gen::lirgen_program(&mut lirs, program, &analyze_result);
-    lirs
+const ZERO_REG: u32 = 0;
+
+#[derive(Debug, Clone)]
+struct GenContext {
+    reserved_regs: u32,
+    reserved_labels: u32,
+    sym_table: LayeredTable<String, u32>,
+}
+
+impl Default for GenContext {
+    fn default() -> Self {
+        Self {
+            reserved_regs: 1,   // ゼロレジスタとして1つ確保済み
+            reserved_labels: 0,
+            sym_table: LayeredTable::default(),
+        }
+    }
+}
+
+impl GenContext {
+    fn alloc_reg(&mut self) -> u32 {
+        let allocated_reg = self.reserved_regs;
+        self.reserved_regs += 1;
+        allocated_reg
+    }
+
+    fn alloc_label(&mut self) -> u32 {
+        let allocated_label = self.reserved_labels;
+        self.reserved_labels += 1;
+        allocated_label
+    }
+}
+
+pub fn lirgen<'ast>(program: &'ast Program) -> Vec<LirTree> {
+    gen::lirgen_program(program)
 }

@@ -1,37 +1,64 @@
 use sb_compiler_parse_ast::BitShift;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, ShiftL, ShiftR, ShiftRa, Push, Pop};
+use sb_compiler_lirgen_ir::{lir, LirTree, ShiftL, ShiftR, ShiftRa};
 
-use super::{lirgen_add, TMP_REG_L, TMP_REG_R};
+use crate::GenContext;
+use super::lirgen_add;
 
-pub fn lirgen_bit_shift(lirs: &mut Vec<LIR>, bit_shift: &BitShift, analyze_result: &AnalyzeResult) {
-    match bit_shift {
-        BitShift::L { lhs, rhs, .. }=> {
-            lirgen_bit_shift(lirs, lhs, analyze_result);
-            lirgen_add(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(ShiftL TMP_REG_L, TMP_REG_R));
-            lirs.push(lir!(Push TMP_REG_L));
+pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirTree {
+    let reserved_reg_range_start = ctx.reserved_regs;
+    let reserved_label_range_start = ctx.reserved_labels;
+
+    let lirs = match bit_shift {
+        BitShift::L { lhs, rhs, .. } => {
+            let lir_lhs = lirgen_bit_shift(ctx, lhs);
+            let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
+
+            let lir_rhs = lirgen_add(ctx, rhs);
+            let reg_rhs = lir_lhs.reserved_reg_range().1 - 1;
+
+            vec![
+                lir_lhs,
+                lir_rhs,
+                lir!(ShiftL ctx.alloc_reg(), reg_lhs, reg_rhs),
+            ]
         }
         BitShift::R { lhs, rhs, .. } => {
-            lirgen_bit_shift(lirs, lhs, analyze_result);
-            lirgen_add(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(ShiftR TMP_REG_L, TMP_REG_R));
-            lirs.push(lir!(Push TMP_REG_L));
+            let lir_lhs = lirgen_bit_shift(ctx, lhs);
+            let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
+
+            let lir_rhs = lirgen_add(ctx, rhs);
+            let reg_rhs = lir_lhs.reserved_reg_range().1 - 1;
+
+            vec![
+                lir_lhs,
+                lir_rhs,
+                lir!(ShiftR ctx.alloc_reg(), reg_lhs, reg_rhs),
+            ]
         }
         BitShift::Ra { lhs, rhs, .. } => {
-            lirgen_bit_shift(lirs, lhs, analyze_result);
-            lirgen_add(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(ShiftRa TMP_REG_L, TMP_REG_R));
-            lirs.push(lir!(Push TMP_REG_L));
+            let lir_lhs = lirgen_bit_shift(ctx, lhs);
+            let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
+
+            let lir_rhs = lirgen_add(ctx, rhs);
+            let reg_rhs = lir_lhs.reserved_reg_range().1 - 1;
+
+            vec![
+                lir_lhs,
+                lir_rhs,
+                lir!(ShiftRa ctx.alloc_reg(), reg_lhs, reg_rhs),
+            ]
         }
         BitShift::Add { add, .. } => {
-            lirgen_add(lirs, add,  analyze_result);
+            return lirgen_add(ctx, add);
         }
+    };
+
+    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
+    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
+
+    LirTree::Node {
+        reserved_reg_range,
+        reserved_label_range,
+        lirs,
     }
 }

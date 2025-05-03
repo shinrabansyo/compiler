@@ -1,20 +1,28 @@
 use sb_compiler_parse_ast::VarDecl;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Pop, Sw};
+use sb_compiler_lirgen_ir::{lir, LirTree, Add};
 
-use super::{lirgen_expr, TMP_REG, VARBASE_REG, ZERO_REG};
+use crate::{GenContext, ZERO_REG};
+use super::lirgen_expr;
 
-pub fn lirgen_var_decl(lirs: &mut Vec<LIR>, var_decl: &VarDecl, analyze_result: &AnalyzeResult) {
-    lirgen_expr(lirs, &var_decl.expr, analyze_result);
+pub fn lirgen_var_decl(ctx: &mut GenContext, var_decl: &VarDecl) -> LirTree {
+    let reserved_reg_range_start = ctx.reserved_regs;
+    let reserved_label_range_start = ctx.reserved_labels;
 
-    let node_info = analyze_result.find(&var_decl.namespace, &var_decl.ident);
-    let addr = node_info.local_addr;
-    let base_reg = if node_info.namespace == "global" {
-        ZERO_REG
-    } else {
-        VARBASE_REG
-    };
+    let lir_expr = lirgen_expr(ctx, &var_decl.expr);
+    let reg_expr = lir_expr.reserved_reg_range().1 - 1;
 
-    lirs.push(lir!(Pop TMP_REG));
-    lirs.push(lir!(Sw base_reg, addr, TMP_REG));
+    let reg_var = ctx.alloc_reg();
+    ctx.sym_table.insert(var_decl.ident.clone(), reg_var);
+
+    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
+    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
+
+    LirTree::Node {
+        reserved_reg_range,
+        reserved_label_range,
+        lirs: vec![
+            lir_expr,
+            lir!(Add reg_var, ZERO_REG, reg_expr),
+        ],
+    }
 }

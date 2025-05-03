@@ -1,0 +1,3 @@
+var a: i32 = 10;
+var b: i32 = 20;
+var c: i32 = test_func(a, b);

@@ -1,7 +1,7 @@
 use std::collections::{HashMap, VecDeque};
 use std::hash::Hash;
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct LayeredTable<K, V>
 where
     K: Eq + Hash,
@@ -9,16 +9,21 @@ where
     tables: VecDeque<HashMap<K, V>>,
 }
 
+impl<K, V> Default for LayeredTable<K, V>
+where
+    K: Eq + Hash,
+{
+    fn default() -> Self {
+        LayeredTable {
+            tables: VecDeque::from(vec![HashMap::new()]),
+        }
+    }
+}
+
 impl<K, V> LayeredTable<K, V>
 where
     K: Eq + Hash,
 {
-    pub fn new() -> Self {
-        Self {
-            tables: VecDeque::from(vec![HashMap::new()]),
-        }
-    }
-
     pub fn save(&mut self) {
         self.tables.push_front(HashMap::new());
     }
@@ -47,7 +52,7 @@ mod tests {
     fn test_layered_table() {
         use super::LayeredTable;
 
-        let mut table = LayeredTable::new();
+        let mut table = LayeredTable::default();
         table.insert("A", 1);
         assert_eq!(table.get(&"B"), None);
         assert_eq!(table.get(&"A"), Some(&1));

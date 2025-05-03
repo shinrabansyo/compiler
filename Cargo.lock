@@ -371,6 +371,7 @@ dependencies = [
  "anyhow",
  "sb_compiler_analyze",
  "sb_compiler_lirgen_ir",
+ "sb_compiler_parse",
  "sb_compiler_parse_ast",
  "sb_compiler_utils",
  "thiserror 2.0.3",

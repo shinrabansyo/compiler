@@ -1,0 +1,8 @@
+    li   t1 = 10
+    add  t2 = t0 + t1
+    li   t3 = 20
+    add  t4 = t0 + t3
+    add  t5 = t0 + t2
+    add  t6 = t0 + t4
+    add  t7 = t5 + t6
+    add  t8 = t0 + t7

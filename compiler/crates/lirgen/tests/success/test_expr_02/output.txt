@@ -1,0 +1,16 @@
+    li   t1 = 10
+    add  t2 = t0 + t1
+    li   t3 = 20
+    add  t4 = t0 + t3
+    add  t5 = t0 + t2
+    bne  t0, (t0 != t5) -> 12
+    jmp  t0, @local.0
+    add  t6 = t0 + t4
+    bne  t0, (t0 != t5) -> 12
+    jmp  t0, @local.0
+    li   t7 = 1
+    jmp  t0, @local.1
+@local.0
+    li   t7 = 0
+@local.1
+    add  t8 = t0 + t7

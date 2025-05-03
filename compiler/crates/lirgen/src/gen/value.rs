@@ -1,43 +1,45 @@
 use sb_compiler_parse_ast::Value;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Li, Add, Call, Push, Pop, Lw};
+use sb_compiler_lirgen_ir::{lir, LirTree, Add, Call, Li};
 
-use super::{lirgen_expr, TMP_REG, ZERO_REG, VARBASE_REG, RET_REG};
+use crate::{GenContext, ZERO_REG};
+use super::lirgen_expr;
 
-pub fn lirgen_value(lirs: &mut Vec<LIR>, value: &Value, analyze_result: &AnalyzeResult) {
-    match value {
+pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirTree {
+    let reserved_reg_range_start = ctx.reserved_regs;
+    let reserved_label_range_start = ctx.reserved_labels;
+
+    let lirs = match value {
         Value::Const { value, .. } => {
-            lirs.push(lir!(Li TMP_REG, *value));
-            lirs.push(lir!(Push TMP_REG));
+            vec![lir!(Li(*value) ctx.alloc_reg())]
         }
-        Value::Var { namespace, name } => {
-            let node_info = analyze_result.find(namespace, name);
-            let addr = node_info.local_addr;
-            let base_reg = if node_info.namespace == "global" {
-                ZERO_REG
-            } else {
-                VARBASE_REG
-            };
-
-            lirs.push(lir!(Lw TMP_REG, base_reg, addr));
-            lirs.push(lir!(Push TMP_REG));
+        Value::Var { name, .. } => {
+            vec![lir!(Add ctx.alloc_reg(), ZERO_REG, *ctx.sym_table.get(name).unwrap())]
         }
         Value::Expr { expr, .. } => {
-            lirgen_expr(lirs, expr, analyze_result);
+            let lir_expr = lirgen_expr(ctx, expr);
+            let reg_result = lir_expr.reserved_reg_range().1 - 1;
+
+            vec![lir_expr, lir!(Add ctx.alloc_reg(), ZERO_REG, reg_result)]
         }
         Value::Call { call, .. } => {
-            for (idx, value) in call.args.iter().enumerate() {
-                lirgen_value(lirs, value, analyze_result);
-                lirs.push(lir!(Pop TMP_REG));
-
-                let reg = (idx + 10) as u8;
-                lirs.push(lir!(Li reg, 0));
-                lirs.push(lir!(Add reg, TMP_REG));
+            let (mut lirs, mut reg_args) = (vec![], vec![]);
+            for arg in &call.args {
+                let lir_arg = lirgen_value(ctx, arg);
+                let reg_arg = lir_arg.reserved_reg_range().1 - 1;
+                lirs.push(lir_arg);
+                reg_args.push(reg_arg as u8);
             }
-
-            let jmp_to = format!("{}.{}", call.ident, "global");
-            lirs.push(lir!(Call jmp_to));
-            lirs.push(lir!(Push RET_REG));
+            lirs.push(lir!(Call(format!("{}.{}", call.ident, "global"), reg_args)));
+            lirs
         }
+    };
+
+    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
+    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
+
+    LirTree::Node {
+        reserved_reg_range,
+        reserved_label_range,
+        lirs,
     }
 }
