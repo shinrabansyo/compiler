@@ -330,6 +330,7 @@ dependencies = [
  "sb_asm",
  "sb_compiler_analyze",
  "sb_compiler_codegen",
+ "sb_compiler_codegen_asm",
  "sb_compiler_lirgen",
  "sb_compiler_parse",
  "sb_compiler_utils",

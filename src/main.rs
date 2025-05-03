@@ -11,7 +11,7 @@ fn main() -> anyhow::Result<()> {
     let asm = compile(&input)?;
 
     let path = std::env::args().nth(2).unwrap();
-    std::fs::write(&path, asm)?;
+    std::fs::write(&path, asm.to_string())?;
 
     Ok(())
 }

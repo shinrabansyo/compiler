@@ -2,19 +2,20 @@ use sb_compiler_parse::parse;
 use sb_compiler_analyze::analyze;
 use sb_compiler_lirgen::lirgen;
 use sb_compiler_codegen::codegen;
+use sb_compiler_codegen_asm::Asm;
 
-pub fn compile(input: &str) -> anyhow::Result<String> {
+pub fn compile(input: &str) -> anyhow::Result<Asm> {
     // 1. 構文解析 (&str -> AST)
     let ast = parse(input)?;
 
     // 2. 意味解析 (AST -> AST + NodeInfo)
-    let analyze_result = analyze(&ast)?;
+    let _ = analyze(&ast)?;
 
     // 3. LIR生成 (AST + NodeInfo -> LIR)
-    let lirs = lirgen(&ast, analyze_result);
+    let lir = lirgen(&ast);
 
-    // 4. コード生成 (LIR -> String)
-    let asm = codegen(lirs);
+    // 4. コード生成 (LIR -> Asm)
+    let asm = codegen(lir);
 
     Ok(asm)
 }
