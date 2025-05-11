@@ -100,103 +100,103 @@ impl Display for AsmInst {
         match self {
             // R-形式
             AsmInst::Add { rd, rs1, rs2 } => {
-                write!(f, "add r{} = r{}, r{}", rd, rs1, rs2)
+                write!(f, "    add r{} = r{}, r{}", rd, rs1, rs2)
             }
             AsmInst::Sub { rd, rs1, rs2 } => {
-                write!(f, "sub r{} = r{}, r{}", rd, rs1, rs2)
+                write!(f, "    sub r{} = r{}, r{}", rd, rs1, rs2)
             }
             AsmInst::And { rd, rs1, rs2 } => {
-                write!(f, "and r{} = r{}, r{}", rd, rs1, rs2)
+                write!(f, "    and r{} = r{}, r{}", rd, rs1, rs2)
             }
             AsmInst::Or { rd, rs1, rs2 } => {
-                write!(f, "or r{} = r{}, r{}", rd, rs1, rs2)
+                write!(f, "    or r{} = r{}, r{}", rd, rs1, rs2)
             }
             AsmInst::Xor { rd, rs1, rs2 } => {
-                write!(f, "xor r{} = r{}, r{}", rd, rs1, rs2)
+                write!(f, "    xor r{} = r{}, r{}", rd, rs1, rs2)
             }
             AsmInst::Srl { rd, rs1, rs2 } => {
-                write!(f, "srl r{} = r{}, r{}", rd, rs1, rs2)
+                write!(f, "    srl r{} = r{}, r{}", rd, rs1, rs2)
             }
             AsmInst::Sra { rd, rs1, rs2 } => {
-                write!(f, "sra r{} = r{}, r{}", rd, rs1, rs2)
+                write!(f, "    sra r{} = r{}, r{}", rd, rs1, rs2)
             }
             AsmInst::Sll { rd, rs1, rs2 } => {
-                write!(f, "sll r{} = r{}, r{}", rd, rs1, rs2)
+                write!(f, "    sll r{} = r{}, r{}", rd, rs1, rs2)
             }
 
             // I-形式
             AsmInst::Addi { rd, rs1, value } => {
-                write!(f, "addi r{} = r{}, {}", rd, rs1, value)
+                write!(f, "    addi r{} = r{}, {}", rd, rs1, value)
             }
             AsmInst::Subi { rd, rs1, value } => {
-                write!(f, "subi r{} = r{}, {}", rd, rs1, value)
+                write!(f, "    subi r{} = r{}, {}", rd, rs1, value)
             }
             AsmInst::Andi { rd, rs1, value } => {
-                write!(f, "andi r{} = r{}, {}", rd, rs1, value)
+                write!(f, "    andi r{} = r{}, {}", rd, rs1, value)
             }
             AsmInst::Ori { rd, rs1, value } => {
-                write!(f, "ori r{} = r{}, {}", rd, rs1, value)
+                write!(f, "    ori r{} = r{}, {}", rd, rs1, value)
             }
             AsmInst::Xori { rd, rs1, value } => {
-                write!(f, "xori r{} = r{}, {}", rd, rs1, value)
+                write!(f, "    xori r{} = r{}, {}", rd, rs1, value)
             }
             AsmInst::Srli { rd, rs1, value } => {
-                write!(f, "srli r{} = r{}, {}", rd, rs1, value)
+                write!(f, "    srli r{} = r{}, {}", rd, rs1, value)
             }
             AsmInst::Srai { rd, rs1, value } => {
-                write!(f, "srai r{} = r{}, {}", rd, rs1, value)
+                write!(f, "    srai r{} = r{}, {}", rd, rs1, value)
             }
             AsmInst::Slli { rd, rs1, value } => {
-                write!(f, "slli r{} = r{}, {}", rd, rs1, value)
+                write!(f, "    slli r{} = r{}, {}", rd, rs1, value)
             }
             AsmInst::Lb { rd, rs1, imm } => {
-                write!(f, "lb r{} = r{}[{}]", rd, rs1, imm)
+                write!(f, "    lb r{} = r{}[{}]", rd, rs1, imm)
             }
             AsmInst::Lbu { rd, rs1, imm } => {
-                write!(f, "lbu r{} = r{}[{}]", rd, rs1, imm)
+                write!(f, "    lbu r{} = r{}[{}]", rd, rs1, imm)
             }
             AsmInst::Lh { rd, rs1, imm } => {
-                write!(f, "lh r{} = r{}[{}]", rd, rs1, imm)
+                write!(f, "    lh r{} = r{}[{}]", rd, rs1, imm)
             }
             AsmInst::Lhu { rd, rs1, imm } => {
-                write!(f, "lhu r{} = r{}[{}]", rd, rs1, imm)
+                write!(f, "    lhu r{} = r{}[{}]", rd, rs1, imm)
             }
             AsmInst::Lw { rd, rs1, imm } => {
-                write!(f, "lw r{} = r{}[{}]", rd, rs1, imm)
+                write!(f, "    lw r{} = r{}[{}]", rd, rs1, imm)
             }
             AsmInst::Jal { rd, rs1, imm } => {
-                write!(f, "jal r{} = r{}[{}]", rd, rs1, imm)
+                write!(f, "    jal r{} = r{}[{}]", rd, rs1, imm)
             }
             AsmInst::In { rd, rs1, imm } => {
-                write!(f, "in r{} = r{}[{}]", rd, rs1, imm)
+                write!(f, "    in r{} = r{}[{}]", rd, rs1, imm)
             }
 
             // B-形式
             AsmInst::Beq { rd, rs1, rs2, value } => {
-                write!(f, "beq r{}, (r{}, r{}) -> {}", rd, rs1, rs2, value)
+                write!(f, "    beq r{}, (r{}, r{}) -> {}", rd, rs1, rs2, value)
             }
             AsmInst::Bne { rd, rs1, rs2, value } => {
-                write!(f, "bne r{}, (r{}, r{}) -> {}", rd, rs1, rs2, value)
+                write!(f, "    bne r{}, (r{}, r{}) -> {}", rd, rs1, rs2, value)
             }
             AsmInst::Blt { rd, rs1, rs2, value } => {
-                write!(f, "blt r{}, (r{}, r{}) -> {}", rd, rs1, rs2, value)
+                write!(f, "    blt r{}, (r{}, r{}) -> {}", rd, rs1, rs2, value)
             }
             AsmInst::Ble { rd, rs1, rs2, value } => {
-                write!(f, "ble r{}, (r{}, r{}) -> {}", rd, rs1, rs2, value)
+                write!(f, "    ble r{}, (r{}, r{}) -> {}", rd, rs1, rs2, value)
             }
 
             // S-形式
             AsmInst::Sb { rs1, rs2, imm } => {
-                write!(f, "sb r{}[{}] = r{}", rs1, imm, rs2)
+                write!(f, "    sb r{}[{}] = r{}", rs1, imm, rs2)
             }
             AsmInst::Sh { rs1, rs2, imm } => {
-                write!(f, "sh r{}[{}] = r{}", rs1, imm, rs2)
+                write!(f, "    sh r{}[{}] = r{}", rs1, imm, rs2)
             }
             AsmInst::Sw { rs1, rs2, imm } => {
-                write!(f, "sw r{}[{}] = r{}", rs1, imm, rs2)
+                write!(f, "    sw r{}[{}] = r{}", rs1, imm, rs2)
             }
             AsmInst::Out { rs1, rs2, imm } => {
-                write!(f, "out r{}[{}] = r{}", rs1, imm, rs2)
+                write!(f, "    out r{}[{}] = r{}", rs1, imm, rs2)
             }
 
             // ラベル
