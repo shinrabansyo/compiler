@@ -5,6 +5,7 @@ use sb_compiler_lirgen_ir::LirTree;
 use sb_compiler_utils::collections::LayeredTable;
 
 const ZERO_REG: u32 = 0;
+const RET_REG: u32 = 1;
 const FARG_REG_BASE: u32 = 10;
 
 #[derive(Debug, Clone)]

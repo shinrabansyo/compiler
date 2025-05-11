@@ -1,7 +1,7 @@
 use sb_compiler_parse_ast::Program;
 use sb_compiler_lirgen_ir::LirTree;
 
-use crate::GenContext;
+use crate::{GenContext, ZERO_REG};
 use super::lirgen_top;
 
 pub fn lirgen_program(ctx: &mut GenContext, program: &Program) -> LirTree {
@@ -19,6 +19,7 @@ pub fn lirgen_program(ctx: &mut GenContext, program: &Program) -> LirTree {
     LirTree::Node {
         reserved_reg_range,
         reserved_label_range,
+        result_reg: ZERO_REG,
         lirs,
     }
 }

@@ -8,45 +8,60 @@ pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirTree {
     let reserved_reg_range_start = ctx.reserved_regs;
     let reserved_label_range_start = ctx.reserved_labels;
 
-    let lirs = match bit_shift {
+    let (result_reg, lirs) = match bit_shift {
         BitShift::L { lhs, rhs, .. } => {
             let lir_lhs = lirgen_bit_shift(ctx, lhs);
-            let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
+            let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_add(ctx, rhs);
-            let reg_rhs = lir_rhs.reserved_reg_range().1 - 1;
+            let reg_rhs = lir_rhs.result_reg();
 
-            vec![
-                lir_lhs,
-                lir_rhs,
-                lir!(ShiftL ctx.alloc_reg(), reg_lhs, reg_rhs),
-            ]
+            let reg_result = ctx.alloc_reg();
+
+            (
+                reg_result,
+                vec![
+                    lir_lhs,
+                    lir_rhs,
+                    lir!(ShiftL reg_result, reg_lhs, reg_rhs),
+                ],
+            )
         }
         BitShift::R { lhs, rhs, .. } => {
             let lir_lhs = lirgen_bit_shift(ctx, lhs);
-            let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
+            let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_add(ctx, rhs);
-            let reg_rhs = lir_rhs.reserved_reg_range().1 - 1;
+            let reg_rhs = lir_rhs.result_reg();
 
-            vec![
-                lir_lhs,
-                lir_rhs,
-                lir!(ShiftR ctx.alloc_reg(), reg_lhs, reg_rhs),
-            ]
+            let reg_result = ctx.alloc_reg();
+
+            (
+                reg_result,
+                vec![
+                    lir_lhs,
+                    lir_rhs,
+                    lir!(ShiftR reg_result, reg_lhs, reg_rhs),
+                ],
+            )
         }
         BitShift::Ra { lhs, rhs, .. } => {
             let lir_lhs = lirgen_bit_shift(ctx, lhs);
-            let reg_lhs = lir_lhs.reserved_reg_range().1 - 1;
+            let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_add(ctx, rhs);
-            let reg_rhs = lir_rhs.reserved_reg_range().1 - 1;
+            let reg_rhs = lir_rhs.result_reg();
 
-            vec![
-                lir_lhs,
-                lir_rhs,
-                lir!(ShiftRa ctx.alloc_reg(), reg_lhs, reg_rhs),
-            ]
+            let reg_result = ctx.alloc_reg();
+
+            (
+                reg_result,
+                vec![
+                    lir_lhs,
+                    lir_rhs,
+                    lir!(ShiftRa reg_result, reg_lhs, reg_rhs),
+                ],
+            )
         }
         BitShift::Add { add, .. } => {
             return lirgen_add(ctx, add);
@@ -59,6 +74,7 @@ pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirTree {
     LirTree::Node {
         reserved_reg_range,
         reserved_label_range,
+        result_reg,
         lirs,
     }
 }

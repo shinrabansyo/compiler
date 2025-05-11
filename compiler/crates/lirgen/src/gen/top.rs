@@ -19,6 +19,7 @@ pub fn lirgen_top(ctx: &mut GenContext, top: &Top) -> LirTree {
     LirTree::Node {
         reserved_reg_range: lir.reserved_reg_range(),
         reserved_label_range: lir.reserved_label_range(),
+        result_reg: lir.result_reg(),
         lirs: vec![lir],
     }
 }
