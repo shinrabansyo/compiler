@@ -5,9 +5,6 @@ use crate::{GenContext, ZERO_REG};
 use super::lirgen_bit_shift;
 
 pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirTree {
-    let reserved_reg_range_start = ctx.reserved_regs;
-    let reserved_label_range_start = ctx.reserved_labels;
-
     let (result_reg, lirs) = match cond {
         Cond::Eq { lhs, rhs, .. } => {
             let lir_lhs = lirgen_cond(ctx, lhs);
@@ -140,12 +137,7 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirTree {
         }
     };
 
-    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
-    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
-
-    LirTree::Node {
-        reserved_reg_range,
-        reserved_label_range,
+    LirTree::Single {
         result_reg,
         lirs,
     }

@@ -9,7 +9,7 @@ use utils::{Expect, test_dir};
 
 fn display_lir(f: &mut String, lir: &LirTree) -> std::fmt::Result {
     match lir {
-        LirTree::Node { lirs, .. } => {
+        LirTree::Single { lirs, .. } => {
             for lir in lirs {
                 display_lir(f, lir)?;
             }
@@ -108,7 +108,7 @@ fn test_code(input: &str) -> anyhow::Result<String> {
     // 2. LIR生成 (AST -> LIR)
     let lirs = lirgen(&ast);
     let lirs = match lirs {
-        LirTree::Node { lirs, .. } => lirs,
+        LirTree::Single { lirs, .. } => lirs,
         _ => unreachable!(),
     };
 

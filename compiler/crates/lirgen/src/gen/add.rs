@@ -5,9 +5,6 @@ use crate::GenContext;
 use super::lirgen_value;
 
 pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirTree {
-    let reserved_reg_range_start = ctx.reserved_regs;
-    let reserved_label_range_start = ctx.reserved_labels;
-
     let (result_reg, lirs) = match add {
         AddAst::Plus { lhs, rhs, .. } => {
             let lir_lhs = lirgen_add(ctx, lhs);
@@ -50,12 +47,7 @@ pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirTree {
         }
     };
 
-    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
-    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
-
-    LirTree::Node {
-        reserved_reg_range,
-        reserved_label_range,
+    LirTree::Single {
         result_reg,
         lirs,
     }

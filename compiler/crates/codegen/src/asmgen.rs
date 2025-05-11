@@ -27,7 +27,7 @@ impl AsmInstGenerator {
 
     fn gen_recursive(&mut self, lir_tree: LirTree) {
         match lir_tree {
-            LirTree::Node { lirs, .. } => {
+            LirTree::Single { lirs, .. } => {
                 for lir in lirs {
                     self.gen_recursive(lir);
                 }

@@ -61,7 +61,7 @@ impl DepsGraphBuilder {
 
     fn find_begin_point(&mut self, lir_tree: &LirTree) {
         match lir_tree {
-            LirTree::Node { lirs, .. } => {
+            LirTree::Single { lirs, .. } => {
                 for lir_tree in lirs {
                     self.find_begin_point(lir_tree);
                 }
@@ -75,7 +75,7 @@ impl DepsGraphBuilder {
 
     fn find_end_point(&mut self, lir_tree: &LirTree) {
         match lir_tree {
-            LirTree::Node { lirs, .. } => {
+            LirTree::Single { lirs, .. } => {
                 for lir_tree in lirs.iter().rev() {
                     self.find_end_point(lir_tree);
                 }

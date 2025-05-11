@@ -5,9 +5,6 @@ use crate::{GenContext, ZERO_REG};
 use super::{lirgen_expr, lirgen_block, lirgen_stmt};
 
 pub fn lirgen_if(ctx: &mut GenContext, r#if: &If) -> LirTree {
-    let reserved_reg_range_start = ctx.reserved_regs;
-    let reserved_label_range_start = ctx.reserved_labels;
-
     // 条件節
     let lir_cond = lirgen_expr(ctx, &r#if.cond);
     let reg_cond = lir_cond.result_reg();
@@ -26,25 +23,17 @@ pub fn lirgen_if(ctx: &mut GenContext, r#if: &If) -> LirTree {
     let label_false = ctx.alloc_label();
     let label_end = ctx.alloc_label();
 
-    // LIR 生成
-    let lirs = vec![
-        lir_cond,
-        lir!(Bne(12) ZERO_REG, reg_cond, ZERO_REG),
-        lir!(JmpLabel(label_false)),
-        lir_true_block,
-        lir!(JmpLabel(label_end)),
-        lir!(Label label_false),
-        lir_else_block,
-        lir!(Label label_end),
-    ];
-
-    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
-    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
-
-    LirTree::Node {
-        reserved_reg_range,
-        reserved_label_range,
+    LirTree::Single {
         result_reg: ZERO_REG,
-        lirs,
+        lirs: vec![
+            lir_cond,
+            lir!(Bne(12) ZERO_REG, reg_cond, ZERO_REG),
+            lir!(JmpLabel(label_false)),
+            lir_true_block,
+            lir!(JmpLabel(label_end)),
+            lir!(Label label_false),
+            lir_else_block,
+            lir!(Label label_end),
+        ],
     }
 }

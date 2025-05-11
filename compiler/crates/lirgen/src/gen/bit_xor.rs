@@ -5,9 +5,6 @@ use crate::GenContext;
 use super::lirgen_bit_and;
 
 pub fn lirgen_bit_xor(ctx: &mut GenContext, bit_xor: &BitXor) -> LirTree {
-    let reserved_reg_range_start = ctx.reserved_regs;
-    let reserved_label_range_start = ctx.reserved_labels;
-
     let (result_reg, lirs) = match bit_xor {
         BitXor::Xor { lhs, rhs, .. } => {
             let lir_lhs = lirgen_bit_xor(ctx, lhs);
@@ -32,12 +29,7 @@ pub fn lirgen_bit_xor(ctx: &mut GenContext, bit_xor: &BitXor) -> LirTree {
         }
     };
 
-    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
-    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
-
-    LirTree::Node {
-        reserved_reg_range,
-        reserved_label_range,
+    LirTree::Single {
         result_reg,
         lirs,
     }

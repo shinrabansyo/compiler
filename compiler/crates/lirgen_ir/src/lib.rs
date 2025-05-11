@@ -130,9 +130,7 @@ pub enum LirInst {
 
 #[derive(Debug)]
 pub enum LirTree {
-    Node {
-        reserved_reg_range: (u32, u32),
-        reserved_label_range: (u32, u32),
+    Single {
         result_reg: u32,
         lirs: Vec<LirTree>,
     },
@@ -148,23 +146,9 @@ pub enum LirTree {
 }
 
 impl LirTree {
-    pub fn reserved_reg_range(&self) -> (u32, u32) {
-        match self {
-            LirTree::Node { reserved_reg_range, .. } => *reserved_reg_range,
-            _ => panic!("LirTree::reserved_regs() called on non-node"),
-        }
-    }
-
-    pub fn reserved_label_range(&self) -> (u32, u32) {
-        match self {
-            LirTree::Node { reserved_label_range, .. } => *reserved_label_range,
-            _ => panic!("LirTree::reserved_labels() called on non-node"),
-        }
-    }
-
     pub fn result_reg(&self) -> u32 {
         match self {
-            LirTree::Node { result_reg, .. } => *result_reg,
+            LirTree::Single { result_reg, .. } => *result_reg,
             _ => panic!("LirTree::result_reg() called on non-node"),
         }
     }

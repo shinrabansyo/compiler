@@ -5,9 +5,6 @@ use crate::{GenContext, ZERO_REG, RET_REG, FARG_REG_BASE};
 use super::lirgen_expr;
 
 pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirTree {
-    let reserved_reg_range_start = ctx.reserved_regs;
-    let reserved_label_range_start = ctx.reserved_labels;
-
     let (result_reg, lirs) = match value {
         Value::Const { value, .. } => {
             let reg_imm = ctx.alloc_reg();
@@ -34,12 +31,7 @@ pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirTree {
         }
     };
 
-    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
-    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
-
-    LirTree::Node {
-        reserved_reg_range,
-        reserved_label_range,
+    LirTree::Single {
         result_reg,
         lirs,
     }

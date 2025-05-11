@@ -5,9 +5,6 @@ use crate::GenContext;
 use super::lirgen_add;
 
 pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirTree {
-    let reserved_reg_range_start = ctx.reserved_regs;
-    let reserved_label_range_start = ctx.reserved_labels;
-
     let (result_reg, lirs) = match bit_shift {
         BitShift::L { lhs, rhs, .. } => {
             let lir_lhs = lirgen_bit_shift(ctx, lhs);
@@ -68,12 +65,7 @@ pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirTree {
         }
     };
 
-    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
-    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
-
-    LirTree::Node {
-        reserved_reg_range,
-        reserved_label_range,
+    LirTree::Single {
         result_reg,
         lirs,
     }

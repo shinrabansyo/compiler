@@ -5,9 +5,6 @@ use crate::{GenContext, ZERO_REG};
 use super::lirgen_bit_or;
 
 pub fn lirgen_logic_and(ctx: &mut GenContext, logic_and: &LogicAnd) -> LirTree {
-    let reserved_reg_range_start = ctx.reserved_regs;
-    let reserved_label_range_start = ctx.reserved_labels;
-
     let (result_reg, lirs) = match logic_and {
         LogicAnd::And { lhs, rhs, .. } => {
             let lir_lhs = lirgen_logic_and(ctx, lhs);
@@ -47,12 +44,7 @@ pub fn lirgen_logic_and(ctx: &mut GenContext, logic_and: &LogicAnd) -> LirTree {
         }
     };
 
-    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
-    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
-
-    LirTree::Node {
-        reserved_reg_range,
-        reserved_label_range,
+    LirTree::Single {
         result_reg,
         lirs,
     }

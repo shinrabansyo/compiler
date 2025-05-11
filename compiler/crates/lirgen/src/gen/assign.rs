@@ -5,9 +5,6 @@ use crate::{GenContext, ZERO_REG};
 use super::lirgen_logic_or;
 
 pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirTree {
-    let reserved_reg_range_start = ctx.reserved_regs;
-    let reserved_label_range_start = ctx.reserved_labels;
-
     let (result_reg, lirs) = match assign {
         Assign::Normal { ident, assign, .. } => {
             let lir_assign = lirgen_assign(ctx, assign);
@@ -62,12 +59,7 @@ pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirTree {
         }
     };
 
-    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
-    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
-
-    LirTree::Node {
-        reserved_reg_range,
-        reserved_label_range,
+    LirTree::Single {
         result_reg,
         lirs,
     }
