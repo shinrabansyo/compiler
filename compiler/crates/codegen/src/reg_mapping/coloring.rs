@@ -8,8 +8,15 @@ pub fn coloring(deps_graph: HashMap<u32, Vec<u32>>) -> HashMap<u32, u8> {
     }
     connections.sort_by(|a, b| b.1.cmp(&a.1));
 
+    // 2. 結果用変数用意 (r0 ~ r19 は確保済みなので固定値)
+    let mut result = HashMap::from([
+        (0, 0), (1, 1), (2, 2), (3, 3), (4, 4),
+        (5, 5), (6, 6), (7, 7), (8, 8), (9, 9),
+        (10, 10), (11, 11), (12, 12), (13, 13), (14, 14),
+        (15, 15), (16, 16), (17, 17), (18, 18), (19, 19),
+    ]);
+
     // 2. グラフ彩色問題を解く (Welsh-Powell法)
-    let mut result = HashMap::new();
     for (node, _) in connections {
         // 2-1. 彩色済みかどうか確認
         if result.contains_key(node) {

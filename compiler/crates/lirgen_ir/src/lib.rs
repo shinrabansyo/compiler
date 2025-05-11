@@ -112,7 +112,7 @@ pub enum LirInst {
     Ble(i32),
     Jmp(i32),
     JmpLabel(u32),
-    Call(String, Vec<u8>),
+    Call(String),
 }
 
 #[derive(Debug)]

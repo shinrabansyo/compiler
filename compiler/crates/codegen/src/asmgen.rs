@@ -69,9 +69,10 @@ impl AsmInstGenerator {
                         let label = format!("local.{}", label);
                         asmi!(Beq dst, 0, 0, InstLabel(label))
                     }
-
-                    // 未実装
-                    LirInst::Call(..) => unimplemented!(),
+                    LirInst::Call(label) => {
+                        let label = format!("{}", label);
+                        asmi!(Beq 1, 0, 0, InstLabel(label))
+                    }
                 };
                 self.asm_inst.push(asm);
             }

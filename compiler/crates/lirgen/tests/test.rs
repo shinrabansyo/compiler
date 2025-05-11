@@ -90,15 +90,8 @@ fn display_lir(f: &mut String, lir: &LirTree) -> std::fmt::Result {
                 LirInst::JmpLabel(label) => {
                     writeln!(f, "jmp  t{}, @local.{}", dst, label)
                 }
-                LirInst::Call(func, args) => {
-                    write!(f, "call {} (", func)?;
-                    for (idx, arg) in args.iter().enumerate() {
-                        if idx != 0 {
-                            write!(f, ", ")?;
-                        }
-                        write!(f, "t{}", arg)?;
-                    }
-                    writeln!(f, ")")
+                LirInst::Call(func) => {
+                    writeln!(f, "call {}", func)
                 }
             }
         }

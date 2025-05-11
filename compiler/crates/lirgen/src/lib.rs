@@ -5,6 +5,7 @@ use sb_compiler_lirgen_ir::LirTree;
 use sb_compiler_utils::collections::LayeredTable;
 
 const ZERO_REG: u32 = 0;
+const FARG_REG_BASE: u32 = 10;
 
 #[derive(Debug, Clone)]
 struct GenContext {
@@ -16,7 +17,7 @@ struct GenContext {
 impl Default for GenContext {
     fn default() -> Self {
         Self {
-            reserved_regs: 1,   // ゼロレジスタとして1つ確保済み
+            reserved_regs: 20,   // r0: ゼロレジスタ, r10 ~ r19: 引数レジスタ として確保済み
             reserved_labels: 0,
             sym_table: LayeredTable::default(),
         }

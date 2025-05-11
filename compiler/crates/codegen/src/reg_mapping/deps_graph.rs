@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use sb_compiler_lirgen_ir::{LirTree, Call};
+use sb_compiler_lirgen_ir::LirTree;
 
 pub fn build_deps_graph(lir_tree: &LirTree) -> HashMap<u32, Vec<u32>> {
     DepsGraphBuilder::build(lir_tree)
@@ -32,15 +32,15 @@ impl DepsGraphBuilder {
         let mut alive_regs = HashSet::new();
         let mut deps_graph = HashMap::new();
         for (begin, (end1, end2)) in begin_end_zip_iter {
-            // 3-1. 登場・消失処理
-            if *begin != 0 {
+            // 3-1. 登場・消失処理 (r0 ~ r19 は確保済みなので対象から除外)
+            if *begin > 19 {
                 alive_regs.insert(*begin);
                 deps_graph.insert(*begin, vec![]);
             }
-            if *end1 != 0 {
+            if *end1 > 19 {
                 alive_regs.remove(&end1);
             }
-            if *end2 != 0 {
+            if *end2 > 19 {
                 alive_regs.remove(&end2);
             }
 
@@ -76,11 +76,6 @@ impl DepsGraphBuilder {
             LirTree::Node { lirs, .. } => {
                 for lir_tree in lirs.iter().rev() {
                     self.find_end_point(lir_tree);
-                }
-            }
-            LirTree::Inst { inst: Call(_, reg_args), .. } => {
-                for reg_arg in reg_args {
-                    self.end_point.push((*reg_arg as u32, 0));
                 }
             }
             LirTree::Inst { src1, src2, .. } => {
