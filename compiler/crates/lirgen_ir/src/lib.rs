@@ -11,6 +11,16 @@ macro_rules! lir {
         LirTree::Label { label: $label }
     };
 
+    // 0-レジスタ && 命令引数なし
+    ($inst:ident) => {
+        LirTree::Inst {
+            inst: $inst,
+            dst: 0,
+            src1: 0,
+            src2: 0,
+        }
+    };
+
     // 0-レジスタ && 命令引数あり
     ($inst:ident ( $($arg:expr),* )) => {
         LirTree::Inst {
@@ -84,6 +94,9 @@ macro_rules! lir {
 
 #[derive(Debug)]
 pub enum LirInst {
+    // Nop
+    Nop,
+
     // 整数演算 (imm 使用)
     Li(i32),
     Addi(i32),

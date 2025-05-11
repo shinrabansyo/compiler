@@ -1,27 +1,50 @@
 use sb_compiler_parse_ast::If;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Pop, Bne, Jmp, Label};
+use sb_compiler_lirgen_ir::{lir, LirTree, Bne, JmpLabel, Nop};
 
-use super::{lirgen_expr, lirgen_block, lirgen_stmt, TMP_REG, ZERO_REG};
+use crate::{GenContext, ZERO_REG};
+use super::{lirgen_expr, lirgen_block, lirgen_stmt};
 
-pub fn lirgen_if(lirs: &mut Vec<LIR>, r#if: &If, analyze_result: &AnalyzeResult) {
-    let else_label = format!("ifelse_stmt.{}.{}", lirs.len(), r#if.namespace);
-    let end_label = format!("ifend_stmt.{}.{}", lirs.len(), r#if.namespace);
+pub fn lirgen_if(ctx: &mut GenContext, r#if: &If) -> LirTree {
+    let reserved_reg_range_start = ctx.reserved_regs;
+    let reserved_label_range_start = ctx.reserved_labels;
 
     // 条件節
-    lirgen_expr(lirs, &r#if.cond, analyze_result);
-    lirs.push(lir!(Pop TMP_REG));
-    lirs.push(lir!(Bne ZERO_REG, TMP_REG, 12));
-    lirs.push(lir!(Jmp else_label.clone()));
+    let lir_cond = lirgen_expr(ctx, &r#if.cond);
+    let reg_cond = lir_cond.result_reg();
 
-    // 実行節 (本体)
-    lirgen_block(lirs, &r#if.block, analyze_result);
-    lirs.push(lir!(Jmp end_label.clone()));
+    // True ブロック
+    let lir_true_block = lirgen_block(ctx, &r#if.block);
 
-    // 実行節 (else)
-    lirs.push(lir!(Label else_label));
-    if let Some(else_stmt) = &r#if.else_stmt {
-        lirgen_stmt(lirs, else_stmt, analyze_result);
+    // False ブロック
+    let lir_else_block = if let Some(else_stmt) = &r#if.else_stmt {
+        lirgen_stmt(ctx, else_stmt)
+    } else {
+        lir!(Nop)
+    };
+
+    // ラベル
+    let label_false = ctx.alloc_label();
+    let label_end = ctx.alloc_label();
+
+    // LIR 生成
+    let lirs = vec![
+        lir_cond,
+        lir!(Bne(12) ZERO_REG, reg_cond, ZERO_REG),
+        lir!(JmpLabel(label_false)),
+        lir_true_block,
+        lir!(JmpLabel(label_end)),
+        lir!(Label label_false),
+        lir_else_block,
+        lir!(Label label_end),
+    ];
+
+    let reserved_reg_range = (reserved_reg_range_start, ctx.reserved_regs);
+    let reserved_label_range = (reserved_label_range_start, ctx.reserved_labels);
+
+    LirTree::Node {
+        reserved_reg_range,
+        reserved_label_range,
+        result_reg: ZERO_REG,
+        lirs,
     }
-    lirs.push(lir!(Label end_label));
 }

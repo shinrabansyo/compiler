@@ -21,6 +21,9 @@ fn display_lir(f: &mut String, lir: &LirTree) -> std::fmt::Result {
         LirTree::Inst { inst, dst, src1, src2 } => {
             write!(f, "    ")?;
             match inst {
+                LirInst::Nop => {
+                    writeln!(f, "nop")
+                }
                 LirInst::Li(imm) => {
                     writeln!(f, "li   t{} = {}", dst, imm)
                 }

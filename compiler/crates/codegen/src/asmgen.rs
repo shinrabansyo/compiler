@@ -79,7 +79,9 @@ impl AsmInstGenerator {
                 };
                 self.asm_inst.push(asm);
             }
-            _ => {}
+            LirTree::Label { label } => {
+                self.asm_inst.push(asmi!(LLabel label));
+            }
         }
     }
 }

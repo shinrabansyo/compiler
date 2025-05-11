@@ -43,6 +43,10 @@ macro_rules! asmi {
     (Sh  $rs1:expr, $rs2:expr, $imm:expr) => { Sh  { rs1: $rs1, rs2: $rs2, imm: $imm } };
     (Sw  $rs1:expr, $rs2:expr, $imm:expr) => { Sw  { rs1: $rs1, rs2: $rs2, imm: $imm } };
     (Out $rs1:expr, $rs2:expr, $imm:expr) => { Out { rs1: $rs1, rs2: $rs2, imm: $imm } };
+
+    // ラベル
+    (LLabel $label:expr) => { LLabel { label: $label } };
+    (GLabel $label:expr) => { GLabel { label: $label } };
 }
 
 #[derive(Debug, Clone)]
@@ -85,6 +89,10 @@ pub enum AsmInst {
     Sh  { rs1: u8, rs2: u8, imm: i32 },
     Sw  { rs1: u8, rs2: u8, imm: i32 },
     Out { rs1: u8, rs2: u8, imm: i32 },
+
+    // ラベル
+    LLabel { label: u32 },
+    GLabel { label: String },
 }
 
 impl Display for AsmInst {
@@ -189,6 +197,14 @@ impl Display for AsmInst {
             }
             AsmInst::Out { rs1, rs2, imm } => {
                 write!(f, "out r{}[{}] = r{}", rs1, imm, rs2)
+            }
+
+            // ラベル
+            AsmInst::LLabel { label } => {
+                write!(f, "@local.{}", label)
+            }
+            AsmInst::GLabel { .. } => {
+                unimplemented!()
             }
         }
     }
