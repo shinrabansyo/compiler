@@ -6,20 +6,13 @@ use crate::GenContext;
 use super::lirgen_var_decl;
 
 pub fn lirgen_top(ctx: &mut GenContext, top: &Top) -> LirTree {
-    let lir = match top {
+    match top {
         Top::VarDecl { var_decl, .. } => {
             lirgen_var_decl(ctx, var_decl)
         }
-        _ => todo!(),
-        // Top::FuncDef { func_def, .. } => {
-        //     lirgen_func_def(&mut context, func_def);
-        // }
-    };
-
-    LirTree::Node {
-        reserved_reg_range: lir.reserved_reg_range(),
-        reserved_label_range: lir.reserved_label_range(),
-        result_reg: lir.result_reg(),
-        lirs: vec![lir],
+        Top::FuncDef { func_def, .. } => {
+            todo!()
+            // lirgen_func_def(ctx, func_def)
+        }
     }
 }
