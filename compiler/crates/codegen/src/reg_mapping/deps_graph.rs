@@ -35,7 +35,9 @@ impl DepsGraphBuilder {
             // 3-1. 登場・消失処理 (r0 ~ r19 は確保済みなので対象から除外)
             if *begin > 19 {
                 alive_regs.insert(*begin);
-                deps_graph.insert(*begin, vec![]);
+                if deps_graph.get(begin).is_none() {
+                    deps_graph.insert(*begin, vec![]);
+                }
             }
             if *end1 > 19 {
                 alive_regs.remove(&end1);

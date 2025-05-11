@@ -38,6 +38,9 @@ impl AsmInstGenerator {
                 let src2 = *self.reg_map.get(&src2).unwrap_or(&0);
 
                 let asm = match inst {
+                    // Nop
+                    LirInst::Nop => asmi!(Add 0, 0, 0),
+
                     // 整数演算 (imm 使用)
                     LirInst::Li(imm) => asmi!(Addi dst, 0, Imm(imm)),
                     LirInst::Addi(imm) => asmi!(Addi dst, src1, Imm(imm)),
