@@ -9,9 +9,8 @@ use asmgen::asmgen;
 use cleaning::cleaning;
 use reg_mapping::mapping;
 
-pub fn codegen(mut lir_top_elem: Vec<LirTopElem>) -> Asm {
+pub fn codegen(lir_top_elem: LirTopElem) -> Asm {
     // 1. レジスタ割り付け (LirBlock -> RegMap)
-    let lir_top_elem = lir_top_elem.pop().unwrap();
     let lir_block = lir_top_elem.block();
     let reg_map = mapping(lir_block);
 
