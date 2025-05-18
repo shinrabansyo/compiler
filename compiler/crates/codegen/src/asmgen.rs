@@ -21,6 +21,7 @@ impl AsmInstGenerator {
             asm_inst: Vec::new(),
         };
         generator.gen_recursive(lir_tree);
+        generator.asm_inst.push(asmi!(Add 0, 12, 4));
 
         generator.asm_inst
     }
