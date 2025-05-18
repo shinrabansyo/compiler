@@ -2,7 +2,7 @@ use sb_compiler_parse_ast::Stmt;
 use sb_compiler_lirgen_ir::LirTree;
 
 use crate::GenContext;
-use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_if};
+use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_if, lirgen_while};
 
 pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirTree {
     match stmt {
@@ -29,8 +29,7 @@ pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirTree {
             lirgen_if(ctx, r#if)
         }
         Stmt::While { r#while, .. } => {
-            unimplemented!()
-            // lirgen_while(lirs, r#while, analyze_result);
+            lirgen_while(ctx, r#while)
         }
         Stmt::For { r#for, .. } => {
             unimplemented!()

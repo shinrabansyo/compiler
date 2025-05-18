@@ -32,6 +32,11 @@ impl AsmInstGenerator {
                     self.gen_recursive(lir);
                 }
             }
+            LirTree::Multiple { lirs } => {
+                for lir in lirs {
+                    self.gen_recursive(lir);
+                }
+            }
             LirTree::Inst { inst, dst, src1, src2 } => {
                 let dst = *self.reg_map.get(&dst).unwrap_or(&0);
                 let src1 = *self.reg_map.get(&src1).unwrap_or(&0);

@@ -1,91 +1,33 @@
 use std::collections::{HashMap, HashSet};
 
-use sb_compiler_lirgen_ir::LirTree;
-
-pub fn build_deps_graph(lir_tree: &LirTree) -> HashMap<u32, Vec<u32>> {
-    DepsGraphBuilder::build(lir_tree)
-}
-
-struct DepsGraphBuilder {
-    begin_point: Vec<u32>,
-    end_point: Vec<(u32, u32)>,
-}
-
-impl DepsGraphBuilder {
-    fn build(lir_tree: &LirTree) -> HashMap<u32, Vec<u32>> {
-        // 1. 寿命解析
-        let mut builder = DepsGraphBuilder {
-            begin_point: vec![0],
-            end_point: vec![],
-        };
-        builder.find_begin_point(lir_tree);
-        builder.find_end_point(lir_tree);
-        builder.end_point.push((0, 0));
-
-        // 2. 各タイミングで登場・消失するレジスタを追うイテレータを準備
-        let begin_end_zip_iter = builder
-            .begin_point
-            .iter()
-            .zip(builder.end_point.iter().rev());
-
-        // 3. レジスタの依存関係をグラフとして構築
-        let mut alive_regs = HashSet::new();
-        let mut deps_graph = HashMap::new();
-        for (begin, (end1, end2)) in begin_end_zip_iter {
-            // 3-1. 登場・消失処理 (r0 ~ r19 は確保済みなので対象から除外)
-            if *begin > 19 {
-                alive_regs.insert(*begin);
-                if deps_graph.get(begin).is_none() {
-                    deps_graph.insert(*begin, vec![]);
-                }
+pub fn build_deps_graph(
+    lifetime_tracker: impl Iterator<Item = (u32, Vec<u32>)>,
+) -> HashMap<u32, Vec<u32>> {
+    let mut alive_regs = HashSet::new();
+    let mut deps_graph = HashMap::new();
+    for (begin, ends) in lifetime_tracker {
+        // 1. 登場・消失処理 (r0 ~ r19 は確保済みなので対象から除外)
+        if begin > 19 {
+            alive_regs.insert(begin);
+            if deps_graph.get(&begin).is_none() {
+                deps_graph.insert(begin, vec![]);
             }
-            if *end1 > 19 {
-                alive_regs.remove(&end1);
-            }
-            if *end2 > 19 {
-                alive_regs.remove(&end2);
-            }
+        }
+        for end in ends.into_iter().filter(|&x| x > 19) {
+            alive_regs.remove(&end);
+        }
 
-            // 3-2. 生存中のレジスタの依存関係をグラフに追加
-            for edge_src in &alive_regs {
-                for edge_dst in &alive_regs {
-                    if edge_src != edge_dst {
-                        deps_graph.get_mut(edge_src).unwrap().push(*edge_dst);
-                    }
+        // 2. 生存中のレジスタの依存関係をグラフに追加
+        for edge_src in &alive_regs {
+            for edge_dst in &alive_regs {
+                if edge_src != edge_dst {
+                    deps_graph.get_mut(edge_src).unwrap().push(*edge_dst);
                 }
             }
         }
-
-        deps_graph
     }
 
-    fn find_begin_point(&mut self, lir_tree: &LirTree) {
-        match lir_tree {
-            LirTree::Single { lirs, .. } => {
-                for lir_tree in lirs {
-                    self.find_begin_point(lir_tree);
-                }
-            }
-            LirTree::Inst { dst, .. } => {
-                self.begin_point.push(*dst)
-            }
-            _ => {}
-        }
-    }
-
-    fn find_end_point(&mut self, lir_tree: &LirTree) {
-        match lir_tree {
-            LirTree::Single { lirs, .. } => {
-                for lir_tree in lirs.iter().rev() {
-                    self.find_end_point(lir_tree);
-                }
-            }
-            LirTree::Inst { src1, src2, .. } => {
-                self.end_point.push((*src1, *src2));
-            }
-            _ => {}
-        }
-    }
+    deps_graph
 }
 
 #[cfg(test)]
@@ -95,6 +37,7 @@ mod tests {
     use sb_compiler_parse::parse;
     use sb_compiler_lirgen::lirgen as lirgen0;
 
+    use crate::reg_mapping::lifetime::analyze_lifetime;
     use super::build_deps_graph as build_deps_graph0;
 
     #[test]
@@ -193,7 +136,8 @@ mod tests {
     fn build_deps_graph(input: &str) -> HashMap<u32, Vec<u32>> {
         let ast = parse(input).unwrap();
         let lir = lirgen0(&ast);
-        let deps_graph = build_deps_graph0(&lir);
+        let lifetime_tracker = analyze_lifetime(&lir);
+        let deps_graph = build_deps_graph0(lifetime_tracker);
         deps_graph
     }
 }

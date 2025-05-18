@@ -15,6 +15,12 @@ fn display_lir(f: &mut String, lir: &LirTree) -> std::fmt::Result {
             }
             Ok(())
         }
+        LirTree::Multiple { lirs } => {
+            for lir in lirs {
+                display_lir(f, lir)?;
+            }
+            Ok(())
+        }
         LirTree::Label { label } => {
             writeln!(f, "@local.{}", label)
         }

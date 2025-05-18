@@ -130,13 +130,23 @@ pub enum LirInst {
 
 #[derive(Debug)]
 pub enum LirTree {
+    // 単一で実行されるブロック (func, if, ...)
     Single {
         result_reg: u32,
         lirs: Vec<LirTree>,
     },
+
+    // 多重で実行されるブロック (for, while, ...)
+    Multiple {
+        lirs: Vec<LirTree>,
+    },
+
+    // ラベル
     Label {
         label: u32,
     },
+
+    // 単一命令
     Inst {
         inst: LirInst,
         dst: u32,
@@ -149,6 +159,7 @@ impl LirTree {
     pub fn result_reg(&self) -> u32 {
         match self {
             LirTree::Single { result_reg, .. } => *result_reg,
+            LirTree::Multiple { .. } => 0,
             _ => panic!("LirTree::result_reg() called on non-node"),
         }
     }
