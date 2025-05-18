@@ -4,27 +4,27 @@ use std::fmt::Write;
 
 use sb_compiler_parse::parse;
 use sb_compiler_lirgen::lirgen;
-use sb_compiler_lirgen_ir::{LirInst, LirTree};
+use sb_compiler_lirgen_ir::{LirInst, LirBlock};
 use utils::{Expect, test_dir};
 
-fn display_lir(f: &mut String, lir: &LirTree) -> std::fmt::Result {
+fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
     match lir {
-        LirTree::Single { lirs, .. } => {
+        LirBlock::Single { lirs, .. } => {
             for lir in lirs {
                 display_lir(f, lir)?;
             }
             Ok(())
         }
-        LirTree::Multiple { lirs } => {
+        LirBlock::Multiple { lirs } => {
             for lir in lirs {
                 display_lir(f, lir)?;
             }
             Ok(())
         }
-        LirTree::Label { label } => {
+        LirBlock::Label { label } => {
             writeln!(f, "@local.{}", label)
         }
-        LirTree::Inst { inst, dst, src1, src2 } => {
+        LirBlock::Inst { inst, dst, src1, src2 } => {
             write!(f, "    ")?;
             match inst {
                 LirInst::Nop => {
@@ -114,7 +114,7 @@ fn test_code(input: &str) -> anyhow::Result<String> {
     // 2. LIR生成 (AST -> LIR)
     let lirs = lirgen(&ast);
     let lirs = match lirs {
-        LirTree::Single { lirs, .. } => lirs,
+        LirBlock::Single { lirs, .. } => lirs,
         _ => unreachable!(),
     };
 

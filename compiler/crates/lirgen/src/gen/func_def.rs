@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::FuncDef;
-use sb_compiler_lirgen_ir::LirTree;
+use sb_compiler_lirgen_ir::LirBlock;
 
 use crate::GenContext;
 use super::lirgen_block;
 
-pub fn lirgen_func_def(ctx: &mut GenContext, func: &FuncDef) -> LirTree {
+pub fn lirgen_func_def(ctx: &mut GenContext, func: &FuncDef) -> LirBlock {
     // TODO
     // let label = format!("{}.{}", func.ident, func.namespace);
     // lirs.push(lir!(Label label));

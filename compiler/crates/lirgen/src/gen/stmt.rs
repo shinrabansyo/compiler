@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::Stmt;
-use sb_compiler_lirgen_ir::LirTree;
+use sb_compiler_lirgen_ir::LirBlock;
 
 use crate::GenContext;
 use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_if, lirgen_while, lirgen_for};
 
-pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirTree {
+pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirBlock {
     match stmt {
         Stmt::VarDecl { var_decl, .. } => {
             lirgen_var_decl(ctx, var_decl)

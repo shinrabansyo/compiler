@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::BitAnd;
-use sb_compiler_lirgen_ir::{lir, LirTree, And};
+use sb_compiler_lirgen_ir::{lir, LirBlock, And};
 
 use crate::GenContext;
 use super::lirgen_cond;
 
-pub fn lirgen_bit_and(ctx: &mut GenContext, bit_and: &BitAnd) -> LirTree {
+pub fn lirgen_bit_and(ctx: &mut GenContext, bit_and: &BitAnd) -> LirBlock {
     let (result_reg, lirs) = match bit_and {
         BitAnd::And { lhs, rhs, .. } => {
             let lir_lhs = lirgen_bit_and(ctx, lhs);
@@ -29,7 +29,7 @@ pub fn lirgen_bit_and(ctx: &mut GenContext, bit_and: &BitAnd) -> LirTree {
         }
     };
 
-    LirTree::Single {
+    LirBlock::Single {
         result_reg,
         lirs,
     }

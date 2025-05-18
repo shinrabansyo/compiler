@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::BitShift;
-use sb_compiler_lirgen_ir::{lir, LirTree, ShiftL, ShiftR, ShiftRa};
+use sb_compiler_lirgen_ir::{lir, LirBlock, ShiftL, ShiftR, ShiftRa};
 
 use crate::GenContext;
 use super::lirgen_add;
 
-pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirTree {
+pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirBlock {
     let (result_reg, lirs) = match bit_shift {
         BitShift::L { lhs, rhs, .. } => {
             let lir_lhs = lirgen_bit_shift(ctx, lhs);
@@ -65,7 +65,7 @@ pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirTree {
         }
     };
 
-    LirTree::Single {
+    LirBlock::Single {
         result_reg,
         lirs,
     }

@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 
-use sb_compiler_lirgen_ir::{LirTree, LirInst};
+use sb_compiler_lirgen_ir::{LirBlock, LirInst};
 use sb_compiler_codegen_asm::inst::*;
 use sb_compiler_codegen_asm::{asmi, Asm};
 
-pub fn asmgen(lir_tree: LirTree, reg_map: HashMap<u32, u8>) -> Asm {
-    let asm_inst = AsmInstGenerator::gen(lir_tree, reg_map);
+pub fn asmgen(lir_block: LirBlock, reg_map: HashMap<u32, u8>) -> Asm {
+    let asm_inst = AsmInstGenerator::gen(lir_block, reg_map);
     Asm::from(asm_inst)
 }
 
@@ -15,30 +15,30 @@ struct AsmInstGenerator {
 }
 
 impl AsmInstGenerator {
-    fn gen(lir_tree: LirTree, reg_map: HashMap<u32, u8>) -> Vec<AsmInst> {
+    fn gen(lir_block: LirBlock, reg_map: HashMap<u32, u8>) -> Vec<AsmInst> {
         let mut generator = AsmInstGenerator {
             reg_map,
             asm_inst: Vec::new(),
         };
-        generator.gen_recursive(lir_tree);
+        generator.gen_recursive(lir_block);
         generator.asm_inst.push(asmi!(Add 0, 12, 4));
 
         generator.asm_inst
     }
 
-    fn gen_recursive(&mut self, lir_tree: LirTree) {
-        match lir_tree {
-            LirTree::Single { lirs, .. } => {
+    fn gen_recursive(&mut self, lir_block: LirBlock) {
+        match lir_block {
+            LirBlock::Single { lirs, .. } => {
                 for lir in lirs {
                     self.gen_recursive(lir);
                 }
             }
-            LirTree::Multiple { lirs } => {
+            LirBlock::Multiple { lirs } => {
                 for lir in lirs {
                     self.gen_recursive(lir);
                 }
             }
-            LirTree::Inst { inst, dst, src1, src2 } => {
+            LirBlock::Inst { inst, dst, src1, src2 } => {
                 let dst = *self.reg_map.get(&dst).unwrap_or(&0);
                 let src1 = *self.reg_map.get(&src1).unwrap_or(&0);
                 let src2 = *self.reg_map.get(&src2).unwrap_or(&0);
@@ -85,7 +85,7 @@ impl AsmInstGenerator {
                 };
                 self.asm_inst.push(asm);
             }
-            LirTree::Label { label } => {
+            LirBlock::Label { label } => {
                 self.asm_inst.push(asmi!(LLabel label));
             }
         }

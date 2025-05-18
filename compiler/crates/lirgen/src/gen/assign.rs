@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::Assign;
-use sb_compiler_lirgen_ir::{lir, LirTree, Add, Sub, ShiftL, ShiftR, ShiftRa};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Sub, ShiftL, ShiftR, ShiftRa};
 
 use crate::{GenContext, ZERO_REG};
 use super::lirgen_logic_or;
 
-pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirTree {
+pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirBlock {
     let (result_reg, lirs) = match assign {
         Assign::Normal { ident, assign, .. } => {
             let lir_assign = lirgen_assign(ctx, assign);
@@ -59,7 +59,7 @@ pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirTree {
         }
     };
 
-    LirTree::Single {
+    LirBlock::Single {
         result_reg,
         lirs,
     }

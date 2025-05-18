@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::If;
-use sb_compiler_lirgen_ir::{lir, LirTree, Bne, JmpLabel, Nop};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel, Nop};
 
 use crate::{GenContext, ZERO_REG};
 use super::{lirgen_expr, lirgen_block, lirgen_stmt};
 
-pub fn lirgen_if(ctx: &mut GenContext, r#if: &If) -> LirTree {
+pub fn lirgen_if(ctx: &mut GenContext, r#if: &If) -> LirBlock {
     // 条件節
     let lir_cond = lirgen_expr(ctx, &r#if.cond);
     let reg_cond = lir_cond.result_reg();
@@ -23,7 +23,7 @@ pub fn lirgen_if(ctx: &mut GenContext, r#if: &If) -> LirTree {
     let label_false = ctx.alloc_label();
     let label_end = ctx.alloc_label();
 
-    LirTree::Single {
+    LirBlock::Single {
         result_reg: ZERO_REG,
         lirs: vec![
             lir_cond,

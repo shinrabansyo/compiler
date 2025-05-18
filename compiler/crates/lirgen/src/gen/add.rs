@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::Add as AddAst;
-use sb_compiler_lirgen_ir::{lir, LirTree, Add, Sub};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Sub};
 
 use crate::GenContext;
 use super::lirgen_value;
 
-pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirTree {
+pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirBlock {
     let (result_reg, lirs) = match add {
         AddAst::Plus { lhs, rhs, .. } => {
             let lir_lhs = lirgen_add(ctx, lhs);
@@ -47,7 +47,7 @@ pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirTree {
         }
     };
 
-    LirTree::Single {
+    LirBlock::Single {
         result_reg,
         lirs,
     }

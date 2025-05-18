@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::For;
-use sb_compiler_lirgen_ir::{lir, LirTree, Bne, JmpLabel};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel};
 
 use crate::{GenContext, ZERO_REG};
 use super::{lirgen_expr, lirgen_block};
 
-pub fn lirgen_for(ctx: &mut GenContext, r#for: &For) -> LirTree {
+pub fn lirgen_for(ctx: &mut GenContext, r#for: &For) -> LirBlock {
     // 初期化節
     let lir_init = lirgen_expr(ctx, &r#for.init);
 
@@ -22,7 +22,7 @@ pub fn lirgen_for(ctx: &mut GenContext, r#for: &For) -> LirTree {
     let label_cond = ctx.alloc_label();
     let label_end = ctx.alloc_label();
 
-    LirTree::Multiple {
+    LirBlock::Multiple {
         lirs: vec![
             lir_init,
             lir!(Label label_cond),

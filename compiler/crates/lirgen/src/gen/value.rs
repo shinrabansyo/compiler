@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::Value;
-use sb_compiler_lirgen_ir::{lir, LirTree, Add, Call, Li};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Call, Li};
 
 use crate::{GenContext, ZERO_REG, RET_REG, FARG_REG_BASE};
 use super::lirgen_expr;
 
-pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirTree {
+pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirBlock {
     let (result_reg, lirs) = match value {
         Value::Const { value, .. } => {
             let reg_imm = ctx.alloc_reg();
@@ -31,7 +31,7 @@ pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirTree {
         }
     };
 
-    LirTree::Single {
+    LirBlock::Single {
         result_reg,
         lirs,
     }

@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::Cond;
-use sb_compiler_lirgen_ir::{lir, LirTree, Beq, Bne, Blt, Ble, Jmp, Li};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Beq, Bne, Blt, Ble, Jmp, Li};
 
 use crate::{GenContext, ZERO_REG};
 use super::lirgen_bit_shift;
 
-pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirTree {
+pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
     let (result_reg, lirs) = match cond {
         Cond::Eq { lhs, rhs, .. } => {
             let lir_lhs = lirgen_cond(ctx, lhs);
@@ -137,7 +137,7 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirTree {
         }
     };
 
-    LirTree::Single {
+    LirBlock::Single {
         result_reg,
         lirs,
     }

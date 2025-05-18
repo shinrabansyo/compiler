@@ -1,13 +1,13 @@
 use std::collections::HashSet;
 
-use sb_compiler_lirgen_ir::LirTree;
+use sb_compiler_lirgen_ir::LirBlock;
 
-pub fn analyze_lifetime(lir_tree: &LirTree) -> impl Iterator<Item = (u32, Vec<u32>)> {
+pub fn analyze_lifetime(lir_block: &LirBlock) -> impl Iterator<Item = (u32, Vec<u32>)> {
     // 1. 単純に寿命を求める
-    let simple_lifetime = SimpleLifetimeAnalyzer::analyze(lir_tree);
+    let simple_lifetime = SimpleLifetimeAnalyzer::analyze(lir_block);
 
     // 2. 制御構造を考慮して，より正確に寿命を求める
-    LifetimeAnalyzer::analyze(lir_tree, simple_lifetime)
+    LifetimeAnalyzer::analyze(lir_block, simple_lifetime)
 }
 
 struct SimpleLifetimeAnalyzer {
@@ -15,28 +15,28 @@ struct SimpleLifetimeAnalyzer {
 }
 
 impl SimpleLifetimeAnalyzer {
-    fn analyze(lir_tree: &LirTree) -> impl Iterator<Item = Vec<u32>> {
+    fn analyze(lir_block: &LirBlock) -> impl Iterator<Item = Vec<u32>> {
         let mut analyzer = SimpleLifetimeAnalyzer {
             end_point: vec![],
         };
-        analyzer.find_end_point(lir_tree);
+        analyzer.find_end_point(lir_block);
         analyzer.end_point.push(vec![0]);
         analyzer.end_point.into_iter().rev()
     }
 
-    fn find_end_point(&mut self, lir_tree: &LirTree) {
-        match lir_tree {
-            LirTree::Single { lirs, .. } => {
-                for lir_tree in lirs.iter().rev() {
-                    self.find_end_point(lir_tree);
+    fn find_end_point(&mut self, lir_block: &LirBlock) {
+        match lir_block {
+            LirBlock::Single { lirs, .. } => {
+                for lir_block in lirs.iter().rev() {
+                    self.find_end_point(lir_block);
                 }
             }
-            LirTree::Multiple { lirs } => {
-                for lir_tree in lirs.iter().rev() {
-                    self.find_end_point(lir_tree);
+            LirBlock::Multiple { lirs } => {
+                for lir_block in lirs.iter().rev() {
+                    self.find_end_point(lir_block);
                 }
             }
-            LirTree::Inst { src1, src2, .. } => {
+            LirBlock::Inst { src1, src2, .. } => {
                 self.end_point.push(vec![*src1, *src2]);
             }
             _ => {}
@@ -62,7 +62,7 @@ impl<T> LifetimeAnalyzer<T>
 where
     T: Iterator<Item = Vec<u32>>,
 {
-    fn analyze(lir_tree: &LirTree, end_point_iter: T) -> impl Iterator<Item = (u32, Vec<u32>)> {
+    fn analyze(lir_block: &LirBlock, end_point_iter: T) -> impl Iterator<Item = (u32, Vec<u32>)> {
         // 1. 変数準備
         let mut analyzer = LifetimeAnalyzer {
             begin_point: vec![0],
@@ -74,7 +74,7 @@ where
 
         // 2. 解析 (end_point_iter はプログラム開始前の情報を持っているので，最初の要素をスキップ)
         analyzer.end_point_iter.next();
-        analyzer.analyze_tree(lir_tree);
+        analyzer.analyze_tree(lir_block);
 
         // 3. 誕生と消失をペアにしたイテレータを構成
         analyzer.begin_point
@@ -82,20 +82,20 @@ where
             .zip(analyzer.end_point.into_iter())
     }
 
-    fn analyze_tree(&mut self, lir_tree: &LirTree) {
-        match lir_tree {
-            LirTree::Single { lirs, .. } => {
-                for lir_tree in lirs {
-                    self.analyze_tree(lir_tree);
+    fn analyze_tree(&mut self, lir_block: &LirBlock) {
+        match lir_block {
+            LirBlock::Single { lirs, .. } => {
+                for lir_block in lirs {
+                    self.analyze_tree(lir_block);
                 }
             }
-            LirTree::Multiple { lirs } => {
+            LirBlock::Multiple { lirs } => {
                 // 1. Multiple スコープを開始
                 self.layered_alive_regs.push(HashSet::new());
 
                 // 2. 子ノードを解析
-                for lir_tree in lirs {
-                    self.analyze_tree(lir_tree);
+                for lir_block in lirs {
+                    self.analyze_tree(lir_block);
                 }
 
                 // 3. Multiple スコープを終了
@@ -107,7 +107,7 @@ where
                     .unwrap()
                     .extend(self.will_be_destroyed_regs.drain(..));
             }
-            LirTree::Inst { dst, .. } => {
+            LirBlock::Inst { dst, .. } => {
                 // 1. 誕生したレジスタとして dst を記録
                 self.layered_alive_regs.last_mut().unwrap().insert(*dst);
                 self.begin_point.push(*dst);

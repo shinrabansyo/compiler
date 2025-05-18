@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::LogicAnd;
-use sb_compiler_lirgen_ir::{lir, LirTree, Bne, JmpLabel, Li};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel, Li};
 
 use crate::{GenContext, ZERO_REG};
 use super::lirgen_bit_or;
 
-pub fn lirgen_logic_and(ctx: &mut GenContext, logic_and: &LogicAnd) -> LirTree {
+pub fn lirgen_logic_and(ctx: &mut GenContext, logic_and: &LogicAnd) -> LirBlock {
     let (result_reg, lirs) = match logic_and {
         LogicAnd::And { lhs, rhs, .. } => {
             let lir_lhs = lirgen_logic_and(ctx, lhs);
@@ -44,7 +44,7 @@ pub fn lirgen_logic_and(ctx: &mut GenContext, logic_and: &LogicAnd) -> LirTree {
         }
     };
 
-    LirTree::Single {
+    LirBlock::Single {
         result_reg,
         lirs,
     }

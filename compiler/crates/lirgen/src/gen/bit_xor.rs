@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::BitXor;
-use sb_compiler_lirgen_ir::{lir, LirTree, Xor};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Xor};
 
 use crate::GenContext;
 use super::lirgen_bit_and;
 
-pub fn lirgen_bit_xor(ctx: &mut GenContext, bit_xor: &BitXor) -> LirTree {
+pub fn lirgen_bit_xor(ctx: &mut GenContext, bit_xor: &BitXor) -> LirBlock {
     let (result_reg, lirs) = match bit_xor {
         BitXor::Xor { lhs, rhs, .. } => {
             let lir_lhs = lirgen_bit_xor(ctx, lhs);
@@ -29,7 +29,7 @@ pub fn lirgen_bit_xor(ctx: &mut GenContext, bit_xor: &BitXor) -> LirTree {
         }
     };
 
-    LirTree::Single {
+    LirBlock::Single {
         result_reg,
         lirs,
     }

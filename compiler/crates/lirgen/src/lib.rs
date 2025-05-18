@@ -1,7 +1,7 @@
 mod gen;
 
 use sb_compiler_parse_ast::Program;
-use sb_compiler_lirgen_ir::LirTree;
+use sb_compiler_lirgen_ir::LirBlock;
 use sb_compiler_utils::collections::LayeredTable;
 
 const ZERO_REG: u32 = 0;
@@ -9,7 +9,7 @@ const RET_REG: u32 = 1;
 const FARG_REG_BASE: u32 = 10;
 
 #[derive(Debug, Clone)]
-struct GenContext {
+pub(crate) struct GenContext {
     reserved_regs: u32,
     reserved_labels: u32,
     sym_table: LayeredTable<String, u32>,
@@ -39,7 +39,7 @@ impl GenContext {
     }
 }
 
-pub fn lirgen<'ast>(program: &'ast Program) -> LirTree {
+pub fn lirgen<'ast>(program: &'ast Program) -> LirBlock {
     let mut ctx = GenContext::default();
     gen::lirgen_program(&mut ctx, program)
 }

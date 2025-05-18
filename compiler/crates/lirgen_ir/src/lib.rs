@@ -8,12 +8,12 @@ pub use LirInst::*;
 macro_rules! lir {
     // ラベル配置
     (Label $label:ident) => {
-        LirTree::Label { label: $label }
+        LirBlock::Label { label: $label }
     };
 
     // 0-レジスタ && 命令引数なし
     ($inst:ident) => {
-        LirTree::Inst {
+        LirBlock::Inst {
             inst: $inst,
             dst: 0,
             src1: 0,
@@ -23,7 +23,7 @@ macro_rules! lir {
 
     // 0-レジスタ && 命令引数あり
     ($inst:ident ( $($arg:expr),* )) => {
-        LirTree::Inst {
+        LirBlock::Inst {
             inst: $inst ( $($arg),* ),
             dst: 0,
             src1: 0,
@@ -33,7 +33,7 @@ macro_rules! lir {
 
     // 1-レジスタ && 命令引数あり
     ($inst:ident ( $($arg:expr),* ) $dst:expr) => {
-        LirTree::Inst {
+        LirBlock::Inst {
             inst: $inst ( $($arg),* ),
             dst: $dst,
             src1: 0,
@@ -43,7 +43,7 @@ macro_rules! lir {
 
     // 1-レジスタ && 命令引数なし
     ($inst:ident $dst:expr) => {
-        LirTree::Inst {
+        LirBlock::Inst {
             inst: $inst,
             dst: $dst,
             src1: 0,
@@ -53,7 +53,7 @@ macro_rules! lir {
 
     // 2-レジスタ && 命令引数あり
     ($inst:ident ( $($arg:expr),* ) $dst:expr, $src:expr) => {
-        LirTree::Inst {
+        LirBlock::Inst {
             inst: $inst ( $($arg),* ),
             dst: $dst,
             src1: $src,
@@ -63,7 +63,7 @@ macro_rules! lir {
 
     // 2-レジスタ && 命令引数なし
     ($inst:ident $dst:expr, $src:expr) => {
-        LirTree::Inst {
+        LirBlock::Inst {
             inst: $inst,
             dst: $dst,
             src1: $src,
@@ -73,7 +73,7 @@ macro_rules! lir {
 
     // 3-レジスタ && 命令引数あり
     ($inst:ident ( $($arg:expr),* ) $dst:expr, $src1:expr, $src2:expr) => {
-        LirTree::Inst {
+        LirBlock::Inst {
             inst: $inst ( $($arg),* ),
             dst: $dst,
             src1: $src1,
@@ -83,7 +83,7 @@ macro_rules! lir {
 
     // 3-レジスタ && 命令引数なし
     ($inst:ident $dst:expr, $src1:expr, $src2:expr) => {
-        LirTree::Inst {
+        LirBlock::Inst {
             inst: $inst,
             dst: $dst,
             src1: $src1,
@@ -129,16 +129,16 @@ pub enum LirInst {
 }
 
 #[derive(Debug)]
-pub enum LirTree {
+pub enum LirBlock {
     // 単一で実行されるブロック (func, if, ...)
     Single {
         result_reg: u32,
-        lirs: Vec<LirTree>,
+        lirs: Vec<LirBlock>,
     },
 
     // 多重で実行されるブロック (for, while, ...)
     Multiple {
-        lirs: Vec<LirTree>,
+        lirs: Vec<LirBlock>,
     },
 
     // ラベル
@@ -155,12 +155,12 @@ pub enum LirTree {
     },
 }
 
-impl LirTree {
+impl LirBlock {
     pub fn result_reg(&self) -> u32 {
         match self {
-            LirTree::Single { result_reg, .. } => *result_reg,
-            LirTree::Multiple { .. } => 0,
-            _ => panic!("LirTree::result_reg() called on non-node"),
+            LirBlock::Single { result_reg, .. } => *result_reg,
+            LirBlock::Multiple { .. } => 0,
+            _ => panic!("LirBlock::result_reg() called on non-node"),
         }
     }
 }

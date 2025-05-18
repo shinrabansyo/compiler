@@ -1,10 +1,10 @@
 use sb_compiler_parse_ast::Top;
-use sb_compiler_lirgen_ir::LirTree;
+use sb_compiler_lirgen_ir::LirBlock;
 
 use crate::GenContext;
 use super::{lirgen_var_decl, lirgen_func_def};
 
-pub fn lirgen_top(ctx: &mut GenContext, top: &Top) -> LirTree {
+pub fn lirgen_top(ctx: &mut GenContext, top: &Top) -> LirBlock {
     match top {
         Top::VarDecl { var_decl, .. } => {
             lirgen_var_decl(ctx, var_decl)
