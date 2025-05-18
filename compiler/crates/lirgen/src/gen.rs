@@ -6,7 +6,7 @@ mod block;      pub use block::lirgen_block;
 mod var_decl;   pub use var_decl::lirgen_var_decl;
 mod r#if;       pub use r#if::lirgen_if;
 mod r#while;    pub use r#while::lirgen_while;
-// mod r#for;      pub use r#for::lirgen_for;
+mod r#for;      pub use r#for::lirgen_for;
 // mod dev_io;     pub use dev_io::lirgen_dev_io;
 mod expr;       pub use expr::lirgen_expr;
 mod assign;     pub use assign::lirgen_assign;

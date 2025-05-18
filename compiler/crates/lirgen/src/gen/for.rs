@@ -1,32 +1,38 @@
 use sb_compiler_parse_ast::For;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Pop, Beq, Jmp, Label};
+use sb_compiler_lirgen_ir::{lir, LirTree, Bne, JmpLabel};
 
-use super::{lirgen_expr, lirgen_block, TMP_REG, ZERO_REG};
+use crate::{GenContext, ZERO_REG};
+use super::{lirgen_expr, lirgen_block};
 
-pub fn lirgen_for(lirs: &mut Vec<LIR>, r#for: &For, analyze_result: &AnalyzeResult) {
-    let stmt_label = format!("for_stmt.{}.{}", lirs.len(), r#for.namespace);
-    let cond_label = format!("for_cond.{}.{}", lirs.len(), r#for.namespace);
-
+pub fn lirgen_for(ctx: &mut GenContext, r#for: &For) -> LirTree {
     // 初期化節
-    lirgen_expr(lirs, &r#for.init, analyze_result);
-    lirs.push(lir!(Pop TMP_REG));
+    let lir_init = lirgen_expr(ctx, &r#for.init);
 
-    // 判定節へのジャンプ
-    lirs.push(lir!(Jmp cond_label.clone()));
+    // 条件節
+    let lir_cond = lirgen_expr(ctx, &r#for.cond);
+    let reg_cond = lir_cond.result_reg();
 
-    // 実行節
-    lirs.push(lir!(Label stmt_label.clone()));
-    lirgen_block(lirs, &r#for.block, analyze_result);
+    // 継続節
+    let lir_incr = lirgen_expr(ctx, &r#for.incr);
 
-    // 更新節
-    lirgen_expr(lirs, &r#for.incr, analyze_result);
-    lirs.push(lir!(Pop TMP_REG));
+    // ブロック
+    let lir_block = lirgen_block(ctx, &r#for.block);
 
-    // 判定節
-    lirs.push(lir!(Label cond_label));
-    lirgen_expr(lirs, &r#for.cond, analyze_result);
-    lirs.push(lir!(Pop TMP_REG));
-    lirs.push(lir!(Beq ZERO_REG, TMP_REG, 12));
-    lirs.push(lir!(Jmp stmt_label));
+    // ラベル
+    let label_cond = ctx.alloc_label();
+    let label_end = ctx.alloc_label();
+
+    LirTree::Multiple {
+        lirs: vec![
+            lir_init,
+            lir!(Label label_cond),
+            lir_cond,
+            lir!(Bne(12) ZERO_REG, reg_cond, ZERO_REG),
+            lir!(JmpLabel(label_end)),
+            lir_block,
+            lir_incr,
+            lir!(JmpLabel(label_cond)),
+            lir!(Label label_end),
+        ]
+    }
 }
