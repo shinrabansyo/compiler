@@ -4,7 +4,7 @@ use sb_compiler_lirgen_ir::{LirBlock, LirInst};
 use sb_compiler_codegen_asm::inst::*;
 use sb_compiler_codegen_asm::{asmi, Asm};
 
-pub fn asmgen(lir_block: &LirBlock, reg_map: HashMap<u32, u8>) -> Asm {
+pub fn asmgen(lir_block: LirBlock, reg_map: HashMap<u32, u8>) -> Asm {
     let asm_inst = AsmInstGenerator::gen(lir_block, reg_map);
     Asm::from(asm_inst)
 }
@@ -15,7 +15,7 @@ struct AsmInstGenerator {
 }
 
 impl AsmInstGenerator {
-    fn gen(lir_block: &LirBlock, reg_map: HashMap<u32, u8>) -> Vec<AsmInst> {
+    fn gen(lir_block: LirBlock, reg_map: HashMap<u32, u8>) -> Vec<AsmInst> {
         let mut generator = AsmInstGenerator {
             reg_map,
             asm_inst: Vec::new(),
@@ -24,7 +24,7 @@ impl AsmInstGenerator {
         generator.asm_inst
     }
 
-    fn gen_recursive(&mut self, lir_block: &LirBlock) {
+    fn gen_recursive(&mut self, lir_block: LirBlock) {
         match lir_block {
             LirBlock::Single { lirs, .. } => {
                 for lir in lirs {
@@ -55,8 +55,9 @@ impl AsmInstGenerator {
                     asmi!(Sw 3, 29, -44),       // sw r3[-44] = r29
                 ]);
             }
-            LirBlock::Inst { inst: LirInst::FnEpilogue, .. } => {
+            LirBlock::Inst { inst: LirInst::FnEpilogue(label), .. } => {
                 self.asm_inst.extend([
+                    asmi!(GLabel format!("{}.epilogue", label)),
                     asmi!(Lw 1, 3, -4),         // lw r1 = r3[-4]
                     asmi!(Lw 20, 3, -8),        // lw r20 = r3[-8]
                     asmi!(Lw 21, 3, -12),       // lw r21 = r3[-12]
@@ -83,15 +84,15 @@ impl AsmInstGenerator {
                     LirInst::Nop => asmi!(Add 0, 12, 4),
 
                     // 整数演算 (imm 使用)
-                    LirInst::Li(imm) => asmi!(Addi dst, 0, Imm(*imm)),
-                    LirInst::Addi(imm) => asmi!(Addi dst, src1, Imm(*imm)),
-                    LirInst::Subi(imm) => asmi!(Subi dst, src1, Imm(*imm)),
-                    LirInst::Andi(imm) => asmi!(Andi dst, src1, Imm(*imm)),
-                    LirInst::Ori(imm) => asmi!(Ori dst, src1, Imm(*imm)),
-                    LirInst::Xori(imm) => asmi!(Xori dst, src1, Imm(*imm)),
-                    LirInst::ShiftLi(imm) => asmi!(Slli dst, src1, Imm(*imm)),
-                    LirInst::ShiftRi(imm) => asmi!(Srli dst, src1, Imm(*imm)),
-                    LirInst::ShiftRai(imm) => asmi!(Srai dst, src1, Imm(*imm)),
+                    LirInst::Li(imm) => asmi!(Addi dst, 0, Imm(imm)),
+                    LirInst::Addi(imm) => asmi!(Addi dst, src1, Imm(imm)),
+                    LirInst::Subi(imm) => asmi!(Subi dst, src1, Imm(imm)),
+                    LirInst::Andi(imm) => asmi!(Andi dst, src1, Imm(imm)),
+                    LirInst::Ori(imm) => asmi!(Ori dst, src1, Imm(imm)),
+                    LirInst::Xori(imm) => asmi!(Xori dst, src1, Imm(imm)),
+                    LirInst::ShiftLi(imm) => asmi!(Slli dst, src1, Imm(imm)),
+                    LirInst::ShiftRi(imm) => asmi!(Srli dst, src1, Imm(imm)),
+                    LirInst::ShiftRai(imm) => asmi!(Srai dst, src1, Imm(imm)),
 
                     // 整数演算 (imm 不使用)
                     LirInst::Add => asmi!(Add dst, src1, src2),
@@ -104,29 +105,34 @@ impl AsmInstGenerator {
                     LirInst::ShiftRa => asmi!(Sra dst, src1, src2),
 
                     // 分岐
-                    LirInst::Beq(imm) => asmi!(Beq dst, src1, src2, Imm(*imm)),
-                    LirInst::Bne(imm) => asmi!(Bne dst, src1, src2, Imm(*imm)),
-                    LirInst::Blt(imm) => asmi!(Blt dst, src1, src2, Imm(*imm)),
-                    LirInst::Ble(imm) => asmi!(Ble dst, src1, src2, Imm(*imm)),
-                    LirInst::Jmp(imm) => asmi!(Beq dst, 0, 0, Imm(*imm)),
+                    LirInst::Beq(imm) => asmi!(Beq dst, src1, src2, Imm(imm)),
+                    LirInst::Bne(imm) => asmi!(Bne dst, src1, src2, Imm(imm)),
+                    LirInst::Blt(imm) => asmi!(Blt dst, src1, src2, Imm(imm)),
+                    LirInst::Ble(imm) => asmi!(Ble dst, src1, src2, Imm(imm)),
+                    LirInst::Jmp(imm) => asmi!(Beq dst, 0, 0, Imm(imm)),
                     LirInst::JmpLabel(label) => {
                         let label = format!("local.{}", label);
                         asmi!(Beq dst, 0, 0, InstLabel(label))
                     }
                     LirInst::Call(label) => {
-                        let label = format!("{}", label);
                         asmi!(Beq 1, 0, 0, InstLabel(label))
                     }
 
-                    _ => unreachable!(),
+                    // 関数
+                    LirInst::FnPrologue => unreachable!(),
+                    LirInst::FnEpilogue(..) => unreachable!(),
+                    LirInst::FnReturn(label) => {
+                        let label = format!("{}.epilogue", label);
+                        asmi!(Beq 0, 0, 0, InstLabel(label))
+                    }
                 };
                 self.asm_inst.push(asm);
             }
             LirBlock::LLabel { label } => {
-                self.asm_inst.push(asmi!(LLabel *label));
+                self.asm_inst.push(asmi!(LLabel label));
             }
             LirBlock::GLabel { label } => {
-                self.asm_inst.push(asmi!(GLabel label.clone()));
+                self.asm_inst.push(asmi!(GLabel label));
             }
         }
     }

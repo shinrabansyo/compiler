@@ -108,8 +108,11 @@ fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
                 LirInst::FnPrologue => {
                     writeln!(f, "fn_prologue")
                 }
-                LirInst::FnEpilogue => {
+                LirInst::FnEpilogue(..) => {
                     writeln!(f, "fn_epilogue")
+                }
+                LirInst::FnReturn(..) => {
+                    writeln!(f, "fn_return")
                 }
             }
         }

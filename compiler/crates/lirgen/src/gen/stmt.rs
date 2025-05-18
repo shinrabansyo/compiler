@@ -1,5 +1,5 @@
 use sb_compiler_parse_ast::Stmt;
-use sb_compiler_lirgen_ir::{lir, LirBlock, Add};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Add, FnReturn};
 
 use crate::{GenContext, RET_REG, ZERO_REG};
 use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_if, lirgen_while, lirgen_for};
@@ -20,11 +20,16 @@ pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirBlock {
             let lir_expr = lirgen_expr(ctx, expr);
             let reg_expr = lir_expr.result_reg();
 
+            // 関数名
+            let (fn_namespace, fn_name) = ctx.get_fn_name().unwrap();
+            let fn_label = format!("{}.{}", fn_namespace, fn_name);
+
             LirBlock::Single {
                 result_reg: ZERO_REG,
                 lirs: vec![
                     lir_expr,
                     lir!(Add RET_REG, ZERO_REG, reg_expr),
+                    lir!(FnReturn(fn_label)),
                 ],
             }
         }

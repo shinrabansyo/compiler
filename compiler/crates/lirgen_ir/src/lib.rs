@@ -132,8 +132,9 @@ pub enum LirInst {
     Call(String),
 
     // 関数
-    FnEpilogue,
     FnPrologue,
+    FnEpilogue(String),
+    FnReturn(String),
 }
 
 #[derive(Debug)]
@@ -182,13 +183,5 @@ pub enum LirTopElem {
         namespace: String,
         name: String,
         body: LirBlock,
-    }
-}
-
-impl LirTopElem {
-    pub fn block(&self) -> &LirBlock {
-        match self {
-            LirTopElem::Function { body, .. } => body,
-        }
     }
 }
