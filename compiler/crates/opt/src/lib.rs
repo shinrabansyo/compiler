@@ -11,6 +11,9 @@ pub fn optimize(asm: Asm) -> Asm {
     // 2. 冗長なジャンプ命令削除
     let asm = remove_futile_jmp(asm);
 
+    // 3. プロローグ/エピローグのサイズを調整
+    let asm = downsize_prologue_epilogue(asm);
+
     // 3. 各処理の結果として不正な配置となったラベルを修正
     let asm = fix_incomplete_label(asm);
 

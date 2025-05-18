@@ -41,7 +41,6 @@ impl AsmInstGenerator {
                     asmi!(Subi 2, 2, Imm(4)),   // subi r2 = r2, 4
                     asmi!(Sw 2, 3, 0),          // sw r2[0] = r3
                     asmi!(Addi 3, 2, Imm(0)),   // addi r3 = r2, 0
-                    asmi!(Subi 2, 2, Imm(44)),  // subi r2 = r2, 99
                     asmi!(Sw 3, 1, -4),         // sw r3[-4] = r1
                     asmi!(Sw 3, 20, -8),        // sw r3[-8] = r20
                     asmi!(Sw 3, 21, -12),       // sw r3[-12] = r21
@@ -53,6 +52,7 @@ impl AsmInstGenerator {
                     asmi!(Sw 3, 27, -36),       // sw r3[-36] = r27
                     asmi!(Sw 3, 28, -40),       // sw r3[-40] = r28
                     asmi!(Sw 3, 29, -44),       // sw r3[-44] = r29
+                    asmi!(Subi 2, 2, Imm(44)),  // subi r2 = r2, 99
                 ]);
             }
             LirBlock::Inst { inst: LirInst::FnEpilogue(label), .. } => {
