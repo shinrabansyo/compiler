@@ -113,18 +113,16 @@ fn test_code(input: &str) -> anyhow::Result<String> {
 
     // 2. LIR生成 (AST -> LIR)
     let lirs = lirgen(&ast);
-    let lirs = match lirs {
-        LirBlock::Single { lirs, .. } => lirs,
-        _ => unreachable!(),
-    };
 
-    // 3. 文字列へ変換 (LIR -> String)
-    let mut lir_str = String::new();
-    for lir in &lirs {
-        display_lir(&mut lir_str, lir)?;
-    }
+    todo!()
 
-    Ok(lir_str)
+    // // 3. 文字列へ変換 (LIR -> String)
+    // let mut lir_str = String::new();
+    // for lir in &lirs {
+    //     display_lir(&mut lir_str, lir)?;
+    // }
+
+    // Ok(lir_str)
 }
 
 #[test]

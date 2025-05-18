@@ -134,10 +134,11 @@ mod tests {
     }
 
     fn build_deps_graph(input: &str) -> HashMap<u32, Vec<u32>> {
-        let ast = parse(input).unwrap();
-        let lir = lirgen0(&ast);
-        let lifetime_tracker = analyze_lifetime(&lir);
-        let deps_graph = build_deps_graph0(lifetime_tracker);
-        deps_graph
+        todo!()
+        // let ast = parse(input).unwrap();
+        // let lir = lirgen0(&ast);
+        // let lifetime_tracker = analyze_lifetime(&lir);
+        // let deps_graph = build_deps_graph0(lifetime_tracker);
+        // deps_graph
     }
 }

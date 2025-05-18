@@ -1,7 +1,7 @@
 mod gen;
 
 use sb_compiler_parse_ast::Program;
-use sb_compiler_lirgen_ir::LirBlock;
+use sb_compiler_lirgen_ir::LirTopElem;
 use sb_compiler_utils::collections::LayeredTable;
 
 const ZERO_REG: u32 = 0;
@@ -39,7 +39,7 @@ impl GenContext {
     }
 }
 
-pub fn lirgen<'ast>(program: &'ast Program) -> LirBlock {
+pub fn lirgen<'ast>(program: &'ast Program) -> Vec<LirTopElem> {
     let mut ctx = GenContext::default();
     gen::lirgen_program(&mut ctx, program)
 }

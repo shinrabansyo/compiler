@@ -164,3 +164,20 @@ impl LirBlock {
         }
     }
 }
+
+#[derive(Debug)]
+pub enum LirTopElem {
+    Function {
+        namespace: String,
+        name: String,
+        body: LirBlock,
+    }
+}
+
+impl LirTopElem {
+    pub fn block(&self) -> &LirBlock {
+        match self {
+            LirTopElem::Function { body, .. } => body,
+        }
+    }
+}
