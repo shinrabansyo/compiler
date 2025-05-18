@@ -203,12 +203,11 @@ impl Display for AsmInst {
             AsmInst::LLabel { label } => {
                 write!(f, "@local.{}", label)
             }
-            AsmInst::GLabel { .. } => {
-                unimplemented!()
+            AsmInst::GLabel { label } => {
+                write!(f, "@{}", label)
             }
         }
     }
-
 }
 
 #[derive(Debug, Clone)]

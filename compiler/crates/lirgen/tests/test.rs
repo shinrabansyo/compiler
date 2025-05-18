@@ -21,8 +21,11 @@ fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
             }
             Ok(())
         }
-        LirBlock::Label { label } => {
+        LirBlock::LLabel { label } => {
             writeln!(f, "@local.{}", label)
+        }
+        LirBlock::GLabel { label } => {
+            writeln!(f, "@{}", label)
         }
         LirBlock::Inst { inst, dst, src1, src2 } => {
             write!(f, "    ")?;
@@ -101,6 +104,12 @@ fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
                 }
                 LirInst::Call(func) => {
                     writeln!(f, "call {}", func)
+                }
+                LirInst::FnPrologue => {
+                    writeln!(f, "fn_prologue")
+                }
+                LirInst::FnEpilogue => {
+                    writeln!(f, "fn_epilogue")
                 }
             }
         }

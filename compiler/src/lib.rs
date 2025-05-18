@@ -22,6 +22,7 @@ pub fn compile(input: &str) -> anyhow::Result<String> {
     // 5. 文字列へ変換 ([Asm] -> String)
     let mut result = String::new();
     result.push_str("===\n");
+    result.push_str("    addi r2 = r0, 128\n\n");
     for asm in &asms {
         for inst in &asm.inst {
             result.push_str(&inst.to_string());

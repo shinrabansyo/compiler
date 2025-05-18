@@ -32,10 +32,10 @@ pub fn lirgen_logic_and(ctx: &mut GenContext, logic_and: &LogicAnd) -> LirBlock 
                     lir!(Li(1) reg_result),
                     lir!(JmpLabel(label_end)),
 
-                    lir!(Label label_false),
+                    lir!(LLabel label_false),
                     lir!(Li(0) reg_result),
 
-                    lir!(Label label_end),
+                    lir!(LLabel label_end),
                 ],
             )
         }

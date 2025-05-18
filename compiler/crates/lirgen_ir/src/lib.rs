@@ -7,8 +7,12 @@ pub use LirInst::*;
 #[macro_export]
 macro_rules! lir {
     // ラベル配置
-    (Label $label:ident) => {
-        LirBlock::Label { label: $label }
+    (LLabel $label:ident) => {
+        LirBlock::LLabel { label: $label }
+    };
+
+    (GLabel $label:expr) => {
+        LirBlock::GLabel { label: $label }
     };
 
     // 0-レジスタ && 命令引数なし
@@ -126,6 +130,10 @@ pub enum LirInst {
     Jmp(i32),
     JmpLabel(u32),
     Call(String),
+
+    // 関数
+    FnEpilogue,
+    FnPrologue,
 }
 
 #[derive(Debug)]
@@ -142,8 +150,11 @@ pub enum LirBlock {
     },
 
     // ラベル
-    Label {
+    LLabel {
         label: u32,
+    },
+    GLabel {
+        label: String,
     },
 
     // 単一命令

@@ -25,14 +25,14 @@ pub fn lirgen_for(ctx: &mut GenContext, r#for: &For) -> LirBlock {
     LirBlock::Multiple {
         lirs: vec![
             lir_init,
-            lir!(Label label_cond),
+            lir!(LLabel label_cond),
             lir_cond,
             lir!(Bne(12) ZERO_REG, reg_cond, ZERO_REG),
             lir!(JmpLabel(label_end)),
             lir_block,
             lir_incr,
             lir!(JmpLabel(label_cond)),
-            lir!(Label label_end),
+            lir!(LLabel label_end),
         ]
     }
 }
