@@ -165,7 +165,7 @@ impl Display for AsmInst {
                 write!(f, "    lw r{} = r{}[{}]", rd, rs1, imm)
             }
             AsmInst::Jal { rd, rs1, imm } => {
-                write!(f, "    jal r{} = r{}[{}]", rd, rs1, imm)
+                write!(f, "    jal r{}, r{}[{}]", rd, rs1, imm)
             }
             AsmInst::In { rd, rs1, imm } => {
                 write!(f, "    in r{} = r{}[{}]", rd, rs1, imm)

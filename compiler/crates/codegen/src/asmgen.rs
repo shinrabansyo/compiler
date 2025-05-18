@@ -72,7 +72,7 @@ impl AsmInstGenerator {
                     asmi!(Lw 29, 3, -44),       // lw r29 = r3[-44]
                     asmi!(Lw 3, 3, 0),          // lw r3 = r3[0]
                     asmi!(Addi 2, 2, Imm(48)),  // addi r2 = r2, 4
-                    asmi!(Beq 0, 0, 0, Imm(0)), // beq r0, (r0, r0) -> 0
+                    asmi!(Jal 0, 1, 0),         // jal r0, r1[0]
                 ]);
             }
             LirBlock::Inst { inst, dst, src1, src2 } => {

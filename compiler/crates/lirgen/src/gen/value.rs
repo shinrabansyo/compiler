@@ -26,7 +26,7 @@ pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirBlock {
                 lirs.push(lir_arg);
                 lirs.push(lir!(Add FARG_REG_BASE + idx as u32, ZERO_REG, reg_arg));
             }
-            lirs.push(lir!(Call(format!("{}.{}", call.ident, "global"))));
+            lirs.push(lir!(Call(format!("global.{}", call.ident))));
             (RET_REG, lirs)
         }
     };

@@ -1,7 +1,7 @@
 use sb_compiler_parse_ast::Stmt;
-use sb_compiler_lirgen_ir::LirBlock;
+use sb_compiler_lirgen_ir::{lir, LirBlock, Add};
 
-use crate::GenContext;
+use crate::{GenContext, RET_REG, ZERO_REG};
 use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_if, lirgen_while, lirgen_for};
 
 pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirBlock {
@@ -16,14 +16,17 @@ pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirBlock {
             lirgen_expr(ctx, expr)
         }
         Stmt::Return { expr, .. } => {
-            unimplemented!()
-            // lirgen_expr(lirs, expr, analyze_result);
-            // lirs.push(lir!(Pop TMP_REG));
-            // lirs.push(lir!(Li RET_REG, 0));
-            // lirs.push(lir!(Add RET_REG, TMP_REG));
-            // lirs.push(lir!(VarFree));
-            // lirs.push(lir!(FLoad));
-            // lirs.push(lir!(Return));
+            // 式
+            let lir_expr = lirgen_expr(ctx, expr);
+            let reg_expr = lir_expr.result_reg();
+
+            LirBlock::Single {
+                result_reg: ZERO_REG,
+                lirs: vec![
+                    lir_expr,
+                    lir!(Add RET_REG, ZERO_REG, reg_expr),
+                ],
+            }
         }
         Stmt::If { r#if, .. } => {
             lirgen_if(ctx, r#if)
