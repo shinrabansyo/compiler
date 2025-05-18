@@ -11,12 +11,14 @@ pub fn analyze_lifetime(lir_block: &LirBlock) -> impl Iterator<Item = (u32, Vec<
 }
 
 struct SimpleLifetimeAnalyzer {
+    already_ended: HashSet<u32>,
     end_point: Vec<Vec<u32>>,
 }
 
 impl SimpleLifetimeAnalyzer {
     fn analyze(lir_block: &LirBlock) -> impl Iterator<Item = Vec<u32>> {
         let mut analyzer = SimpleLifetimeAnalyzer {
+            already_ended: HashSet::new(),
             end_point: vec![],
         };
         analyzer.find_end_point(lir_block);
@@ -37,7 +39,18 @@ impl SimpleLifetimeAnalyzer {
                 }
             }
             LirBlock::Inst { src1, src2, .. } => {
-                self.end_point.push(vec![*src1, *src2]);
+                let is_src1_ended = self.already_ended.contains(src1);
+                let is_src2_ended = self.already_ended.contains(src2);
+                self.already_ended.insert(*src1);
+                self.already_ended.insert(*src2);
+
+                let end_regs = match (is_src1_ended, is_src2_ended) {
+                    (true, true) => vec![],
+                    (true, false) => vec![*src2],
+                    (false, true) => vec![*src1],
+                    (false, false) => vec![*src1, *src2],
+                };
+                self.end_point.push(end_regs);
             }
             _ => {}
         }
