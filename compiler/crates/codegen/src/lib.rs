@@ -1,12 +1,10 @@
 mod asmgen;
-mod cleaning;
 mod reg_mapping;
 
 use sb_compiler_lirgen_ir::LirTopElem;
 use sb_compiler_codegen_asm::Asm;
 
 use asmgen::asmgen;
-use cleaning::cleaning;
 use reg_mapping::mapping;
 
 pub fn codegen(lir_top_elem: LirTopElem) -> Asm {
@@ -16,9 +14,6 @@ pub fn codegen(lir_top_elem: LirTopElem) -> Asm {
 
     // 2. コード生成 (LirBlock + RegMap -> Asm)
     let asm = asmgen(&lir_block, reg_map);
-
-    // 3. 冗長コード削減 (Asm -> Asm)
-    let asm = cleaning(asm);
 
     asm
 }

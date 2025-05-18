@@ -21,8 +21,6 @@ impl AsmInstGenerator {
             asm_inst: Vec::new(),
         };
         generator.gen_recursive(lir_block);
-        generator.asm_inst.push(asmi!(Add 0, 12, 4));
-
         generator.asm_inst
     }
 
@@ -82,7 +80,7 @@ impl AsmInstGenerator {
 
                 let asm = match inst {
                     // Nop
-                    LirInst::Nop => asmi!(Add 0, 0, 0),
+                    LirInst::Nop => asmi!(Add 0, 12, 4),
 
                     // 整数演算 (imm 使用)
                     LirInst::Li(imm) => asmi!(Addi dst, 0, Imm(*imm)),

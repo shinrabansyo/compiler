@@ -11,6 +11,7 @@ sb_compiler_analyze = { path = "./crates/analyze" }
 sb_compiler_lirgen = { path = "./crates/lirgen" }
 sb_compiler_codegen = { path = "./crates/codegen" }
 sb_compiler_codegen_asm = { path = "./crates/codegen_asm" }
+sb_compiler_opt = { path = "./crates/opt" }
 sb_compiler_utils = { path = "./crates/utils" }
 
 [dev-dependencies]

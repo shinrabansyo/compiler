@@ -332,6 +332,7 @@ dependencies = [
  "sb_compiler_codegen",
  "sb_compiler_codegen_asm",
  "sb_compiler_lirgen",
+ "sb_compiler_opt",
  "sb_compiler_parse",
  "sb_compiler_utils",
  "sb_emu",
@@ -395,6 +396,15 @@ name = "sb_compiler_lirgen_ir"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "thiserror 2.0.3",
+]
+
+[[package]]
+name = "sb_compiler_opt"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "sb_compiler_codegen_asm",
  "thiserror 2.0.3",
 ]
 
