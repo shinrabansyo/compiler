@@ -57,41 +57,42 @@ mod tests {
     #[test]
     fn test_coloring_1() {
         let deps_graph = vec![
-            (1, vec![]),
-            (2, vec![3, 4]),
-            (3, vec![2]),
-            (4, vec![2, 5]),
-            (5, vec![4, 6]),
-            (6, vec![5]),
-            (7, vec![]),
+            (20, vec![]),
+            (21, vec![22, 23]),
+            (22, vec![21]),
+            (23, vec![21, 24]),
+            (24, vec![23, 25]),
+            (25, vec![24]),
+            (26, vec![]),
         ]
         .into_iter()
         .collect();
 
         let result = coloring(deps_graph);
-        assert_eq!(result[&1], 20);
-        assert!(result[&2] != result[&3] && result[&2] != result[&4]);
-        assert!(result[&4] != result[&5]);
-        assert!(result[&5] != result[&6]);
+        assert_eq!(result[&20], 20);
+        assert_eq!(result[&26], 20);
+        assert!(result[&21] != result[&22] && result[&21] != result[&23]);
+        assert!(result[&23] != result[&24]);
+        assert!(result[&24] != result[&25]);
     }
 
     #[test]
     fn test_coloring_2() {
         let deps_graph = vec![
-            (1, vec![2, 3]),
-            (2, vec![1, 3]),
-            (3, vec![1, 2]),
-            (4, vec![5]),
-            (5, vec![4]),
-            (6, vec![7]),
-            (7, vec![6]),
+            (20, vec![21, 22]),
+            (21, vec![20, 22]),
+            (22, vec![20, 21]),
+            (23, vec![24]),
+            (24, vec![23]),
+            (25, vec![26]),
+            (26, vec![25]),
         ]
         .into_iter()
         .collect();
 
         let result = coloring(deps_graph);
-        assert!(result[&1] != result[&2] && result[&1] != result[&3]);
-        assert!(result[&4] != result[&5]);
-        assert!(result[&6] != result[&7]);
+        assert!(result[&20] != result[&21] && result[&20] != result[&22]);
+        assert!(result[&23] != result[&24]);
+        assert!(result[&25] != result[&26]);
     }
 }
