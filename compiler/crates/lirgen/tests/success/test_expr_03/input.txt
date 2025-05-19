@@ -1,3 +1,9 @@
-var a: i32 = 10;
-var b: i32 = 20;
-var c: i32 = test_func(a, b);
+fn test() {
+    var a: i32 = 10;
+    var b: i32 = 20;
+    var c: i32 = test_func(a, b);
+}
+
+fn test_func(a: i32, b: i32) {
+    return 0;
+}

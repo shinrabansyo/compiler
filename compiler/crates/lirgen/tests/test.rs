@@ -4,7 +4,7 @@ use std::fmt::Write;
 
 use sb_compiler_parse::parse;
 use sb_compiler_lirgen::lirgen;
-use sb_compiler_lirgen_ir::{LirInst, LirBlock};
+use sb_compiler_lirgen_ir::{LirInst, LirBlock, LirTopElem};
 use utils::{Expect, test_dir};
 
 fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
@@ -126,15 +126,16 @@ fn test_code(input: &str) -> anyhow::Result<String> {
     // 2. LIR生成 (AST -> LIR)
     let lirs = lirgen(&ast);
 
-    todo!()
+    // 3. 文字列へ変換 (LIR -> String)
+    let mut lir_str = String::new();
+    for lir in &lirs {
+        let lir_block = match lir {
+            LirTopElem::Function { body, .. } => body,
+        };
+        display_lir(&mut lir_str, lir_block)?;
+    }
 
-    // // 3. 文字列へ変換 (LIR -> String)
-    // let mut lir_str = String::new();
-    // for lir in &lirs {
-    //     display_lir(&mut lir_str, lir)?;
-    // }
-
-    // Ok(lir_str)
+    Ok(lir_str)
 }
 
 #[test]

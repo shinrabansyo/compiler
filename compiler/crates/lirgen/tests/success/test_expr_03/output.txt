@@ -1,8 +1,14 @@
-    li   t1 = 10
-    add  t2 = t0 + t1
-    li   t3 = 20
-    add  t4 = t0 + t3
-    add  t5 = t0 + t2
-    add  t6 = t0 + t4
-    call test_func.global (t5, t6)
-    add  t7 = t0 + t6
+@global.test
+    fn_prologue
+    li   t20 = 10
+    li   t21 = 20
+    add  t10 = t0 + t20
+    add  t11 = t0 + t21
+    call global.test_func
+    fn_epilogue
+@global.test_func
+    fn_prologue
+    li   t22 = 0
+    add  t10 = t0 + t22
+    fn_return
+    fn_epilogue
