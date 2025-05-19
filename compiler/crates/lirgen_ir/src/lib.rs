@@ -1,7 +1,3 @@
-// mod ir;
-
-// pub use ir::*;
-
 pub use LirInst::*;
 
 #[macro_export]
