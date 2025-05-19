@@ -22,7 +22,7 @@ impl SimpleLifetimeAnalyzer {
             end_point: vec![],
         };
         analyzer.find_end_point(lir_block);
-        analyzer.end_point.push(vec![0]);
+        analyzer.end_point.push(vec![]);
         analyzer.end_point.into_iter().rev()
     }
 
@@ -39,18 +39,20 @@ impl SimpleLifetimeAnalyzer {
                 }
             }
             LirBlock::Inst { src1, src2, .. } => {
-                let is_src1_ended = self.already_ended.contains(src1);
-                let is_src2_ended = self.already_ended.contains(src2);
-                self.already_ended.insert(*src1);
-                self.already_ended.insert(*src2);
+                // 1. 既に消失していない かつ ゼロレジスタでない レジスタを記録対象とする
+                let do_mark_src1 = !self.already_ended.contains(src1) && *src1 > 0;
+                let do_mark_src2 = !self.already_ended.contains(src2) && *src2 > 0;
 
-                let end_regs = match (is_src1_ended, is_src2_ended) {
-                    (true, true) => vec![],
-                    (true, false) => vec![*src2],
-                    (false, true) => vec![*src1],
-                    (false, false) => vec![*src1, *src2],
+                // 2. src に含まれるレジスタを消失済みレジスタとして記録
+                let end_regs = match (do_mark_src1, do_mark_src2) {
+                    (true, true) => vec![*src1, *src2],
+                    (true, false) => vec![*src1],
+                    (false, true) => vec![*src2],
+                    (false, false) => vec![],
                 };
                 self.end_point.push(end_regs);
+                self.already_ended.insert(*src1);
+                self.already_ended.insert(*src2);
             }
             _ => {}
         }
@@ -79,7 +81,7 @@ where
         // 1. 変数準備
         let mut analyzer = LifetimeAnalyzer {
             begin_point: vec![0],
-            end_point: vec![vec![0]],
+            end_point: vec![vec![]],
             layered_alive_regs: vec![HashSet::new()],
             will_be_destroyed_regs: vec![],
             end_point_iter,
@@ -151,5 +153,57 @@ where
 
 #[cfg(test)]
 mod tests {
-    // TODO
+    use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Addi, Ble, Jmp, Li};
+
+    use super::analyze_lifetime;
+
+    #[test]
+    fn test_lifetime_1() {
+        let lir = LirBlock::Single {
+            result_reg: 0,
+            lirs: vec![
+                lir!(Li(10) 20),       // li t0 = 10
+                lir!(Li(20) 21),       // li t1 = 20
+                lir!(Add 22, 20, 21),  // add  t22 = t20 + t21
+            ],
+        };
+
+        let mut lifetime_tracker = analyze_lifetime(&lir);
+        assert_eq!(lifetime_tracker.next(), Some((0, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((20, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((21, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((22, vec![20, 21])));
+        assert_eq!(lifetime_tracker.next(), None);
+    }
+
+    #[test]
+    fn test_lifetime_2() {
+        let lir = LirBlock::Single {
+            result_reg: 0,
+            lirs: vec![
+                lir!(Li(0) 20),  // li t20 = 0 (cnt)
+                lir!(Li(0) 21),  // li t21 = 0 (sum)
+                lir!(Li(10) 22), // li t22 = 10
+                LirBlock::Multiple {
+                    lirs: vec![
+                        lir!(Ble(12) 0, 22, 20), // ble r0, (t22 <= t20) -> 24
+                        lir!(Add 21, 0, 20),     // add t21 = t0 + t20
+                        lir!(Addi(1) 20, 0),     // addi t20 = t0 + 1
+                        lir!(Jmp(-18)),          // jmp -18
+                    ],
+                },
+            ],
+        };
+
+        let mut lifetime_tracker = analyze_lifetime(&lir);
+        assert_eq!(lifetime_tracker.next(), Some((0, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((20, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((21, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((22, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((0, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((21, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((20, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((0, vec![22, 20])));
+        assert_eq!(lifetime_tracker.next(), None);
+    }
 }
