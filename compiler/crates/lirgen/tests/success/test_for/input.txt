@@ -1,0 +1,7 @@
+fn test() {
+    var cnt: i32 = 0;
+    var sum: i32 = 0;
+    for (cnt = 0; cnt < 10; cnt += 1) {
+        sum += cnt;
+    }
+}
