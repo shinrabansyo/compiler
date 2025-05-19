@@ -19,10 +19,3 @@ mod cond;       pub use cond::lirgen_cond;
 mod bit_shift;  pub use bit_shift::lirgen_bit_shift;
 mod add;        pub use add::lirgen_add;
 mod value;      pub use value::lirgen_value;
-
-const ZERO_REG   : u8 = 0;  // r0
-const TMP_REG    : u8 = 4;  // r4
-const TMP_REG_L  : u8 = 4;  // r4
-const TMP_REG_R  : u8 = 5;  // r5
-const VARBASE_REG: u8 = 6;  // r6
-const RET_REG    : u8 = 10; // r10
