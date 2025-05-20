@@ -1,19 +1,20 @@
 use std::collections::{HashMap, HashSet};
 
-pub fn build_deps_graph(
-    lifetime_tracker: impl Iterator<Item = (u32, Vec<u32>)>,
-) -> HashMap<u32, HashSet<u32>> {
+pub fn build_deps_graph<I>(lifetime_tracker: I) -> HashMap<u32, HashSet<u32>>
+where
+    I: Iterator<Item = (u32, Vec<u32>)>,
+{
     let mut alive_regs = HashSet::new();
     let mut deps_graph = HashMap::new();
     for (begin, ends) in lifetime_tracker {
-        // 1. 登場・消失処理 (r0 ~ r19 は確保済みなので対象から除外)
+        // 1. 登場・消失処理 (t0 ~ t19 は直接実レジスタにマッピングするので無視)
         if begin > 19 {
             alive_regs.insert(begin);
             if deps_graph.get(&begin).is_none() {
                 deps_graph.insert(begin, HashSet::new());
             }
         }
-        for end in ends.into_iter().filter(|&x| x > 19) {
+        for end in ends.into_iter().filter(|reg| *reg > 19) {
             alive_regs.remove(&end);
         }
 

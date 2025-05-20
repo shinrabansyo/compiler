@@ -13,7 +13,7 @@ pub fn codegen(lir_top_elem: LirTopElem) -> Asm {
     };
 
     // 1. レジスタ割り付け (LirBlock -> RegMap)
-    let reg_map = mapping(&lir_block);
+    let reg_map = mapping(&lir_block, &[20, 21, 22, 23, 24, 25, 26, 27, 28, 29]);
 
     // 2. コード生成 (LirBlock + RegMap -> Asm)
     let asm = asmgen(lir_block, reg_map);
