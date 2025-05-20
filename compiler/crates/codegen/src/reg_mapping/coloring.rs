@@ -1,6 +1,6 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
-pub fn coloring(deps_graph: HashMap<u32, Vec<u32>>) -> HashMap<u32, u8> {
+pub fn coloring(deps_graph: HashMap<u32, HashSet<u32>>) -> HashMap<u32, u8> {
     // 1. 接続頂点数の多い順にソート
     let mut connections = Vec::with_capacity(deps_graph.len());
     for (node, edges) in deps_graph.iter() {
@@ -52,18 +52,20 @@ pub fn coloring(deps_graph: HashMap<u32, Vec<u32>>) -> HashMap<u32, u8> {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashSet;
+
     use super::coloring;
 
     #[test]
     fn test_coloring_1() {
         let deps_graph = vec![
-            (20, vec![]),
-            (21, vec![22, 23]),
-            (22, vec![21]),
-            (23, vec![21, 24]),
-            (24, vec![23, 25]),
-            (25, vec![24]),
-            (26, vec![]),
+            (20, HashSet::from([])),
+            (21, HashSet::from([22, 23])),
+            (22, HashSet::from([21])),
+            (23, HashSet::from([21, 24])),
+            (24, HashSet::from([23, 25])),
+            (25, HashSet::from([24])),
+            (26, HashSet::from([])),
         ]
         .into_iter()
         .collect();
@@ -79,13 +81,13 @@ mod tests {
     #[test]
     fn test_coloring_2() {
         let deps_graph = vec![
-            (20, vec![21, 22]),
-            (21, vec![20, 22]),
-            (22, vec![20, 21]),
-            (23, vec![24]),
-            (24, vec![23]),
-            (25, vec![26]),
-            (26, vec![25]),
+            (20, HashSet::from([21, 22])),
+            (21, HashSet::from([20, 22])),
+            (22, HashSet::from([20, 21])),
+            (23, HashSet::from([24])),
+            (24, HashSet::from([23])),
+            (25, HashSet::from([26])),
+            (26, HashSet::from([25])),
         ]
         .into_iter()
         .collect();

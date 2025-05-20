@@ -153,7 +153,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Addi, Ble, Jmp, Li};
+    use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Ble, Jmp, Li};
 
     use super::analyze_lifetime;
 
@@ -162,13 +162,14 @@ mod tests {
         let lir = LirBlock::Single {
             result_reg: 0,
             lirs: vec![
-                lir!(Li(10) 20),       // li t0 = 10
-                lir!(Li(20) 21),       // li t1 = 20
+                lir!(Li(10) 20),       // li t20 = 10
+                lir!(Li(20) 21),       // li t21 = 20
                 lir!(Add 22, 20, 21),  // add  t22 = t20 + t21
             ],
         };
 
         let mut lifetime_tracker = analyze_lifetime(&lir);
+
         assert_eq!(lifetime_tracker.next(), Some((0, vec![])));
         assert_eq!(lifetime_tracker.next(), Some((20, vec![])));
         assert_eq!(lifetime_tracker.next(), Some((21, vec![])));
@@ -181,14 +182,17 @@ mod tests {
         let lir = LirBlock::Single {
             result_reg: 0,
             lirs: vec![
-                lir!(Li(0) 20),  // li t20 = 0 (cnt)
-                lir!(Li(0) 21),  // li t21 = 0 (sum)
-                lir!(Li(10) 22), // li t22 = 10
+                lir!(Li(0) 20),      // li t20 = 0
+                lir!(Add 21, 0, 20), // add t21 = t0 + t20 (cnt)
+                lir!(Add 22, 0, 20), // add t22 = t0 + t20 (sum)
+                lir!(Li(10) 23),     // li t23 = 10
+                lir!(Add 24, 0, 23), // add t24 = t0 + t23
                 LirBlock::Multiple {
                     lirs: vec![
-                        lir!(Ble(12) 0, 22, 20), // ble r0, (t22 <= t20) -> 24
-                        lir!(Add 21, 0, 20),     // add t21 = t0 + t20
-                        lir!(Addi(1) 20, 0),     // addi t20 = t0 + 1
+                        lir!(Ble(12) 0, 24, 21), // ble r0, (t24 <= t21) -> 12
+                        lir!(Li(1) 25),          // li t25 = 1
+                        lir!(Add 21, 0, 25),     // addi t21 = t0 + t25
+                        lir!(Add 22, 0, 25),     // addi t22 = t0 + t25
                         lir!(Jmp(-18)),          // jmp -18
                     ],
                 },
@@ -196,14 +200,18 @@ mod tests {
         };
 
         let mut lifetime_tracker = analyze_lifetime(&lir);
+
         assert_eq!(lifetime_tracker.next(), Some((0, vec![])));
         assert_eq!(lifetime_tracker.next(), Some((20, vec![])));
         assert_eq!(lifetime_tracker.next(), Some((21, vec![])));
-        assert_eq!(lifetime_tracker.next(), Some((22, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((22, vec![20])));
+        assert_eq!(lifetime_tracker.next(), Some((23, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((24, vec![23])));
         assert_eq!(lifetime_tracker.next(), Some((0, vec![])));
+        assert_eq!(lifetime_tracker.next(), Some((25, vec![])));
         assert_eq!(lifetime_tracker.next(), Some((21, vec![])));
-        assert_eq!(lifetime_tracker.next(), Some((20, vec![])));
-        assert_eq!(lifetime_tracker.next(), Some((0, vec![22, 20])));
+        assert_eq!(lifetime_tracker.next(), Some((22, vec![25])));
+        assert_eq!(lifetime_tracker.next(), Some((0, vec![24, 21])));
         assert_eq!(lifetime_tracker.next(), None);
     }
 }

@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 pub fn build_deps_graph(
     lifetime_tracker: impl Iterator<Item = (u32, Vec<u32>)>,
-) -> HashMap<u32, Vec<u32>> {
+) -> HashMap<u32, HashSet<u32>> {
     let mut alive_regs = HashSet::new();
     let mut deps_graph = HashMap::new();
     for (begin, ends) in lifetime_tracker {
@@ -10,7 +10,7 @@ pub fn build_deps_graph(
         if begin > 19 {
             alive_regs.insert(begin);
             if deps_graph.get(&begin).is_none() {
-                deps_graph.insert(begin, vec![]);
+                deps_graph.insert(begin, HashSet::new());
             }
         }
         for end in ends.into_iter().filter(|&x| x > 19) {
@@ -21,7 +21,7 @@ pub fn build_deps_graph(
         for edge_src in &alive_regs {
             for edge_dst in &alive_regs {
                 if edge_src != edge_dst {
-                    deps_graph.get_mut(edge_src).unwrap().push(*edge_dst);
+                    deps_graph.get_mut(edge_src).unwrap().insert(*edge_dst);
                 }
             }
         }
@@ -32,113 +32,62 @@ pub fn build_deps_graph(
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
+    use std::collections::HashSet;
 
-    use sb_compiler_parse::parse;
-    use sb_compiler_lirgen::lirgen as lirgen0;
+    use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Ble, Jmp, Li};
 
     use crate::reg_mapping::lifetime::analyze_lifetime;
-    use super::build_deps_graph as build_deps_graph0;
+    use super::build_deps_graph;
 
     #[test]
     fn test_reg_deps_graph_1() {
-        const PROGRAM: &str = r#"
-            var a: i32 = 10;
-            var b: i32 = 20;
-            var c: i32 = a + b;
-        "#;
-        // ===== Lir =====
-        // li   t1 = 10
-        // add  t2 = t0 + t1
-        // li   t3 = 20
-        // add  t4 = t0 + t3
-        // add  t5 = t0 + t2
-        // add  t6 = t0 + t4
-        // add  t7 = t5 + t6
-        // add  t8 = t0 + t7
+        let lir = LirBlock::Single {
+            result_reg: 0,
+            lirs: vec![
+                lir!(Li(10) 20),       // li t0 = 10
+                lir!(Li(20) 21),       // li t1 = 20
+                lir!(Add 22, 20, 21),  // add  t22 = t20 + t21
+            ],
+        };
 
-        let deps_graph = build_deps_graph(PROGRAM);
+        let lifetime_tracker = analyze_lifetime(&lir);
+        let deps_graph = build_deps_graph(lifetime_tracker);
 
-        assert_eq!(deps_graph.get(&1), Some(&vec![]));
-        assert_eq!(deps_graph.get(&2), Some(&vec![3, 4]));
-        assert_eq!(deps_graph.get(&3), Some(&vec![2]));
-        assert_eq!(deps_graph.get(&4), Some(&vec![2, 5]));
-        assert_eq!(deps_graph.get(&5), Some(&vec![4, 6]));
-        assert_eq!(deps_graph.get(&6), Some(&vec![5]));
-        assert_eq!(deps_graph.get(&7), Some(&vec![]));
+        assert_eq!(deps_graph.get(&20), Some(&HashSet::from([21])));
+        assert_eq!(deps_graph.get(&21), Some(&HashSet::from([20])));
+        assert_eq!(deps_graph.get(&22), Some(&HashSet::from([])));
     }
 
     #[test]
     fn test_reg_deps_graph_2() {
-        const PROGRAM: &str = r#"
-            var a: i32 = 10;
-            var b: i32 = 20;
-            var c: i32 = a land b;
-        "#;
-        // ===== Lir =====
-        //     li   t1 = 10
-        //     add  t2 = t0 + t1
-        //     li   t3 = 20
-        //     add  t4 = t0 + t3
-        //     add  t5 = t0 + t2
-        //     bne  t0, (t0 != t5) -> 12
-        //     jmp  t0, @local.0
-        //     add  t6 = t0 + t4
-        //     bne  t0, (t0 != t5) -> 12
-        //     jmp  t0, @local.0
-        //     li   t7 = 1
-        //     jmp  t0, @local.1
-        // @local.0
-        //     li   t7 = 0
-        // @local.1
-        //     add  t8 = t0 + t7
+        let lir = LirBlock::Single {
+            result_reg: 0,
+            lirs: vec![
+                lir!(Li(0) 20),      // li t20 = 0
+                lir!(Add 21, 0, 20), // add t21 = t0 + t20 (cnt)
+                lir!(Add 22, 0, 20), // add t22 = t0 + t20 (sum)
+                lir!(Li(10) 23),     // li t23 = 10
+                lir!(Add 24, 0, 23), // add t24 = t0 + t23
+                LirBlock::Multiple {
+                    lirs: vec![
+                        lir!(Ble(12) 0, 24, 21), // ble r0, (t24 <= t21) -> 12
+                        lir!(Li(1) 25),          // li t25 = 1
+                        lir!(Add 21, 0, 25),     // addi t21 = t0 + t25
+                        lir!(Add 22, 0, 25),     // addi t22 = t0 + t25
+                        lir!(Jmp(-18)),          // jmp -18
+                    ],
+                },
+            ],
+        };
 
-        let deps_graph = build_deps_graph(PROGRAM);
+        let lifetime_tracker = analyze_lifetime(&lir);
+        let deps_graph = build_deps_graph(lifetime_tracker);
 
-        assert_eq!(deps_graph.get(&1), Some(&vec![]));
-        assert_eq!(deps_graph.get(&2), Some(&vec![3, 4]));
-        assert_eq!(deps_graph.get(&3), Some(&vec![2]));
-        assert_eq!(deps_graph.get(&4), Some(&vec![2, 5]));
-        assert_eq!(deps_graph.get(&5), Some(&vec![4]));
-        assert_eq!(deps_graph.get(&6), Some(&vec![]));
-        assert_eq!(deps_graph.get(&7), Some(&vec![]));
-        assert_eq!(deps_graph.get(&8), Some(&vec![]));
-    }
-
-    #[test]
-    fn test_reg_deps_graph_3() {
-        const PROGRAM: &str = r#"
-            var a: i32 = 10;
-            var b: i32 = 20;
-            var c: i32 = test_func(a, b);
-        "#;
-        // ===== Lir =====
-        // li   t1 = 10
-        // add  t2 = t0 + t1
-        // li   t3 = 20
-        // add  t4 = t0 + t3
-        // add  t5 = t0 + t2
-        // add  t6 = t0 + t4
-        // call test_func.global (t5, t6)
-        // add  t7 = t0 + t6
-
-        let deps_graph = build_deps_graph(PROGRAM);
-
-        assert_eq!(deps_graph.get(&1), Some(&vec![]));
-        assert_eq!(deps_graph.get(&2), Some(&vec![3, 4]));
-        assert_eq!(deps_graph.get(&3), Some(&vec![2]));
-        assert_eq!(deps_graph.get(&4), Some(&vec![2, 5]));
-        assert_eq!(deps_graph.get(&5), Some(&vec![4, 6]));
-        assert_eq!(deps_graph.get(&6), Some(&vec![5]));
-        assert_eq!(deps_graph.get(&7), Some(&vec![]));
-    }
-
-    fn build_deps_graph(input: &str) -> HashMap<u32, Vec<u32>> {
-        todo!()
-        // let ast = parse(input).unwrap();
-        // let lir = lirgen0(&ast);
-        // let lifetime_tracker = analyze_lifetime(&lir);
-        // let deps_graph = build_deps_graph0(lifetime_tracker);
-        // deps_graph
+        assert_eq!(deps_graph.get(&20), Some(&HashSet::from([21])));
+        assert_eq!(deps_graph.get(&21), Some(&HashSet::from([20, 22, 23, 24, 25])));
+        assert_eq!(deps_graph.get(&22), Some(&HashSet::from([21, 23, 24, 25])));
+        assert_eq!(deps_graph.get(&23), Some(&HashSet::from([21, 22])));
+        assert_eq!(deps_graph.get(&24), Some(&HashSet::from([21, 22, 25])));
+        assert_eq!(deps_graph.get(&25), Some(&HashSet::from([21, 22, 24])));
     }
 }
