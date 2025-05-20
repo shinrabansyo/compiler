@@ -10,7 +10,6 @@ use reg_mapping::mapping;
 pub fn codegen(lir_top_elem: LirTopElem) -> Asm {
     let lir_block = match lir_top_elem {
         LirTopElem::Function { body, .. } => body,
-        _ => unreachable!("LirTopElem must be a function"),
     };
 
     // 1. レジスタ割り付け (LirBlock -> RegMap)
