@@ -3,7 +3,7 @@
 ## Usage
 
 ```
-$ cargo run -- input.sb output.obj
+$ cargo run input.sb output.obj
 ```
 
 - `input.sb` : プログラム(入力)
