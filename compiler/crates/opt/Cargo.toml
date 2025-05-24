@@ -6,4 +6,4 @@ edition = "2021"
 [dependencies]
 anyhow = { workspace = true }
 thiserror = { workspace = true }
-sb_compiler_codegen_asm = { path = "../codegen_asm" }
+sb_linker = { workspace = true }

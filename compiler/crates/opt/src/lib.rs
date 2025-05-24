@@ -1,21 +1,21 @@
 mod rule;
 
-use sb_compiler_codegen_asm::Asm;
+use sb_linker::obj::Object;
 
 use rule::*;
 
-pub fn optimize(asm: Asm) -> Asm {
+pub fn optimize(obj: Object) -> Object {
     // 1. 冗長命令削除
-    let asm = remove_futile_inst(asm);
+    let obj = remove_futile_inst(obj);
 
     // 2. 冗長なジャンプ命令削除
-    let asm = remove_futile_jmp(asm);
+    let obj = remove_futile_jmp(obj);
 
     // 3. プロローグ/エピローグのサイズを調整
-    let asm = downsize_prologue_epilogue(asm);
+    let obj = downsize_prologue_epilogue(obj);
 
-    // 3. 各処理の結果として不正な配置となったラベルを修正
-    let asm = fix_incomplete_label(asm);
+    // 4. 各処理の結果として不正な配置となったラベルを修正
+    let obj = fix_incomplete_label(obj);
 
-    asm
+    obj
 }

@@ -1,11 +1,12 @@
-use sb_compiler_codegen_asm::inst::{AsmInst, AsmInstValue};
-use sb_compiler_codegen_asm::Asm;
+use sb_linker::obj::inst::{Inst, InstValue};
+use sb_linker::obj::Object;
 
-pub fn remove_futile_jmp(asm: Asm) -> Asm {
-    let mut result = Vec::with_capacity(asm.inst.len() + 20);
+pub fn remove_futile_jmp(obj: Object) -> Object {
+    let mut result = Vec::with_capacity(obj.code.len() + 20);
     let mut prev_beq_jmp = None;
-    for inst in asm.inst {
-        if let AsmInst::GLabel { label } = &inst {
+    for inst in obj.code {
+        // Beq -> Label の並びを検出した場合，Beq を削除する
+        if let Inst::Label { label } = &inst {
             if let Some(prev_beq_label) = prev_beq_jmp {
                 if label == &prev_beq_label {
                     result.pop();
@@ -13,13 +14,14 @@ pub fn remove_futile_jmp(asm: Asm) -> Asm {
             }
         }
 
-        prev_beq_jmp = if let AsmInst::Beq {
+        // Beq で飛ぶ先のラベルを保存
+        prev_beq_jmp = if let Inst::Beq {
             rd: 0,
             rs1: 0,
             rs2: 0,
-            value: AsmInstValue::InstLabel(label)
+            value: InstValue::InstLabel(label)
         } = &inst {
-            Some(label.clone())
+            Some(*label)
         } else {
             None
         };
@@ -27,8 +29,8 @@ pub fn remove_futile_jmp(asm: Asm) -> Asm {
         result.push(inst);
     }
 
-    Asm {
-        inst: result,
-        ..asm
+    Object {
+        code: result,
+        ..obj
     }
 }

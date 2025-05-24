@@ -1,26 +1,26 @@
-use sb_compiler_codegen_asm::inst::{Add, AsmInst};
-use sb_compiler_codegen_asm::{asmi, Asm};
+use sb_linker::obj::inst::Inst;
+use sb_linker::obj::{inst, Object};
 
-pub fn fix_incomplete_label(asm: Asm) -> Asm {
-    let mut result = Vec::with_capacity(asm.inst.len() + 20);
+pub fn fix_incomplete_label(obj: Object) -> Object {
+    let mut result = Vec::with_capacity(obj.code.len() + 20);
     let mut prev_is_label = false;
-    for inst in asm.inst {
+    for inst in obj.code {
         if prev_is_label && is_label(&inst) {
-            result.push(asmi!(Add 0, 12, 4));
+            result.push(inst!(Add 0, 12, 4));
         }
         prev_is_label = is_label(&inst);
         result.push(inst);
     }
 
-    Asm {
-        inst: result,
-        ..asm
+    Object {
+        code: result,
+        ..obj
     }
 }
 
-fn is_label(inst: &AsmInst) -> bool {
+fn is_label(inst: &Inst) -> bool {
     match inst {
-        AsmInst::LLabel { .. } | AsmInst::GLabel { .. } => true,
+        Inst::Label { .. } => true,
         _ => false,
     }
 }
