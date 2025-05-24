@@ -1,14 +1,25 @@
 mod utils;
 
+use std::io::Cursor;
+
 use sb_asm::assemble;
 use sb_emu::{State, step};
+use sb_linker::config::Config;
+use sb_linker::obj::Object;
+use sb_linker::link;
 
 use utils::{Expect, test_dir};
 use sb_compiler::compile;
 
 fn test_code(input: &str) -> anyhow::Result<()> {
     // コンパイル
-    let asm = compile(input)?;
+    let objs = compile(input)?;
+    let mut buf = vec![];
+    Object::dump(&mut buf, &objs)?;
+    let objs = Cursor::new(buf);
+
+    // リンク
+    let asm = link(Config::default(), vec![objs])?;
 
     // アセンブル
     let (dmem, imem) = assemble(&asm)?;
@@ -23,8 +34,12 @@ fn test_code(input: &str) -> anyhow::Result<()> {
 
     // エミュレータ実行
     let mut emu = step(State::new(0, &dmem, &imem))?;
-    while emu.pc != 0 {
+    loop {
+        let old_pc = emu.pc;
         emu = step(emu)?;
+        if old_pc == emu.pc {
+            break;
+        }
     }
 
     // main 関数の返り値を確認

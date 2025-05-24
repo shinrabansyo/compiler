@@ -336,6 +336,7 @@ dependencies = [
  "sb_compiler_parse",
  "sb_compiler_utils",
  "sb_emu",
+ "sb_linker",
  "thiserror 2.0.12",
 ]
 
@@ -354,6 +355,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "sb_compiler",
+ "sb_linker",
  "thiserror 2.0.12",
 ]
 
@@ -404,7 +406,7 @@ name = "sb_compiler_opt"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "sb_compiler_codegen_asm",
+ "sb_linker",
  "thiserror 2.0.12",
 ]
 
@@ -493,7 +495,7 @@ dependencies = [
 [[package]]
 name = "sb_linker"
 version = "0.1.0"
-source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+source = "git+https://github.com/Shinrabansyo/linker?rev=4ebc6fa759cffd3b271a124ec9b13903fa28695f#4ebc6fa759cffd3b271a124ec9b13903fa28695f"
 dependencies = [
  "anyhow",
  "sb_linker_asmgen",
@@ -507,7 +509,7 @@ dependencies = [
 [[package]]
 name = "sb_linker_asmgen"
 version = "0.1.0"
-source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+source = "git+https://github.com/Shinrabansyo/linker?rev=4ebc6fa759cffd3b271a124ec9b13903fa28695f#4ebc6fa759cffd3b271a124ec9b13903fa28695f"
 dependencies = [
  "anyhow",
  "sb_linker_config",
@@ -518,7 +520,7 @@ dependencies = [
 [[package]]
 name = "sb_linker_config"
 version = "0.1.0"
-source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+source = "git+https://github.com/Shinrabansyo/linker?rev=4ebc6fa759cffd3b271a124ec9b13903fa28695f#4ebc6fa759cffd3b271a124ec9b13903fa28695f"
 dependencies = [
  "anyhow",
  "serde",
@@ -528,7 +530,7 @@ dependencies = [
 [[package]]
 name = "sb_linker_layout"
 version = "0.1.0"
-source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+source = "git+https://github.com/Shinrabansyo/linker?rev=4ebc6fa759cffd3b271a124ec9b13903fa28695f#4ebc6fa759cffd3b271a124ec9b13903fa28695f"
 dependencies = [
  "anyhow",
  "sb_linker_obj",
@@ -538,7 +540,7 @@ dependencies = [
 [[package]]
 name = "sb_linker_load"
 version = "0.1.0"
-source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+source = "git+https://github.com/Shinrabansyo/linker?rev=4ebc6fa759cffd3b271a124ec9b13903fa28695f#4ebc6fa759cffd3b271a124ec9b13903fa28695f"
 dependencies = [
  "anyhow",
  "sb_linker_load_objfile",
@@ -549,7 +551,7 @@ dependencies = [
 [[package]]
 name = "sb_linker_load_objfile"
 version = "0.1.0"
-source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+source = "git+https://github.com/Shinrabansyo/linker?rev=4ebc6fa759cffd3b271a124ec9b13903fa28695f#4ebc6fa759cffd3b271a124ec9b13903fa28695f"
 dependencies = [
  "anyhow",
  "sb_linker_obj",
@@ -560,7 +562,7 @@ dependencies = [
 [[package]]
 name = "sb_linker_obj"
 version = "0.1.0"
-source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+source = "git+https://github.com/Shinrabansyo/linker?rev=4ebc6fa759cffd3b271a124ec9b13903fa28695f#4ebc6fa759cffd3b271a124ec9b13903fa28695f"
 dependencies = [
  "anyhow",
  "serde",
