@@ -20,16 +20,12 @@ pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirBlock {
             let lir_expr = lirgen_expr(ctx, expr);
             let reg_expr = lir_expr.result_reg();
 
-            // 関数名
-            let (fn_namespace, fn_name) = ctx.get_fn_name().unwrap();
-            let fn_label = format!("{}.{}", fn_namespace, fn_name);
-
             LirBlock::Single {
                 result_reg: ZERO_REG,
                 lirs: vec![
                     lir_expr,
                     lir!(Add RET_REG, ZERO_REG, reg_expr),
-                    lir!(FnReturn(fn_label)),
+                    lir!(FnReturn),
                 ],
             }
         }

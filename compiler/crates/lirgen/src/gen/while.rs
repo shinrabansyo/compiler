@@ -18,13 +18,13 @@ pub fn lirgen_while(ctx: &mut GenContext, r#while: &While) -> LirBlock {
 
     LirBlock::Multiple {
         lirs: vec![
-            lir!(LLabel label_cond),
+            lir!(Label label_cond),
             lir_cond,
             lir!(Bne(12) ZERO_REG, reg_cond, ZERO_REG),
             lir!(JmpLabel(label_end)),
             lir_block,
             lir!(JmpLabel(label_cond)),
-            lir!(LLabel label_end),
+            lir!(Label label_end),
         ]
     }
 }

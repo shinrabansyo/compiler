@@ -14,10 +14,9 @@ pub fn lirgen_func_def(ctx: &mut GenContext, func: &FuncDef) -> LirTopElem {
     let lir_block = LirBlock::Single {
         result_reg: ZERO_REG,
         lirs: vec![
-            lir!(GLabel format!("{}.{}", func.namespace, func.ident)),
             lir!(FnPrologue),
             lir_body,
-            lir!(FnEpilogue(format!("{}.{}", func.namespace, func.ident))),
+            lir!(FnEpilogue),
         ],
     };
 

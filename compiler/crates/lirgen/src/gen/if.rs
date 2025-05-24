@@ -31,9 +31,9 @@ pub fn lirgen_if(ctx: &mut GenContext, r#if: &If) -> LirBlock {
             lir!(JmpLabel(label_false)),
             lir_true_block,
             lir!(JmpLabel(label_end)),
-            lir!(LLabel label_false),
+            lir!(Label label_false),
             lir_else_block,
-            lir!(LLabel label_end),
+            lir!(Label label_end),
         ],
     }
 }

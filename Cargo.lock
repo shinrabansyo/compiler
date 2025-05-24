@@ -13,9 +13,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.93"
+version = "1.0.98"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c95c10ba0b00a02636238b814946408b1322d5ac4760326e6fb8ec956d85775"
+checksum = "e16d2d3311acee920a9eb8d33b8cbc1787ce4a264e85f964c2404b969bdcd487"
 
 [[package]]
 name = "copager"
@@ -319,7 +319,7 @@ version = "0.1.0"
 source = "git+https://github.com/shinrabansyo/assembler.git?rev=16955a950b30a2c879f4acd7dff661db6d2bf741#16955a950b30a2c879f4acd7dff661db6d2bf741"
 dependencies = [
  "anyhow",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -336,7 +336,7 @@ dependencies = [
  "sb_compiler_parse",
  "sb_compiler_utils",
  "sb_emu",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -345,7 +345,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "sb_compiler_parse_ast",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -354,7 +354,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "sb_compiler",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -362,11 +362,11 @@ name = "sb_compiler_codegen"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "sb_compiler_codegen_asm",
  "sb_compiler_lirgen",
  "sb_compiler_lirgen_ir",
  "sb_compiler_parse",
- "thiserror 2.0.3",
+ "sb_linker",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -375,7 +375,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "sb_compiler_lirgen_ir",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -388,7 +388,7 @@ dependencies = [
  "sb_compiler_parse",
  "sb_compiler_parse_ast",
  "sb_compiler_utils",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -396,7 +396,7 @@ name = "sb_compiler_lirgen_ir"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -405,7 +405,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "sb_compiler_codegen_asm",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -416,7 +416,7 @@ dependencies = [
  "copager",
  "sb_compiler_parse_ast",
  "sb_compiler_parse_syntax",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -426,7 +426,7 @@ dependencies = [
  "anyhow",
  "copager",
  "sb_compiler_parse_syntax",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -436,7 +436,7 @@ dependencies = [
  "anyhow",
  "copager",
  "serde",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -444,7 +444,7 @@ name = "sb_compiler_utils"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -455,7 +455,7 @@ dependencies = [
  "anyhow",
  "sb_emu_inst",
  "sb_emu_state",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -466,7 +466,7 @@ dependencies = [
  "anyhow",
  "sb_emu_inst_macros",
  "sb_emu_state",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -478,7 +478,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -487,14 +487,92 @@ version = "0.1.0"
 source = "git+https://github.com/shinrabansyo/debugger.git?rev=42a188476d8acae250a77a39bc5db409c5a60a56#42a188476d8acae250a77a39bc5db409c5a60a56"
 dependencies = [
  "anyhow",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_linker"
+version = "0.1.0"
+source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+dependencies = [
+ "anyhow",
+ "sb_linker_asmgen",
+ "sb_linker_config",
+ "sb_linker_layout",
+ "sb_linker_load",
+ "sb_linker_obj",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_linker_asmgen"
+version = "0.1.0"
+source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+dependencies = [
+ "anyhow",
+ "sb_linker_config",
+ "sb_linker_obj",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_linker_config"
+version = "0.1.0"
+source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+dependencies = [
+ "anyhow",
+ "serde",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_linker_layout"
+version = "0.1.0"
+source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+dependencies = [
+ "anyhow",
+ "sb_linker_obj",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_linker_load"
+version = "0.1.0"
+source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+dependencies = [
+ "anyhow",
+ "sb_linker_load_objfile",
+ "sb_linker_obj",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_linker_load_objfile"
+version = "0.1.0"
+source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+dependencies = [
+ "anyhow",
+ "sb_linker_obj",
+ "serde_cbor",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_linker_obj"
+version = "0.1.0"
+source = "git+https://github.com/Shinrabansyo/linker?rev=7da2b56542f6aff66908a94b0d9a36887f295db2#7da2b56542f6aff66908a94b0d9a36887f295db2"
+dependencies = [
+ "anyhow",
+ "serde",
+ "serde_cbor",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
 name = "serde"
-version = "1.0.215"
+version = "1.0.219"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6513c1ad0b11a9376da888e3e0baa0077f1aed55c17f50e7b2397136129fb88f"
+checksum = "5f0e2c6ed6606019b4e29e69dbaba95b11854410e5347d525002456dbbb786b6"
 dependencies = [
  "serde_derive",
 ]
@@ -511,9 +589,9 @@ dependencies = [
 
 [[package]]
 name = "serde_derive"
-version = "1.0.215"
+version = "1.0.219"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad1e866f866923f252f05c889987993144fb74e722403468a4ebd70c3cd756c0"
+checksum = "5b0276cf7f2c73365f7157c8123c21cd9a50fbbd844757af28ca1f5925fc2a00"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -554,11 +632,11 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "2.0.3"
+version = "2.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c006c85c7651b3cf2ada4584faa36773bd07bac24acfb39f3c431b36d7e667aa"
+checksum = "567b8a2dae586314f7be2a752ec7474332959c6460e02bde30d702a66d488708"
 dependencies = [
- "thiserror-impl 2.0.3",
+ "thiserror-impl 2.0.12",
 ]
 
 [[package]]
@@ -574,9 +652,9 @@ dependencies = [
 
 [[package]]
 name = "thiserror-impl"
-version = "2.0.3"
+version = "2.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f077553d607adc1caf65430528a576c757a71ed73944b66ebb58ef2bbd243568"
+checksum = "7f7cf42b4507d8ea322120659672cf1b9dbb93f8f2d4ecfd6e51350ff5b17a1d"
 dependencies = [
  "proc-macro2",
  "quote",

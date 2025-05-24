@@ -1,22 +1,19 @@
-mod asmgen;
+mod r#gen;
 mod reg_mapping;
 
-use sb_compiler_lirgen_ir::LirTopElem;
-use sb_compiler_codegen_asm::Asm;
+use sb_linker::obj::Object;
 
-use asmgen::asmgen;
+use sb_compiler_lirgen_ir::LirTopElem;
+
+use r#gen::gen_inst;
 use reg_mapping::mapping;
 
-pub fn codegen(lir_top_elem: LirTopElem) -> Asm {
-    let lir_block = match lir_top_elem {
-        LirTopElem::Function { body, .. } => body,
-    };
-
+pub fn codegen(lir: LirTopElem) -> Object {
     // 1. レジスタ割り付け (LirBlock -> RegMap)
-    let reg_map = mapping(&lir_block, &[20, 21, 22, 23, 24, 25, 26, 27, 28, 29]);
+    let reg_map = mapping(&lir, &[20, 21, 22, 23, 24, 25, 26, 27, 28, 29]);
 
-    // 2. コード生成 (LirBlock + RegMap -> Asm)
-    let asm = asmgen(lir_block, reg_map);
+    // 2. コード生成 (LirBlock + RegMap -> Object)
+    let asm = gen_inst(lir, reg_map);
 
     asm
 }

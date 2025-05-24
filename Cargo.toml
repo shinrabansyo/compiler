@@ -15,7 +15,8 @@ members = [
 ]
 
 [workspace.dependencies]
-anyhow = "1.0.93"
+anyhow = "1.0.98"
 thiserror = "2.0.3"
 serde = "1.0.215"
 copager = { git = "https://github.com/Tsukuba-Programming-Lab/Copager", rev = "0e26c8373c5a0bff919d807026f141224e19a036" }
+sb_linker = { git = "https://github.com/Shinrabansyo/linker", rev = "7da2b56542f6aff66908a94b0d9a36887f295db2" }
