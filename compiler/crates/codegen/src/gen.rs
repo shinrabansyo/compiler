@@ -82,9 +82,9 @@ impl InstGenerator {
                 ]);
             }
             LirBlock::Inst { inst, dst, src1, src2 } => {
-                let dst = *self.reg_map.get(&dst).unwrap_or(&0);
-                let src1 = *self.reg_map.get(&src1).unwrap_or(&0);
-                let src2 = *self.reg_map.get(&src2).unwrap_or(&0);
+                let dst = *self.reg_map.get(&dst).unwrap_or(&(dst as u8));
+                let src1 = *self.reg_map.get(&src1).unwrap_or(&(src1 as u8));
+                let src2 = *self.reg_map.get(&src2).unwrap_or(&(src2 as u8));
 
                 let asm = match inst {
                     // Nop
