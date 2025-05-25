@@ -1,0 +1,18 @@
+@global.test
+    fn_prologue
+    li   t20 = 0
+    li   t21 = 0
+@local.0
+    li   t22 = 10
+    blt  t0, (t20 < t22) -> 18
+    li   t23 = 0
+    jmp  t0, 12
+    li   t23 = 1
+    bne  t0, (t23 != t0) -> 12
+    jmp  t0, @local.1
+    li   t24 = 1
+    add  t20 = t20 + t24
+    add  t21 = t21 + t20
+    jmp  t0, @local.0
+@local.1
+    fn_epilogue

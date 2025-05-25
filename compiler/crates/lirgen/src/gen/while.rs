@@ -1,24 +1,30 @@
 use sb_compiler_parse_ast::While;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Pop, Beq, Jmp, Label};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel};
 
-use super::{lirgen_expr, lirgen_block, TMP_REG, ZERO_REG};
+use crate::{GenContext, ZERO_REG};
+use super::{lirgen_expr, lirgen_block};
 
-pub fn lirgen_while(lirs: &mut Vec<LIR>, r#while: &While, analyze_result: &AnalyzeResult) {
-    let stmt_label = format!("while_stmt.{}.{}", lirs.len(), r#while.namespace);
-    let cond_label = format!("while_cond.{}.{}", lirs.len(), r#while.namespace);
+pub fn lirgen_while(ctx: &mut GenContext, r#while: &While) -> LirBlock {
+    // 条件節
+    let lir_cond = lirgen_expr(ctx, &r#while.cond);
+    let reg_cond = lir_cond.result_reg();
 
-    // 条件節へのジャンプ
-    lirs.push(lir!(Jmp cond_label.clone()));
+    // ブロック
+    let lir_block = lirgen_block(ctx, &r#while.block);
 
-    // 実行部
-    lirs.push(lir!(Label stmt_label.clone()));
-    lirgen_block(lirs, &r#while.block, analyze_result);
+    // ラベル
+    let label_cond = ctx.alloc_label();
+    let label_end = ctx.alloc_label();
 
-    // 継続判定
-    lirs.push(lir!(Label cond_label));
-    lirgen_expr(lirs, &r#while.cond, analyze_result);
-    lirs.push(lir!(Pop TMP_REG));
-    lirs.push(lir!(Beq ZERO_REG, TMP_REG, 12));
-    lirs.push(lir!(Jmp stmt_label));
+    LirBlock::Multiple {
+        lirs: vec![
+            lir!(Label label_cond),
+            lir_cond,
+            lir!(Bne(12) ZERO_REG, reg_cond, ZERO_REG),
+            lir!(JmpLabel(label_end)),
+            lir_block,
+            lir!(JmpLabel(label_cond)),
+            lir!(Label label_end),
+        ]
+    }
 }

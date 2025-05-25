@@ -1,21 +1,36 @@
 use sb_compiler_parse_ast::BitAnd;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, And, Push, Pop};
+use sb_compiler_lirgen_ir::{lir, LirBlock, And};
 
-use super::{lirgen_cond, TMP_REG_L, TMP_REG_R};
+use crate::GenContext;
+use super::lirgen_cond;
 
-pub fn lirgen_bit_and(lirs: &mut Vec<LIR>, bit_and: &BitAnd, analyze_result: &AnalyzeResult) {
-    match bit_and {
+pub fn lirgen_bit_and(ctx: &mut GenContext, bit_and: &BitAnd) -> LirBlock {
+    let (result_reg, lirs) = match bit_and {
         BitAnd::And { lhs, rhs, .. } => {
-            lirgen_bit_and(lirs, lhs, analyze_result);
-            lirgen_cond(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(And TMP_REG_L, TMP_REG_R));
-            lirs.push(lir!(Push TMP_REG_L));
+            let lir_lhs = lirgen_bit_and(ctx, lhs);
+            let reg_lhs = lir_lhs.result_reg();
+
+            let lir_rhs = lirgen_cond(ctx, rhs);
+            let reg_rhs = lir_rhs.result_reg();
+
+            let reg_result = ctx.alloc_reg();
+
+            (
+                reg_result,
+                vec![
+                    lir_lhs,
+                    lir_rhs,
+                    lir!(And reg_result, reg_lhs, reg_rhs),
+                ],
+            )
         }
-        BitAnd::Cond { cond, .. } => {
-            lirgen_cond(lirs, cond, analyze_result);
+        BitAnd::Cond{ cond, .. } => {
+            return lirgen_cond(ctx, cond);
         }
+    };
+
+    LirBlock::Single {
+        result_reg,
+        lirs,
     }
 }

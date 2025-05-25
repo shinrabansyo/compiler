@@ -1,4 +1,9 @@
+use std::env;
+use std::fs::File;
+use std::fs;
+
 use sb_compiler::compile;
+use sb_linker::obj::Object;
 
 fn main() -> anyhow::Result<()> {
     let args = std::env::args();
@@ -6,12 +11,13 @@ fn main() -> anyhow::Result<()> {
         return Err(anyhow::anyhow!("usage: sb-compiler <input> <output>"));
     }
 
-    let path = std::env::args().nth(1).unwrap();
-    let input = std::fs::read_to_string(&path)?;
-    let asm = compile(&input)?;
+    let path = env::args().nth(1).unwrap();
+    let input = fs::read_to_string(&path)?;
+    let objs = compile(&input)?;
 
-    let path = std::env::args().nth(2).unwrap();
-    std::fs::write(&path, asm)?;
+    let path = env::args().nth(2).unwrap();
+    let mut f = File::create(&path)?;
+    Object::dump(&mut f, &objs)?;
 
     Ok(())
 }

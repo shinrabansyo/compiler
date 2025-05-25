@@ -1,21 +1,36 @@
 use sb_compiler_parse_ast::BitOr;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Or, Push, Pop};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Or};
 
-use super::{lirgen_bit_xor, TMP_REG_L, TMP_REG_R};
+use crate::GenContext;
+use super::lirgen_bit_xor;
 
-pub fn lirgen_bit_or(lirs: &mut Vec<LIR>, bit_or: &BitOr, analyze_result: &AnalyzeResult) {
-    match bit_or {
+pub fn lirgen_bit_or(ctx: &mut GenContext, bit_or: &BitOr) -> LirBlock {
+    let (result_reg, lirs) = match bit_or {
         BitOr::Or { lhs, rhs, .. } => {
-            lirgen_bit_or(lirs, lhs, analyze_result);
-            lirgen_bit_xor(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(Or TMP_REG_L, TMP_REG_R));
-            lirs.push(lir!(Push TMP_REG_L));
+            let lir_lhs = lirgen_bit_or(ctx, lhs);
+            let reg_lhs = lir_lhs.result_reg();
+
+            let lir_rhs = lirgen_bit_xor(ctx, rhs);
+            let reg_rhs = lir_rhs.result_reg();
+
+            let reg_result = ctx.alloc_reg();
+
+            (
+                reg_result,
+                vec![
+                    lir_lhs,
+                    lir_rhs,
+                    lir!(Or reg_result, reg_lhs, reg_rhs),
+                ],
+            )
         }
         BitOr::BitXor { xor, .. } => {
-            lirgen_bit_xor(lirs, xor, analyze_result);
+            return lirgen_bit_xor(ctx, xor);
         }
+    };
+
+    LirBlock::Single {
+        result_reg,
+        lirs,
     }
 }

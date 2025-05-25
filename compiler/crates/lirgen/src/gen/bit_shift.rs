@@ -1,37 +1,72 @@
 use sb_compiler_parse_ast::BitShift;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, ShiftL, ShiftR, ShiftRa, Push, Pop};
+use sb_compiler_lirgen_ir::{lir, LirBlock, ShiftL, ShiftR, ShiftRa};
 
-use super::{lirgen_add, TMP_REG_L, TMP_REG_R};
+use crate::GenContext;
+use super::lirgen_add;
 
-pub fn lirgen_bit_shift(lirs: &mut Vec<LIR>, bit_shift: &BitShift, analyze_result: &AnalyzeResult) {
-    match bit_shift {
-        BitShift::L { lhs, rhs, .. }=> {
-            lirgen_bit_shift(lirs, lhs, analyze_result);
-            lirgen_add(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(ShiftL TMP_REG_L, TMP_REG_R));
-            lirs.push(lir!(Push TMP_REG_L));
+pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: &BitShift) -> LirBlock {
+    let (result_reg, lirs) = match bit_shift {
+        BitShift::L { lhs, rhs, .. } => {
+            let lir_lhs = lirgen_bit_shift(ctx, lhs);
+            let reg_lhs = lir_lhs.result_reg();
+
+            let lir_rhs = lirgen_add(ctx, rhs);
+            let reg_rhs = lir_rhs.result_reg();
+
+            let reg_result = ctx.alloc_reg();
+
+            (
+                reg_result,
+                vec![
+                    lir_lhs,
+                    lir_rhs,
+                    lir!(ShiftL reg_result, reg_lhs, reg_rhs),
+                ],
+            )
         }
         BitShift::R { lhs, rhs, .. } => {
-            lirgen_bit_shift(lirs, lhs, analyze_result);
-            lirgen_add(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(ShiftR TMP_REG_L, TMP_REG_R));
-            lirs.push(lir!(Push TMP_REG_L));
+            let lir_lhs = lirgen_bit_shift(ctx, lhs);
+            let reg_lhs = lir_lhs.result_reg();
+
+            let lir_rhs = lirgen_add(ctx, rhs);
+            let reg_rhs = lir_rhs.result_reg();
+
+            let reg_result = ctx.alloc_reg();
+
+            (
+                reg_result,
+                vec![
+                    lir_lhs,
+                    lir_rhs,
+                    lir!(ShiftR reg_result, reg_lhs, reg_rhs),
+                ],
+            )
         }
         BitShift::Ra { lhs, rhs, .. } => {
-            lirgen_bit_shift(lirs, lhs, analyze_result);
-            lirgen_add(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(ShiftRa TMP_REG_L, TMP_REG_R));
-            lirs.push(lir!(Push TMP_REG_L));
+            let lir_lhs = lirgen_bit_shift(ctx, lhs);
+            let reg_lhs = lir_lhs.result_reg();
+
+            let lir_rhs = lirgen_add(ctx, rhs);
+            let reg_rhs = lir_rhs.result_reg();
+
+            let reg_result = ctx.alloc_reg();
+
+            (
+                reg_result,
+                vec![
+                    lir_lhs,
+                    lir_rhs,
+                    lir!(ShiftRa reg_result, reg_lhs, reg_rhs),
+                ],
+            )
         }
         BitShift::Add { add, .. } => {
-            lirgen_add(lirs, add,  analyze_result);
+            return lirgen_add(ctx, add);
         }
+    };
+
+    LirBlock::Single {
+        result_reg,
+        lirs,
     }
 }

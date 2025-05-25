@@ -29,7 +29,6 @@ pub fn analyze_addr_top(table: &mut Table, top: &Top) {
         Top::FuncDef { func_def, .. } => {
             analyze_addr_func_def(table, func_def)
         }
-        _ => {},
     }
 }
 

@@ -1,29 +1,54 @@
 use sb_compiler_parse_ast::Add as AddAst;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Add, Sub, Push, Pop};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Sub};
 
-use super::{lirgen_value, TMP_REG_L, TMP_REG_R};
+use crate::GenContext;
+use super::lirgen_value;
 
-pub fn lirgen_add(lirs: &mut Vec<LIR>, add: &AddAst, analyze_result: &AnalyzeResult) {
-    match add {
-        AddAst::Plus { lhs, rhs, .. }=> {
-            lirgen_add(lirs, lhs, analyze_result);
-            lirgen_value(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(Add TMP_REG_L, TMP_REG_R));
-            lirs.push(lir!(Push TMP_REG_L));
+pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirBlock {
+    let (result_reg, lirs) = match add {
+        AddAst::Plus { lhs, rhs, .. } => {
+            let lir_lhs = lirgen_add(ctx, lhs);
+            let reg_lhs = lir_lhs.result_reg();
+
+            let lir_rhs = lirgen_value(ctx, rhs);
+            let reg_rhs = lir_rhs.result_reg();
+
+            let reg_result = ctx.alloc_reg();
+
+            (
+                reg_result,
+                vec![
+                    lir_lhs,
+                    lir_rhs,
+                    lir!(Add reg_result, reg_lhs, reg_rhs),
+                ],
+            )
         }
         AddAst::Minus { lhs, rhs, .. } => {
-            lirgen_add(lirs, lhs, analyze_result);
-            lirgen_value(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(Sub TMP_REG_L, TMP_REG_R));
-            lirs.push(lir!(Push TMP_REG_L));
+            let lir_lhs = lirgen_add(ctx, lhs);
+            let reg_lhs = lir_lhs.result_reg();
+
+            let lir_rhs = lirgen_value(ctx, rhs);
+            let reg_rhs = lir_rhs.result_reg();
+
+            let reg_result = ctx.alloc_reg();
+
+            (
+                reg_result,
+                vec![
+                    lir_lhs,
+                    lir_rhs,
+                    lir!(Sub reg_result, reg_lhs, reg_rhs),
+                ],
+            )
         }
         AddAst::Value { value, .. } => {
-            lirgen_value(lirs, value,  analyze_result);
+            return lirgen_value(ctx, value);
         }
+    };
+
+    LirBlock::Single {
+        result_reg,
+        lirs,
     }
 }

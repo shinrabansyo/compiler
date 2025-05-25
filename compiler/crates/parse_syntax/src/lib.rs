@@ -130,7 +130,6 @@ pub enum SBRules {
     #[rule("<program> ::= <top>")]
     Program,
 
-    #[rule("<top> ::= <var_decl>")]
     #[rule("<top> ::= <func_def>")]
     Top,
 

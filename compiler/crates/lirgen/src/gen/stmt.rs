@@ -1,42 +1,46 @@
 use sb_compiler_parse_ast::Stmt;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Li, Add, Pop, FLoad, VarFree, Return};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Add, FnReturn};
 
-use super::{RET_REG, TMP_REG};
-use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_if, lirgen_while, lirgen_for, lirgen_dev_io};
+use crate::{GenContext, RET_REG, ZERO_REG};
+use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_if, lirgen_while, lirgen_for};
 
-pub fn lirgen_stmt(lirs: &mut Vec<LIR>, stmt: &Stmt, analyze_result: &AnalyzeResult) {
+pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirBlock {
     match stmt {
         Stmt::VarDecl { var_decl, .. } => {
-            lirgen_var_decl(lirs, var_decl, analyze_result);
+            lirgen_var_decl(ctx, var_decl)
         }
         Stmt::Block { block, .. } => {
-            lirgen_block(lirs, block, analyze_result);
+            lirgen_block(ctx, block)
         }
         Stmt::Expr { expr, .. } => {
-            lirgen_expr(lirs, expr, analyze_result);
-            lirs.push(lir!(Pop TMP_REG));
+            lirgen_expr(ctx, expr)
         }
         Stmt::Return { expr, .. } => {
-            lirgen_expr(lirs, expr, analyze_result);
-            lirs.push(lir!(Pop TMP_REG));
-            lirs.push(lir!(Li RET_REG, 0));
-            lirs.push(lir!(Add RET_REG, TMP_REG));
-            lirs.push(lir!(VarFree));
-            lirs.push(lir!(FLoad));
-            lirs.push(lir!(Return));
+            // 式
+            let lir_expr = lirgen_expr(ctx, expr);
+            let reg_expr = lir_expr.result_reg();
+
+            LirBlock::Single {
+                result_reg: ZERO_REG,
+                lirs: vec![
+                    lir_expr,
+                    lir!(Add RET_REG, ZERO_REG, reg_expr),
+                    lir!(FnReturn),
+                ],
+            }
         }
         Stmt::If { r#if, .. } => {
-            lirgen_if(lirs, r#if, analyze_result);
+            lirgen_if(ctx, r#if)
         }
         Stmt::While { r#while, .. } => {
-            lirgen_while(lirs, r#while, analyze_result);
+            lirgen_while(ctx, r#while)
         }
         Stmt::For { r#for, .. } => {
-            lirgen_for(lirs, r#for, analyze_result);
+            lirgen_for(ctx, r#for)
         }
         Stmt::DevIO { dev_io, .. } => {
-            lirgen_dev_io(lirs, dev_io, analyze_result);
+            unimplemented!()
+            // lirgen_dev_io(lirs, dev_io, analyze_result);
         }
     }
 }

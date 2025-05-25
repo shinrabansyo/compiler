@@ -1,20 +1,17 @@
 use sb_compiler_parse_ast::VarDecl;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Pop, Sw};
+use sb_compiler_lirgen_ir::LirBlock;
 
-use super::{lirgen_expr, TMP_REG, VARBASE_REG, ZERO_REG};
+use crate::GenContext;
+use super::lirgen_expr;
 
-pub fn lirgen_var_decl(lirs: &mut Vec<LIR>, var_decl: &VarDecl, analyze_result: &AnalyzeResult) {
-    lirgen_expr(lirs, &var_decl.expr, analyze_result);
+pub fn lirgen_var_decl(ctx: &mut GenContext, var_decl: &VarDecl) -> LirBlock {
+    let lir_expr = lirgen_expr(ctx, &var_decl.expr);
+    let reg_expr = lir_expr.result_reg();
 
-    let node_info = analyze_result.find(&var_decl.namespace, &var_decl.ident);
-    let addr = node_info.local_addr;
-    let base_reg = if node_info.namespace == "global" {
-        ZERO_REG
-    } else {
-        VARBASE_REG
-    };
+    ctx.sym_table.insert(var_decl.ident.clone(), reg_expr);
 
-    lirs.push(lir!(Pop TMP_REG));
-    lirs.push(lir!(Sw base_reg, addr, TMP_REG));
+    LirBlock::Single {
+        result_reg: reg_expr,
+        lirs: vec![lir_expr],
+    }
 }

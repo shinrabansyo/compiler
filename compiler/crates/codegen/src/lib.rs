@@ -1,16 +1,19 @@
-use std::fmt::Write;
+mod r#gen;
+mod reg_mapping;
 
-use sb_compiler_lirgen_ir::LIR;
+use sb_linker::obj::Object;
 
-pub fn codegen(lirs: Vec<LIR>) -> String {
-    let dmem = "";
+use sb_compiler_lirgen_ir::LirTopElem;
 
-    let mut imem = String::new();
-    writeln!(&mut imem, "addi r2 = r0, 0x100").unwrap();
-    writeln!(&mut imem, "beq r0, (r0, r0) -> @main.global\n").unwrap();
-    for lir in lirs {
-        writeln!(&mut imem, "{}", lir).unwrap();
-    }
+use r#gen::gen_inst;
+use reg_mapping::mapping;
 
-    format!("{}\n===\n{}", dmem, imem)
+pub fn codegen(lir: LirTopElem) -> Object {
+    // 1. レジスタ割り付け (LirBlock -> RegMap)
+    let reg_map = mapping(&lir, &[20, 21, 22, 23, 24, 25, 26, 27, 28, 29]);
+
+    // 2. コード生成 (LirBlock + RegMap -> Object)
+    let asm = gen_inst(lir, reg_map);
+
+    asm
 }

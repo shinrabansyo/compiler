@@ -1,5 +1,14 @@
 # SB Compiler
 
+## Usage
+
+```
+$ cargo run input.sb output.obj
+```
+
+- `input.sb` : プログラム(入力)
+- `output.obj` : オブジェクトファイル(出力)
+
 ## Examples
 
 - [examples/helloworld](examples/helloworld)
@@ -7,7 +16,7 @@
 - [examples/expr](examples/expr)
 
 ```
-$ cargo run examples/helloworld/main.sb out.asm
+$ cargo run examples/helloworld/main.sb main.obj
 ```
 
 ## Test

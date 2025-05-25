@@ -21,9 +21,6 @@ fn analyze_def_top<'ast>(
         Top::FuncDef { func_def, .. } => {
             analyze_defs_func_def(table, func_def)?;
         }
-        Top::VarDecl { var_decl, .. } => {
-            analyze_defs_var_decl(table, var_decl)?;
-        }
     }
     Ok(())
 }

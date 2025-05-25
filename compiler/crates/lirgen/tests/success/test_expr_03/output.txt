@@ -1,0 +1,14 @@
+@global.test
+    fn_prologue
+    li   t20 = 10
+    li   t21 = 20
+    add  t10 = t0 + t20
+    add  t11 = t0 + t21
+    call global.test_func
+    fn_epilogue
+@global.test_func
+    fn_prologue
+    li   t22 = 0
+    add  t10 = t0 + t22
+    fn_return
+    fn_epilogue

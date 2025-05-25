@@ -1,25 +1,51 @@
 use sb_compiler_parse_ast::LogicOr;
-use sb_compiler_analyze::AnalyzeResult;
-use sb_compiler_lirgen_ir::{lir, LIR, Li, Beq, Bne, Push, Pop};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Beq, JmpLabel, Li};
 
-use super::{lirgen_logic_and, TMP_REG, TMP_REG_L, TMP_REG_R, ZERO_REG};
+use crate::{GenContext, ZERO_REG};
+use super::lirgen_logic_and;
 
-pub fn lirgen_logic_or(lirs: &mut Vec<LIR>, logic_or: &LogicOr, analyze_result: &AnalyzeResult) {
-    match logic_or {
+pub fn lirgen_logic_or(ctx: &mut GenContext, logic_or: &LogicOr) -> LirBlock {
+    let (result_reg, lirs) = match logic_or {
         LogicOr::Or { lhs, rhs, .. } => {
-            lirgen_logic_or(lirs, lhs, analyze_result);
-            lirgen_logic_and(lirs, rhs, analyze_result);
-            lirs.push(lir!(Pop TMP_REG_R));
-            lirs.push(lir!(Pop TMP_REG_L));
-            lirs.push(lir!(Bne ZERO_REG, TMP_REG_L, 24));
-            lirs.push(lir!(Bne ZERO_REG, TMP_REG_R, 18));
-            lirs.push(lir!(Li TMP_REG, 0));
-            lirs.push(lir!(Beq ZERO_REG, ZERO_REG, 12));
-            lirs.push(lir!(Li TMP_REG, 1));
-            lirs.push(lir!(Push TMP_REG));
+            let lir_lhs = lirgen_logic_or(ctx, lhs);
+            let reg_lhs = lir_lhs.result_reg();
+
+            let lir_rhs = lirgen_logic_and(ctx, rhs);
+            let reg_rhs = lir_rhs.result_reg();
+
+            let reg_result = ctx.alloc_reg();
+
+            let label_true = ctx.alloc_label();
+            let label_end = ctx.alloc_label();
+
+            (
+                reg_result,
+                vec![
+                    lir_lhs,
+                    lir!(Beq(12) ZERO_REG, ZERO_REG, reg_lhs),
+                    lir!(JmpLabel(label_true)),
+
+                    lir_rhs,
+                    lir!(Beq(12) ZERO_REG, ZERO_REG, reg_rhs),
+                    lir!(JmpLabel(label_true)),
+
+                    lir!(Li(0) reg_result),
+                    lir!(JmpLabel(label_end)),
+
+                    lir!(Label label_true),
+                    lir!(Li(1) reg_result),
+
+                    lir!(Label label_end),
+                ],
+            )
         }
         LogicOr::LogicAnd { and, .. } => {
-            lirgen_logic_and(lirs, and, analyze_result);
+            return lirgen_logic_and(ctx, and);
         }
+    };
+
+    LirBlock::Single {
+        result_reg,
+        lirs,
     }
 }

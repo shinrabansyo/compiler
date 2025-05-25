@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 anyhow = { workspace = true }
 thiserror = { workspace = true }
+sb_linker = { workspace = true }
 sb_compiler = { path = "./compiler" }
 
 [workspace]
@@ -15,7 +16,8 @@ members = [
 ]
 
 [workspace.dependencies]
-anyhow = "1.0.93"
+anyhow = "1.0.98"
 thiserror = "2.0.3"
 serde = "1.0.215"
 copager = { git = "https://github.com/Tsukuba-Programming-Lab/Copager", rev = "0e26c8373c5a0bff919d807026f141224e19a036" }
+sb_linker = { git = "https://github.com/Shinrabansyo/linker", rev = "4ebc6fa759cffd3b271a124ec9b13903fa28695f" }
