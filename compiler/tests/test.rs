@@ -2,7 +2,7 @@ mod utils;
 
 use std::io::Cursor;
 
-use sb_asm::assemble;
+use sb_assembler::assemble;
 use sb_emu::{State, step};
 use sb_linker::config::Config;
 use sb_linker::obj::Object;

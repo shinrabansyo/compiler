@@ -314,9 +314,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f3cb5ba0dc43242ce17de99c180e96db90b235b8a9fdc9543c96d2209116bd9f"
 
 [[package]]
-name = "sb_asm"
+name = "sb_assembler"
 version = "0.1.0"
-source = "git+https://github.com/shinrabansyo/assembler.git?rev=16955a950b30a2c879f4acd7dff661db6d2bf741#16955a950b30a2c879f4acd7dff661db6d2bf741"
+source = "git+https://github.com/shinrabansyo/assembler.git?rev=83d6089b356148f551d88e9a5d3843d3156c82c6#83d6089b356148f551d88e9a5d3843d3156c82c6"
 dependencies = [
  "anyhow",
  "thiserror 2.0.12",
@@ -327,7 +327,7 @@ name = "sb_compiler"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "sb_asm",
+ "sb_assembler",
  "sb_compiler_analyze",
  "sb_compiler_codegen",
  "sb_compiler_lirgen",
