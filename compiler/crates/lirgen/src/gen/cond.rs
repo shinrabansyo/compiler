@@ -1,5 +1,5 @@
 use sb_compiler_parse_ast::Cond;
-use sb_compiler_lirgen_ir::{lir, LirBlock, Beq, Bne, Blt, Ble, Jmp, Li};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Beq, Bne, Blt, Ble, JmpLabel, Li};
 
 use crate::{GenContext, ZERO_REG};
 use super::lirgen_bit_shift;
@@ -15,15 +15,21 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
 
             let reg_result = ctx.alloc_reg();
 
+            let label_false = ctx.alloc_label();
+            let label_end = ctx.alloc_label();
+
             (
                 reg_result,
                 vec![
                     lir_lhs,
                     lir_rhs,
-                    lir!(Beq(18) ZERO_REG, reg_lhs, reg_rhs),
-                    lir!(Li(0) reg_result),
-                    lir!(Jmp(12)),
+                    lir!(Beq(12) ZERO_REG, reg_lhs, reg_rhs),
+                    lir!(JmpLabel(label_false)),
                     lir!(Li(1) reg_result),
+                    lir!(JmpLabel(label_end)),
+                    lir!(Label label_false),
+                    lir!(Li(0) reg_result),
+                    lir!(Label label_end),
                 ],
             )
         }
@@ -36,15 +42,21 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
 
             let reg_result = ctx.alloc_reg();
 
+            let label_false = ctx.alloc_label();
+            let label_end = ctx.alloc_label();
+
             (
                 reg_result,
                 vec![
                     lir_lhs,
                     lir_rhs,
-                    lir!(Bne(18) ZERO_REG, reg_lhs, reg_rhs),
-                    lir!(Li(0) reg_result),
-                    lir!(Jmp(12)),
+                    lir!(Bne(12) ZERO_REG, reg_lhs, reg_rhs),
+                    lir!(JmpLabel(label_false)),
                     lir!(Li(1) reg_result),
+                    lir!(JmpLabel(label_end)),
+                    lir!(Label label_false),
+                    lir!(Li(0) reg_result),
+                    lir!(Label label_end),
                 ],
             )
         }
@@ -57,15 +69,21 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
 
             let reg_result = ctx.alloc_reg();
 
+            let label_false = ctx.alloc_label();
+            let label_end = ctx.alloc_label();
+
             (
                 reg_result,
                 vec![
                     lir_lhs,
                     lir_rhs,
-                    lir!(Blt(18) ZERO_REG, reg_lhs, reg_rhs),
-                    lir!(Li(0) reg_result),
-                    lir!(Jmp(12)),
+                    lir!(Blt(12) ZERO_REG, reg_lhs, reg_rhs),
+                    lir!(JmpLabel(label_false)),
                     lir!(Li(1) reg_result),
+                    lir!(JmpLabel(label_end)),
+                    lir!(Label label_false),
+                    lir!(Li(0) reg_result),
+                    lir!(Label label_end),
                 ],
             )
         }
@@ -78,15 +96,21 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
 
             let reg_result = ctx.alloc_reg();
 
+            let label_false = ctx.alloc_label();
+            let label_end = ctx.alloc_label();
+
             (
                 reg_result,
                 vec![
                     lir_lhs,
                     lir_rhs,
-                    lir!(Ble(18) ZERO_REG, reg_lhs, reg_rhs),
-                    lir!(Li(0) reg_result),
-                    lir!(Jmp(12)),
+                    lir!(Ble(12) ZERO_REG, reg_lhs, reg_rhs),
+                    lir!(JmpLabel(label_false)),
                     lir!(Li(1) reg_result),
+                    lir!(JmpLabel(label_end)),
+                    lir!(Label label_false),
+                    lir!(Li(0) reg_result),
+                    lir!(Label label_end),
                 ],
             )
         }
@@ -99,15 +123,21 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
 
             let reg_result = ctx.alloc_reg();
 
+            let label_false = ctx.alloc_label();
+            let label_end = ctx.alloc_label();
+
             (
                 reg_result,
                 vec![
                     lir_lhs,
                     lir_rhs,
-                    lir!(Blt(18) ZERO_REG, reg_rhs, reg_lhs),
-                    lir!(Li(0) reg_result),
-                    lir!(Jmp(12)),
+                    lir!(Blt(12) ZERO_REG, reg_rhs, reg_lhs),
+                    lir!(JmpLabel(label_false)),
                     lir!(Li(1) reg_result),
+                    lir!(JmpLabel(label_end)),
+                    lir!(Label label_false),
+                    lir!(Li(0) reg_result),
+                    lir!(Label label_end),
                 ],
             )
         }
@@ -120,15 +150,21 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
 
             let reg_result = ctx.alloc_reg();
 
+            let label_false = ctx.alloc_label();
+            let label_end = ctx.alloc_label();
+
             (
                 reg_result,
                 vec![
                     lir_lhs,
                     lir_rhs,
-                    lir!(Ble(18) ZERO_REG, reg_rhs, reg_lhs),
-                    lir!(Li(0) reg_result),
-                    lir!(Jmp(12)),
+                    lir!(Ble(12) ZERO_REG, reg_rhs, reg_lhs),
+                    lir!(JmpLabel(label_false)),
                     lir!(Li(1) reg_result),
+                    lir!(JmpLabel(label_end)),
+                    lir!(Label label_false),
+                    lir!(Li(0) reg_result),
+                    lir!(Label label_end),
                 ],
             )
         }

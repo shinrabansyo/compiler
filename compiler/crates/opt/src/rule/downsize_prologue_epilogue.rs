@@ -31,13 +31,24 @@ fn downsize(insts: Vec<Inst>) -> Vec<Inst> {
                 result.push(inst!(Lw reg, 3, -epilogue_evacuation_size ));
             }
         }
+        // r3 退避のために仮で行うフレーム確保操作は書き換えない
+        else if let Inst::Subi { rd: 2, rs1: 2, value: InstValue::Imm(4) } = inst {
+            // do nothing
+            result.push(inst);
+        }
+        // 溢れ領域のベースアドレスを書き換え
+        else if let Inst::Subi { rd: 4, rs1: 3, value: InstValue::Imm(48) } = inst {
+            result.push(inst!(Subi 4, 3, InstValue::Imm(prologue_evacuation_size + 4)))
+        }
         // フレーム確保サイズを書き換え
-        else if let Inst::Subi { rd: 2, rs1: 2, value: InstValue::Imm(44) } = inst {
-            result.push(inst!(Subi 2, 2, InstValue::Imm(prologue_evacuation_size)));
+        else if let Inst::Subi { rd: 2, rs1: 2, value: InstValue::Imm(size) } = inst {
+            let frame_size = size - 44 + prologue_evacuation_size;
+            result.push(inst!(Subi 2, 2, InstValue::Imm(frame_size)));
         }
         // フレーム解放サイズを書き換え
-        else if let Inst::Addi { rd: 2, rs1: 2, value: InstValue::Imm(48) } = inst {
-            result.push(inst!(Addi 2, 2, InstValue::Imm(epilogue_evacuation_size + 4)));
+        else if let Inst::Addi { rd: 2, rs1: 2, value: InstValue::Imm(size) } = inst {
+            let frame_size = size - 44 + epilogue_evacuation_size;
+            result.push(inst!(Addi 2, 2, InstValue::Imm(frame_size)));
         }
         // その他の命令
         else {
