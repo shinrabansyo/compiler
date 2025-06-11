@@ -240,10 +240,15 @@ pub enum SBRules {
     #[rule("<bit_shift> ::= <add>")]
     BitShift,
 
-    #[rule("<add> ::= <add> Plus <value>")]
-    #[rule("<add> ::= <add> Minus <value>")]
-    #[rule("<add> ::= <value>")]
+    #[rule("<add> ::= <add> Plus <unary>")]
+    #[rule("<add> ::= <add> Minus <unary>")]
+    #[rule("<add> ::= <unary>")]
     Add,
+
+    #[rule("<unary> ::= Plus <value>")]
+    #[rule("<unary> ::= Minus <value>")]
+    #[rule("<unary> ::= <value>")]
+    Unary,
 
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]

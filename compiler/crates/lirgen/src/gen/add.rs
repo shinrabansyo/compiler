@@ -2,7 +2,7 @@ use sb_compiler_parse_ast::Add as AddAst;
 use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Sub};
 
 use crate::GenContext;
-use super::lirgen_value;
+use super::lirgen_unary;
 
 pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirBlock {
     let (result_reg, lirs) = match add {
@@ -10,7 +10,7 @@ pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirBlock {
             let lir_lhs = lirgen_add(ctx, lhs);
             let reg_lhs = lir_lhs.result_reg();
 
-            let lir_rhs = lirgen_value(ctx, rhs);
+            let lir_rhs = lirgen_unary(ctx, rhs);
             let reg_rhs = lir_rhs.result_reg();
 
             let reg_result = ctx.alloc_reg();
@@ -28,7 +28,7 @@ pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirBlock {
             let lir_lhs = lirgen_add(ctx, lhs);
             let reg_lhs = lir_lhs.result_reg();
 
-            let lir_rhs = lirgen_value(ctx, rhs);
+            let lir_rhs = lirgen_unary(ctx, rhs);
             let reg_rhs = lir_rhs.result_reg();
 
             let reg_result = ctx.alloc_reg();
@@ -42,8 +42,8 @@ pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirBlock {
                 ],
             )
         }
-        AddAst::Value { value, .. } => {
-            return lirgen_value(ctx, value);
+        AddAst::Unary { value, .. } => {
+            return lirgen_unary(ctx, value);
         }
     };
 
