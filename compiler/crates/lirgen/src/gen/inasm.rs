@@ -4,16 +4,25 @@ use sb_compiler_lirgen_ir::*;
 use crate::{GenContext, ZERO_REG};
 
 pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: &InlineAsm) -> LirBlock {
-    let mut use_reg = |reg_s: &String| {
-        if reg_s.starts_with("r") {
-            reg_s[1..].parse().unwrap()
-        } else if let Some(reg) = ctx.sym_table.get(reg_s) {
-            *reg
-        } else {
-            let reg = ctx.alloc_reg();
-            ctx.sym_table.insert(reg_s.to_string(), reg);
-            reg
+    let mut use_reg = |var: &String| {
+        // 生レジスタ
+        if var.starts_with("R") {
+            return var[1..].parse().unwrap();
         }
+
+        // 一次レジスタ
+        if var.starts_with("T") {
+            if let Some(reg) = ctx.sym_table.get(var) {
+                return *reg;
+            } else {
+                let reg = ctx.alloc_reg();
+                ctx.sym_table.insert(var.to_string(), reg);
+                return reg;
+            }
+        }
+
+        // 変数
+        *ctx.sym_table.get(&var).unwrap()
     };
 
     let mut lirs = vec![];

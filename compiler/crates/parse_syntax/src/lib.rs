@@ -115,9 +115,6 @@ pub enum SBTokens {
     Type,
 
     // リテラル
-    #[token(r"t[0-9]+")]
-    #[token(r"r[0-9]+")]
-    Reg,
     #[token(r"[a-zA-Z_][a-zA-Z0-9_]*")]
     Ident,
     #[token(r"[0-9]+")]
@@ -195,12 +192,12 @@ pub enum SBRules {
     #[rule("<inasm_inst_list> ::= <inasm_inst>")]
     InlineAsm,
 
-    #[rule("<inasm_inst> ::= Ident Reg Assign Reg Comma Num")]                        // I-形式
-    #[rule("<inasm_inst> ::= Ident Reg Comma Reg BracketL Num BracketR")]             // I-形式 (jal)
-    #[rule("<inasm_inst> ::= Ident Reg Assign Reg BracketL Num BracketR")]            // I-形式 (lw ...)
-    #[rule("<inasm_inst> ::= Ident Reg BracketL Num BracketR Assign Reg")]            // S-形式
-    #[rule("<inasm_inst> ::= Ident Reg Assign Reg Comma Reg")]                        // R-形式
-    #[rule("<inasm_inst> ::= Ident Reg Comma ParenL Reg Comma Reg ParenR Allow Num")] // B-形式
+    #[rule("<inasm_inst> ::= Ident Ident Assign Ident Comma Num")]                          // I-形式
+    #[rule("<inasm_inst> ::= Ident Ident Comma Ident BracketL Num BracketR")]               // I-形式 (jal)
+    #[rule("<inasm_inst> ::= Ident Ident Assign Ident BracketL Num BracketR")]              // I-形式 (lw ...)
+    #[rule("<inasm_inst> ::= Ident Ident BracketL Num BracketR Assign Ident")]              // S-形式
+    #[rule("<inasm_inst> ::= Ident Ident Assign Ident Comma Ident")]                        // R-形式
+    #[rule("<inasm_inst> ::= Ident Ident Comma ParenL Ident Comma Ident ParenR Allow Num")] // B-形式
     InlineAsmInst,
 
     // 式
