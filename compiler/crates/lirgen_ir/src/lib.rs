@@ -137,6 +137,7 @@ pub enum LirInst {
     RawLb(i32),
     RawLhu(i32),
     RawLbu(i32),
+    RawIn(i32),
     RawAndi(i32),
     RawOri(i32),
     RawXori(i32),
@@ -149,6 +150,7 @@ pub enum LirInst {
     RawSh(i32),
     RawSb(i32),
     RawIsb(i32),
+    RawOut(i32),
 
     // インラインアセンブリ (R-形式)
     RawAdd,

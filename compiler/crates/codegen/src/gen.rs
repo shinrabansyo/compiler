@@ -155,6 +155,7 @@ impl InstGenerator {
                     LirInst::RawLb(imm) => inst!(Lb dst, src1, imm),
                     LirInst::RawLhu(imm) => inst!(Lhu dst, src1, imm),
                     LirInst::RawLbu(imm) => inst!(Lbu dst, src1, imm),
+                    LirInst::RawIn(imm) => inst!(In dst, src1, imm),
                     LirInst::RawAndi(imm) => inst!(Andi dst, src1, Imm(imm)),
                     LirInst::RawOri(imm) => inst!(Ori dst, src1, Imm(imm)),
                     LirInst::RawXori(imm) => inst!(Xori dst, src1, Imm(imm)),
@@ -167,6 +168,7 @@ impl InstGenerator {
                     LirInst::RawSh(imm) => inst!(Sh dst, src1, imm),
                     LirInst::RawSb(imm) => inst!(Sb dst, src1, imm),
                     LirInst::RawIsb(_) => todo!(),
+                    LirInst::RawOut(imm) => inst!(Out dst, src1, imm),
 
                     // インラインアセンブリ (R-形式)
                     LirInst::RawAdd => inst!(Add dst, src1, src2),

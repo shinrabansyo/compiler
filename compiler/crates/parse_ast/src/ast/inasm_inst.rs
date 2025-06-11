@@ -28,6 +28,7 @@ pub enum InlineAsmInst {
     Sh   { namespace: String, rs1: String, rs2: String, imm: i32 },
     Sb   { namespace: String, rs1: String, rs2: String, imm: i32 },
     Isb  { namespace: String, rs1: String, rs2: String, imm: i32 },
+    Out  { namespace: String, rs1: String, rs2: String, imm: i32 },
 
     // R-形式
     Add  { namespace: String, rd: String, rs1: String, rs2: String },
@@ -139,6 +140,7 @@ impl From<(String, Tree<'_, SBLangDef>)> for InlineAsmInst {
             "lb"   => parse_i!(Lb children),
             "lhu"  => parse_i!(Lhu children),
             "lbu"  => parse_i!(Lbu children),
+            "in"   => parse_i!(In children),
             "andi" => parse_i!(Andi children),
             "ori"  => parse_i!(Ori children),
             "xori" => parse_i!(Xori children),
@@ -151,6 +153,7 @@ impl From<(String, Tree<'_, SBLangDef>)> for InlineAsmInst {
             "sh"   => parse_s!(Sh children),
             "sb"   => parse_s!(Sb children),
             "isb"  => parse_s!(Isb children),
+            "out"  => parse_s!(Out children),
 
             // R-形式
             "add"  => parse_r!(Add children),

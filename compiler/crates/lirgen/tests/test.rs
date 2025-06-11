@@ -146,6 +146,9 @@ fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
                 LirInst::RawLbu(imm) => {
                     writeln!(f, "lbu  t{} = t{} + {}", dst, src1, imm)
                 }
+                LirInst::RawIn(imm) => {
+                    writeln!(f, "in   t{} = t{} + {}", dst, src1, imm)
+                }
                 LirInst::RawAndi(imm) => {
                     writeln!(f, "andi t{} = t{} & {}", dst, src1, imm)
                 }
@@ -177,6 +180,9 @@ fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
                 }
                 LirInst::RawIsb(imm) => {
                     writeln!(f, "isb  t{} = t{} + {}", dst, src1, imm)
+                }
+                LirInst::RawOut(imm) => {
+                    writeln!(f, "out  t{} = t{} + {}", dst, src1, imm)
                 }
 
                 // インラインアセンブリ (R-形式)

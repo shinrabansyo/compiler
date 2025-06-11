@@ -53,6 +53,9 @@ pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: &InlineAsm) -> LirBlo
             InlineAsmInst::Lbu { rd, rs1, imm, .. } => {
                 lir!(RawLbu(*imm) use_reg(rd), use_reg(rs1))
             }
+            InlineAsmInst::In { rd, rs1, imm, .. } => {
+                lir!(RawIn(*imm) use_reg(rd), use_reg(rs1))
+            }
             InlineAsmInst::Andi { rd, rs1, imm, .. } => {
                 lir!(RawAndi(*imm) use_reg(rd), use_reg(rs1))
             }
@@ -84,6 +87,9 @@ pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: &InlineAsm) -> LirBlo
             }
             InlineAsmInst::Isb { rs1, rs2, imm, .. } => {
                 lir!(RawIsb(*imm) use_reg(rs1), use_reg(rs2))
+            }
+            InlineAsmInst::Out { rs1, rs2, imm, .. } => {
+                lir!(RawOut(*imm) use_reg(rs1), use_reg(rs2))
             }
 
             // R-形式
@@ -125,8 +131,6 @@ pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: &InlineAsm) -> LirBlo
             InlineAsmInst::Ble { rd, rs1, rs2, imm, .. } => {
                 lir!(RawBle(*imm) use_reg(rd), use_reg(rs1), use_reg(rs2))
             }
-
-            _ => todo!()
         };
         lirs.push(lir);
     }

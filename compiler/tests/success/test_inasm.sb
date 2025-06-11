@@ -5,6 +5,8 @@ fn main() {
     if (test_02() != 1) { return 2; }
     if (test_03() != 1) { return 3; }
     if (test_04() != 1) { return 4; }
+    if (test_05() != 1) { return 5; }
+    if (test_06() != 1) { return 6; }
     return 0;
 }
 
@@ -59,4 +61,20 @@ fn test_04() {
         lw result = R0[0]
     }
     return result;
+}
+
+fn test_05() {
+    var result: i32 = 1;
+    asm! {
+        in result = R0[0]
+    }
+    return result == 0;
+}
+
+fn test_06() {
+    asm! {
+        addi R4 = R0, 98
+        out R0[0] = R4
+    }
+    return 1;
 }
