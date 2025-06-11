@@ -2,8 +2,8 @@ mod utils;
 
 use std::io::Cursor;
 
-use sb_asm::assemble;
-use sb_emu::{State, step};
+use sb_assembler::assemble;
+use sb_emulator::Emulator;
 use sb_linker::config::Config;
 use sb_linker::obj::Object;
 use sb_linker::link;
@@ -33,10 +33,10 @@ fn test_code(input: &str) -> anyhow::Result<()> {
         .collect::<Vec<_>>();
 
     // エミュレータ実行
-    let mut emu = step(State::new(0, &dmem, &imem))?;
+    let mut emu = Emulator::new(0, &dmem, &imem);
     loop {
         let old_pc = emu.pc;
-        emu = step(emu)?;
+        emu.step()?;
         if old_pc == emu.pc {
             break;
         }
