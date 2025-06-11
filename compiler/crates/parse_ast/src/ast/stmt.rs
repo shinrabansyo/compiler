@@ -3,7 +3,7 @@ use copager::ir::Tree;
 use sb_compiler_parse_syntax::{SBLangDef, SBRules};
 
 use crate::utils::unwrap_node;
-use super::{VarDecl, Block, If, While, For, DevIO, InlineAsm, Expr};
+use super::{VarDecl, Block, If, While, For, InlineAsm, Expr};
 
 #[derive(Debug)]
 pub enum Stmt {
@@ -34,10 +34,6 @@ pub enum Stmt {
     For {
         namespace: String,
         r#for: For,
-    },
-    DevIO {
-        namespace: String,
-        dev_io: DevIO,
     },
     InlineAsm {
         namespace: String,
@@ -81,10 +77,6 @@ impl From<(String, Tree<'_, SBLangDef>)> for Stmt {
             Tree::Node { tag: SBRules::InlineAsm, .. } => {
                 let inline_asm = InlineAsm::from((namespace.clone(), rhs));
                 Stmt::InlineAsm { namespace, inline_asm }
-            }
-            Tree::Node { tag: SBRules::DevIO, .. } => {
-                let dev_io = DevIO::from((namespace.clone(), rhs));
-                Stmt::DevIO { namespace, dev_io }
             }
             _ => unreachable!(),
         }

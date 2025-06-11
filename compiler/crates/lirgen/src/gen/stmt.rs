@@ -38,10 +38,6 @@ pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirBlock {
         Stmt::For { r#for, .. } => {
             lirgen_for(ctx, r#for)
         }
-        Stmt::DevIO { dev_io, .. } => {
-            unimplemented!()
-            // lirgen_dev_io(lirs, dev_io, analyze_result);
-        }
         Stmt::InlineAsm { inline_asm, .. } => {
             lirgen_inline_asm(ctx, inline_asm)
         }

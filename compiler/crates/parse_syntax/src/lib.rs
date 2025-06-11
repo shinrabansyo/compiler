@@ -105,10 +105,6 @@ pub enum SBTokens {
     While,
     #[token("for", ir_omit)]
     For,
-    #[token("in")]
-    In,
-    #[token("out")]
-    Out,
     #[token("asm!", ir_omit)]
     Asm,
     #[token("i32")]
@@ -182,10 +178,6 @@ pub enum SBRules {
 
     #[rule("<for> ::= For ParenL <expr> Semicolon <expr> Semicolon <expr> ParenR <block>")]
     For,
-
-    #[rule("<dev_io> ::= In ParenL <expr> ParenR")]
-    #[rule("<dev_io> ::= Out ParenL <expr> Comma <expr> ParenR")]
-    DevIO,
 
     #[rule("<inasm> ::= Asm BraceL <inasm_inst_list> BraceR")]
     #[rule("<inasm_inst_list> ::= <inasm_inst_list> <inasm_inst>")]
