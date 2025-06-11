@@ -42,5 +42,8 @@ pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirBlock {
             unimplemented!()
             // lirgen_dev_io(lirs, dev_io, analyze_result);
         }
+        Stmt::InlineAsm { inline_asm, .. } => {
+            unimplemented!()
+        }
     }
 }

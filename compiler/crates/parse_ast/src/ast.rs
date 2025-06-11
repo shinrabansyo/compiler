@@ -14,6 +14,7 @@ mod r#if;           pub use r#if::If;
 mod r#while;        pub use r#while::While;
 mod r#for;          pub use r#for::For;
 mod dev_io;         pub use dev_io::DevIO;
+mod inline_asm;     pub use inline_asm::InlineAsm;
 
 // 式
 mod expr;           pub use expr::Expr;

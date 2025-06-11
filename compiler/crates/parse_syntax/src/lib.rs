@@ -27,6 +27,10 @@ pub enum SBTokens {
     Allow,
     #[token(r",", ir_omit)]
     Comma,
+    #[token(r"\[", ir_omit)]
+    BracketL,
+    #[token(r"\]", ir_omit)]
+    BracketR,
     #[token(r"\(", ir_omit)]
     ParenL,
     #[token(r"\)", ir_omit)]
@@ -105,10 +109,15 @@ pub enum SBTokens {
     In,
     #[token("out")]
     Out,
+    #[token("asm!", ir_omit)]
+    Asm,
     #[token("i32")]
     Type,
 
     // リテラル
+    #[token(r"t[0-9]+")]
+    #[token(r"r[0-9]+")]
+    Reg,
     #[token(r"[a-zA-Z_][a-zA-Z0-9_]*")]
     Ident,
     #[token(r"[0-9]+")]
@@ -158,6 +167,7 @@ pub enum SBRules {
     #[rule("<stmt> ::= <while>")]
     #[rule("<stmt> ::= <for>")]
     #[rule("<stmt> ::= <dev_io> Semicolon")]
+    #[rule("<stmt> ::= <inasm>")]
     Stmt,
 
     #[rule("<var_decl> ::= Var Ident Colon Type Assign <expr> Semicolon")]
@@ -179,6 +189,29 @@ pub enum SBRules {
     #[rule("<dev_io> ::= In ParenL <expr> ParenR")]
     #[rule("<dev_io> ::= Out ParenL <expr> Comma <expr> ParenR")]
     DevIO,
+
+    #[rule("<inasm> ::= Asm BraceL <inasm_inst_list> BraceR")]
+    #[rule("<inasm_inst_list> ::= <inasm_inst_list> <inasm_inst>")]
+    #[rule("<inasm_inst_list> ::= <inasm_inst>")]
+    InlineAsm,
+
+    #[rule("<inasm_inst> ::= <inasm_inst_i>")]
+    #[rule("<inasm_inst> ::= <inasm_inst_s>")]
+    #[rule("<inasm_inst> ::= <inasm_inst_r>")]
+    #[rule("<inasm_inst> ::= <inasm_inst_b>")]
+    InlineAsmInst,
+
+    #[rule("<inasm_inst_i> ::= Ident Reg Assign Reg Comma Num")]
+    InlineAsmInstI,
+
+    #[rule("<inasm_inst_s> ::= Ident Reg BracketL Num BracketR Assign Reg")]
+    InlineAsmInstS,
+
+    #[rule("<inasm_inst_r> ::= Ident Reg Assign Reg Comma Reg")]
+    InlineAsmInstR,
+
+    #[rule("<inasm_inst_b> ::= Ident Reg Comma ParenL Reg Comma Reg ParenR Allow Num")]
+    InlineAsmInstB,
 
     // 式
     #[rule("<expr> ::= <assign>")]
