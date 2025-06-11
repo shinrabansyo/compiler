@@ -16,4 +16,4 @@ sb_compiler_utils = { path = "./crates/utils" }
 
 [dev-dependencies]
 sb_assembler = { git = "https://github.com/shinrabansyo/assembler.git", rev = "83d6089b356148f551d88e9a5d3843d3156c82c6" }
-sb_emu = { git = "https://github.com/shinrabansyo/debugger.git", rev = "42a188476d8acae250a77a39bc5db409c5a60a56" }
+sb_emulator = { git = "https://github.com/shinrabansyo/emulator.git", rev = "b2a29d5d69c06dd22a99458e32fae49825df7615" }
