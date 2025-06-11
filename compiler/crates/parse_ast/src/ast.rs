@@ -13,7 +13,8 @@ mod var_decl;       pub use var_decl::VarDecl;
 mod r#if;           pub use r#if::If;
 mod r#while;        pub use r#while::While;
 mod r#for;          pub use r#for::For;
-mod dev_io;         pub use dev_io::DevIO;
+mod inasm;          pub use inasm::InlineAsm;
+mod inasm_inst;     pub use inasm_inst::InlineAsmInst;
 
 // 式
 mod expr;           pub use expr::Expr;

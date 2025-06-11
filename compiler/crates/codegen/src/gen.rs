@@ -145,6 +145,46 @@ impl InstGenerator {
                     LirInst::FnPrologue => unreachable!(),
                     LirInst::FnEpilogue => unreachable!(),
                     LirInst::FnReturn => inst!(Beq 0, 0, 0, InstLabel(u32::MAX)),
+
+                    // インラインアセンブリ (I-形式)
+                    LirInst::RawAddi(imm) => inst!(Addi dst, src1, Imm(imm)),
+                    LirInst::RawSubi(imm) => inst!(Subi dst, src1, Imm(imm)),
+                    LirInst::RawJal(imm) => inst!(Jal dst, src1, imm),
+                    LirInst::RawLw(imm) => inst!(Lw dst, src1, imm),
+                    LirInst::RawLh(imm) => inst!(Lh dst, src1, imm),
+                    LirInst::RawLb(imm) => inst!(Lb dst, src1, imm),
+                    LirInst::RawLhu(imm) => inst!(Lhu dst, src1, imm),
+                    LirInst::RawLbu(imm) => inst!(Lbu dst, src1, imm),
+                    LirInst::RawIn(imm) => inst!(In dst, src1, imm),
+                    LirInst::RawAndi(imm) => inst!(Andi dst, src1, Imm(imm)),
+                    LirInst::RawOri(imm) => inst!(Ori dst, src1, Imm(imm)),
+                    LirInst::RawXori(imm) => inst!(Xori dst, src1, Imm(imm)),
+                    LirInst::RawSrli(imm) => inst!(Srli dst, src1, Imm(imm)),
+                    LirInst::RawSrai(imm) => inst!(Srai dst, src1, Imm(imm)),
+                    LirInst::RawSlli(imm) => inst!(Slli dst, src1, Imm(imm)),
+
+                    // インラインアセンブリ (S-形式)
+                    LirInst::RawSw(imm) => inst!(Sw dst, src1, imm),
+                    LirInst::RawSh(imm) => inst!(Sh dst, src1, imm),
+                    LirInst::RawSb(imm) => inst!(Sb dst, src1, imm),
+                    LirInst::RawIsb(_) => todo!(),
+                    LirInst::RawOut(imm) => inst!(Out dst, src1, imm),
+
+                    // インラインアセンブリ (R-形式)
+                    LirInst::RawAdd => inst!(Add dst, src1, src2),
+                    LirInst::RawSub => inst!(Sub dst, src1, src2),
+                    LirInst::RawAnd => inst!(And dst, src1, src2),
+                    LirInst::RawOr  => inst!(Or  dst, src1, src2),
+                    LirInst::RawXor => inst!(Xor dst, src1, src2),
+                    LirInst::RawSrl => inst!(Srl dst, src1, src2),
+                    LirInst::RawSra => inst!(Sra dst, src1, src2),
+                    LirInst::RawSll => inst!(Sll dst, src1, src2),
+
+                    // インラインアセンブリ (B-形式)
+                    LirInst::RawBeq(imm) => inst!(Beq dst, src1, src2, Imm(imm)),
+                    LirInst::RawBne(imm) => inst!(Bne dst, src1, src2, Imm(imm)),
+                    LirInst::RawBlt(imm) => inst!(Blt dst, src1, src2, Imm(imm)),
+                    LirInst::RawBle(imm) => inst!(Ble dst, src1, src2, Imm(imm)),
                 };
                 self.asm_inst.push(inst);
 
