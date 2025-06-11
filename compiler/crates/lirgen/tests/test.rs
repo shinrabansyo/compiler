@@ -27,9 +27,12 @@ fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
         LirBlock::Inst { inst, dst, src1, src2 } => {
             write!(f, "    ")?;
             match inst {
+                // Nop
                 LirInst::Nop => {
                     writeln!(f, "nop")
                 }
+
+                // 整数演算 (imm使用)
                 LirInst::Li(imm) => {
                     writeln!(f, "li   t{} = {}", dst, imm)
                 }
@@ -57,6 +60,8 @@ fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
                 LirInst::ShiftRai(imm) => {
                     writeln!(f, "srai t{} = t{} >> {}", dst, src1, imm)
                 }
+
+                // 整数演算 (imm不使用)
                 LirInst::Add => {
                     writeln!(f, "add  t{} = t{} + t{}", dst, src1, src2)
                 }
@@ -81,6 +86,8 @@ fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
                 LirInst::ShiftRa => {
                     writeln!(f, "sra  t{} = t{} >> t{}", dst, src1, src2)
                 }
+
+                // 分岐
                 LirInst::Beq(imm) => {
                     writeln!(f, "beq  t{}, (t{} == t{}) -> {}", dst, src1, src2, imm)
                 }
@@ -102,6 +109,8 @@ fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
                 LirInst::Call(func) => {
                     writeln!(f, "call {}", func)
                 }
+
+                // 関数
                 LirInst::FnPrologue => {
                     writeln!(f, "fn_prologue")
                 }
@@ -110,6 +119,104 @@ fn display_lir(f: &mut String, lir: &LirBlock) -> std::fmt::Result {
                 }
                 LirInst::FnReturn => {
                     writeln!(f, "fn_return")
+                }
+
+                // インラインアセンブリ (I-形式)
+                LirInst::RawAddi(imm) => {
+                    writeln!(f, "addi t{} = t{} + {}", dst, src1, imm)
+                }
+                LirInst::RawSubi(imm) => {
+                    writeln!(f, "subi t{} = t{} - {}", dst, src1, imm)
+                }
+                LirInst::RawJal(imm) => {
+                    writeln!(f, "jal  t{}, {}", dst, imm)
+                }
+                LirInst::RawLw(imm) => {
+                    writeln!(f, "lw   t{} = t{} + {}", dst, src1, imm)
+                }
+                LirInst::RawLh(imm) => {
+                    writeln!(f, "lh   t{} = t{} + {}", dst, src1, imm)
+                }
+                LirInst::RawLb(imm) => {
+                    writeln!(f, "lb   t{} = t{} + {}", dst, src1, imm)
+                }
+                LirInst::RawLhu(imm) => {
+                    writeln!(f, "lhu  t{} = t{} + {}", dst, src1, imm)
+                }
+                LirInst::RawLbu(imm) => {
+                    writeln!(f, "lbu  t{} = t{} + {}", dst, src1, imm)
+                }
+                LirInst::RawAndi(imm) => {
+                    writeln!(f, "andi t{} = t{} & {}", dst, src1, imm)
+                }
+                LirInst::RawOri(imm) => {
+                    writeln!(f, "ori  t{} = t{} | {}", dst, src1, imm)
+                }
+                LirInst::RawXori(imm) => {
+                    writeln!(f, "xori t{} = t{} ^ {}", dst, src1, imm)
+                }
+                LirInst::RawSrli(imm) => {
+                    writeln!(f, "srli t{} = t{} >> {}", dst, src1, imm)
+                }
+                LirInst::RawSrai(imm) => {
+                    writeln!(f, "srai t{} = t{} >> {}", dst, src1, imm)
+                }
+                LirInst::RawSlli(imm) => {
+                    writeln!(f, "slli t{} = t{} << {}", dst, src1, imm)
+                }
+
+                // インラインアセンブリ (S-形式)
+                LirInst::RawSw(imm) => {
+                    writeln!(f, "sw   t{} = t{} + {}", dst, src1, imm)
+                }
+                LirInst::RawSh(imm) => {
+                    writeln!(f, "sh   t{} = t{} + {}", dst, src1, imm)
+                }
+                LirInst::RawSb(imm) => {
+                    writeln!(f, "sb   t{} = t{} + {}", dst, src1, imm)
+                }
+                LirInst::RawIsb(imm) => {
+                    writeln!(f, "isb  t{} = t{} + {}", dst, src1, imm)
+                }
+
+                // インラインアセンブリ (R-形式)
+                LirInst::RawAdd => {
+                    writeln!(f, "add  t{} = t{} + t{}", dst, src1, src2)
+                }
+                LirInst::RawSub => {
+                    writeln!(f, "sub  t{} = t{} - t{}", dst, src1, src2)
+                }
+                LirInst::RawAnd => {
+                    writeln!(f, "and  t{} = t{} & t{}", dst, src1, src2)
+                }
+                LirInst::RawOr => {
+                    writeln!(f, "or   t{} = t{} | t{}", dst, src1, src2)
+                }
+                LirInst::RawXor => {
+                    writeln!(f, "xor  t{} = t{} ^ t{}", dst, src1, src2)
+                }
+                LirInst::RawSrl => {
+                    writeln!(f, "srl  t{} = t{} >> t{}", dst, src1, src2)
+                }
+                LirInst::RawSra => {
+                    writeln!(f, "sra  t{} = t{} >> t{}", dst, src1, src2)
+                }
+                LirInst::RawSll => {
+                    writeln!(f, "sll  t{} = t{} << t{}", dst, src1, src2)
+                }
+
+                // インラインアセンブリ (B-形式)
+                LirInst::RawBeq(imm) => {
+                    writeln!(f, "beq  t{}, (t{} == t{}) -> {}", dst, src1, src2, imm)
+                }
+                LirInst::RawBne(imm) => {
+                    writeln!(f, "bne  t{}, (t{} != t{}) -> {}", dst, src1, src2, imm)
+                }
+                LirInst::RawBlt(imm) => {
+                    writeln!(f, "blt  t{}, (t{} < t{}) -> {}", dst, src1, src2, imm)
+                }
+                LirInst::RawBle(imm) => {
+                    writeln!(f, "ble  t{}, (t{} <= t{}) -> {}", dst, src1, src2, imm)
                 }
             }
         }

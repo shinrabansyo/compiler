@@ -1,0 +1,27 @@
+// インラインアセンブリ記述のテスト
+
+fn main() {
+    if (test_01() != 1) { return 1; }
+    return 0;
+}
+
+fn test_01() {
+    asm! {
+        // I-style
+        addi t0 = r0, 10
+        addi t1 = r0, 20
+        lw t2 = r0[0]
+
+        // S-style
+        sw   r0[0] = t0
+        sh   r0[0] = t1
+
+        // R-style
+        add  t2 = t1, t2
+        sub  t2 = t1, t2
+
+        // B-style
+        beq r0, (r0, r0) -> 10
+    }
+    return 0;
+}

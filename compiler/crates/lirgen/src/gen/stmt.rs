@@ -2,7 +2,7 @@ use sb_compiler_parse_ast::Stmt;
 use sb_compiler_lirgen_ir::{lir, LirBlock, Add, FnReturn};
 
 use crate::{GenContext, RET_REG, ZERO_REG};
-use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_if, lirgen_while, lirgen_for};
+use super::{lirgen_var_decl, lirgen_block, lirgen_expr, lirgen_if, lirgen_while, lirgen_for, lirgen_inline_asm};
 
 pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirBlock {
     match stmt {
@@ -43,7 +43,7 @@ pub fn lirgen_stmt(ctx: &mut GenContext, stmt: &Stmt) -> LirBlock {
             // lirgen_dev_io(lirs, dev_io, analyze_result);
         }
         Stmt::InlineAsm { inline_asm, .. } => {
-            unimplemented!()
+            lirgen_inline_asm(ctx, inline_asm)
         }
     }
 }

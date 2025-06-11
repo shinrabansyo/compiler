@@ -127,6 +127,44 @@ pub enum LirInst {
     FnPrologue,
     FnEpilogue,
     FnReturn,
+
+    // インラインアセンブリ (I-形式)
+    RawAddi(i32),
+    RawSubi(i32),
+    RawJal(i32),
+    RawLw(i32),
+    RawLh(i32),
+    RawLb(i32),
+    RawLhu(i32),
+    RawLbu(i32),
+    RawAndi(i32),
+    RawOri(i32),
+    RawXori(i32),
+    RawSrli(i32),
+    RawSrai(i32),
+    RawSlli(i32),
+
+    // インラインアセンブリ (S-形式)
+    RawSw(i32),
+    RawSh(i32),
+    RawSb(i32),
+    RawIsb(i32),
+
+    // インラインアセンブリ (R-形式)
+    RawAdd,
+    RawSub,
+    RawAnd,
+    RawOr,
+    RawXor,
+    RawSrl,
+    RawSra,
+    RawSll,
+
+    // インラインアセンブリ (B-形式)
+    RawBeq(i32),
+    RawBne(i32),
+    RawBlt(i32),
+    RawBle(i32),
 }
 
 #[derive(Debug)]

@@ -1,6 +1,11 @@
+// トップ要素
 mod program;    pub use program::lirgen_program;
 mod top;        pub use top::lirgen_top;
+
+// 定義
 mod func_def;   pub use func_def::lirgen_func_def;
+
+// 文
 mod stmt;       pub use stmt::lirgen_stmt;
 mod block;      pub use block::lirgen_block;
 mod var_decl;   pub use var_decl::lirgen_var_decl;
@@ -8,6 +13,9 @@ mod r#if;       pub use r#if::lirgen_if;
 mod r#while;    pub use r#while::lirgen_while;
 mod r#for;      pub use r#for::lirgen_for;
 // mod dev_io;     pub use dev_io::lirgen_dev_io;
+mod inasm;      pub use inasm::lirgen_inline_asm;
+
+// 式
 mod expr;       pub use expr::lirgen_expr;
 mod assign;     pub use assign::lirgen_assign;
 mod logic_or;   pub use logic_or::lirgen_logic_or;
