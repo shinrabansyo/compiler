@@ -9,6 +9,8 @@ fn main() {
     if (test_06() != 1) { return 6; }
     if (test_07() != 1) { return 7; }
     if (test_08() != 1) { return 8; }
+    if (test_09() != 1) { return 9; }
+    if (test_10() != 1) { return 10; }
     return 0;
 }
 
@@ -39,22 +41,36 @@ fn test_04() {
 }
 
 fn test_05() {
-    return (1 << 4) == 16;
+    var value_1: i32 = 0;
+    var value_2: i32 = 10;
+    var diff: i32 = value_1 - value_2;
+    return diff == -10;
 }
 
 fn test_06() {
+    var value_1: i32 = 0;
+    var value_2: i32 = 10;
+    var sum: i32 = value_1 + value_2;
+    return sum == +10;
+}
+
+fn test_07() {
+    return (1 << 4) == 16;
+}
+
+fn test_08() {
     var a: i32 = 5;
     var b: i32 = 2;
     return (a | b) == 7;
 }
 
-fn test_07() {
+fn test_09() {
     var a: i32 = 5;
     var b: i32 = 2;
     return (a ^ b) == 7;
 }
 
-fn test_08() {
+fn test_10() {
     var a: i32 = 5;
     var b: i32 = 2;
     return (a & b) == 0;

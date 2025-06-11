@@ -3,23 +3,23 @@ use copager::ir::Tree;
 use sb_compiler_parse_syntax::{SBLangDef, SBTokens};
 
 use crate::utils::{unwrap_node, unwrap_leaf};
-use super::Value;
+use super::Unary;
 
 #[derive(Debug)]
 pub enum Add {
     Plus {
         namespace: String,
         lhs: Box<Add>,
-        rhs: Value,
+        rhs: Unary,
     },
     Minus {
         namespace: String,
         lhs: Box<Add>,
-        rhs: Value,
+        rhs: Unary,
     },
-    Value {
+    Unary {
         namespace: String,
-        value: Value
+        value: Unary
     },
 }
 
@@ -29,8 +29,8 @@ impl From<(String, Tree<'_, SBLangDef>)> for Add {
 
         // 数値のみ
         if children.len() == 1 {
-            let value = Value::from((namespace.clone(), children.pop_front().unwrap()));
-            return Add::Value { namespace, value };
+            let value = Unary::from((namespace.clone(), children.pop_front().unwrap()));
+            return Add::Unary { namespace, value };
         }
 
         // 演算子付き
@@ -40,12 +40,12 @@ impl From<(String, Tree<'_, SBLangDef>)> for Add {
         match unwrap_leaf(op).0 {
             SBTokens::Plus => {
                 let lhs = Box::new(Add::from((namespace.clone(), lhs)));
-                let rhs = Value::from((namespace.clone(), rhs));
+                let rhs = Unary::from((namespace.clone(), rhs));
                 Add::Plus { namespace, lhs, rhs }
             }
             SBTokens::Minus => {
                 let lhs = Box::new(Add::from((namespace.clone(), lhs)));
-                let rhs = Value::from((namespace.clone(), rhs));
+                let rhs = Unary::from((namespace.clone(), rhs));
                 Add::Minus { namespace, lhs, rhs }
             }
             _=> unreachable!(),
