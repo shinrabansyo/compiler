@@ -61,15 +61,15 @@ pub enum SBTokens {
     ShiftRaAssign,
     #[token(r">>=")]
     ShiftRAssign,
-    #[token(r"lor")]
+    #[token(r"\|\|")]
     LogicOr,
-    #[token(r"land")]
+    #[token(r"&&")]
     LogicAnd,
-    #[token(r"bor")]
+    #[token(r"\|")]
     BitOr,
-    #[token(r"bxor")]
+    #[token(r"\^")]
     BitXor,
-    #[token(r"band")]
+    #[token(r"&")]
     BitAnd,
     #[token(r"<<")]
     ShiftL,

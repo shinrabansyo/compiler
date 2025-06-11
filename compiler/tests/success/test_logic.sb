@@ -41,13 +41,13 @@ fn test_05() {
 }
 
 fn test_06() {
-    return 1 lor 0;
+    return 1 || 0;
 }
 
 fn test_07() {
-    return 1 land 1;
+    return 1 && 1;
 }
 
 fn test_08() {
-    return ((1 lor 0) land (0 lor 1)) land 1;
+    return ((1 || 0) && (0 || 1)) && 1;
 }

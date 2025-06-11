@@ -45,17 +45,17 @@ fn test_05() {
 fn test_06() {
     var a: i32 = 5;
     var b: i32 = 2;
-    return (a bor b) == 7;
+    return (a | b) == 7;
 }
 
 fn test_07() {
     var a: i32 = 5;
     var b: i32 = 2;
-    return (a bxor b) == 7;
+    return (a ^ b) == 7;
 }
 
 fn test_08() {
     var a: i32 = 5;
     var b: i32 = 2;
-    return (a band b) == 0;
+    return (a & b) == 0;
 }
