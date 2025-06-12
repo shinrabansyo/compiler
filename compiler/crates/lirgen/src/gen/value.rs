@@ -11,7 +11,7 @@ pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirBlock {
             (reg_imm, vec![lir!(Li(*value) reg_imm)])
         }
         Value::Var { name, .. } => {
-            (ctx.ref_var_reg(name).unwrap(), vec![])
+            (ctx.ref_var_reg(name.as_str()).unwrap(), vec![])
         }
         Value::Expr { expr, .. } => {
             let lir_expr = lirgen_expr(ctx, expr);
@@ -26,7 +26,7 @@ pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirBlock {
                 lirs.push(lir_arg);
                 lirs.push(lir!(Add FARG_REG_BASE + idx as u32, ZERO_REG, reg_arg));
             }
-            lirs.push(lir!(Call(format!("global.{}", call.ident))));
+            lirs.push(lir!(Call(format!("global.{}", call.ident.as_str()))));
             (RET_REG, lirs)
         }
     };

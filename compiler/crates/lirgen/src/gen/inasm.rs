@@ -1,10 +1,13 @@
 use sb_compiler_parse_ast::{InlineAsm, InlineAsmInst};
+use sb_compiler_parse_cst::Span;
 use sb_compiler_lirgen_ir::*;
 
 use crate::{GenContext, ZERO_REG};
 
 pub fn lirgen_inline_asm<'input>(ctx: &mut GenContext<'input>, inline_asm: &InlineAsm<'input>) -> LirBlock {
-    let mut use_reg = |var: &'input str| {
+    let mut use_reg = |var: &Span<'input>| {
+        let var = var.as_str();
+
         // 生レジスタ
         if var.starts_with("R") {
             return var[1..].parse().unwrap();

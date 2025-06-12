@@ -1,3 +1,4 @@
+use sb_compiler_parse_cst::Span;
 use sb_compiler_parse_syntax::SBToken;
 
 use super::{LogicOr, Visitor};
@@ -5,27 +6,27 @@ use super::{LogicOr, Visitor};
 #[derive(Debug)]
 pub enum Assign<'input> {
     Normal {
-        ident: &'input str,
+        ident: Span<'input>,
         assign: Box<Assign<'input>>,
     },
     Plus {
-        ident: &'input str,
+        ident: Span<'input>,
         assign: Box<Assign<'input>>,
     },
     Minus {
-        ident: &'input str,
+        ident: Span<'input>,
         assign: Box<Assign<'input>>,
     },
     ShiftL {
-        ident: &'input str,
+        ident: Span<'input>,
         assign: Box<Assign<'input>>,
     },
     ShiftR {
-        ident: &'input str,
+        ident: Span<'input>,
         assign: Box<Assign<'input>>,
     },
     ShiftRa {
-        ident: &'input str,
+        ident: Span<'input>,
         assign: Box<Assign<'input>>,
     },
     LogicOr {

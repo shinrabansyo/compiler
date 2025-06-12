@@ -1,3 +1,4 @@
+use sb_compiler_parse_cst::Span;
 use sb_compiler_parse_syntax::{SBToken, SBRule};
 
 use super::{Expr, Call, Visitor};
@@ -8,7 +9,7 @@ pub enum Value<'input> {
         value: i32,
     },
     Var {
-        name: &'input str,
+        name: Span<'input>,
     },
     Expr {
         expr: Box<Expr<'input>>,
@@ -24,7 +25,7 @@ impl<'input> From<Visitor<'input>> for Value<'input> {
             // 定数
             (Some(SBToken::Num), None) => {
                 Value::Const{
-                    value: visitor.expect_leaf().1.parse().unwrap(),
+                    value: visitor.expect_leaf().1.as_str().parse().unwrap(),
                 }
             }
             // 変数

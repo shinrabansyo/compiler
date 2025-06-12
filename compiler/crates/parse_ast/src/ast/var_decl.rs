@@ -1,9 +1,11 @@
+use sb_compiler_parse_cst::Span;
+
 use super::{Expr, Visitor};
 
 #[derive(Debug)]
 pub struct VarDecl<'input> {
-    pub ident: &'input str,
-    pub ty: &'input str,
+    pub ident: Span<'input>,
+    pub ty: Span<'input>,
     pub expr: Expr<'input>,
 }
 

@@ -19,7 +19,7 @@ pub fn lirgen_func_def<'input>(ctx: &mut GenContext<'input>, func: &FuncDef<'inp
     };
 
     LirTopElem::Function {
-        name: func.ident.to_string(),
+        name: func.ident.as_str().to_string(),
         body: lir_block,
     }
 }

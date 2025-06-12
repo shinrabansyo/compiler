@@ -1,46 +1,48 @@
+use sb_compiler_parse_cst::Span;
+
 use super::Visitor;
 
 #[derive(Debug)]
 pub enum InlineAsmInst<'input> {
     // I-形式
-    Addi { rd: &'input str, rs1: &'input str, imm: i32 },
-    Subi { rd: &'input str, rs1: &'input str, imm: i32 },
-    Jal  { rd: &'input str, rs1: &'input str, imm: i32 },
-    Lw   { rd: &'input str, rs1: &'input str, imm: i32 },
-    Lh   { rd: &'input str, rs1: &'input str, imm: i32 },
-    Lb   { rd: &'input str, rs1: &'input str, imm: i32 },
-    Lhu  { rd: &'input str, rs1: &'input str, imm: i32 },
-    Lbu  { rd: &'input str, rs1: &'input str, imm: i32 },
-    In   { rd: &'input str, rs1: &'input str, imm: i32 },
-    Andi { rd: &'input str, rs1: &'input str, imm: i32 },
-    Ori  { rd: &'input str, rs1: &'input str, imm: i32 },
-    Xori { rd: &'input str, rs1: &'input str, imm: i32 },
-    Srli { rd: &'input str, rs1: &'input str, imm: i32 },
-    Srai { rd: &'input str, rs1: &'input str, imm: i32 },
-    Slli { rd: &'input str, rs1: &'input str, imm: i32 },
+    Addi { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Subi { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Jal  { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Lw   { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Lh   { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Lb   { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Lhu  { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Lbu  { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    In   { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Andi { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Ori  { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Xori { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Srli { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Srai { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Slli { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
 
     // S-形式
-    Sw   { rs1: &'input str, rs2: &'input str, imm: i32 },
-    Sh   { rs1: &'input str, rs2: &'input str, imm: i32 },
-    Sb   { rs1: &'input str, rs2: &'input str, imm: i32 },
-    Isb  { rs1: &'input str, rs2: &'input str, imm: i32 },
-    Out  { rs1: &'input str, rs2: &'input str, imm: i32 },
+    Sw   { rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
+    Sh   { rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
+    Sb   { rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
+    Isb  { rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
+    Out  { rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
 
     // R-形式
-    Add  { rd: &'input str, rs1: &'input str, rs2: &'input str },
-    Sub  { rd: &'input str, rs1: &'input str, rs2: &'input str },
-    And  { rd: &'input str, rs1: &'input str, rs2: &'input str },
-    Or   { rd: &'input str, rs1: &'input str, rs2: &'input str },
-    Xor  { rd: &'input str, rs1: &'input str, rs2: &'input str },
-    Srl  { rd: &'input str, rs1: &'input str, rs2: &'input str },
-    Sra  { rd: &'input str, rs1: &'input str, rs2: &'input str },
-    Sll  { rd: &'input str, rs1: &'input str, rs2: &'input str },
+    Add  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
+    Sub  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
+    And  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
+    Or   { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
+    Xor  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
+    Srl  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
+    Sra  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
+    Sll  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
 
     // B-形式
-    Beq  { rd: &'input str, rs1: &'input str, rs2: &'input str, imm: i32 },
-    Bne  { rd: &'input str, rs1: &'input str, rs2: &'input str, imm: i32 },
-    Blt  { rd: &'input str, rs1: &'input str, rs2: &'input str, imm: i32 },
-    Ble  { rd: &'input str, rs1: &'input str, rs2: &'input str, imm: i32 },
+    Beq  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
+    Bne  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
+    Blt  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
+    Ble  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
 }
 
 impl<'input> From<Visitor<'input>> for InlineAsmInst<'input> {
@@ -50,7 +52,7 @@ impl<'input> From<Visitor<'input>> for InlineAsmInst<'input> {
                 InlineAsmInst::Jal {
                     rd: $visitor.expect_leaf().1,
                     rs1: $visitor.expect_leaf().1,
-                    imm: $visitor.expect_leaf().1.parse().unwrap(),
+                    imm: $visitor.expect_leaf().1.as_str().parse().unwrap(),
                 }
             }};
 
@@ -58,7 +60,7 @@ impl<'input> From<Visitor<'input>> for InlineAsmInst<'input> {
                 let rd = $visitor.expect_leaf().1;
                 let _ = $visitor.expect_leaf();     // '='
                 let rs1 = $visitor.expect_leaf().1;
-                let imm = $visitor.expect_leaf().1.parse().unwrap();
+                let imm = $visitor.expect_leaf().1.as_str().parse().unwrap();
                 InlineAsmInst::$inst { rd, rs1, imm }
             }};
         }
@@ -66,7 +68,7 @@ impl<'input> From<Visitor<'input>> for InlineAsmInst<'input> {
         macro_rules! parse_s {
             ($inst:ident $visitor:ident) => {{
                 let rs1 = $visitor.expect_leaf().1;
-                let imm = $visitor.expect_leaf().1.parse().unwrap();
+                let imm = $visitor.expect_leaf().1.as_str().parse().unwrap();
                 let _ = $visitor.expect_leaf();     // '='
                 let rs2 = $visitor.expect_leaf().1;
                 InlineAsmInst::$inst { rs1, rs2, imm }
@@ -89,12 +91,12 @@ impl<'input> From<Visitor<'input>> for InlineAsmInst<'input> {
                     rd: $visitor.expect_leaf().1,
                     rs1: $visitor.expect_leaf().1,
                     rs2: $visitor.expect_leaf().1,
-                    imm: $visitor.expect_leaf().1.parse().unwrap(),
+                    imm: $visitor.expect_leaf().1.as_str().parse().unwrap(),
                 }
             }};
         }
 
-        match visitor.expect_leaf().1.to_lowercase().as_str() {
+        match visitor.expect_leaf().1.as_str().to_lowercase().as_str() {
             // I-形式
             "addi" => parse_i!(Addi visitor),
             "subi" => parse_i!(Subi visitor),

@@ -1,10 +1,12 @@
+use sb_compiler_parse_cst::Span;
+
 use super::{ArgumentDef, Block, Visitor};
 
 #[derive(Debug)]
 pub struct FuncDef<'input> {
-    pub ident: &'input str,
-    pub args: Vec<ArgumentDef>,
-    pub ret_ty: Option<&'input str>,
+    pub ident: Span<'input>,
+    pub args: Vec<ArgumentDef<'input>>,
+    pub ret_ty: Option<Span<'input>>,
     pub block: Block<'input>,
 }
 
