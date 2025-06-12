@@ -2,14 +2,13 @@ use super::{Block, Stmt, Expr, Visitor};
 
 #[derive(Debug)]
 pub struct If {
-    pub namespace: String,
     pub cond: Expr,
     pub block: Block,
     pub else_stmt: Option<Box<Stmt>>,
 }
 
-impl From<(String, Visitor<'_>)> for If  {
-    fn from((namespace, mut visitor): (String, Visitor<'_>)) -> Self {
+impl From<Visitor<'_>> for If  {
+    fn from(mut visitor: Visitor<'_>) -> Self {
         let cond = visitor.expect_node::<Expr>();
         let block = visitor.expect_node::<Block>();
         let else_stmt = visitor
@@ -19,6 +18,6 @@ impl From<(String, Visitor<'_>)> for If  {
                 Some(Box::new(visitor.expect_node::<Stmt>()))
             });
 
-        If { namespace, cond, block, else_stmt }
+        If { cond, block, else_stmt }
     }
 }

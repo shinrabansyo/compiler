@@ -5,27 +5,23 @@ use super::{Unary, Visitor};
 #[derive(Debug)]
 pub enum Add {
     Plus {
-        namespace: String,
         lhs: Box<Add>,
         rhs: Unary,
     },
     Minus {
-        namespace: String,
         lhs: Box<Add>,
         rhs: Unary,
     },
     Unary {
-        namespace: String,
         value: Unary
     },
 }
 
-impl From<(String, Visitor<'_>)> for Add {
-    fn from((namespace, mut visitor): (String, Visitor<'_>)) -> Self {
+impl From<Visitor<'_>> for Add {
+    fn from(mut visitor: Visitor<'_>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
             return Add::Unary {
-                namespace,
                 value: visitor.expect_node::<Unary>(),
             };
         }
@@ -35,14 +31,12 @@ impl From<(String, Visitor<'_>)> for Add {
         match visitor.expect_leaf().0 {
             SBTokens::Plus => {
                 Add::Plus {
-                    namespace,
                     lhs: Box::new(lhs),
                     rhs: visitor.expect_node::<Unary>(),
                 }
             }
             SBTokens::Minus => {
                 Add::Minus {
-                    namespace,
                     lhs: Box::new(lhs),
                     rhs: visitor.expect_node::<Unary>(),
                 }

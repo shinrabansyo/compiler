@@ -19,7 +19,6 @@ pub fn lirgen_func_def(ctx: &mut GenContext, func: &FuncDef) -> LirTopElem {
     };
 
     LirTopElem::Function {
-        namespace: func.namespace.clone(),
         name: func.ident.clone(),
         body: lir_block,
     }

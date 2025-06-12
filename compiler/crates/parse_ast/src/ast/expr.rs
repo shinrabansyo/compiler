@@ -5,8 +5,8 @@ pub struct Expr {
     pub assign: Assign,
 }
 
-impl From<(String, Visitor<'_>)> for Expr {
-    fn from((_, mut visitor): (String, Visitor<'_>)) -> Self {
+impl From<Visitor<'_>> for Expr {
+    fn from(mut visitor: Visitor<'_>) -> Self {
         Expr {
             assign: visitor.expect_node::<Assign>(),
         }

@@ -5,8 +5,8 @@ pub struct Block {
     pub stmts: Vec<Stmt>,
 }
 
-impl From<(String, Visitor<'_>)> for Block {
-    fn from((_, mut visitor): (String, Visitor<'_>)) -> Self {
+impl From<Visitor<'_>> for Block {
+    fn from(mut visitor: Visitor<'_>) -> Self {
         Block {
             stmts: visitor.expect_nodes::<Stmt>(),
         }

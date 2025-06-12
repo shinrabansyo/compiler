@@ -3,52 +3,51 @@ use super::Visitor;
 #[derive(Debug)]
 pub enum InlineAsmInst {
     // I-形式
-    Addi { namespace: String, rd: String, rs1: String, imm: i32 },
-    Subi { namespace: String, rd: String, rs1: String, imm: i32 },
-    Jal  { namespace: String, rd: String, rs1: String, imm: i32 },
-    Lw   { namespace: String, rd: String, rs1: String, imm: i32 },
-    Lh   { namespace: String, rd: String, rs1: String, imm: i32 },
-    Lb   { namespace: String, rd: String, rs1: String, imm: i32 },
-    Lhu  { namespace: String, rd: String, rs1: String, imm: i32 },
-    Lbu  { namespace: String, rd: String, rs1: String, imm: i32 },
-    In   { namespace: String, rd: String, rs1: String, imm: i32 },
-    Andi { namespace: String, rd: String, rs1: String, imm: i32 },
-    Ori  { namespace: String, rd: String, rs1: String, imm: i32 },
-    Xori { namespace: String, rd: String, rs1: String, imm: i32 },
-    Srli { namespace: String, rd: String, rs1: String, imm: i32 },
-    Srai { namespace: String, rd: String, rs1: String, imm: i32 },
-    Slli { namespace: String, rd: String, rs1: String, imm: i32 },
+    Addi { rd: String, rs1: String, imm: i32 },
+    Subi { rd: String, rs1: String, imm: i32 },
+    Jal  { rd: String, rs1: String, imm: i32 },
+    Lw   { rd: String, rs1: String, imm: i32 },
+    Lh   { rd: String, rs1: String, imm: i32 },
+    Lb   { rd: String, rs1: String, imm: i32 },
+    Lhu  { rd: String, rs1: String, imm: i32 },
+    Lbu  { rd: String, rs1: String, imm: i32 },
+    In   { rd: String, rs1: String, imm: i32 },
+    Andi { rd: String, rs1: String, imm: i32 },
+    Ori  { rd: String, rs1: String, imm: i32 },
+    Xori { rd: String, rs1: String, imm: i32 },
+    Srli { rd: String, rs1: String, imm: i32 },
+    Srai { rd: String, rs1: String, imm: i32 },
+    Slli { rd: String, rs1: String, imm: i32 },
 
     // S-形式
-    Sw   { namespace: String, rs1: String, rs2: String, imm: i32 },
-    Sh   { namespace: String, rs1: String, rs2: String, imm: i32 },
-    Sb   { namespace: String, rs1: String, rs2: String, imm: i32 },
-    Isb  { namespace: String, rs1: String, rs2: String, imm: i32 },
-    Out  { namespace: String, rs1: String, rs2: String, imm: i32 },
+    Sw   { rs1: String, rs2: String, imm: i32 },
+    Sh   { rs1: String, rs2: String, imm: i32 },
+    Sb   { rs1: String, rs2: String, imm: i32 },
+    Isb  { rs1: String, rs2: String, imm: i32 },
+    Out  { rs1: String, rs2: String, imm: i32 },
 
     // R-形式
-    Add  { namespace: String, rd: String, rs1: String, rs2: String },
-    Sub  { namespace: String, rd: String, rs1: String, rs2: String },
-    And  { namespace: String, rd: String, rs1: String, rs2: String },
-    Or   { namespace: String, rd: String, rs1: String, rs2: String },
-    Xor  { namespace: String, rd: String, rs1: String, rs2: String },
-    Srl  { namespace: String, rd: String, rs1: String, rs2: String },
-    Sra  { namespace: String, rd: String, rs1: String, rs2: String },
-    Sll  { namespace: String, rd: String, rs1: String, rs2: String },
+    Add  { rd: String, rs1: String, rs2: String },
+    Sub  { rd: String, rs1: String, rs2: String },
+    And  { rd: String, rs1: String, rs2: String },
+    Or   { rd: String, rs1: String, rs2: String },
+    Xor  { rd: String, rs1: String, rs2: String },
+    Srl  { rd: String, rs1: String, rs2: String },
+    Sra  { rd: String, rs1: String, rs2: String },
+    Sll  { rd: String, rs1: String, rs2: String },
 
     // B-形式
-    Beq  { namespace: String, rd: String, rs1: String, rs2: String, imm: i32 },
-    Bne  { namespace: String, rd: String, rs1: String, rs2: String, imm: i32 },
-    Blt  { namespace: String, rd: String, rs1: String, rs2: String, imm: i32 },
-    Ble  { namespace: String, rd: String, rs1: String, rs2: String, imm: i32 },
+    Beq  { rd: String, rs1: String, rs2: String, imm: i32 },
+    Bne  { rd: String, rs1: String, rs2: String, imm: i32 },
+    Blt  { rd: String, rs1: String, rs2: String, imm: i32 },
+    Ble  { rd: String, rs1: String, rs2: String, imm: i32 },
 }
 
-impl From<(String, Visitor<'_>)> for InlineAsmInst {
-    fn from((namespace, mut visitor): (String, Visitor<'_>)) -> Self {
+impl From<Visitor<'_>> for InlineAsmInst {
+    fn from(mut visitor: Visitor<'_>) -> Self {
         macro_rules! parse_i {
             (Jal $visitor:ident) => {{
                 InlineAsmInst::Jal {
-                    namespace: namespace.clone(),
                     rd: $visitor.expect_leaf().1.to_string(),
                     rs1: $visitor.expect_leaf().1.to_string(),
                     imm: $visitor.expect_leaf().1.parse().unwrap(),
@@ -60,13 +59,7 @@ impl From<(String, Visitor<'_>)> for InlineAsmInst {
                 let _ = $visitor.expect_leaf();     // '='
                 let rs1 = $visitor.expect_leaf().1.to_string();
                 let imm = $visitor.expect_leaf().1.parse().unwrap();
-
-                InlineAsmInst::$inst {
-                    namespace: namespace.clone(),
-                    rd,
-                    rs1,
-                    imm,
-                }
+                InlineAsmInst::$inst { rd, rs1, imm }
             }};
         }
 
@@ -76,13 +69,7 @@ impl From<(String, Visitor<'_>)> for InlineAsmInst {
                 let imm = $visitor.expect_leaf().1.parse().unwrap();
                 let _ = $visitor.expect_leaf();     // '='
                 let rs2 = $visitor.expect_leaf().1.to_string();
-
-                InlineAsmInst::$inst {
-                    namespace: namespace.clone(),
-                    rs1,
-                    rs2,
-                    imm,
-                }
+                InlineAsmInst::$inst { rs1, rs2, imm }
             }};
         }
 
@@ -92,20 +79,13 @@ impl From<(String, Visitor<'_>)> for InlineAsmInst {
                 let _ = $visitor.expect_leaf();     // '='
                 let rs1 = $visitor.expect_leaf().1.to_string();
                 let rs2 = $visitor.expect_leaf().1.to_string();
-
-                InlineAsmInst::$inst {
-                    namespace: namespace.clone(),
-                    rd,
-                    rs1,
-                    rs2,
-                }
+                InlineAsmInst::$inst { rd, rs1, rs2 }
             }};
         }
 
         macro_rules! parse_b {
             ($inst:ident $visitor:ident) => {{
                 InlineAsmInst::$inst {
-                    namespace: namespace.clone(),
                     rd: $visitor.expect_leaf().1.to_string(),
                     rs1: $visitor.expect_leaf().1.to_string(),
                     rs2: $visitor.expect_leaf().1.to_string(),

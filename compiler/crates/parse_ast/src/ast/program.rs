@@ -5,8 +5,8 @@ pub struct Program {
     pub top_elems: Vec<Top>,
 }
 
-impl From<(String, Visitor<'_>)> for Program {
-    fn from((_, mut visitor): (String, Visitor<'_>)) -> Self {
+impl From<Visitor<'_>> for Program {
+    fn from(mut visitor: Visitor<'_>) -> Self {
         Program {
             top_elems: visitor.expect_nodes::<Top>(),
         }

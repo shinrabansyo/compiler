@@ -48,17 +48,17 @@ impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
 
     pub fn expect_node<T>(&mut self) -> T
     where
-        T: From<(String, CSTreeVisitor<'input, Lang>)>,
+        T: From<CSTreeVisitor<'input, Lang>>,
     {
         match self.pop_spawn() {
-            Some(node_visitor) => T::from(("".into(), node_visitor)),
+            Some(node_visitor) => T::from(node_visitor),
             None => panic!("No more elements in the CSTreeVisitor"),
         }
     }
 
     pub fn expect_nodes<T>(&mut self) -> Vec<T>
     where
-        T: From<(String, CSTreeVisitor<'input, Lang>)>,
+        T: From<CSTreeVisitor<'input, Lang>>,
     {
         match self.pop_spawn() {
             Some(mut node_visitor) => node_visitor.expect_nodes_lrec::<T>(),
@@ -68,17 +68,17 @@ impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
 
     fn expect_nodes_lrec<T>(&mut self) -> Vec<T>
     where
-        T: From<(String, CSTreeVisitor<'input, Lang>)>,
+        T: From<CSTreeVisitor<'input, Lang>>,
     {
         match (self.pop_spawn(), self.pop_spawn()) {
             (Some(mut lrec_visitor), Some(last_visitor)) => {
                 let mut lrec_elems = lrec_visitor.expect_nodes_lrec::<T>();
-                let last_elem = T::from(("".into(), last_visitor));
+                let last_elem = T::from(last_visitor);
                 lrec_elems.push(last_elem);
                 lrec_elems
             }
             (Some(last_visitor), None) => {
-                vec![T::from(("".into(), last_visitor))]
+                vec![T::from(last_visitor)]
             }
             (None, None) => vec![],
             _ => unreachable!(),
@@ -177,8 +177,8 @@ mod tests {
         #[derive(Debug, PartialEq, Eq)]
         struct AstA;
 
-        impl From<(String, CSTreeVisitor<'_, TestLangDef>)> for AstA {
-            fn from((_, mut visitor): (String, CSTreeVisitor<'_, TestLangDef>)) -> Self {
+        impl From<CSTreeVisitor<'_, TestLangDef>> for AstA {
+            fn from(mut visitor: CSTreeVisitor<'_, TestLangDef>) -> Self {
                 assert_eq!(visitor.expect_leaf(), (TestToken::A, "a"));
                 assert_eq!(visitor.expect_node::<AstB>(), AstB);
                 AstA
@@ -188,8 +188,8 @@ mod tests {
         #[derive(Debug, PartialEq, Eq)]
         struct AstB;
 
-        impl From<(String, CSTreeVisitor<'_, TestLangDef>)> for AstB {
-            fn from((_, mut visitor): (String, CSTreeVisitor<'_, TestLangDef>)) -> Self {
+        impl From<CSTreeVisitor<'_, TestLangDef>> for AstB {
+            fn from(mut visitor: CSTreeVisitor<'_, TestLangDef>) -> Self {
                 assert_eq!(visitor.expect_leaf(), (TestToken::B, "b"));
                 assert_eq!(visitor.expect_nodes::<AstC>(), vec![AstC, AstC, AstC]);
                 assert_eq!(visitor.expect_nodes::<AstD>(), vec![]);
@@ -200,8 +200,8 @@ mod tests {
         #[derive(Debug, PartialEq, Eq)]
         struct AstC;
 
-        impl From<(String, CSTreeVisitor<'_, TestLangDef>)> for AstC {
-            fn from((_, mut visitor): (String, CSTreeVisitor<'_, TestLangDef>)) -> Self {
+        impl From<CSTreeVisitor<'_, TestLangDef>> for AstC {
+            fn from(mut visitor: CSTreeVisitor<'_, TestLangDef>) -> Self {
                 assert_eq!(visitor.expect_leaf(), (TestToken::C, "c"));
                 AstC
             }
@@ -210,8 +210,8 @@ mod tests {
         #[derive(Debug, PartialEq, Eq)]
         struct AstD;
 
-        impl From<(String, CSTreeVisitor<'_, TestLangDef>)> for AstD {
-            fn from((_, mut visitor): (String, CSTreeVisitor<'_, TestLangDef>)) -> Self {
+        impl From<CSTreeVisitor<'_, TestLangDef>> for AstD {
+            fn from(mut visitor: CSTreeVisitor<'_, TestLangDef>) -> Self {
                 assert_eq!(visitor.expect_leaf(), (TestToken::D, "d"));
                 AstD
             }
@@ -222,7 +222,7 @@ mod tests {
             .build_parser()?
             .process::<CSTreeVisitor<_>>("abccc")?;
 
-        assert_eq!(AstA::from(("".into(), visitor)), AstA);
+        assert_eq!(AstA::from(visitor), AstA);
 
         Ok(())
     }

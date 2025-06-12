@@ -19,6 +19,6 @@ const PROCESSOR: LazyCell<Processor<SBLang>> = LazyCell::new(|| {
 
 pub fn parse(input: &str) -> anyhow::Result<Program> {
     let visitor = PROCESSOR.process::<CSTreeVisitor<_>>(input)?;
-    let ast = Program::from(("".into(), visitor));
+    let ast = Program::from(visitor);
     Ok(ast)
 }
