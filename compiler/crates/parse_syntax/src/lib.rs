@@ -156,7 +156,7 @@ pub enum SBRule {
     #[rule("<stmt> ::= <var_decl>")]
     #[rule("<stmt> ::= <block>")]
     #[rule("<stmt> ::= <expr> Semicolon")]
-    #[rule("<stmt> ::= Return <expr> Semicolon")]
+    #[rule("<stmt> ::= <return>")]
     #[rule("<stmt> ::= <if>")]
     #[rule("<stmt> ::= <while>")]
     #[rule("<stmt> ::= <for>")]
@@ -165,6 +165,9 @@ pub enum SBRule {
 
     #[rule("<var_decl> ::= Var Ident Colon Type Assign <expr> Semicolon")]
     VarDecl,
+
+    #[rule("<return> ::= Return <expr> Semicolon")]
+    Return,
 
     #[rule("<if> ::= If ParenL <expr> ParenR <block>")]
     #[rule("<if> ::= If ParenL <expr> ParenR <block> Else <stmt>")]

@@ -1,6 +1,6 @@
-use sb_compiler_parse_syntax::{SBToken, SBRule};
+use sb_compiler_parse_syntax::SBRule;
 
-use super::{VarDecl, Block, If, While, For, InlineAsm, Expr, Visitor};
+use super::{VarDecl, Block, Return, If, While, For, InlineAsm, Expr, Visitor};
 
 #[derive(Debug)]
 pub enum Stmt {
@@ -14,7 +14,7 @@ pub enum Stmt {
         expr: Expr,
     },
     Return {
-        expr: Expr,
+        r#return: Return,
     },
     If {
         r#if: If,
@@ -32,43 +32,43 @@ pub enum Stmt {
 
 impl From<Visitor<'_>> for Stmt {
     fn from(mut visitor: Visitor<'_>) -> Self {
-        match visitor.peek() {
-            (_, Some(SBRule::VarDecl)) => {
+        match visitor.peek().1 {
+            Some(SBRule::VarDecl) => {
                 Stmt::VarDecl {
                     var_decl: visitor.expect_node::<VarDecl>(),
                 }
             }
-            (_, Some(SBRule::Block)) => {
+            Some(SBRule::Block) => {
                 Stmt::Block {
                     block: visitor.expect_node::<Block>(),
                 }
             }
-            (_, Some(SBRule::Expr)) => {
+            Some(SBRule::Expr) => {
                 Stmt::Expr {
                     expr: visitor.expect_node::<Expr>(),
                 }
             }
-            (Some(SBToken::Return), _) => {
+            Some(SBRule::Return) => {
                 Stmt::Return {
-                    expr: visitor.expect_node::<Expr>(),
+                    r#return: visitor.expect_node::<Return>(),
                 }
             }
-            (_, Some(SBRule::If)) => {
+            Some(SBRule::If) => {
                 Stmt::If {
                     r#if: visitor.expect_node::<If>(),
                 }
             }
-            (_, Some(SBRule::While)) => {
+            Some(SBRule::While) => {
                 Stmt::While {
                     r#while: visitor.expect_node::<While>(),
                 }
             }
-            (_, Some(SBRule::For)) => {
+            Some(SBRule::For) => {
                 Stmt::For {
                     r#for: visitor.expect_node::<For>(),
                 }
             }
-            (_, Some(SBRule::InlineAsm)) => {
+            Some(SBRule::InlineAsm) => {
                 Stmt::InlineAsm {
                     inline_asm: visitor.expect_node::<InlineAsm>(),
                 }
