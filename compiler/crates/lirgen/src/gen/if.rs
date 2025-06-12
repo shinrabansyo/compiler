@@ -4,7 +4,7 @@ use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel, Nop};
 use crate::{GenContext, ZERO_REG};
 use super::{lirgen_expr, lirgen_block, lirgen_stmt};
 
-pub fn lirgen_if(ctx: &mut GenContext, r#if: &If) -> LirBlock {
+pub fn lirgen_if<'input>(ctx: &mut GenContext<'input>, r#if: &If<'input>) -> LirBlock {
     // 条件節
     let lir_cond = lirgen_expr(ctx, &r#if.cond);
     let reg_cond = lir_cond.result_reg();

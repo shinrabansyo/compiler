@@ -1,7 +1,6 @@
 use sb_linker::obj::Object;
 
 use sb_compiler_parse::parse;
-use sb_compiler_analyze::analyze;
 use sb_compiler_lirgen::lirgen;
 use sb_compiler_codegen::codegen;
 use sb_compiler_opt::optimize;
