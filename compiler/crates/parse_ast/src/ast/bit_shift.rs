@@ -1,4 +1,4 @@
-use sb_compiler_parse_syntax::SBTokens;
+use sb_compiler_parse_syntax::SBToken;
 
 use super::{Add, Visitor};
 
@@ -33,19 +33,19 @@ impl From<Visitor<'_>> for BitShift {
         // 演算子付き
         let lhs = Box::new(visitor.expect_node::<BitShift>());
         match visitor.expect_leaf().0 {
-            SBTokens::ShiftL => {
+            SBToken::ShiftL => {
                 BitShift::L {
                     lhs,
                     rhs: visitor.expect_node::<Add>(),
                 }
             }
-            SBTokens::ShiftR => {
+            SBToken::ShiftR => {
                 BitShift::R {
                     lhs,
                     rhs: visitor.expect_node::<Add>(),
                 }
             }
-            SBTokens::ShiftRa => {
+            SBToken::ShiftRa => {
                 BitShift::Ra {
                     lhs,
                     rhs: visitor.expect_node::<Add>(),

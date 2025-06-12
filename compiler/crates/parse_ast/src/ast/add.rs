@@ -1,4 +1,4 @@
-use sb_compiler_parse_syntax::SBTokens;
+use sb_compiler_parse_syntax::SBToken;
 
 use super::{Unary, Visitor};
 
@@ -29,13 +29,13 @@ impl From<Visitor<'_>> for Add {
         // 演算子付き
         let lhs = visitor.expect_node::<Add>();
         match visitor.expect_leaf().0 {
-            SBTokens::Plus => {
+            SBToken::Plus => {
                 Add::Plus {
                     lhs: Box::new(lhs),
                     rhs: visitor.expect_node::<Unary>(),
                 }
             }
-            SBTokens::Minus => {
+            SBToken::Minus => {
                 Add::Minus {
                     lhs: Box::new(lhs),
                     rhs: visitor.expect_node::<Unary>(),

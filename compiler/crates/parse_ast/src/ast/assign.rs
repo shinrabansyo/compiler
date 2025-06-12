@@ -1,4 +1,4 @@
-use sb_compiler_parse_syntax::SBTokens;
+use sb_compiler_parse_syntax::SBToken;
 
 use super::{LogicOr, Visitor};
 
@@ -45,37 +45,37 @@ impl From<Visitor<'_>> for Assign {
         // 演算子付き
         let ident = visitor.expect_leaf().1.to_string();
         match visitor.expect_leaf().0 {
-            SBTokens::Assign => {
+            SBToken::Assign => {
                 Assign::Normal {
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
-            SBTokens::PlusAssign => {
+            SBToken::PlusAssign => {
                 Assign::Plus {
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
-            SBTokens::MinusAssign => {
+            SBToken::MinusAssign => {
                 Assign::Minus {
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
-            SBTokens::ShiftLAssign => {
+            SBToken::ShiftLAssign => {
                 Assign::ShiftL {
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
-            SBTokens::ShiftRAssign => {
+            SBToken::ShiftRAssign => {
                 Assign::ShiftR {
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
-            SBTokens::ShiftRaAssign => {
+            SBToken::ShiftRaAssign => {
                 Assign::ShiftRa {
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),

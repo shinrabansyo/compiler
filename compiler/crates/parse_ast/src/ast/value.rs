@@ -1,4 +1,4 @@
-use sb_compiler_parse_syntax::{SBTokens, SBRules};
+use sb_compiler_parse_syntax::{SBToken, SBRule};
 
 use super::{Expr, Call, Visitor};
 
@@ -22,25 +22,25 @@ impl From<Visitor<'_>> for Value {
     fn from(mut visitor: Visitor<'_>) -> Self {
         match visitor.peek() {
             // 定数
-            (Some(SBTokens::Num), None) => {
+            (Some(SBToken::Num), None) => {
                 Value::Const{
                     value: visitor.expect_leaf().1.parse().unwrap(),
                 }
             }
             // 変数
-            (Some(SBTokens::Ident), None) => {
+            (Some(SBToken::Ident), None) => {
                 Value::Var {
                     name: visitor.expect_leaf().1.to_string(),
                 }
             }
             // 括弧
-            (None, Some(SBRules::Expr)) => {
+            (None, Some(SBRule::Expr)) => {
                 Value::Expr {
                     expr: Box::new(visitor.expect_node::<Expr>()),
                 }
             }
             // 関数呼び出し
-            (None, Some(SBRules::Call)) => {
+            (None, Some(SBRule::Call)) => {
                 Value::Call {
                     call: visitor.expect_node::<Call>(),
                 }

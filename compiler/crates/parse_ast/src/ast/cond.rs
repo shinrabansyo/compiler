@@ -1,4 +1,4 @@
-use sb_compiler_parse_syntax::SBTokens;
+use sb_compiler_parse_syntax::SBToken;
 
 use super::{BitShift, Visitor};
 
@@ -45,37 +45,37 @@ impl From<Visitor<'_>> for Cond {
         // 演算子付き
         let lhs = Box::new(visitor.expect_node::<Cond>());
         match visitor.expect_leaf().0 {
-            SBTokens::Eq => {
+            SBToken::Eq => {
                 Cond::Eq {
                     lhs,
                     rhs: visitor.expect_node::<BitShift>(),
                 }
             }
-            SBTokens::Neq => {
+            SBToken::Neq => {
                 Cond::Neq {
                     lhs,
                     rhs: visitor.expect_node::<BitShift>(),
                 }
             }
-            SBTokens::Lt => {
+            SBToken::Lt => {
                 Cond::Lt {
                     lhs,
                     rhs: visitor.expect_node::<BitShift>(),
                 }
             }
-            SBTokens::Lte => {
+            SBToken::Lte => {
                 Cond::Lte {
                     lhs,
                     rhs: visitor.expect_node::<BitShift>(),
                 }
             }
-            SBTokens::Gt => {
+            SBToken::Gt => {
                 Cond::Gt {
                     lhs,
                     rhs: visitor.expect_node::<BitShift>(),
                 }
             }
-            SBTokens::Gte => {
+            SBToken::Gte => {
                 Cond::Gte {
                     lhs,
                     rhs: visitor.expect_node::<BitShift>(),

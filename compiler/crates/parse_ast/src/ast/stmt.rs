@@ -1,4 +1,4 @@
-use sb_compiler_parse_syntax::{SBTokens, SBRules};
+use sb_compiler_parse_syntax::{SBToken, SBRule};
 
 use super::{VarDecl, Block, If, While, For, InlineAsm, Expr, Visitor};
 
@@ -33,42 +33,42 @@ pub enum Stmt {
 impl From<Visitor<'_>> for Stmt {
     fn from(mut visitor: Visitor<'_>) -> Self {
         match visitor.peek() {
-            (_, Some(SBRules::VarDecl)) => {
+            (_, Some(SBRule::VarDecl)) => {
                 Stmt::VarDecl {
                     var_decl: visitor.expect_node::<VarDecl>(),
                 }
             }
-            (_, Some(SBRules::Block)) => {
+            (_, Some(SBRule::Block)) => {
                 Stmt::Block {
                     block: visitor.expect_node::<Block>(),
                 }
             }
-            (_, Some(SBRules::Expr)) => {
+            (_, Some(SBRule::Expr)) => {
                 Stmt::Expr {
                     expr: visitor.expect_node::<Expr>(),
                 }
             }
-            (Some(SBTokens::Return), _) => {
+            (Some(SBToken::Return), _) => {
                 Stmt::Return {
                     expr: visitor.expect_node::<Expr>(),
                 }
             }
-            (_, Some(SBRules::If)) => {
+            (_, Some(SBRule::If)) => {
                 Stmt::If {
                     r#if: visitor.expect_node::<If>(),
                 }
             }
-            (_, Some(SBRules::While)) => {
+            (_, Some(SBRule::While)) => {
                 Stmt::While {
                     r#while: visitor.expect_node::<While>(),
                 }
             }
-            (_, Some(SBRules::For)) => {
+            (_, Some(SBRule::For)) => {
                 Stmt::For {
                     r#for: visitor.expect_node::<For>(),
                 }
             }
-            (_, Some(SBRules::InlineAsm)) => {
+            (_, Some(SBRule::InlineAsm)) => {
                 Stmt::InlineAsm {
                     inline_asm: visitor.expect_node::<InlineAsm>(),
                 }

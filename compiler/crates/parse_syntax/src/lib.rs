@@ -11,15 +11,15 @@ pub type SBLang = LALR1<SBLangDef>;
     CFL, Serialize, Deserialize,
 )]
 pub struct SBLangDef (
-    #[tokens] SBTokens,
-    #[rules]  SBRules,
+    #[tokens] SBToken,
+    #[rules]  SBRule,
 );
 
 #[derive(
     Debug, Default, Clone, Copy, PartialEq, Eq, Hash,
     CFLTokens, Serialize, Deserialize,
 )]
-pub enum SBTokens {
+pub enum SBToken {
     #[default]
 
     // 記号
@@ -126,7 +126,7 @@ pub enum SBTokens {
     Debug, Default, Clone, Copy, PartialEq, Eq, Hash,
     CFLRules, Serialize, Deserialize,
 )]
-pub enum SBRules {
+pub enum SBRule {
     #[default]
     #[rule("<program> ::= <top_list>")]
     Program,
