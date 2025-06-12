@@ -1122,6 +1122,7 @@ dependencies = [
  "anyhow",
  "copager",
  "sb_compiler_parse_ast",
+ "sb_compiler_parse_cst",
  "sb_compiler_parse_syntax",
  "thiserror 2.0.12",
 ]
@@ -1133,6 +1134,15 @@ dependencies = [
  "anyhow",
  "copager",
  "sb_compiler_parse_syntax",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_compiler_parse_cst"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "copager",
  "thiserror 2.0.12",
 ]
 

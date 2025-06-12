@@ -11,7 +11,7 @@ pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirBlock {
             (reg_imm, vec![lir!(Li(*value) reg_imm)])
         }
         Value::Var { name, .. } => {
-            (*ctx.sym_table.get(name).unwrap(), vec![])
+            (ctx.ref_var_reg(name).unwrap(), vec![])
         }
         Value::Expr { expr, .. } => {
             let lir_expr = lirgen_expr(ctx, expr);

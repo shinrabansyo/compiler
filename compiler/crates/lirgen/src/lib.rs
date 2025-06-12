@@ -37,6 +37,14 @@ impl GenContext {
         self.reserved_labels += 1;
         allocated_label
     }
+
+    fn set_var_reg(&mut self, var: String, reg: u32) {
+        self.sym_table.insert(var.clone(), reg);
+    }
+
+    fn ref_var_reg(&self, var: &String) -> Option<u32> {
+        self.sym_table.get(var).map(|v| *v)
+    }
 }
 
 pub fn lirgen<'ast>(program: &'ast Program) -> Vec<LirTopElem> {

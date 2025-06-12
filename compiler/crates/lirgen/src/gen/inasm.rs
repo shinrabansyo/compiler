@@ -10,19 +10,19 @@ pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: &InlineAsm) -> LirBlo
             return var[1..].parse().unwrap();
         }
 
-        // 一次レジスタ
+        // 一時レジスタ
         if var.starts_with("T") {
-            if let Some(reg) = ctx.sym_table.get(var) {
-                return *reg;
+            if let Some(reg) = ctx.ref_var_reg(var) {
+                return reg;
             } else {
                 let reg = ctx.alloc_reg();
-                ctx.sym_table.insert(var.to_string(), reg);
+                ctx.set_var_reg(var.clone(), reg);
                 return reg;
             }
         }
 
         // 変数
-        *ctx.sym_table.get(&var).unwrap()
+        ctx.ref_var_reg(var).unwrap()
     };
 
     let mut lirs = vec![];

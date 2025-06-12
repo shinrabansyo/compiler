@@ -8,7 +8,7 @@ pub fn lirgen_var_decl(ctx: &mut GenContext, var_decl: &VarDecl) -> LirBlock {
     let lir_expr = lirgen_expr(ctx, &var_decl.expr);
     let reg_expr = lir_expr.result_reg();
 
-    ctx.sym_table.insert(var_decl.ident.clone(), reg_expr);
+    ctx.set_var_reg(var_decl.ident.clone(), reg_expr);
 
     LirBlock::Single {
         result_reg: reg_expr,
