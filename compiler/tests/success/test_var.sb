@@ -1,9 +1,18 @@
 // 変数のテスト
 
 fn main() {
+    // r10 レジスタを 0 以外の値にする
+    asm! {
+        addi R4 = R0, 9999
+        add R10 = R0, R4
+    }
+
+    // テスト実行
     if (test_01() != 1) { return 1; }
     if (test_02() != 1) { return 2; }
     if (test_03() != 1) { return 3; }
+
+    // 正常時は 0
     return 0;
 }
 
