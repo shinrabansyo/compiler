@@ -8,6 +8,7 @@ anyhow = { workspace = true }
 thiserror = { workspace = true }
 copager = { workspace = true, features = ["prebuild", "tree"] }
 sb_compiler_parse_ast = { path = "../parse_ast" }
+sb_compiler_parse_cst = { path = "../parse_cst" }
 sb_compiler_parse_syntax = { path = "../parse_syntax" }
 
 [build-dependencies]
