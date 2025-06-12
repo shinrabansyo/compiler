@@ -1,32 +1,21 @@
-use copager::ir::Tree;
+use sb_compiler_parse_cst::Span;
 
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::{unwrap_node, unwrap_leaf};
-use super::Expr;
+use super::{Expr, Visitor};
 
 #[derive(Debug)]
-pub struct VarDecl {
-    pub namespace: String,
-    pub ident: String,
-    pub ty: String,
-    pub expr: Expr,
+pub struct VarDecl<'input> {
+    pub ident: Span<'input>,
+    pub ty: Span<'input>,
+    pub expr: Expr<'input>,
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for VarDecl  {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
+impl<'input> From<Visitor<'input>> for VarDecl<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
+        let ident = visitor.expect_leaf().1;
+        let ty = visitor.expect_leaf().1;
+        let _ = visitor.expect_leaf();  // '='
+        let expr = visitor.expect_node::<Expr>();
 
-        let (_, ident) = unwrap_leaf(children.pop_front().unwrap());
-        let ident = ident.to_string();
-
-        let (_, ty) = unwrap_leaf(children.pop_front().unwrap());
-        let ty = ty.to_string();
-
-        let _assign = children.pop_front().unwrap();
-
-        let expr = Expr::from((namespace.clone(), children.pop_front().unwrap()));
-
-        VarDecl { namespace, ident, ty, expr }
+        VarDecl { ident, ty, expr }
     }
 }

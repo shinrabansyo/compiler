@@ -1,9 +1,9 @@
 use std::cell::LazyCell;
 
-use copager::ir::Tree;
 use copager::Processor;
 
 use sb_compiler_parse_ast::Program;
+use sb_compiler_parse_cst::CSTreeVisitor;
 use sb_compiler_parse_syntax::SBLang;
 
 const PROCESSOR: LazyCell<Processor<SBLang>> = LazyCell::new(|| {
@@ -18,6 +18,7 @@ const PROCESSOR: LazyCell<Processor<SBLang>> = LazyCell::new(|| {
 });
 
 pub fn parse(input: &str) -> anyhow::Result<Program> {
-    let cst = PROCESSOR.process::<Tree<_>>(input)?;
-    Ok(Program::from(cst))
+    let visitor = PROCESSOR.process::<CSTreeVisitor<_>>(input)?;
+    let ast = Program::from(visitor);
+    Ok(ast)
 }

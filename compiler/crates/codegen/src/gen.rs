@@ -9,8 +9,8 @@ use crate::reg_mapping::{RegMap, MapTo};
 
 pub fn gen_inst(lir: LirTopElem, reg_map: RegMap) -> Object {
     match lir {
-        LirTopElem::Function { namespace, name, body, .. } => {
-            let name = format!("{}.{}", namespace, name);
+        LirTopElem::Function { name, body, .. } => {
+            let name = format!("global.{}", name);
             let inst = InstGenerator::gen(body, reg_map);
             Object::new(name, inst)
         },

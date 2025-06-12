@@ -209,7 +209,6 @@ impl LirBlock {
 #[derive(Debug)]
 pub enum LirTopElem {
     Function {
-        namespace: String,
         name: String,
         body: LirBlock,
     }

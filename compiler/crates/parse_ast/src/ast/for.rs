@@ -1,28 +1,20 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::unwrap_node;
-use super::{Block, Expr};
+use super::{Block, Expr, Visitor};
 
 #[derive(Debug)]
-pub struct For {
-    pub namespace: String,
-    pub init: Expr,
-    pub cond: Expr,
-    pub incr: Expr,
-    pub block: Block,
+pub struct For<'input> {
+    pub init: Expr<'input>,
+    pub cond: Expr<'input>,
+    pub incr: Expr<'input>,
+    pub block: Block<'input>,
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for For  {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
+impl<'input> From<Visitor<'input>> for For<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         For {
-            namespace: namespace.clone(),
-            init: Expr::from((namespace.clone(), children.pop_front().unwrap())),
-            cond: Expr::from((namespace.clone(), children.pop_front().unwrap())),
-            incr: Expr::from((namespace.clone(), children.pop_front().unwrap())),
-            block: Block::from((namespace, children.pop_front().unwrap())),
+            init: visitor.expect_node::<Expr>(),
+            cond: visitor.expect_node::<Expr>(),
+            incr: visitor.expect_node::<Expr>(),
+            block: visitor.expect_node::<Block>(),
         }
     }
 }

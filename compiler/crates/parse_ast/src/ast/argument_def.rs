@@ -1,26 +1,18 @@
-use copager::ir::Tree;
+use sb_compiler_parse_cst::Span;
 
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::{unwrap_node, unwrap_leaf};
+use super::Visitor;
 
 #[derive(Debug)]
-pub struct ArgumentDef {
-    pub namespace: String,
-    pub ident: String,
-    pub ty: String,
+pub struct ArgumentDef<'input> {
+    pub ident: Span<'input>,
+    pub ty: Span<'input>,
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for ArgumentDef {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
-
-        let (_, ident) = unwrap_leaf(children.pop_front().unwrap());
-        let ident = ident.to_string();
-
-        let (_, ty) = unwrap_leaf(children.pop_front().unwrap());
-        let ty = ty.to_string();
-
-        ArgumentDef { namespace, ident, ty }
+impl<'input> From<Visitor<'input>> for ArgumentDef<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
+        ArgumentDef {
+            ident: visitor.expect_leaf().1,
+            ty: visitor.expect_leaf().1,
+        }
     }
 }

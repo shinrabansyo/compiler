@@ -10,7 +10,7 @@ pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirBlock {
             let lir_assign = lirgen_assign(ctx, assign);
             let reg_assign = lir_assign.result_reg();
 
-            let reg_var = *ctx.sym_table.get(ident).unwrap();
+            let reg_var = ctx.ref_var_reg(ident.as_str()).unwrap();
 
             (reg_var, vec![lir_assign, lir!(Add reg_var, ZERO_REG, reg_assign)])
         }
@@ -18,7 +18,7 @@ pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirBlock {
             let lir_assign = lirgen_assign(ctx, assign);
             let reg_assign = lir_assign.result_reg();
 
-            let reg_var = *ctx.sym_table.get(ident).unwrap();
+            let reg_var = ctx.ref_var_reg(ident.as_str()).unwrap();
 
             (reg_var, vec![lir_assign, lir!(Add reg_var, reg_var, reg_assign)])
         }
@@ -26,7 +26,7 @@ pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirBlock {
             let lir_assign = lirgen_assign(ctx, assign);
             let reg_assign = lir_assign.result_reg();
 
-            let reg_var = *ctx.sym_table.get(ident).unwrap();
+            let reg_var = ctx.ref_var_reg(ident.as_str()).unwrap();
 
             (reg_var, vec![lir_assign, lir!(Sub reg_var, reg_var, reg_assign)])
         }
@@ -34,7 +34,7 @@ pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirBlock {
             let lir_assign = lirgen_assign(ctx, assign);
             let reg_result = lir_assign.result_reg();
 
-            let reg_var = *ctx.sym_table.get(ident).unwrap();
+            let reg_var = ctx.ref_var_reg(ident.as_str()).unwrap();
 
             (reg_var, vec![lir_assign, lir!(ShiftL reg_var, reg_var, reg_result)])
         }
@@ -42,7 +42,7 @@ pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirBlock {
             let lir_assign = lirgen_assign(ctx, assign);
             let reg_result = lir_assign.result_reg();
 
-            let reg_var = *ctx.sym_table.get(ident).unwrap();
+            let reg_var = ctx.ref_var_reg(ident.as_str()).unwrap();
 
             (reg_var, vec![lir_assign, lir!(ShiftR reg_var, reg_var, reg_result)])
         }
@@ -50,7 +50,7 @@ pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirBlock {
             let lir_assign = lirgen_assign(ctx, assign);
             let reg_result = lir_assign.result_reg();
 
-            let reg_var = *ctx.sym_table.get(ident).unwrap();
+            let reg_var = ctx.ref_var_reg(ident.as_str()).unwrap();
 
             (reg_var, vec![lir_assign, lir!(ShiftRa reg_var, reg_var, reg_result)])
         }

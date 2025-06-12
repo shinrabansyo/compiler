@@ -1,20 +1,14 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::unwrap_node;
-use super::Assign;
+use super::{Assign, Visitor};
 
 #[derive(Debug)]
-pub struct Expr {
-    pub assign: Assign,
+pub struct Expr<'input> {
+    pub assign: Assign<'input>,
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for Expr {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
+impl<'input> From<Visitor<'input>> for Expr<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         Expr {
-            assign: Assign::from((namespace, children.pop_front().unwrap())),
+            assign: visitor.expect_node::<Assign>(),
         }
     }
 }

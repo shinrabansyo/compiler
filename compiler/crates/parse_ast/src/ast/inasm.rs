@@ -1,25 +1,14 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::{unwrap_node, expand_lrec};
-use super::InlineAsmInst;
+use super::{InlineAsmInst, Visitor};
 
 #[derive(Debug)]
-pub struct InlineAsm {
-    pub namespace: String,
-    pub insts: Vec<InlineAsmInst>,
+pub struct InlineAsm<'input> {
+    pub insts: Vec<InlineAsmInst<'input>>,
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for InlineAsm {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
-
-        let insts = expand_lrec::<InlineAsmInst>(
-            namespace.clone(),
-            children.pop_front().unwrap(),
-        );
-
-        InlineAsm { namespace, insts }
+impl<'input> From<Visitor<'input>> for InlineAsm<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
+        InlineAsm {
+            insts: visitor.expect_nodes::<InlineAsmInst>(),
+        }
     }
 }

@@ -1,87 +1,86 @@
-use copager::ir::Tree;
+use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_syntax::SBToken;
 
-use sb_compiler_parse_syntax::{SBLangDef, SBTokens};
-
-use crate::utils::{unwrap_node, unwrap_leaf};
-use super::LogicOr;
+use super::{LogicOr, Visitor};
 
 #[derive(Debug)]
-pub enum Assign {
+pub enum Assign<'input> {
     Normal {
-        namespace: String,
-        ident: String,
-        assign: Box<Assign>,
+        ident: Span<'input>,
+        assign: Box<Assign<'input>>,
     },
     Plus {
-        namespace: String,
-        ident: String,
-        assign: Box<Assign>,
+        ident: Span<'input>,
+        assign: Box<Assign<'input>>,
     },
     Minus {
-        namespace: String,
-        ident: String,
-        assign: Box<Assign>,
+        ident: Span<'input>,
+        assign: Box<Assign<'input>>,
     },
     ShiftL {
-        namespace: String,
-        ident: String,
-        assign: Box<Assign>,
+        ident: Span<'input>,
+        assign: Box<Assign<'input>>,
     },
     ShiftR {
-        namespace: String,
-        ident: String,
-        assign: Box<Assign>,
+        ident: Span<'input>,
+        assign: Box<Assign<'input>>,
     },
     ShiftRa {
-        namespace: String,
-        ident: String,
-        assign: Box<Assign>,
+        ident: Span<'input>,
+        assign: Box<Assign<'input>>,
     },
     LogicOr {
-        namespace: String,
-        or: LogicOr,
+        or: LogicOr<'input>,
     }
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for Assign {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
-
+impl<'input> From<Visitor<'input>> for Assign<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         // 数値のみ
-        if children.len() == 1 {
-            let or = LogicOr::from((namespace.clone(), children.pop_front().unwrap()));
-            return Assign::LogicOr { namespace, or };
+        if visitor.len() == 1 {
+            return Assign::LogicOr {
+                or: visitor.expect_node::<LogicOr>(),
+            };
         }
 
         // 演算子付き
-        let (_, ident) = unwrap_leaf(children.pop_front().unwrap());
-        let ident = ident.to_string();
-        let op = children.pop_front().unwrap();
-        let rhs = children.pop_front().unwrap();
-        match unwrap_leaf(op).0 {
-            SBTokens::Assign => {
-                let assign = Box::new(Assign::from((namespace.clone(), rhs)));
-                Assign::Normal { namespace, ident, assign }
+        let ident = visitor.expect_leaf().1;
+        match visitor.expect_leaf().0 {
+            SBToken::Assign => {
+                Assign::Normal {
+                    ident,
+                    assign: Box::new(visitor.expect_node::<Assign>()),
+                }
             }
-            SBTokens::PlusAssign => {
-                let assign = Box::new(Assign::from((namespace.clone(), rhs)));
-                Assign::Plus { namespace, ident, assign }
+            SBToken::PlusAssign => {
+                Assign::Plus {
+                    ident,
+                    assign: Box::new(visitor.expect_node::<Assign>()),
+                }
             }
-            SBTokens::MinusAssign => {
-                let assign = Box::new(Assign::from((namespace.clone(), rhs)));
-                Assign::Minus { namespace, ident, assign }
+            SBToken::MinusAssign => {
+                Assign::Minus {
+                    ident,
+                    assign: Box::new(visitor.expect_node::<Assign>()),
+                }
             }
-            SBTokens::ShiftLAssign => {
-                let assign = Box::new(Assign::from((namespace.clone(), rhs)));
-                Assign::ShiftL { namespace, ident, assign }
+            SBToken::ShiftLAssign => {
+                Assign::ShiftL {
+                    ident,
+                    assign: Box::new(visitor.expect_node::<Assign>()),
+                }
             }
-            SBTokens::ShiftRAssign => {
-                let assign = Box::new(Assign::from((namespace.clone(), rhs)));
-                Assign::ShiftR { namespace, ident, assign }
+            SBToken::ShiftRAssign => {
+                Assign::ShiftR {
+                    ident,
+                    assign: Box::new(visitor.expect_node::<Assign>()),
+                }
             }
-            SBTokens::ShiftRaAssign => {
-                let assign = Box::new(Assign::from((namespace.clone(), rhs)));
-                Assign::ShiftRa { namespace, ident, assign }
+            SBToken::ShiftRaAssign => {
+                Assign::ShiftRa {
+                    ident,
+                    assign: Box::new(visitor.expect_node::<Assign>()),
+                }
             }
             _ => unreachable!(),
         }

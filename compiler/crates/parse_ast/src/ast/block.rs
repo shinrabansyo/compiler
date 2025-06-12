@@ -1,21 +1,14 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::{unwrap_node, expand_lrec};
-use super::Stmt;
+use super::{Stmt, Visitor};
 
 #[derive(Debug)]
-pub struct Block {
-    pub stmts: Vec<Stmt>,
+pub struct Block<'input> {
+    pub stmts: Vec<Stmt<'input>>,
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for Block {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
-        let stmt_list = children.pop_front().unwrap();
+impl<'input> From<Visitor<'input>> for Block<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         Block {
-            stmts: expand_lrec::<Stmt>(namespace, stmt_list),
+            stmts: visitor.expect_nodes::<Stmt>(),
         }
     }
 }

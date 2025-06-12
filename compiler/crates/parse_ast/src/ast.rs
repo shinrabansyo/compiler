@@ -10,6 +10,7 @@ mod argument_def;   pub use argument_def::ArgumentDef;
 mod block;          pub use block::Block;
 mod stmt;           pub use stmt::Stmt;
 mod var_decl;       pub use var_decl::VarDecl;
+mod r#return;       pub use r#return::Return;
 mod r#if;           pub use r#if::If;
 mod r#while;        pub use r#while::While;
 mod r#for;          pub use r#for::For;
@@ -30,3 +31,9 @@ mod add;            pub use add::Add;
 mod unary;          pub use unary::Unary;
 mod value;          pub use value::Value;
 mod call;           pub use call::Call;
+
+// AST -> CST ビジター
+use sb_compiler_parse_cst::CSTreeVisitor;
+use sb_compiler_parse_syntax::SBLangDef;
+
+type Visitor<'input> = CSTreeVisitor<'input, SBLangDef>;

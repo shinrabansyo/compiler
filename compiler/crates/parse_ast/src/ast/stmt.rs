@@ -1,82 +1,77 @@
-use copager::ir::Tree;
+use sb_compiler_parse_syntax::SBRule;
 
-use sb_compiler_parse_syntax::{SBLangDef, SBRules};
-
-use crate::utils::unwrap_node;
-use super::{VarDecl, Block, If, While, For, InlineAsm, Expr};
+use super::{VarDecl, Block, Return, If, While, For, InlineAsm, Expr, Visitor};
 
 #[derive(Debug)]
-pub enum Stmt {
+pub enum Stmt<'input> {
     VarDecl {
-        namespace: String,
-        var_decl: VarDecl,
+        var_decl: VarDecl<'input>,
     },
     Block {
-        namespace: String,
-        block: Block,
+        block: Block<'input>,
     },
     Expr {
-        namespace: String,
-        expr: Expr,
+        expr: Expr<'input>,
     },
     Return {
-        namespace: String,
-        expr: Expr,
+        r#return: Return<'input>,
     },
     If {
-        namespace: String,
-        r#if: If,
+        r#if: If<'input>,
     },
     While {
-        namespace: String,
-        r#while: While,
+        r#while: While<'input>,
     },
     For {
-        namespace: String,
-        r#for: For,
+        r#for: For<'input>,
     },
     InlineAsm {
-        namespace: String,
-        inline_asm: InlineAsm,
+        inline_asm: InlineAsm<'input>,
     },
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for Stmt {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
-        let rhs = children.pop_front().unwrap();
-        match rhs {
-            Tree::Node { tag: SBRules::VarDecl, .. } => {
-                let var_decl = VarDecl::from((namespace.clone(), rhs));
-                Stmt::VarDecl { namespace, var_decl }
+impl<'input> From<Visitor<'input>> for Stmt<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
+        match visitor.peek().1 {
+            Some(SBRule::VarDecl) => {
+                Stmt::VarDecl {
+                    var_decl: visitor.expect_node::<VarDecl>(),
+                }
             }
-            Tree::Node { tag: SBRules::Block, .. } => {
-                let block = Block::from((namespace.clone(), rhs));
-                Stmt::Block { namespace, block }
+            Some(SBRule::Block) => {
+                Stmt::Block {
+                    block: visitor.expect_node::<Block>(),
+                }
             }
-            Tree::Node { tag: SBRules::Expr, .. } => {
-                let expr = Expr::from((namespace.clone(), rhs));
-                Stmt::Expr { namespace, expr }
+            Some(SBRule::Expr) => {
+                Stmt::Expr {
+                    expr: visitor.expect_node::<Expr>(),
+                }
             }
-            Tree::Node { tag: SBRules::Return, mut children } => {
-                let expr = Expr::from((namespace.clone(), children.pop_front().unwrap()));
-                Stmt::Return { namespace, expr }
+            Some(SBRule::Return) => {
+                Stmt::Return {
+                    r#return: visitor.expect_node::<Return>(),
+                }
             }
-            Tree::Node { tag: SBRules::If, .. } => {
-                let r#if = If::from((namespace.clone(), rhs));
-                Stmt::If { namespace, r#if }
+            Some(SBRule::If) => {
+                Stmt::If {
+                    r#if: visitor.expect_node::<If>(),
+                }
             }
-            Tree::Node { tag: SBRules::While, .. } => {
-                let r#while = While::from((namespace.clone(), rhs));
-                Stmt::While { namespace, r#while }
+            Some(SBRule::While) => {
+                Stmt::While {
+                    r#while: visitor.expect_node::<While>(),
+                }
             }
-            Tree::Node { tag: SBRules::For, .. } => {
-                let r#for = For::from((namespace.clone(), rhs));
-                Stmt::For { namespace, r#for }
+            Some(SBRule::For) => {
+                Stmt::For {
+                    r#for: visitor.expect_node::<For>(),
+                }
             }
-            Tree::Node { tag: SBRules::InlineAsm, .. } => {
-                let inline_asm = InlineAsm::from((namespace.clone(), rhs));
-                Stmt::InlineAsm { namespace, inline_asm }
+            Some(SBRule::InlineAsm) => {
+                Stmt::InlineAsm {
+                    inline_asm: visitor.expect_node::<InlineAsm>(),
+                }
             }
             _ => unreachable!(),
         }

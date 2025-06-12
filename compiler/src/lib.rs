@@ -1,7 +1,6 @@
 use sb_linker::obj::Object;
 
 use sb_compiler_parse::parse;
-use sb_compiler_analyze::analyze;
 use sb_compiler_lirgen::lirgen;
 use sb_compiler_codegen::codegen;
 use sb_compiler_opt::optimize;
@@ -11,7 +10,7 @@ pub fn compile(input: &str) -> anyhow::Result<Vec<Object>> {
     let ast = parse(input)?;
 
     // 2. 意味解析 (AST -> AST + NodeInfo)
-    let _ = analyze(&ast)?;
+    // let _ = analyze(&ast)?;
 
     // 3. LIR生成 (AST -> [LIR])
     let lir = lirgen(&ast);

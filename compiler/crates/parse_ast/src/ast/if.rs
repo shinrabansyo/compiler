@@ -1,32 +1,23 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::unwrap_node;
-use super::{Block, Stmt, Expr};
+use super::{Block, Stmt, Expr, Visitor};
 
 #[derive(Debug)]
-pub struct If {
-    pub namespace: String,
-    pub cond: Expr,
-    pub block: Block,
-    pub else_stmt: Option<Box<Stmt>>,
+pub struct If<'input> {
+    pub cond: Expr<'input>,
+    pub block: Block<'input>,
+    pub else_stmt: Option<Box<Stmt<'input>>>,
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for If  {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
+impl<'input> From<Visitor<'input>> for If<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
+        let cond = visitor.expect_node::<Expr>();
+        let block = visitor.expect_node::<Block>();
+        let else_stmt = visitor
+            .peek()
+            .1
+            .and_then(|_| {
+                Some(Box::new(visitor.expect_node::<Stmt>()))
+            });
 
-        let cond = Expr::from((namespace.clone(), children.pop_front().unwrap()));
-
-        let block = Block::from((namespace.clone(), children.pop_front().unwrap()));
-
-        let else_stmt = if !children.is_empty() {
-            Some(Box::new(Stmt::from((namespace.clone(), children.pop_front().unwrap()))))
-        } else {
-            None
-        };
-
-        If { namespace, cond, block, else_stmt }
+        If { cond, block, else_stmt }
     }
 }

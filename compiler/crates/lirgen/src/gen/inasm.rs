@@ -1,28 +1,31 @@
 use sb_compiler_parse_ast::{InlineAsm, InlineAsmInst};
+use sb_compiler_parse_cst::Span;
 use sb_compiler_lirgen_ir::*;
 
 use crate::{GenContext, ZERO_REG};
 
-pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: &InlineAsm) -> LirBlock {
-    let mut use_reg = |var: &String| {
+pub fn lirgen_inline_asm<'input>(ctx: &mut GenContext<'input>, inline_asm: &InlineAsm<'input>) -> LirBlock {
+    let mut use_reg = |var: &Span<'input>| {
+        let var = var.as_str();
+
         // 生レジスタ
         if var.starts_with("R") {
             return var[1..].parse().unwrap();
         }
 
-        // 一次レジスタ
+        // 一時レジスタ
         if var.starts_with("T") {
-            if let Some(reg) = ctx.sym_table.get(var) {
-                return *reg;
+            if let Some(reg) = ctx.ref_var_reg(var) {
+                return reg;
             } else {
                 let reg = ctx.alloc_reg();
-                ctx.sym_table.insert(var.to_string(), reg);
+                ctx.set_var_reg(var, reg);
                 return reg;
             }
         }
 
         // 変数
-        *ctx.sym_table.get(&var).unwrap()
+        ctx.ref_var_reg(var).unwrap()
     };
 
     let mut lirs = vec![];

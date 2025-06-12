@@ -1,54 +1,50 @@
-use copager::ir::Tree;
+use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_syntax::{SBToken, SBRule};
 
-use sb_compiler_parse_syntax::{SBLangDef, SBTokens, SBRules};
-
-use crate::utils::unwrap_node;
-use super::{Expr, Call};
+use super::{Expr, Call, Visitor};
 
 #[derive(Debug)]
-pub enum Value {
+pub enum Value<'input> {
     Const {
-        namespace: String,
         value: i32,
     },
     Var {
-        namespace: String,
-        name: String,
+        name: Span<'input>,
     },
     Expr {
-        namespace: String,
-        expr: Box<Expr>,
+        expr: Box<Expr<'input>>,
     },
     Call {
-        namespace: String,
-        call: Call,
+        call: Call<'input>,
     }
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for Value {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
-        let rhs = children.pop_front().unwrap();
-        match rhs {
+impl<'input> From<Visitor<'input>> for Value<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
+        match visitor.peek() {
             // 定数
-            Tree::Leaf { tag: SBTokens::Num, text, .. } => {
-                let value = text.parse().unwrap();
-                Value::Const{ namespace, value }
+            (Some(SBToken::Num), None) => {
+                Value::Const{
+                    value: visitor.expect_leaf().1.as_str().parse().unwrap(),
+                }
             }
             // 変数
-            Tree::Leaf { tag: SBTokens::Ident, text, .. } => {
-                let name = text.to_string();
-                Value::Var{ namespace, name }
+            (Some(SBToken::Ident), None) => {
+                Value::Var {
+                    name: visitor.expect_leaf().1,
+                }
             }
             // 括弧
-            Tree::Node { tag: SBRules::Expr, .. } => {
-                let expr = Box::new(Expr::from((namespace.clone(), rhs)));
-                Value::Expr{ namespace, expr }
+            (None, Some(SBRule::Expr)) => {
+                Value::Expr {
+                    expr: Box::new(visitor.expect_node::<Expr>()),
+                }
             }
             // 関数呼び出し
-            Tree::Node { tag: SBRules::Call, .. } => {
-                let call = Call::from((namespace.clone(), rhs));
-                Value::Call{ namespace, call }
+            (None, Some(SBRule::Call)) => {
+                Value::Call {
+                    call: visitor.expect_node::<Call>(),
+                }
             }
             _ => unreachable!(),
         }
