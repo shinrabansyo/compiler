@@ -1,12 +1,12 @@
 use super::{Stmt, Visitor};
 
 #[derive(Debug)]
-pub struct Block {
-    pub stmts: Vec<Stmt>,
+pub struct Block<'input> {
+    pub stmts: Vec<Stmt<'input>>,
 }
 
-impl From<Visitor<'_>> for Block {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for Block<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         Block {
             stmts: visitor.expect_nodes::<Stmt>(),
         }

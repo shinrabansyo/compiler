@@ -3,23 +3,23 @@ use sb_compiler_parse_syntax::{SBToken, SBRule};
 use super::{Expr, Call, Visitor};
 
 #[derive(Debug)]
-pub enum Value {
+pub enum Value<'input> {
     Const {
         value: i32,
     },
     Var {
-        name: String,
+        name: &'input str,
     },
     Expr {
-        expr: Box<Expr>,
+        expr: Box<Expr<'input>>,
     },
     Call {
-        call: Call,
+        call: Call<'input>,
     }
 }
 
-impl From<Visitor<'_>> for Value {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for Value<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         match visitor.peek() {
             // 定数
             (Some(SBToken::Num), None) => {
@@ -30,7 +30,7 @@ impl From<Visitor<'_>> for Value {
             // 変数
             (Some(SBToken::Ident), None) => {
                 Value::Var {
-                    name: visitor.expect_leaf().1.to_string(),
+                    name: visitor.expect_leaf().1,
                 }
             }
             // 括弧

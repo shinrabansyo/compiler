@@ -1,12 +1,12 @@
 use super::{InlineAsmInst, Visitor};
 
 #[derive(Debug)]
-pub struct InlineAsm {
-    pub insts: Vec<InlineAsmInst>,
+pub struct InlineAsm<'input> {
+    pub insts: Vec<InlineAsmInst<'input>>,
 }
 
-impl From<Visitor<'_>> for InlineAsm {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for InlineAsm<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         InlineAsm {
             insts: visitor.expect_nodes::<InlineAsmInst>(),
         }

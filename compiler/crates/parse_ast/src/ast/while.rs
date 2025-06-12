@@ -1,13 +1,13 @@
 use super::{Block, Expr, Visitor};
 
 #[derive(Debug)]
-pub struct While {
-    pub cond: Expr,
-    pub block: Block,
+pub struct While<'input> {
+    pub cond: Expr<'input>,
+    pub block: Block<'input>,
 }
 
-impl From<Visitor<'_>> for While  {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for While<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         While {
             cond: visitor.expect_node::<Expr>(),
             block: visitor.expect_node::<Block>(),

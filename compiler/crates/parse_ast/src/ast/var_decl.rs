@@ -1,16 +1,16 @@
 use super::{Expr, Visitor};
 
 #[derive(Debug)]
-pub struct VarDecl {
-    pub ident: String,
-    pub ty: String,
-    pub expr: Expr,
+pub struct VarDecl<'input> {
+    pub ident: &'input str,
+    pub ty: &'input str,
+    pub expr: Expr<'input>,
 }
 
-impl From<Visitor<'_>> for VarDecl  {
-    fn from(mut visitor: Visitor<'_>) -> Self {
-        let ident = visitor.expect_leaf().1.to_string();
-        let ty = visitor.expect_leaf().1.to_string();
+impl<'input> From<Visitor<'input>> for VarDecl<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
+        let ident = visitor.expect_leaf().1;
+        let ty = visitor.expect_leaf().1;
         let _ = visitor.expect_leaf();  // '='
         let expr = visitor.expect_node::<Expr>();
 

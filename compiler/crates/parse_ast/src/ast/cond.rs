@@ -3,38 +3,38 @@ use sb_compiler_parse_syntax::SBToken;
 use super::{BitShift, Visitor};
 
 #[derive(Debug)]
-pub enum Cond {
+pub enum Cond<'input> {
     Eq {
-        lhs: Box<Cond>,
-        rhs: BitShift,
+        lhs: Box<Cond<'input>>,
+        rhs: BitShift<'input>,
     },
     Neq {
-        lhs: Box<Cond>,
-        rhs: BitShift,
+        lhs: Box<Cond<'input>>,
+        rhs: BitShift<'input>,
     },
     Lt {
-        lhs: Box<Cond>,
-        rhs: BitShift,
+        lhs: Box<Cond<'input>>,
+        rhs: BitShift<'input>,
     },
     Lte {
-        lhs: Box<Cond>,
-        rhs: BitShift,
+        lhs: Box<Cond<'input>>,
+        rhs: BitShift<'input>,
     },
     Gt {
-        lhs: Box<Cond>,
-        rhs: BitShift,
+        lhs: Box<Cond<'input>>,
+        rhs: BitShift<'input>,
     },
     Gte {
-        lhs: Box<Cond>,
-        rhs: BitShift,
+        lhs: Box<Cond<'input>>,
+        rhs: BitShift<'input>,
     },
     BitShift {
-        bit_shift: BitShift,
+        bit_shift: BitShift<'input>,
     },
 }
 
-impl From<Visitor<'_>> for Cond {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for Cond<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
             return Cond::BitShift {

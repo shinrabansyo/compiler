@@ -3,20 +3,20 @@ use sb_compiler_parse_syntax::SBToken;
 use super::{Value, Visitor};
 
 #[derive(Debug)]
-pub enum Unary {
+pub enum Unary<'input> {
     Plus {
-        value: Value,
+        value: Value<'input>,
     },
     Minus {
-        value: Value,
+        value: Value<'input>,
     },
     Value {
-        value: Value
+        value: Value<'input>
     },
 }
 
-impl From<Visitor<'_>> for Unary {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for Unary<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
             return Unary::Value {

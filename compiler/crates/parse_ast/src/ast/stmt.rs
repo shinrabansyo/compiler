@@ -3,35 +3,35 @@ use sb_compiler_parse_syntax::SBRule;
 use super::{VarDecl, Block, Return, If, While, For, InlineAsm, Expr, Visitor};
 
 #[derive(Debug)]
-pub enum Stmt {
+pub enum Stmt<'input> {
     VarDecl {
-        var_decl: VarDecl,
+        var_decl: VarDecl<'input>,
     },
     Block {
-        block: Block,
+        block: Block<'input>,
     },
     Expr {
-        expr: Expr,
+        expr: Expr<'input>,
     },
     Return {
-        r#return: Return,
+        r#return: Return<'input>,
     },
     If {
-        r#if: If,
+        r#if: If<'input>,
     },
     While {
-        r#while: While,
+        r#while: While<'input>,
     },
     For {
-        r#for: For,
+        r#for: For<'input>,
     },
     InlineAsm {
-        inline_asm: InlineAsm,
+        inline_asm: InlineAsm<'input>,
     },
 }
 
-impl From<Visitor<'_>> for Stmt {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for Stmt<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         match visitor.peek().1 {
             Some(SBRule::VarDecl) => {
                 Stmt::VarDecl {

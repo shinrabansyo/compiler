@@ -1,15 +1,15 @@
 use super::{Block, Expr, Visitor};
 
 #[derive(Debug)]
-pub struct For {
-    pub init: Expr,
-    pub cond: Expr,
-    pub incr: Expr,
-    pub block: Block,
+pub struct For<'input> {
+    pub init: Expr<'input>,
+    pub cond: Expr<'input>,
+    pub incr: Expr<'input>,
+    pub block: Block<'input>,
 }
 
-impl From<Visitor<'_>> for For  {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for For<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         For {
             init: visitor.expect_node::<Expr>(),
             cond: visitor.expect_node::<Expr>(),

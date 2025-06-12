@@ -1,12 +1,12 @@
 use super::{Top, Visitor};
 
 #[derive(Debug)]
-pub struct Program {
-    pub top_elems: Vec<Top>,
+pub struct Program<'input> {
+    pub top_elems: Vec<Top<'input>>,
 }
 
-impl From<Visitor<'_>> for Program {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for Program<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         Program {
             top_elems: visitor.expect_nodes::<Top>(),
         }

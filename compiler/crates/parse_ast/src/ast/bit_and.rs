@@ -1,18 +1,18 @@
 use super::{Cond, Visitor};
 
 #[derive(Debug)]
-pub enum BitAnd {
+pub enum BitAnd<'input> {
     And {
-        lhs: Box<BitAnd>,
-        rhs: Cond,
+        lhs: Box<BitAnd<'input>>,
+        rhs: Cond<'input>,
     },
     Cond {
-        cond: Cond,
+        cond: Cond<'input>,
     },
 }
 
-impl From<Visitor<'_>> for BitAnd {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for BitAnd<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
             return BitAnd::Cond {

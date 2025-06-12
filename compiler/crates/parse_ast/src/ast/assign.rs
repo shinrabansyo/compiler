@@ -3,38 +3,38 @@ use sb_compiler_parse_syntax::SBToken;
 use super::{LogicOr, Visitor};
 
 #[derive(Debug)]
-pub enum Assign {
+pub enum Assign<'input> {
     Normal {
-        ident: String,
-        assign: Box<Assign>,
+        ident: &'input str,
+        assign: Box<Assign<'input>>,
     },
     Plus {
-        ident: String,
-        assign: Box<Assign>,
+        ident: &'input str,
+        assign: Box<Assign<'input>>,
     },
     Minus {
-        ident: String,
-        assign: Box<Assign>,
+        ident: &'input str,
+        assign: Box<Assign<'input>>,
     },
     ShiftL {
-        ident: String,
-        assign: Box<Assign>,
+        ident: &'input str,
+        assign: Box<Assign<'input>>,
     },
     ShiftR {
-        ident: String,
-        assign: Box<Assign>,
+        ident: &'input str,
+        assign: Box<Assign<'input>>,
     },
     ShiftRa {
-        ident: String,
-        assign: Box<Assign>,
+        ident: &'input str,
+        assign: Box<Assign<'input>>,
     },
     LogicOr {
-        or: LogicOr,
+        or: LogicOr<'input>,
     }
 }
 
-impl From<Visitor<'_>> for Assign {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for Assign<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
             return Assign::LogicOr {
@@ -43,7 +43,7 @@ impl From<Visitor<'_>> for Assign {
         }
 
         // 演算子付き
-        let ident = visitor.expect_leaf().1.to_string();
+        let ident = visitor.expect_leaf().1;
         match visitor.expect_leaf().0 {
             SBToken::Assign => {
                 Assign::Normal {

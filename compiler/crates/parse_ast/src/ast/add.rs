@@ -3,22 +3,22 @@ use sb_compiler_parse_syntax::SBToken;
 use super::{Unary, Visitor};
 
 #[derive(Debug)]
-pub enum Add {
+pub enum Add<'input> {
     Plus {
-        lhs: Box<Add>,
-        rhs: Unary,
+        lhs: Box<Add<'input>>,
+        rhs: Unary<'input>,
     },
     Minus {
-        lhs: Box<Add>,
-        rhs: Unary,
+        lhs: Box<Add<'input>>,
+        rhs: Unary<'input>,
     },
     Unary {
-        value: Unary
+        value: Unary<'input>,
     },
 }
 
-impl From<Visitor<'_>> for Add {
-    fn from(mut visitor: Visitor<'_>) -> Self {
+impl<'input> From<Visitor<'input>> for Add<'input> {
+    fn from(mut visitor: Visitor<'input>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
             return Add::Unary {
