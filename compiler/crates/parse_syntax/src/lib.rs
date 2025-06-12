@@ -159,7 +159,6 @@ pub enum SBRules {
     #[rule("<stmt> ::= <if>")]
     #[rule("<stmt> ::= <while>")]
     #[rule("<stmt> ::= <for>")]
-    #[rule("<stmt> ::= <dev_io> Semicolon")]
     #[rule("<stmt> ::= <inasm>")]
     Stmt,
 
