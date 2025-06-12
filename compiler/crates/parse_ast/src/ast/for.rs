@@ -1,9 +1,4 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::unwrap_node;
-use super::{Block, Expr};
+use super::{Block, Expr, Visitor};
 
 #[derive(Debug)]
 pub struct For {
@@ -14,15 +9,14 @@ pub struct For {
     pub block: Block,
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for For  {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
+impl From<(String, Visitor<'_>)> for For  {
+    fn from((namespace, mut visitor): (String, Visitor<'_>)) -> Self {
         For {
             namespace: namespace.clone(),
-            init: Expr::from((namespace.clone(), children.pop_front().unwrap())),
-            cond: Expr::from((namespace.clone(), children.pop_front().unwrap())),
-            incr: Expr::from((namespace.clone(), children.pop_front().unwrap())),
-            block: Block::from((namespace, children.pop_front().unwrap())),
+            init: visitor.expect_node::<Expr>(),
+            cond: visitor.expect_node::<Expr>(),
+            incr: visitor.expect_node::<Expr>(),
+            block: visitor.expect_node::<Block>(),
         }
     }
 }

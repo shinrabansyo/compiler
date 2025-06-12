@@ -1,8 +1,4 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::{unwrap_node, unwrap_leaf};
+use super::Visitor;
 
 #[derive(Debug)]
 pub enum InlineAsmInst {
@@ -47,131 +43,119 @@ pub enum InlineAsmInst {
     Ble  { namespace: String, rd: String, rs1: String, rs2: String, imm: i32 },
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for InlineAsmInst {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
+impl From<(String, Visitor<'_>)> for InlineAsmInst {
+    fn from((namespace, mut visitor): (String, Visitor<'_>)) -> Self {
         macro_rules! parse_i {
-            (Jal $args:ident) => {{
-                let (_, rd) = unwrap_leaf($args.pop_front().unwrap());
-                let (_, rs1) = unwrap_leaf($args.pop_front().unwrap());
-                let (_, imm) = unwrap_leaf($args.pop_front().unwrap());
-
+            (Jal $visitor:ident) => {{
                 InlineAsmInst::Jal {
                     namespace: namespace.clone(),
-                    rd: rd.to_string(),
-                    rs1: rs1.to_string(),
-                    imm: imm.parse().unwrap(),
+                    rd: $visitor.expect_leaf().1.to_string(),
+                    rs1: $visitor.expect_leaf().1.to_string(),
+                    imm: $visitor.expect_leaf().1.parse().unwrap(),
                 }
             }};
 
-            ($inst:ident $args:ident) => {{
-                let (_, rd) = unwrap_leaf($args.pop_front().unwrap());
-                let _ = $args.pop_front().unwrap();
-                let (_, rs1) = unwrap_leaf($args.pop_front().unwrap());
-                let (_, imm) = unwrap_leaf($args.pop_front().unwrap());
+            ($inst:ident $visitor:ident) => {{
+                let rd = $visitor.expect_leaf().1.to_string();
+                let _ = $visitor.expect_leaf();     // '='
+                let rs1 = $visitor.expect_leaf().1.to_string();
+                let imm = $visitor.expect_leaf().1.parse().unwrap();
 
                 InlineAsmInst::$inst {
                     namespace: namespace.clone(),
-                    rd: rd.to_string(),
-                    rs1: rs1.to_string(),
-                    imm: imm.parse().unwrap(),
+                    rd,
+                    rs1,
+                    imm,
                 }
             }};
         }
 
         macro_rules! parse_s {
-            ($inst:ident $args:ident) => {{
-                let (_, rs1) = unwrap_leaf($args.pop_front().unwrap());
-                let (_, imm) = unwrap_leaf($args.pop_front().unwrap());
-                let _ = $args.pop_front().unwrap();
-                let (_, rs2) = unwrap_leaf($args.pop_front().unwrap());
+            ($inst:ident $visitor:ident) => {{
+                let rs1 = $visitor.expect_leaf().1.to_string();
+                let imm = $visitor.expect_leaf().1.parse().unwrap();
+                let _ = $visitor.expect_leaf();     // '='
+                let rs2 = $visitor.expect_leaf().1.to_string();
 
                 InlineAsmInst::$inst {
                     namespace: namespace.clone(),
-                    rs1: rs1.to_string(),
-                    rs2: rs2.to_string(),
-                    imm: imm.parse().unwrap(),
+                    rs1,
+                    rs2,
+                    imm,
                 }
             }};
         }
 
         macro_rules! parse_r {
-            ($inst:ident $args:ident) => {{
-                let (_, rd) = unwrap_leaf($args.pop_front().unwrap());
-                let _ = $args.pop_front().unwrap();
-                let (_, rs1) = unwrap_leaf($args.pop_front().unwrap());
-                let (_, rs2) = unwrap_leaf($args.pop_front().unwrap());
+            ($inst:ident $visitor:ident) => {{
+                let rd = $visitor.expect_leaf().1.to_string();
+                let _ = $visitor.expect_leaf();     // '='
+                let rs1 = $visitor.expect_leaf().1.to_string();
+                let rs2 = $visitor.expect_leaf().1.to_string();
 
                 InlineAsmInst::$inst {
                     namespace: namespace.clone(),
-                    rd: rd.to_string(),
-                    rs1: rs1.to_string(),
-                    rs2: rs2.to_string(),
+                    rd,
+                    rs1,
+                    rs2,
                 }
             }};
         }
 
         macro_rules! parse_b {
-            ($inst:ident $args:ident) => {{
-                let (_, rd) = unwrap_leaf($args.pop_front().unwrap());
-                let (_, rs1) = unwrap_leaf($args.pop_front().unwrap());
-                let (_, rs2) = unwrap_leaf($args.pop_front().unwrap());
-                let (_, imm) = unwrap_leaf($args.pop_front().unwrap());
-
+            ($inst:ident $visitor:ident) => {{
                 InlineAsmInst::$inst {
                     namespace: namespace.clone(),
-                    rd: rd.to_string(),
-                    rs1: rs1.to_string(),
-                    rs2: rs2.to_string(),
-                    imm: imm.parse().unwrap(),
+                    rd: $visitor.expect_leaf().1.to_string(),
+                    rs1: $visitor.expect_leaf().1.to_string(),
+                    rs2: $visitor.expect_leaf().1.to_string(),
+                    imm: $visitor.expect_leaf().1.parse().unwrap(),
                 }
             }};
         }
 
-        let (_, mut children) = unwrap_node(tree);
-
-        let (_, inst) = unwrap_leaf(children.pop_front().unwrap());
-        match inst.to_lowercase().as_str() {
+        match visitor.expect_leaf().1.to_lowercase().as_str() {
             // I-形式
-            "addi" => parse_i!(Addi children),
-            "subi" => parse_i!(Subi children),
-            "jal"  => parse_i!(Jal children),
-            "lw"   => parse_i!(Lw children),
-            "lh"   => parse_i!(Lh children),
-            "lb"   => parse_i!(Lb children),
-            "lhu"  => parse_i!(Lhu children),
-            "lbu"  => parse_i!(Lbu children),
-            "in"   => parse_i!(In children),
-            "andi" => parse_i!(Andi children),
-            "ori"  => parse_i!(Ori children),
-            "xori" => parse_i!(Xori children),
-            "srli" => parse_i!(Srli children),
-            "srai" => parse_i!(Srai children),
-            "slli" => parse_i!(Slli children),
+            "addi" => parse_i!(Addi visitor),
+            "subi" => parse_i!(Subi visitor),
+            "jal"  => parse_i!(Jal visitor),
+            "lw"   => parse_i!(Lw visitor),
+            "lh"   => parse_i!(Lh visitor),
+            "lb"   => parse_i!(Lb visitor),
+            "lhu"  => parse_i!(Lhu visitor),
+            "lbu"  => parse_i!(Lbu visitor),
+            "in"   => parse_i!(In visitor),
+            "andi" => parse_i!(Andi visitor),
+            "ori"  => parse_i!(Ori visitor),
+            "xori" => parse_i!(Xori visitor),
+            "srli" => parse_i!(Srli visitor),
+            "srai" => parse_i!(Srai visitor),
+            "slli" => parse_i!(Slli visitor),
 
             // S-形式
-            "sw"   => parse_s!(Sw children),
-            "sh"   => parse_s!(Sh children),
-            "sb"   => parse_s!(Sb children),
-            "isb"  => parse_s!(Isb children),
-            "out"  => parse_s!(Out children),
+            "sw"   => parse_s!(Sw visitor),
+            "sh"   => parse_s!(Sh visitor),
+            "sb"   => parse_s!(Sb visitor),
+            "isb"  => parse_s!(Isb visitor),
+            "out"  => parse_s!(Out visitor),
 
             // R-形式
-            "add"  => parse_r!(Add children),
-            "sub"  => parse_r!(Sub children),
-            "and"  => parse_r!(And children),
-            "or"   => parse_r!(Or children),
-            "xor"  => parse_r!(Xor children),
-            "srl"  => parse_r!(Srl children),
-            "sra"  => parse_r!(Sra children),
-            "sll"  => parse_r!(Sll children),
+            "add"  => parse_r!(Add visitor),
+            "sub"  => parse_r!(Sub visitor),
+            "and"  => parse_r!(And visitor),
+            "or"   => parse_r!(Or visitor),
+            "xor"  => parse_r!(Xor visitor),
+            "srl"  => parse_r!(Srl visitor),
+            "sra"  => parse_r!(Sra visitor),
+            "sll"  => parse_r!(Sll visitor),
 
             // B-形式
-            "beq"  => parse_b!(Beq children),
-            "bne"  => parse_b!(Bne children),
-            "blt"  => parse_b!(Blt children),
-            "ble"  => parse_b!(Ble children),
+            "beq"  => parse_b!(Beq visitor),
+            "bne"  => parse_b!(Bne visitor),
+            "blt"  => parse_b!(Blt visitor),
+            "ble"  => parse_b!(Ble visitor),
 
-            _ => panic!("Unexpected inline assembly instruction: {:?}", inst)
+            inst => panic!("Unexpected inline assembly instruction: {:?}", inst)
         }
     }
 }

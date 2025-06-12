@@ -1,9 +1,4 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::unwrap_node;
-use super::{Block, Expr};
+use super::{Block, Expr, Visitor};
 
 #[derive(Debug)]
 pub struct While {
@@ -12,13 +7,12 @@ pub struct While {
     pub block: Block,
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for While  {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
+impl From<(String, Visitor<'_>)> for While  {
+    fn from((namespace, mut visitor): (String, Visitor<'_>)) -> Self {
         While {
-            namespace: namespace.clone(),
-            cond: Expr::from((namespace.clone(), children.pop_front().unwrap())),
-            block: Block::from((namespace, children.pop_front().unwrap())),
+            namespace,
+            cond: visitor.expect_node::<Expr>(),
+            block: visitor.expect_node::<Block>(),
         }
     }
 }

@@ -1,9 +1,4 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::unwrap_node;
-use super::BitOr;
+use super::{BitOr, Visitor};
 
 #[derive(Debug)]
 pub enum LogicAnd {
@@ -18,24 +13,20 @@ pub enum LogicAnd {
     },
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for LogicAnd {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
-
+impl From<(String, Visitor<'_>)> for LogicAnd {
+    fn from((namespace, mut visitor): (String, Visitor<'_>)) -> Self {
         // 数値のみ
-        if children.len() == 1 {
-            let or = BitOr::from((namespace.clone(), children.pop_front().unwrap()));
-            return LogicAnd::BitOr { namespace, or };
+        if visitor.len() == 1 {
+            return LogicAnd::BitOr {
+                namespace,
+                or: visitor.expect_node::<BitOr>(),
+            };
         }
 
         // 演算子付き
-        let lhs = children.pop_front().unwrap();
-        let lhs = Box::new(LogicAnd::from((namespace.clone(), lhs)));
-
-        let _op = children.pop_front().unwrap();
-
-        let rhs = children.pop_front().unwrap();
-        let rhs = BitOr::from((namespace.clone(), rhs));
+        let lhs = Box::new(visitor.expect_node::<LogicAnd>());
+        let _ = visitor.expect_leaf();
+        let rhs = visitor.expect_node::<BitOr>();
 
         LogicAnd::And { namespace, lhs, rhs }
     }

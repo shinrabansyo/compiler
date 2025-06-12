@@ -16,9 +16,31 @@ impl <'input, Lang: CFL> From<RawIR<'input, Lang>> for CSTreeVisitor<'input, Lan
 }
 
 impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
-    pub fn expect_leaf(&mut self) -> &'input str {
+    pub fn len(&self) -> usize {
+        match &self.cst {
+            Some(Tree::Node { children, .. }) => children.len(),
+            Some(Tree::Leaf { .. }) => 1,
+            None => 0,
+        }
+    }
+
+    pub fn peek(&self) -> (Option<Lang::TokenTag>, Option<Lang::RuleTag>) {
+        match &self.cst {
+            Some(Tree::Leaf { tag, .. }) => (Some(*tag), None),
+            Some(Tree::Node { children, .. }) => {
+                match children.get(0) {
+                    Some(Tree::Leaf { tag, .. }) => (Some(*tag), None),
+                    Some(Tree::Node { tag, .. }) => (None, Some(*tag)),
+                    None => (None, None),
+                }
+            },
+            None => (None, None),
+        }
+    }
+
+    pub fn expect_leaf(&mut self) -> (Lang::TokenTag, &'input str) {
         match self.pop_front() {
-            Some(Tree::Leaf { text, .. }) => text,
+            Some(Tree::Leaf { tag, text }) => (tag, text),
             Some(..) => panic!("Expected a leaf but found a node"),
             None => panic!("No more elements in the CSTreeVisitor"),
         }
@@ -37,7 +59,6 @@ impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
     pub fn expect_nodes<T>(&mut self) -> Vec<T>
     where
         T: From<(String, CSTreeVisitor<'input, Lang>)>,
-        Lang: std::fmt::Debug,
     {
         match self.pop_spawn() {
             Some(mut node_visitor) => node_visitor.expect_nodes_lrec::<T>(),
@@ -74,7 +95,10 @@ impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
 
     fn pop_spawn(&mut self) -> Option<CSTreeVisitor<'input, Lang>> {
         match self.pop_front() {
-            Some(tree) => Some(CSTreeVisitor { cst: Some(tree) }),
+            Some(tree) => {
+                // println!("Popping tree: {:?}\n\n", tree);
+                Some(CSTreeVisitor { cst: Some(tree) })
+            }
             None => None,
         }
     }
@@ -93,12 +117,12 @@ mod tests {
 
     #[derive(Debug, Default, Clone, Copy, CFL)]
     struct TestLangDef (
-        #[tokens] TestTokens,
-        #[rules]  TestRules,
+        #[tokens] TestToken,
+        #[rules]  TestRule,
     );
 
     #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash, CFLTokens)]
-    enum TestTokens {
+    enum TestToken {
         #[default]
         #[token(r"a")]
         A,
@@ -111,7 +135,7 @@ mod tests {
     }
 
     #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash, CFLRules)]
-    enum TestRules {
+    enum TestRule {
         #[default]
         #[rule("<rule_a> ::= A <rule_b>")]
         RuleA,
@@ -135,13 +159,27 @@ mod tests {
     }
 
     #[test]
+    fn test_visitor_peek() -> anyhow::Result<()> {
+        let mut visitor = Processor::<TestLang>::new()
+            .build_lexer()?
+            .build_parser()?
+            .process::<CSTreeVisitor<_>>("abc")?;
+
+        assert_eq!(visitor.peek(), (Some(TestToken::A), None));
+        assert_eq!(visitor.expect_leaf(), (TestToken::A, "a"));
+        assert_eq!(visitor.peek(), (None, Some(TestRule::RuleB)));
+
+        Ok(())
+    }
+
+    #[test]
     fn test_visitor_expect() -> anyhow::Result<()> {
         #[derive(Debug, PartialEq, Eq)]
         struct AstA;
 
         impl From<(String, CSTreeVisitor<'_, TestLangDef>)> for AstA {
             fn from((_, mut visitor): (String, CSTreeVisitor<'_, TestLangDef>)) -> Self {
-                assert_eq!(visitor.expect_leaf(), "a");
+                assert_eq!(visitor.expect_leaf(), (TestToken::A, "a"));
                 assert_eq!(visitor.expect_node::<AstB>(), AstB);
                 AstA
             }
@@ -152,7 +190,7 @@ mod tests {
 
         impl From<(String, CSTreeVisitor<'_, TestLangDef>)> for AstB {
             fn from((_, mut visitor): (String, CSTreeVisitor<'_, TestLangDef>)) -> Self {
-                assert_eq!(visitor.expect_leaf(), "b");
+                assert_eq!(visitor.expect_leaf(), (TestToken::B, "b"));
                 assert_eq!(visitor.expect_nodes::<AstC>(), vec![AstC, AstC, AstC]);
                 assert_eq!(visitor.expect_nodes::<AstD>(), vec![]);
                 AstB
@@ -164,7 +202,7 @@ mod tests {
 
         impl From<(String, CSTreeVisitor<'_, TestLangDef>)> for AstC {
             fn from((_, mut visitor): (String, CSTreeVisitor<'_, TestLangDef>)) -> Self {
-                assert_eq!(visitor.expect_leaf(), "c");
+                assert_eq!(visitor.expect_leaf(), (TestToken::C, "c"));
                 AstC
             }
         }
@@ -174,7 +212,7 @@ mod tests {
 
         impl From<(String, CSTreeVisitor<'_, TestLangDef>)> for AstD {
             fn from((_, mut visitor): (String, CSTreeVisitor<'_, TestLangDef>)) -> Self {
-                assert_eq!(visitor.expect_leaf(), "d");
+                assert_eq!(visitor.expect_leaf(), (TestToken::D, "d"));
                 AstD
             }
         }

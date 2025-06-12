@@ -128,34 +128,35 @@ pub enum SBTokens {
 )]
 pub enum SBRules {
     #[default]
-    #[rule("<program> ::= <program> <top>")]
-    #[rule("<program> ::= <top>")]
+    #[rule("<program> ::= <top_list>")]
     Program,
 
+    #[rule("<top_list> ::= <top_list> <top>")]
+    #[rule("<top_list> ::= <top>")]
     #[rule("<top> ::= <func_def>")]
     Top,
 
     // 定義
     #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR <block>")]
     #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR Allow Type <block>")]
+    FuncDef,
+
     #[rule("<arg_def_list> ::= <arg_def_list> Comma <arg_def>")]
     #[rule("<arg_def_list> ::= <arg_def>")]
     #[rule("<arg_def_list> ::= ")]
-    FuncDef,
-
     #[rule("<arg_def> ::= Ident Colon Type")]
     ArgumentDef,
 
     // 文
     #[rule("<block> ::= BraceL <stmt_list> BraceR")]
-    #[rule("<stmt_list> ::= <stmt_list> <stmt>")]
-    #[rule("<stmt_list> ::= <stmt>")]
     Block,
 
+    #[rule("<stmt_list> ::= <stmt_list> <stmt>")]
+    #[rule("<stmt_list> ::= <stmt>")]
     #[rule("<stmt> ::= <var_decl>")]
     #[rule("<stmt> ::= <block>")]
     #[rule("<stmt> ::= <expr> Semicolon")]
-    #[rule("<stmt> ::= <return> Semicolon")]
+    #[rule("<stmt> ::= Return <expr> Semicolon")]
     #[rule("<stmt> ::= <if>")]
     #[rule("<stmt> ::= <while>")]
     #[rule("<stmt> ::= <for>")]
@@ -164,9 +165,6 @@ pub enum SBRules {
 
     #[rule("<var_decl> ::= Var Ident Colon Type Assign <expr> Semicolon")]
     VarDecl,
-
-    #[rule("<return> ::= Return <expr>")]
-    Return,
 
     #[rule("<if> ::= If ParenL <expr> ParenR <block>")]
     #[rule("<if> ::= If ParenL <expr> ParenR <block> Else <stmt>")]
@@ -179,10 +177,10 @@ pub enum SBRules {
     For,
 
     #[rule("<inasm> ::= Asm BraceL <inasm_inst_list> BraceR")]
-    #[rule("<inasm_inst_list> ::= <inasm_inst_list> <inasm_inst>")]
-    #[rule("<inasm_inst_list> ::= <inasm_inst>")]
     InlineAsm,
 
+    #[rule("<inasm_inst_list> ::= <inasm_inst_list> <inasm_inst>")]
+    #[rule("<inasm_inst_list> ::= <inasm_inst>")]
     #[rule("<inasm_inst> ::= Ident Ident Assign Ident Comma Num")]                          // I-形式
     #[rule("<inasm_inst> ::= Ident Ident Comma Ident BracketL Num BracketR")]               // I-形式 (jal)
     #[rule("<inasm_inst> ::= Ident Ident Assign Ident BracketL Num BracketR")]              // I-形式 (lw ...)
@@ -256,8 +254,10 @@ pub enum SBRules {
     Value,
 
     #[rule("<call> ::= Ident ParenL <arg_list> ParenR")]
+    Call,
+
     #[rule("<arg_list> ::= <arg_list> Comma <value>")]
     #[rule("<arg_list> ::= <value>")]
     #[rule("<arg_list> ::= ")]
-    Call,
+    ArgList,
 }

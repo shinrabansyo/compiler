@@ -11,7 +11,7 @@ pub fn compile(input: &str) -> anyhow::Result<Vec<Object>> {
     let ast = parse(input)?;
 
     // 2. 意味解析 (AST -> AST + NodeInfo)
-    let _ = analyze(&ast)?;
+    // let _ = analyze(&ast)?;
 
     // 3. LIR生成 (AST -> [LIR])
     let lir = lirgen(&ast);

@@ -22,6 +22,7 @@ pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: &InlineAsm) -> LirBlo
         }
 
         // 変数
+        println!("use_reg: {}", var);
         ctx.ref_var_reg(var).unwrap()
     };
 

@@ -1,9 +1,4 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::{unwrap_node, unwrap_leaf, expand_lrec};
-use super::Value;
+use super::{Value, Visitor};
 
 #[derive(Debug)]
 pub struct Call {
@@ -12,18 +7,12 @@ pub struct Call {
     pub args: Vec<Value>,
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for Call {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
-
-        let (_, ident) = unwrap_leaf(children.pop_front().unwrap());
-        let ident = ident.to_string();
-
-        let args = expand_lrec::<Value>(
-            namespace.clone(),
-            children.pop_front().unwrap()
-        );
-
-        Call { namespace, ident, args }
+impl From<(String, Visitor<'_>)> for Call {
+    fn from((namespace, mut visitor): (String, Visitor<'_>)) -> Self {
+        Call {
+            namespace,
+            ident: visitor.expect_leaf().1.to_string(),
+            args: visitor.expect_nodes::<Value>(),
+        }
     }
 }

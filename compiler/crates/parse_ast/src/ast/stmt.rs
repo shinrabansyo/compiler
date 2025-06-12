@@ -1,9 +1,6 @@
-use copager::ir::Tree;
+use sb_compiler_parse_syntax::{SBTokens, SBRules};
 
-use sb_compiler_parse_syntax::{SBLangDef, SBRules};
-
-use crate::utils::unwrap_node;
-use super::{VarDecl, Block, If, While, For, InlineAsm, Expr};
+use super::{VarDecl, Block, If, While, For, InlineAsm, Expr, Visitor};
 
 #[derive(Debug)]
 pub enum Stmt {
@@ -41,42 +38,56 @@ pub enum Stmt {
     },
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for Stmt {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
-        let rhs = children.pop_front().unwrap();
-        match rhs {
-            Tree::Node { tag: SBRules::VarDecl, .. } => {
-                let var_decl = VarDecl::from((namespace.clone(), rhs));
-                Stmt::VarDecl { namespace, var_decl }
+impl From<(String, Visitor<'_>)> for Stmt {
+    fn from((namespace, mut visitor): (String, Visitor<'_>)) -> Self {
+        match visitor.peek() {
+            (_, Some(SBRules::VarDecl)) => {
+                Stmt::VarDecl {
+                    namespace,
+                    var_decl: visitor.expect_node::<VarDecl>(),
+                }
             }
-            Tree::Node { tag: SBRules::Block, .. } => {
-                let block = Block::from((namespace.clone(), rhs));
-                Stmt::Block { namespace, block }
+            (_, Some(SBRules::Block)) => {
+                Stmt::Block {
+                    namespace,
+                    block: visitor.expect_node::<Block>(),
+                }
             }
-            Tree::Node { tag: SBRules::Expr, .. } => {
-                let expr = Expr::from((namespace.clone(), rhs));
-                Stmt::Expr { namespace, expr }
+            (_, Some(SBRules::Expr)) => {
+                Stmt::Expr {
+                    namespace,
+                    expr: visitor.expect_node::<Expr>(),
+                }
             }
-            Tree::Node { tag: SBRules::Return, mut children } => {
-                let expr = Expr::from((namespace.clone(), children.pop_front().unwrap()));
-                Stmt::Return { namespace, expr }
+            (Some(SBTokens::Return), _) => {
+                Stmt::Return {
+                    namespace,
+                    expr: visitor.expect_node::<Expr>(),
+                }
             }
-            Tree::Node { tag: SBRules::If, .. } => {
-                let r#if = If::from((namespace.clone(), rhs));
-                Stmt::If { namespace, r#if }
+            (_, Some(SBRules::If)) => {
+                Stmt::If {
+                    namespace,
+                    r#if: visitor.expect_node::<If>(),
+                }
             }
-            Tree::Node { tag: SBRules::While, .. } => {
-                let r#while = While::from((namespace.clone(), rhs));
-                Stmt::While { namespace, r#while }
+            (_, Some(SBRules::While)) => {
+                Stmt::While {
+                    namespace,
+                    r#while: visitor.expect_node::<While>(),
+                }
             }
-            Tree::Node { tag: SBRules::For, .. } => {
-                let r#for = For::from((namespace.clone(), rhs));
-                Stmt::For { namespace, r#for }
+            (_, Some(SBRules::For)) => {
+                Stmt::For {
+                    namespace,
+                    r#for: visitor.expect_node::<For>(),
+                }
             }
-            Tree::Node { tag: SBRules::InlineAsm, .. } => {
-                let inline_asm = InlineAsm::from((namespace.clone(), rhs));
-                Stmt::InlineAsm { namespace, inline_asm }
+            (_, Some(SBRules::InlineAsm)) => {
+                Stmt::InlineAsm {
+                    namespace,
+                    inline_asm: visitor.expect_node::<InlineAsm>(),
+                }
             }
             _ => unreachable!(),
         }

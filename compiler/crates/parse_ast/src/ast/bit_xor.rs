@@ -1,9 +1,4 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::unwrap_node;
-use super::BitAnd;
+use super::{BitAnd, Visitor};
 
 #[derive(Debug)]
 pub enum BitXor {
@@ -18,24 +13,20 @@ pub enum BitXor {
     },
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for BitXor {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
-
+impl From<(String, Visitor<'_>)> for BitXor {
+    fn from((namespace, mut visitor): (String, Visitor<'_>)) -> Self {
         // 数値のみ
-        if children.len() == 1 {
-            let and = BitAnd::from((namespace.clone(), children.pop_front().unwrap()));
-            return BitXor::BitAnd { namespace, and };
+        if visitor.len() == 1 {
+            return BitXor::BitAnd {
+                namespace,
+                and: visitor.expect_node::<BitAnd>(),
+            };
         }
 
         // 演算子付き
-        let lhs = children.pop_front().unwrap();
-        let lhs = Box::new(BitXor::from((namespace.clone(), lhs)));
-
-        let _op = children.pop_front().unwrap();
-
-        let rhs = children.pop_front().unwrap();
-        let rhs = BitAnd::from((namespace.clone(), rhs));
+        let lhs = Box::new(visitor.expect_node::<BitXor>());
+        let _ = visitor.expect_leaf();
+        let rhs = visitor.expect_node::<BitAnd>();
 
         BitXor::Xor { namespace, lhs, rhs }
     }

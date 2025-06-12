@@ -1,9 +1,6 @@
-use copager::ir::Tree;
+use sb_compiler_parse_syntax::SBTokens;
 
-use sb_compiler_parse_syntax::{SBLangDef, SBTokens};
-
-use crate::utils::{unwrap_node, unwrap_leaf};
-use super::BitShift;
+use super::{BitShift, Visitor};
 
 #[derive(Debug)]
 pub enum Cond {
@@ -43,50 +40,60 @@ pub enum Cond {
     },
 }
 
-impl From<(String, Tree<'_, SBLangDef>)> for Cond {
-    fn from((namespace, tree): (String, Tree<'_, SBLangDef>)) -> Self {
-        let (_, mut children) = unwrap_node(tree);
-
+impl From<(String, Visitor<'_>)> for Cond {
+    fn from((namespace, mut visitor): (String, Visitor<'_>)) -> Self {
         // 数値のみ
-        if children.len() == 1 {
-            let bit_shift = BitShift::from((namespace.clone(), children.pop_front().unwrap()));
-            return Cond::BitShift { namespace, bit_shift };
+        if visitor.len() == 1 {
+            return Cond::BitShift {
+                namespace,
+                bit_shift: visitor.expect_node::<BitShift>(),
+            };
         }
 
         // 演算子付き
-        let lhs = children.pop_front().unwrap();
-        let op = children.pop_front().unwrap();
-        let rhs = children.pop_front().unwrap();
-        match unwrap_leaf(op).0 {
+        let lhs = Box::new(visitor.expect_node::<Cond>());
+        match visitor.expect_leaf().0 {
             SBTokens::Eq => {
-                let lhs = Box::new(Cond::from((namespace.clone(), lhs)));
-                let rhs = BitShift::from((namespace.clone(), rhs));
-                Cond::Eq { namespace, lhs, rhs }
+                Cond::Eq {
+                    namespace,
+                    lhs,
+                    rhs: visitor.expect_node::<BitShift>(),
+                }
             }
             SBTokens::Neq => {
-                let lhs = Box::new(Cond::from((namespace.clone(), lhs)));
-                let rhs = BitShift::from((namespace.clone(), rhs));
-                Cond::Neq { namespace, lhs, rhs }
+                Cond::Neq {
+                    namespace,
+                    lhs,
+                    rhs: visitor.expect_node::<BitShift>(),
+                }
             }
             SBTokens::Lt => {
-                let lhs = Box::new(Cond::from((namespace.clone(), lhs)));
-                let rhs = BitShift::from((namespace.clone(), rhs));
-                Cond::Lt { namespace, lhs, rhs }
+                Cond::Lt {
+                    namespace,
+                    lhs,
+                    rhs: visitor.expect_node::<BitShift>(),
+                }
             }
             SBTokens::Lte => {
-                let lhs = Box::new(Cond::from((namespace.clone(), lhs)));
-                let rhs = BitShift::from((namespace.clone(), rhs));
-                Cond::Lte { namespace, lhs, rhs }
+                Cond::Lte {
+                    namespace,
+                    lhs,
+                    rhs: visitor.expect_node::<BitShift>(),
+                }
             }
             SBTokens::Gt => {
-                let lhs = Box::new(Cond::from((namespace.clone(), lhs)));
-                let rhs = BitShift::from((namespace.clone(), rhs));
-                Cond::Gt { namespace, lhs, rhs }
+                Cond::Gt {
+                    namespace,
+                    lhs,
+                    rhs: visitor.expect_node::<BitShift>(),
+                }
             }
             SBTokens::Gte => {
-                let lhs = Box::new(Cond::from((namespace.clone(), lhs)));
-                let rhs = BitShift::from((namespace.clone(), rhs));
-                Cond::Gte { namespace, lhs, rhs }
+                Cond::Gte {
+                    namespace,
+                    lhs,
+                    rhs: visitor.expect_node::<BitShift>(),
+                }
             }
             _=> unreachable!(),
         }

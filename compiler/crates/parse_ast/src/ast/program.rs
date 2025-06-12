@@ -1,19 +1,14 @@
-use copager::ir::Tree;
-
-use sb_compiler_parse_syntax::SBLangDef;
-
-use crate::utils::expand_lrec;
-use super::Top;
+use super::{Top, Visitor};
 
 #[derive(Debug)]
 pub struct Program {
     pub top_elems: Vec<Top>,
 }
 
-impl From<Tree<'_, SBLangDef>> for Program {
-    fn from(tree: Tree<'_, SBLangDef>) -> Self {
+impl From<(String, Visitor<'_>)> for Program {
+    fn from((_, mut visitor): (String, Visitor<'_>)) -> Self {
         Program {
-            top_elems: expand_lrec::<Top>("global".to_string(), tree),
+            top_elems: visitor.expect_nodes::<Top>(),
         }
     }
 }
