@@ -1,0 +1,149 @@
+use std::future::Future;
+use std::pin::Pin;
+use std::task::{Context, Poll};
+
+use crate::PinnedTask;
+
+pub fn join_all<I, T, Eto>(tasks: I) -> impl Future<Output = Result<Vec<T>, Vec<Eto>>>
+where
+    I: Iterator<Item = PinnedTask<T, Eto>>,
+    T: Unpin,
+{
+    let pinned_tasks = tasks
+        .map(Some)
+        .collect::<Vec<_>>();
+    let empty_artifacts = (0..pinned_tasks.len())
+        .map(|_| None)
+        .collect::<Vec<_>>();
+
+    JoinAll {
+        tasks: pinned_tasks,
+        artifacts: empty_artifacts,
+    }
+}
+
+struct JoinAll<T, Eto> {
+    tasks: Vec<Option<PinnedTask<T, Eto>>>,
+    artifacts: Vec<Option<T>>,
+}
+
+impl<T, Eto> Future for JoinAll<T, Eto>
+where
+    T: Unpin,
+{
+    type Output = Result<Vec<T>, Vec<Eto>>;
+
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        let mut all_completed = true;
+        let mut any_stepped = false;
+
+        // 管理下の全タスクを進める
+        let self_mut: &mut JoinAll<T, Eto> = self.get_mut();
+        for idx in 0..self_mut.tasks.len() {
+            let mut task = self_mut.tasks[idx].as_mut();
+            if task.is_some() {
+                match task.as_mut().unwrap().as_mut().poll(cx) {
+                    Poll::Ready(result) => {
+                        any_stepped = true;
+                        self_mut.tasks[idx] = None;
+                        self_mut.artifacts[idx] = Some(result);
+                    }
+                    Poll::Pending => {
+                        all_completed = false;
+                    }
+                }
+            }
+        }
+
+        // 全てのタスクが完了した場合
+        if all_completed {
+            let artifactis = self_mut
+                .artifacts
+                .iter_mut()
+                .map(|artifact| artifact.take().unwrap())
+                .collect();
+            return Poll::Ready(Ok(artifactis));
+        }
+
+        // 全てのタスクが完了していないが，いずれかのタスクが進行した場合
+        if any_stepped {
+            return Poll::Pending;
+        }
+
+        // いずれのタスクも進行しなかった場合
+        let timeout_errs = self_mut
+            .tasks
+            .iter_mut()
+            .filter(|task| task.is_some())
+            .map(|task| task.as_mut().unwrap().on_timeout())
+            .collect::<Vec<_>>();
+
+        Poll::Ready(Err(timeout_errs))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::future::poll_fn;
+    use std::task::Poll;
+
+    use crate::{Task, block_on};
+    use super::join_all;
+
+    #[test]
+    fn test_ok_1() {
+        let task_a = Task::new(
+            async { Ok::<i32, ()>(1) },
+            anyhow::anyhow!("Task A failed"),
+        );
+        let tasks = [task_a].into_iter();
+
+        assert_eq!(block_on(join_all(tasks)).unwrap(), vec![Ok(1)]);
+    }
+
+    #[test]
+    fn test_ok_2() {
+        let task_a = Task::new(
+            async { Ok::<i32, ()>(1) },
+            anyhow::anyhow!("Task A failed"),
+        );
+        let task_b = Task::new(
+            async { Ok::<i32, ()>(2) },
+            anyhow::anyhow!("Task B failed"),
+        );
+        let task_c = Task::new(
+            async { Ok::<i32, ()>(3) },
+            anyhow::anyhow!("Task C failed"),
+        );
+        let tasks = [
+            task_a,
+            task_b,
+            task_c,
+        ].into_iter();
+
+        assert_eq!(block_on(join_all(tasks)).unwrap(), vec![Ok(1), Ok(2), Ok(3)]);
+    }
+
+    #[test]
+    fn test_err_1() {
+        let task_a = Task::new(
+            async { Ok::<i32, ()>(1) },
+            anyhow::anyhow!("Task A failed"),
+        );
+        let task_b = Task::new(
+            async { Ok::<i32, ()>(2) },
+            anyhow::anyhow!("Task B failed"),
+        );
+        let task_never_complete = Task::new(
+            poll_fn(|_| Poll::Pending),
+            anyhow::anyhow!("Task C failed"),
+        );
+        let tasks = [
+            task_a,
+            task_b,
+            task_never_complete,
+        ].into_iter();
+
+        assert!(block_on(join_all(tasks)).is_err());
+    }
+}
