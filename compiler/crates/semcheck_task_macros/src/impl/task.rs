@@ -4,8 +4,7 @@ use syn::{FnArg, ItemFn, PathArguments, Type};
 
 pub fn proc_macro_impl(args: TokenStream, ast: ItemFn) -> TokenStream {
     // マクロ引数
-    let (_, args) = split2_token_stream(args, ':');
-    let (timeout_ty, timeout_err) = split2_token_stream(args, '=');
+    let (_, timeout_err) = split2_token_stream(args, '=');
 
     // 関数本体
     let fn_visibility = ast.vis;
@@ -30,7 +29,7 @@ pub fn proc_macro_impl(args: TokenStream, ast: ItemFn) -> TokenStream {
 
     // マクロ適用結果
     quote! {
-        #fn_visibility fn #fn_ident(#fn_args) -> PinnedTask<#fn_ret_type_unwrapped, #timeout_ty> {
+        #fn_visibility fn #fn_ident(#fn_args) -> PinnedTask<#fn_ret_type_unwrapped> {
             use std::future::poll_fn;
             use std::task::Poll;
 
@@ -45,7 +44,7 @@ pub fn proc_macro_impl(args: TokenStream, ast: ItemFn) -> TokenStream {
                         None => Poll::Pending,
                     }
                 }),
-                #timeout_err,
+                Box::from(#timeout_err),
             )
         }
     }

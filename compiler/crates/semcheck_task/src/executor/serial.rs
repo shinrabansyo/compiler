@@ -25,16 +25,28 @@ mod tests {
 
     #[test]
     fn test_ok_1() {
-        let task_a = Task::new(async { Ok::<i32, ()>(1) }, ());
+        let task_a = Task::new(
+            async { Ok::<i32, ()>(1) },
+            Box::from("Task A failed"),
+        );
 
         assert_eq!(block_on(task_a).unwrap(), 1);
     }
 
     #[test]
     fn test_ok_2() {
-        let task_a = Task::new(async { Ok::<i32, ()>(1) }, ());
-        let task_b = Task::new(async { Ok::<i32, ()>(2) }, ());
-        let task_c = Task::new(async { Ok::<i32, ()>(3) }, ());
+        let task_a = Task::new(
+            async { Ok::<i32, ()>(1) },
+            Box::from("Task A failed"),
+        );
+        let task_b = Task::new(
+            async { Ok::<i32, ()>(2) },
+            Box::from("Task B failed"),
+        );
+        let task_c = Task::new(
+            async { Ok::<i32, ()>(3) },
+            Box::from("Task C failed"),
+        );
 
         let async_f  = async {
             let a = task_a.await?;

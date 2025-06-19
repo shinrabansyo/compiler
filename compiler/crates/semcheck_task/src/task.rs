@@ -1,28 +1,28 @@
+use std::error::Error;
 use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
-pub type PinnedTask<T, Eto> = Pin<Box<dyn TaskAccessor<T, Eto> + Unpin>>;
+pub type PinnedTask<T> = Pin<Box<dyn TaskAccessor<T> + Unpin>>;
 
-pub trait TaskAccessor<T, Eto>
+pub trait TaskAccessor<T>
 where
     Self: Future<Output = T>,
 {
-    fn on_timeout(&mut self) -> Eto;
+    fn on_timeout(&mut self) -> Box<dyn Error>;
 }
 
-pub struct Task<F, T, Eto>
+pub struct Task<F, T>
 where
     F: Future<Output = T>,
 {
     task: Pin<Box<F>>,
-    on_timeout_err: Option<Eto>,
+    on_timeout_err: Option<Box<dyn Error>>,
 }
 
-impl<F, T, Eto> Future for Task<F, T, Eto>
+impl<F, T> Future for Task<F, T>
 where
     F: Future<Output = T>,
-    Eto: Unpin,
 {
     type Output = T;
 
@@ -31,23 +31,21 @@ where
     }
 }
 
-impl<F, T, Eto> TaskAccessor<T, Eto> for Task<F, T, Eto>
+impl<F, T> TaskAccessor<T> for Task<F, T>
 where
     F: Future<Output = T>,
-    Eto: Unpin,
 {
-    fn on_timeout(&mut self) -> Eto {
+    fn on_timeout(&mut self) -> Box<dyn Error> {
         self.on_timeout_err.take().unwrap()
     }
 }
 
-impl<F, T, Eto> Task<F, T, Eto>
+impl<F, T> Task<F, T>
 where
     F: Future<Output = T> + 'static,
     T: 'static,
-    Eto: Unpin + 'static,
 {
-    pub fn new(task: F, on_timeout_err: Eto) -> PinnedTask<T, Eto> {
+    pub fn new(task: F, on_timeout_err: Box<dyn Error>) -> PinnedTask<T> {
         let task = Task {
             task: Box::pin(task),
             on_timeout_err: Some(on_timeout_err),

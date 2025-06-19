@@ -1,12 +1,13 @@
+use std::error::Error;
 use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
 use crate::PinnedTask;
 
-pub fn join_all<I, T, Eto>(tasks: I) -> impl Future<Output = Result<Vec<T>, Vec<Eto>>>
+pub fn join_all<I, T>(tasks: I) -> impl Future<Output = Result<Vec<T>, Vec<Box<dyn Error>>>>
 where
-    I: Iterator<Item = PinnedTask<T, Eto>>,
+    I: Iterator<Item = PinnedTask<T>>,
     T: Unpin,
 {
     let pinned_tasks = tasks
@@ -22,23 +23,23 @@ where
     }
 }
 
-struct JoinAll<T, Eto> {
-    tasks: Vec<Option<PinnedTask<T, Eto>>>,
+struct JoinAll<T> {
+    tasks: Vec<Option<PinnedTask<T>>>,
     artifacts: Vec<Option<T>>,
 }
 
-impl<T, Eto> Future for JoinAll<T, Eto>
+impl<T> Future for JoinAll<T>
 where
     T: Unpin,
 {
-    type Output = Result<Vec<T>, Vec<Eto>>;
+    type Output = Result<Vec<T>, Vec<Box<dyn Error>>>;
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         let mut all_completed = true;
         let mut any_stepped = false;
 
         // 管理下の全タスクを進める
-        let self_mut: &mut JoinAll<T, Eto> = self.get_mut();
+        let self_mut = self.get_mut();
         for idx in 0..self_mut.tasks.len() {
             let mut task = self_mut.tasks[idx].as_mut();
             if task.is_some() {
@@ -94,7 +95,7 @@ mod tests {
     fn test_ok_1() {
         let task_a = Task::new(
             async { Ok::<i32, ()>(1) },
-            anyhow::anyhow!("Task A failed"),
+            Box::from("aaa"),
         );
         let tasks = [task_a].into_iter();
 
@@ -105,15 +106,15 @@ mod tests {
     fn test_ok_2() {
         let task_a = Task::new(
             async { Ok::<i32, ()>(1) },
-            anyhow::anyhow!("Task A failed"),
+            Box::from("Task A failed"),
         );
         let task_b = Task::new(
             async { Ok::<i32, ()>(2) },
-            anyhow::anyhow!("Task B failed"),
+            Box::from("Task B failed"),
         );
         let task_c = Task::new(
             async { Ok::<i32, ()>(3) },
-            anyhow::anyhow!("Task C failed"),
+            Box::from("Task C failed"),
         );
         let tasks = [
             task_a,
@@ -128,15 +129,15 @@ mod tests {
     fn test_err_1() {
         let task_a = Task::new(
             async { Ok::<i32, ()>(1) },
-            anyhow::anyhow!("Task A failed"),
+            Box::from("Task A failed"),
         );
         let task_b = Task::new(
             async { Ok::<i32, ()>(2) },
-            anyhow::anyhow!("Task B failed"),
+            Box::from("Task B failed"),
         );
         let task_never_complete = Task::new(
             poll_fn(|_| Poll::Pending),
-            anyhow::anyhow!("Task C failed"),
+            Box::from("Task C failed"),
         );
         let tasks = [
             task_a,

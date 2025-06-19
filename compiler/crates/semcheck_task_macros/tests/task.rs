@@ -1,12 +1,14 @@
+use std::collections::VecDeque;
+
 use sb_compiler_semcheck_task::{PinnedTask, Task, block_on, join_all};
 use sb_compiler_semcheck_task_macros::task;
 
-#[task(timeout: String = "return_0".to_string())]
+#[task(timeout = "return_0")]
 fn return_0(num: i32) -> Option<i32> {
     Some(num)
 }
 
-#[task(timeout: String = "return_1".to_string())]
+#[task(timeout = "return_1")]
 fn return_1(num: i32) -> Option<i32> {
     static mut CNT: i32 = 0;
 
@@ -18,7 +20,7 @@ fn return_1(num: i32) -> Option<i32> {
     }
 }
 
-#[task(timeout: String = format!("return_inf({})", _num))]
+#[task(timeout = format!("return_inf({})", _num))]
 fn return_inf(_num: i32) -> Option<i32> {
     None
 }
@@ -44,5 +46,8 @@ fn test_err() {
 
     let result = block_on(join_all(tasks));
     assert!(result.is_err());
-    assert_eq!(result.err().unwrap(), vec!["return_inf(3)", "return_inf(4)"]);
+
+    let mut result_err = VecDeque::from(result.err().unwrap());
+    assert_eq!(result_err.pop_front().unwrap().to_string(), "return_inf(3)");
+    assert_eq!(result_err.pop_front().unwrap().to_string(), "return_inf(4)");
 }
