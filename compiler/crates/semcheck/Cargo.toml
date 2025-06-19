@@ -8,3 +8,4 @@ anyhow = { workspace = true }
 thiserror = { workspace = true }
 sb_compiler_parse_ast = { path = "../parse_ast" }
 sb_compiler_semcheck_task = { path = "../semcheck_task" }
+sb_compiler_semcheck_task_macros = { path = "../semcheck_task_macros" }

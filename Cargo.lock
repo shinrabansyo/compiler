@@ -1256,6 +1256,7 @@ dependencies = [
  "anyhow",
  "sb_compiler_parse_ast",
  "sb_compiler_semcheck_task",
+ "sb_compiler_semcheck_task_macros",
  "thiserror 2.0.12",
 ]
 
@@ -1265,6 +1266,18 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "futures",
+]
+
+[[package]]
+name = "sb_compiler_semcheck_task_macros"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "proc-macro2",
+ "quote",
+ "sb_compiler_semcheck_task",
+ "syn",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
