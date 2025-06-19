@@ -4,7 +4,7 @@ use syn::{FnArg, ItemFn, PathArguments, Type};
 
 pub fn proc_macro_impl(args: TokenStream, ast: ItemFn) -> TokenStream {
     // マクロ引数
-    let (_, timeout_err) = split2_token_stream(args, '=');
+    let (_, deadlock_err) = split2_token_stream(args, '=');
 
     // 関数本体
     let fn_visibility = ast.vis;
@@ -44,7 +44,7 @@ pub fn proc_macro_impl(args: TokenStream, ast: ItemFn) -> TokenStream {
                         None => Poll::Pending,
                     }
                 }),
-                Box::from(#timeout_err),
+                Box::from(#deadlock_err),
             )
         }
     }

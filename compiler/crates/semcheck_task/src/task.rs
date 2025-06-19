@@ -9,7 +9,7 @@ pub trait TaskAccessor<T>
 where
     Self: Future<Output = T>,
 {
-    fn on_timeout(&mut self) -> Box<dyn Error>;
+    fn on_deadlock(&mut self) -> Box<dyn Error>;
 }
 
 pub struct Task<F, T>
@@ -17,7 +17,7 @@ where
     F: Future<Output = T>,
 {
     task: Pin<Box<F>>,
-    on_timeout_err: Option<Box<dyn Error>>,
+    on_deadlock_err: Option<Box<dyn Error>>,
 }
 
 impl<F, T> Future for Task<F, T>
@@ -35,8 +35,8 @@ impl<F, T> TaskAccessor<T> for Task<F, T>
 where
     F: Future<Output = T>,
 {
-    fn on_timeout(&mut self) -> Box<dyn Error> {
-        self.on_timeout_err.take().unwrap()
+    fn on_deadlock(&mut self) -> Box<dyn Error> {
+        self.on_deadlock_err.take().unwrap()
     }
 }
 
@@ -45,10 +45,10 @@ where
     F: Future<Output = T> + 'static,
     T: 'static,
 {
-    pub fn new(task: F, on_timeout_err: Box<dyn Error>) -> PinnedTask<T> {
+    pub fn new(task: F, on_deadlock_err: Box<dyn Error>) -> PinnedTask<T> {
         let task = Task {
             task: Box::pin(task),
-            on_timeout_err: Some(on_timeout_err),
+            on_deadlock_err: Some(on_deadlock_err),
         };
         Box::pin(task)
     }

@@ -3,12 +3,12 @@ use std::collections::VecDeque;
 use sb_compiler_semcheck_task::{PinnedTask, Task, block_on, join_all};
 use sb_compiler_semcheck_task_macros::task;
 
-#[task(timeout = "return_0")]
+#[task(deadlock = "return_0")]
 fn return_0(num: i32) -> Option<i32> {
     Some(num)
 }
 
-#[task(timeout = "return_1")]
+#[task(deadlock = "return_1")]
 fn return_1(num: i32) -> Option<i32> {
     static mut CNT: i32 = 0;
 
@@ -20,7 +20,7 @@ fn return_1(num: i32) -> Option<i32> {
     }
 }
 
-#[task(timeout = format!("return_inf({})", _num))]
+#[task(deadlock = format!("return_inf({})", _num))]
 fn return_inf(_num: i32) -> Option<i32> {
     None
 }

@@ -72,14 +72,14 @@ where
         }
 
         // いずれのタスクも進行しなかった場合
-        let timeout_errs = self_mut
+        let deadlock_errs = self_mut
             .tasks
             .iter_mut()
             .filter(|task| task.is_some())
-            .map(|task| task.as_mut().unwrap().on_timeout())
+            .map(|task| task.as_mut().unwrap().on_deadlock())
             .collect::<Vec<_>>();
 
-        Poll::Ready(Err(timeout_errs))
+        Poll::Ready(Err(deadlock_errs))
     }
 }
 
