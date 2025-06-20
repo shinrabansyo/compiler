@@ -78,7 +78,7 @@ impl VarDeclChecker {
 
         // 1. 変数名を検索
         let var_symbol = match checker.interner.get(name) {
-            Some(id) => id,
+            Some(symbol) => symbol,
             None => return Err(VarDeclError::new_not_declared(name.to_string())),
         };
 
