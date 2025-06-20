@@ -5,7 +5,7 @@ use std::task::{Context, Poll};
 
 use crate::PinnedTask;
 
-pub fn join_all<I, T>(tasks: I) -> impl Future<Output = Result<Vec<T>, Vec<Box<dyn Error>>>>
+pub fn join_all_task<I, T>(tasks: I) -> impl Future<Output = Result<Vec<T>, Vec<Box<dyn Error>>>>
 where
     I: Iterator<Item = PinnedTask<T>>,
     T: Unpin,
@@ -34,20 +34,19 @@ where
 {
     type Output = Result<Vec<T>, Vec<Box<dyn Error>>>;
 
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         let mut all_completed = true;
         let mut any_stepped = false;
 
         // 管理下の全タスクを進める
-        let self_mut = self.get_mut();
-        for idx in 0..self_mut.tasks.len() {
-            let mut task = self_mut.tasks[idx].as_mut();
+        for idx in 0..self.tasks.len() {
+            let mut task = self.tasks[idx].as_mut();
             if task.is_some() {
                 match task.as_mut().unwrap().as_mut().poll(cx) {
                     Poll::Ready(result) => {
                         any_stepped = true;
-                        self_mut.tasks[idx] = None;
-                        self_mut.artifacts[idx] = Some(result);
+                        self.tasks[idx] = None;
+                        self.artifacts[idx] = Some(result);
                     }
                     Poll::Pending => {
                         all_completed = false;
@@ -58,7 +57,7 @@ where
 
         // 全てのタスクが完了した場合
         if all_completed {
-            let artifactis = self_mut
+            let artifactis = self
                 .artifacts
                 .iter_mut()
                 .map(|artifact| artifact.take().unwrap())
@@ -72,7 +71,7 @@ where
         }
 
         // いずれのタスクも進行しなかった場合
-        let deadlock_errs = self_mut
+        let deadlock_errs = self
             .tasks
             .iter_mut()
             .filter(|task| task.is_some())
@@ -89,7 +88,7 @@ mod tests {
     use std::task::Poll;
 
     use crate::{Task, block_on};
-    use super::join_all;
+    use super::join_all_task;
 
     #[test]
     fn test_ok_1() {
@@ -99,7 +98,7 @@ mod tests {
         );
         let tasks = [task_a].into_iter();
 
-        assert_eq!(block_on(join_all(tasks)).unwrap(), vec![Ok(1)]);
+        assert_eq!(block_on(join_all_task(tasks)).unwrap(), vec![Ok(1)]);
     }
 
     #[test]
@@ -122,7 +121,7 @@ mod tests {
             task_c,
         ].into_iter();
 
-        assert_eq!(block_on(join_all(tasks)).unwrap(), vec![Ok(1), Ok(2), Ok(3)]);
+        assert_eq!(block_on(join_all_task(tasks)).unwrap(), vec![Ok(1), Ok(2), Ok(3)]);
     }
 
     #[test]
@@ -145,6 +144,6 @@ mod tests {
             task_never_complete,
         ].into_iter();
 
-        assert!(block_on(join_all(tasks)).is_err());
+        assert!(block_on(join_all_task(tasks)).is_err());
     }
 }

@@ -1,2 +1,3 @@
 pub mod serial;
-pub mod parallel;
+pub mod parallel_task;
+pub mod parallel_std;

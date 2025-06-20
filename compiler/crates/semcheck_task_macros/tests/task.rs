@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use sb_compiler_semcheck_task::{PinnedTask, Task, block_on, join_all};
+use sb_compiler_semcheck_task::{PinnedTask, Task, block_on, join_all_task};
 use sb_compiler_semcheck_task_macros::task;
 
 #[task(deadlock = "return_0")]
@@ -32,7 +32,7 @@ fn test_ok() {
         return_1(2),
     ].into_iter();
 
-    assert_eq!(block_on(join_all(tasks)).unwrap(), vec![1, 2]);
+    assert_eq!(block_on(join_all_task(tasks)).unwrap(), vec![1, 2]);
 }
 
 #[test]
@@ -44,7 +44,7 @@ fn test_err() {
         return_inf(4),
     ].into_iter();
 
-    let result = block_on(join_all(tasks));
+    let result = block_on(join_all_task(tasks));
     assert!(result.is_err());
 
     let mut result_err = VecDeque::from(result.err().unwrap());

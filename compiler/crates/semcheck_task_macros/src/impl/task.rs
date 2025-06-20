@@ -28,7 +28,7 @@ pub fn proc_macro_impl(args: TokenStream, ast: ItemFn) -> TokenStream {
     };
 
     // マクロ適用結果
-    quote! {
+    let a = quote! {
         #fn_visibility fn #fn_ident(#fn_args) -> PinnedTask<#fn_ret_type_unwrapped> {
             use std::future::poll_fn;
             use std::task::Poll;
@@ -47,7 +47,9 @@ pub fn proc_macro_impl(args: TokenStream, ast: ItemFn) -> TokenStream {
                 Box::from(#deadlock_err),
             )
         }
-    }
+    };
+    a
+    // panic!("{}", a);
 }
 
 fn split2_token_stream(stream: TokenStream, c: char) -> (TokenStream, TokenStream) {
