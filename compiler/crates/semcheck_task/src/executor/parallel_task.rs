@@ -5,10 +5,10 @@ use std::task::{Context, Poll};
 
 use crate::PinnedTask;
 
-pub fn join_all_task<I, T>(tasks: I) -> impl Future<Output = Result<Vec<T>, Vec<Box<dyn Error>>>>
+pub fn join_all_task<'a, I, T>(tasks: I) -> impl Future<Output = Result<Vec<T>, Vec<Box<dyn Error>>>> + 'a
 where
-    I: Iterator<Item = PinnedTask<T>>,
-    T: Unpin,
+    I: Iterator<Item = PinnedTask<'a, T>>,
+    T: Unpin + 'a,
 {
     let pinned_tasks = tasks
         .map(Some)
@@ -23,14 +23,14 @@ where
     }
 }
 
-struct JoinAll<T> {
-    tasks: Vec<Option<PinnedTask<T>>>,
+struct JoinAll<'a, T> {
+    tasks: Vec<Option<PinnedTask<'a, T>>>,
     artifacts: Vec<Option<T>>,
 }
 
-impl<T> Future for JoinAll<T>
+impl<'a, T> Future for JoinAll<'a, T>
 where
-    T: Unpin,
+    T: Unpin + 'a,
 {
     type Output = Result<Vec<T>, Vec<Box<dyn Error>>>;
 
