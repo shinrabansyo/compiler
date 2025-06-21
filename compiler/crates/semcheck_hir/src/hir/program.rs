@@ -1,5 +1,6 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_async::prelude::*;
+use sb_compiler_utils::error::ErrComposer;
 
 use super::{Top, SemCheck, InDep};
 
@@ -19,7 +20,7 @@ impl<'src> SemCheck<InDep<'src>, ast::Program<'src>> for Program<'src> {
             .map(|top| Top::check(ctx.clone(), top))
             .join_all()
             .await
-            .collect::<anyhow::Result<Vec<_>>>()?;
+            .compose()?;
 
         Ok(Program { top_elems })
     }

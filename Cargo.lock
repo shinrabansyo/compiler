@@ -1315,6 +1315,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "futures",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -1340,6 +1341,7 @@ dependencies = [
  "sb_compiler_semcheck_async",
  "sb_compiler_semcheck_impl",
  "sb_compiler_semcheck_impl_vardecl",
+ "sb_compiler_utils",
  "thiserror 2.0.12",
 ]
 
