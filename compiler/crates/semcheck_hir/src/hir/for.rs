@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{Block, Expr, SemCheckFrom, Dep};
+use super::{Block, Expr, SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct For<'src> {
@@ -10,7 +10,7 @@ pub struct For<'src> {
     pub block: Block<'src>,
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::For<'src>> for For<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::For<'src>> for For<'src> {
     async fn check0(ctx: Dep<'_, 'src>, r#fot: ast::For<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{BitAnd, SemCheckFrom, Dep};
+use super::{BitAnd, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum BitXor<'src> {
@@ -13,7 +13,7 @@ pub enum BitXor<'src> {
     },
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::BitXor<'src>> for BitXor<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::BitXor<'src>> for BitXor<'src> {
     async fn check0(ctx: Dep<'_, 'src>, xor: ast::BitXor<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

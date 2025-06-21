@@ -1,13 +1,13 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{Expr, SemCheckFrom, Dep};
+use super::{Expr, SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct Return<'src> {
     pub expr: Expr<'src>,
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Return<'src>> for Return<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::Return<'src>> for Return<'src> {
     async fn check0(ctx: Dep<'_, 'src>, r#return: ast::Return<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

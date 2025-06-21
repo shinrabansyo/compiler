@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{VarDecl, Block, Expr, Return, If, While, For, InlineAsm, SemCheckFrom, Dep};
+use super::{VarDecl, Block, Expr, Return, If, While, For, InlineAsm, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum Stmt<'src> {
@@ -30,7 +30,7 @@ pub enum Stmt<'src> {
     },
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Stmt<'src>> for Stmt<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::Stmt<'src>> for Stmt<'src> {
     async fn check0(ctx: Dep<'_, 'src>, stmt: ast::Stmt<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

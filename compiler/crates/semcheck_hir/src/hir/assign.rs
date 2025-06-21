@@ -1,7 +1,7 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 
-use super::{LogicOr, SemCheckFrom, Dep};
+use super::{LogicOr, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum Assign<'src> {
@@ -34,7 +34,7 @@ pub enum Assign<'src> {
     }
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
     async fn check0(ctx: Dep<'_, 'src>, assign: ast::Assign<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

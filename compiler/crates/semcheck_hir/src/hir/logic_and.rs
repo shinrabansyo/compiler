@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{BitOr, SemCheckFrom, Dep};
+use super::{BitOr, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum LogicAnd<'src> {
@@ -13,7 +13,7 @@ pub enum LogicAnd<'src> {
     },
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::LogicAnd<'src>> for LogicAnd<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::LogicAnd<'src>> for LogicAnd<'src> {
     async fn check0(ctx: Dep<'_, 'src>, and: ast::LogicAnd<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

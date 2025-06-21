@@ -41,7 +41,7 @@ use sb_compiler_semcheck_impl::SemCheckContext;
 pub type Dep<'a, 'src> = &'a mut SemCheckContext<'src>;
 pub type InDep<'src> = SemCheckContext<'src>;
 
-pub trait SemCheckFrom<Ctx, T> {
+pub trait SemCheck<Ctx, T> {
     fn check(ctx: Ctx, ast: T) -> Pin<Box<impl Future<Output = anyhow::Result<Self>>>>
     where
         Self: Sized,

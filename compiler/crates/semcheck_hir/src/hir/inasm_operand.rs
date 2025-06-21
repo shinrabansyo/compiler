@@ -1,7 +1,7 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 
-use super::{SemCheckFrom, Dep};
+use super::{SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum InlineAsmOperand<'src> {
@@ -13,7 +13,7 @@ pub enum InlineAsmOperand<'src> {
     },
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineAsmOperand<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineAsmOperand<'src> {
     async fn check0(ctx: Dep<'_, 'src>, operand: ast::InlineAsmOperandL<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
@@ -33,7 +33,7 @@ impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineA
     }
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOperand<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOperand<'src> {
     async fn check0(ctx: Dep<'_, 'src>, operand: ast::InlineAsmOperandR<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

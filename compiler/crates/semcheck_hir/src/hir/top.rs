@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{FuncDef, SemCheckFrom, InDep};
+use super::{FuncDef, SemCheck, InDep};
 
 #[derive(Debug)]
 pub enum Top<'src> {
@@ -9,7 +9,7 @@ pub enum Top<'src> {
     },
 }
 
-impl<'src> SemCheckFrom<InDep<'src>, ast::Top<'src>> for Top<'src> {
+impl<'src> SemCheck<InDep<'src>, ast::Top<'src>> for Top<'src> {
     async fn check0(ctx: InDep<'src>, top: ast::Top<'src>) -> anyhow::Result<Top<'src>>
     where
         Self: Sized,

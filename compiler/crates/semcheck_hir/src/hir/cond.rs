@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{BitShift, SemCheckFrom, Dep};
+use super::{BitShift, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum Cond<'src> {
@@ -33,7 +33,7 @@ pub enum Cond<'src> {
     },
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
     async fn check0(ctx: Dep<'_, 'src>, cond: ast::Cond<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

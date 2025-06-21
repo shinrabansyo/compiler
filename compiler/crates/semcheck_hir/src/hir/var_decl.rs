@@ -2,7 +2,7 @@ use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 
-use super::{Expr, SemCheckFrom, Dep};
+use super::{Expr, SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct VarDecl<'src> {
@@ -11,7 +11,7 @@ pub struct VarDecl<'src> {
     pub expr: Expr<'src>,
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
     async fn check0(ctx: Dep<'_, 'src>, var_decl: ast::VarDecl<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

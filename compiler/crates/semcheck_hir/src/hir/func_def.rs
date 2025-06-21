@@ -1,7 +1,7 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::Span;
 
-use super::{ArgumentDef, Block, SemCheckFrom, InDep};
+use super::{ArgumentDef, Block, SemCheck, InDep};
 
 #[derive(Debug)]
 pub struct FuncDef<'src> {
@@ -11,7 +11,7 @@ pub struct FuncDef<'src> {
     pub block: Block<'src>,
 }
 
-impl<'src> SemCheckFrom<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
+impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
     async fn check0(mut ctx: InDep<'src>, func_def: ast::FuncDef<'src>) -> anyhow::Result<Self>
         where
             Self: Sized

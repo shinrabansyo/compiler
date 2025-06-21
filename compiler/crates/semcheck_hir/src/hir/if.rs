@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{Expr, Block, Stmt, SemCheckFrom, Dep};
+use super::{Expr, Block, Stmt, SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct If<'src> {
@@ -9,7 +9,7 @@ pub struct If<'src> {
     pub else_stmt: Option<Box<Stmt<'src>>>,
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::If<'src>> for If<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::If<'src>> for If<'src> {
     async fn check0(ctx: Dep<'_, 'src>, r#if: ast::If<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

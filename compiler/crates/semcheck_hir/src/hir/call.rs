@@ -1,7 +1,7 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::Span;
 
-use super::{Value, SemCheckFrom, Dep};
+use super::{Value, SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct Call<'src> {
@@ -9,7 +9,7 @@ pub struct Call<'src> {
     pub args: Vec<Value<'src>>,
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Call<'src>> for Call<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::Call<'src>> for Call<'src> {
     async fn check0(ctx: Dep<'_, 'src>, call: ast::Call<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

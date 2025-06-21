@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{InlineAsmOperand, SemCheckFrom, Dep};
+use super::{InlineAsmOperand, SemCheck, Dep};
 
 type Operand<'a> = InlineAsmOperand<'a>;
 
@@ -47,7 +47,7 @@ pub enum InlineAsmInst<'src> {
     Ble  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src>, imm: i32 },
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::InlineAsmInst<'src>> for InlineAsmInst<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmInst<'src>> for InlineAsmInst<'src> {
     async fn check0(ctx: Dep<'_, 'src>, inst: ast::InlineAsmInst<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

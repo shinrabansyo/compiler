@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{Expr, Block, SemCheckFrom, Dep};
+use super::{Expr, Block, SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct While<'src> {
@@ -8,7 +8,7 @@ pub struct While<'src> {
     pub block: Block<'src>,
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::While<'src>> for While<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::While<'src>> for While<'src> {
     async fn check0(ctx: Dep<'_, 'src>, r#while: ast::While<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,

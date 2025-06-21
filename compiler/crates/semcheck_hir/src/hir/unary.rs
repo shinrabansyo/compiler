@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{Value, SemCheckFrom, Dep};
+use super::{Value, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum Unary<'src> {
@@ -15,7 +15,7 @@ pub enum Unary<'src> {
     },
 }
 
-impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
+impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
     async fn check0(ctx: Dep<'_, 'src>, unary: ast::Unary<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
