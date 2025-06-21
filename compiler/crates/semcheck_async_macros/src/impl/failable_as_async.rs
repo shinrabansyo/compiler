@@ -57,7 +57,10 @@ pub fn proc_macro_impl(args: TokenStream, ast: ItemFn) -> TokenStream {
                 let result = __inner();
                 match (SharedState::check_deadlock(ctx), result.is_success()) {
                     (true,  _) => Poll::Ready(result),
-                    (false, true) => Poll::Ready(result),
+                    (false, true) => {
+                        SharedState::notify_stepped(ctx);
+                        Poll::Ready(result)
+                    }
                     (false, false) => Poll::Pending,
                 }
             })

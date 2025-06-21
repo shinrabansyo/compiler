@@ -2,8 +2,6 @@ use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
-use crate::state::SharedState;
-
 type Pinned<T> = Pin<Box<T>>;
 
 pub fn join_all<'a, I, T>(futures: I) -> impl Future<Output = Vec<T>> + 'a
@@ -37,7 +35,6 @@ where
 
     fn poll(mut self: Pin<&mut Self>, ctx: &mut Context<'_>) -> Poll<Self::Output> {
         let mut all_completed = true;
-        let mut any_stepped = false;
 
         // 管理下の全 Future を進める
         for idx in 0..self.futures.len() {
@@ -45,7 +42,6 @@ where
             if future.is_some() {
                 match future.as_mut().unwrap().as_mut().poll(ctx) {
                     Poll::Ready(result) => {
-                        any_stepped = true;
                         self.futures[idx] = None;
                         self.artifacts[idx] = Some(result);
                     }
@@ -64,11 +60,6 @@ where
                 .map(|artifact| artifact.take().unwrap())
                 .collect();
             return Poll::Ready(artifactis);
-        }
-
-        // 全てのタスクが完了していないが，いずれかのタスクが進行した場合
-        if any_stepped {
-            SharedState::notify_stepped(ctx);
         }
 
         Poll::Pending
