@@ -1,5 +1,5 @@
-use sb_compiler_parse_ast::Return;
 use sb_compiler_lirgen_ir::{lir, LirBlock, Add, FnReturn};
+use sb_compiler_semcheck_hir::Return;
 
 use crate::{GenContext, ZERO_REG, RET_REG};
 use super::lirgen_expr;

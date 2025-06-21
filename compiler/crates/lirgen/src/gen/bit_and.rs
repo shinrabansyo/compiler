@@ -1,5 +1,5 @@
-use sb_compiler_parse_ast::BitAnd;
 use sb_compiler_lirgen_ir::{lir, LirBlock, And};
+use sb_compiler_semcheck_hir::BitAnd;
 
 use crate::GenContext;
 use super::lirgen_cond;

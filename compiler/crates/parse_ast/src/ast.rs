@@ -16,7 +16,7 @@ mod r#while;        pub use r#while::While;
 mod r#for;          pub use r#for::For;
 mod inasm;          pub use inasm::InlineAsm;
 mod inasm_inst;     pub use inasm_inst::InlineAsmInst;
-mod inasm_reg;      pub use inasm_reg::InlineAsmReg;
+mod inasm_operand;  pub use inasm_operand::{InlineAsmOperandL, InlineAsmOperandR};
 
 // 式
 mod expr;           pub use expr::Expr;

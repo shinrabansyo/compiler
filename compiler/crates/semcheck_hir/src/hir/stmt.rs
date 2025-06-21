@@ -73,7 +73,7 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::Stmt<'input>> for Stmt<'input> {
             },
             ast::Stmt::InlineAsm { inline_asm } => {
                 Ok(Stmt::InlineAsm {
-                    inline_asm: InlineAsm::check(ctx, inline_asm).await?,
+                    inline_asm: InlineAsm::check(ctx.clone(), inline_asm).await?,
                 })
             },
         }

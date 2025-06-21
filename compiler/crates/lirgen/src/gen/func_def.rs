@@ -1,10 +1,10 @@
-use sb_compiler_parse_ast::FuncDef;
 use sb_compiler_lirgen_ir::{lir, LirBlock, LirTopElem, FnEpilogue, FnPrologue};
+use sb_compiler_semcheck_hir::FuncDef;
 
 use crate::{GenContext, ZERO_REG};
 use super::lirgen_block;
 
-pub fn lirgen_func_def<'input>(ctx: &mut GenContext<'input>, func: &FuncDef<'input>) -> LirTopElem {
+pub fn lirgen_func_def(ctx: &mut GenContext, func: &FuncDef) -> LirTopElem {
     // 本体
     let lir_body = lirgen_block(ctx, &func.block);
 

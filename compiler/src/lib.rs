@@ -11,19 +11,17 @@ pub fn compile(input: &str) -> anyhow::Result<Vec<Object>> {
     let ast = parse(input)?;
 
     // 2. 意味解析 (AST -> HIR)
-    let ast = semcheck(ast)?;
+    let hir = semcheck(ast)?;
 
-    panic!("Success, but compilation is not yet implemented.");
+    // 3. LIR生成 (HIR -> [LIR])
+    let lir = lirgen(&hir);
 
-    // // 3. LIR生成 (HIR -> [LIR])
-    // let lir = lirgen(&ast);
+    // 4. コード生成 & 最適化 ([LIR] -> [Obj] -> [Obj])
+    let objs = lir
+        .into_iter()
+        .map(codegen)
+        .map(optimize)
+        .collect::<Vec<_>>();
 
-    // // 4. コード生成 & 最適化 ([LIR] -> [Obj] -> [Obj])
-    // let objs = lir
-    //     .into_iter()
-    //     .map(codegen)
-    //     .map(optimize)
-    //     .collect::<Vec<_>>();
-
-    // Ok(objs)
+    Ok(objs)
 }

@@ -49,11 +49,11 @@ fn test_03() {
         addi R4 = R0, 10
         addi R5 = R0, 10
 
-        add T0 = R0, R4
-        add T1 = R0, R5
+        add tmp_a = R0, R4
+        add tmp_b = R0, R5
 
         addi R6 = R0, 1
-        beq R0, (T0, T1) -> 12
+        beq R0, (tmp_a, tmp_b) -> 12
         beq R0, (R0, R0) -> 18
         add result = R0, R6
         beq R0, (R0, R0) -> 12

@@ -1,12 +1,12 @@
-use sb_compiler_parse_ast::Add as AddAst;
 use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Sub};
+use sb_compiler_semcheck_hir::Add as AddHir;
 
 use crate::GenContext;
 use super::lirgen_unary;
 
-pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirBlock {
+pub fn lirgen_add(ctx: &mut GenContext, add: &AddHir) -> LirBlock {
     let (result_reg, lirs) = match add {
-        AddAst::Plus { lhs, rhs, .. } => {
+        AddHir::Plus { lhs, rhs, .. } => {
             let lir_lhs = lirgen_add(ctx, lhs);
             let reg_lhs = lir_lhs.result_reg();
 
@@ -24,7 +24,7 @@ pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirBlock {
                 ],
             )
         }
-        AddAst::Minus { lhs, rhs, .. } => {
+        AddHir::Minus { lhs, rhs, .. } => {
             let lir_lhs = lirgen_add(ctx, lhs);
             let reg_lhs = lir_lhs.result_reg();
 
@@ -42,7 +42,7 @@ pub fn lirgen_add(ctx: &mut GenContext, add: &AddAst) -> LirBlock {
                 ],
             )
         }
-        AddAst::Unary { value, .. } => {
+        AddHir::Unary { value, .. } => {
             return lirgen_unary(ctx, value);
         }
     };

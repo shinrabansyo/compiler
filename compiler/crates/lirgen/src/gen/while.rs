@@ -1,10 +1,10 @@
-use sb_compiler_parse_ast::While;
 use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel};
+use sb_compiler_semcheck_hir::While;
 
 use crate::{GenContext, ZERO_REG};
 use super::{lirgen_expr, lirgen_block};
 
-pub fn lirgen_while<'input>(ctx: &mut GenContext<'input>, r#while: &While<'input>) -> LirBlock {
+pub fn lirgen_while(ctx: &mut GenContext, r#while: &While) -> LirBlock {
     // 条件節
     let lir_cond = lirgen_expr(ctx, &r#while.cond);
     let reg_cond = lir_cond.result_reg();

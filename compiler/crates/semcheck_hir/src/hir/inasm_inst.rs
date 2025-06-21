@@ -1,48 +1,48 @@
 use sb_compiler_parse_ast as ast;
 
-use super::{InlineAsmReg, SemCheckFrom, Dep};
+use super::{InlineAsmOperand, SemCheckFrom, Dep};
 
 #[derive(Debug)]
 pub enum InlineAsmInst {
     // I-形式
-    Addi { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Subi { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Jal  { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Lw   { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Lh   { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Lb   { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Lhu  { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Lbu  { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    In   { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Andi { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Ori  { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Xori { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Srli { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Srai { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
-    Slli { rd: InlineAsmReg, rs1: InlineAsmReg, imm: i32 },
+    Addi { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Subi { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Jal  { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Lw   { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Lh   { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Lb   { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Lhu  { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Lbu  { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    In   { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Andi { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Ori  { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Xori { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Srli { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Srai { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Slli { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
 
     // S-形式
-    Sw   { rs1: InlineAsmReg, rs2: InlineAsmReg, imm: i32 },
-    Sh   { rs1: InlineAsmReg, rs2: InlineAsmReg, imm: i32 },
-    Sb   { rs1: InlineAsmReg, rs2: InlineAsmReg, imm: i32 },
-    Isb  { rs1: InlineAsmReg, rs2: InlineAsmReg, imm: i32 },
-    Out  { rs1: InlineAsmReg, rs2: InlineAsmReg, imm: i32 },
+    Sw   { rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
+    Sh   { rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
+    Sb   { rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
+    Isb  { rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
+    Out  { rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
 
     // R-形式
-    Add  { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg },
-    Sub  { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg },
-    And  { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg },
-    Or   { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg },
-    Xor  { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg },
-    Srl  { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg },
-    Sra  { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg },
-    Sll  { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg },
+    Add  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
+    Sub  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
+    And  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
+    Or   { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
+    Xor  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
+    Srl  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
+    Sra  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
+    Sll  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
 
     // B-形式
-    Beq  { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg, imm: i32 },
-    Bne  { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg, imm: i32 },
-    Blt  { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg, imm: i32 },
-    Ble  { rd: InlineAsmReg, rs1: InlineAsmReg, rs2: InlineAsmReg, imm: i32 },
+    Beq  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
+    Bne  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
+    Blt  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
+    Ble  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
 }
 
 impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmInst<'input>> for InlineAsmInst {
@@ -53,8 +53,8 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmInst<'input>> for InlineAsmInst
         macro_rules! check_reg_i {
             ($inst:ident $rd:expr, $rs1:expr, $imm:expr) => {
                 Ok(InlineAsmInst::$inst {
-                    rd: InlineAsmReg::check(ctx, $rd).await?,
-                    rs1: InlineAsmReg::check(ctx, $rs1).await?,
+                    rd: InlineAsmOperand::check(&mut *ctx, $rd).await?,
+                    rs1: InlineAsmOperand::check(&mut *ctx, $rs1).await?,
                     imm: $imm,
                 })
             };
@@ -63,8 +63,8 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmInst<'input>> for InlineAsmInst
         macro_rules! check_reg_s {
             ($inst:ident $rs1:expr, $rs2:expr, $imm:expr) => {
                 Ok(InlineAsmInst::$inst {
-                    rs1: InlineAsmReg::check(ctx, $rs1).await?,
-                    rs2: InlineAsmReg::check(ctx, $rs2).await?,
+                    rs1: InlineAsmOperand::check(&mut *ctx, $rs1).await?,
+                    rs2: InlineAsmOperand::check(&mut *ctx, $rs2).await?,
                     imm: $imm,
                 })
             };
@@ -73,9 +73,9 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmInst<'input>> for InlineAsmInst
         macro_rules! check_reg_r {
             ($inst:ident $rd:expr, $rs1:expr, $rs2:expr) => {
                 Ok(InlineAsmInst::$inst {
-                    rd: InlineAsmReg::check(ctx, $rd).await?,
-                    rs1: InlineAsmReg::check(ctx, $rs1).await?,
-                    rs2: InlineAsmReg::check(ctx, $rs2).await?,
+                    rd: InlineAsmOperand::check(&mut *ctx, $rd).await?,
+                    rs1: InlineAsmOperand::check(&mut *ctx, $rs1).await?,
+                    rs2: InlineAsmOperand::check(&mut *ctx, $rs2).await?,
                 })
             };
         }
@@ -83,9 +83,9 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmInst<'input>> for InlineAsmInst
         macro_rules! check_reg_b {
             ($inst:ident $rd:expr, $rs1:expr, $rs2:expr, $imm:expr) => {
                 Ok(InlineAsmInst::$inst {
-                    rd: InlineAsmReg::check(ctx, $rd).await?,
-                    rs1: InlineAsmReg::check(ctx, $rs1).await?,
-                    rs2: InlineAsmReg::check(ctx, $rs2).await?,
+                    rd: InlineAsmOperand::check(&mut *ctx, $rd).await?,
+                    rs1: InlineAsmOperand::check(&mut *ctx, $rs1).await?,
+                    rs2: InlineAsmOperand::check(&mut *ctx, $rs2).await?,
                     imm: $imm,
                 })
             };

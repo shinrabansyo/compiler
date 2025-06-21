@@ -1,5 +1,5 @@
-use sb_compiler_parse_ast::Cond;
 use sb_compiler_lirgen_ir::{lir, LirBlock, Beq, Bne, Blt, Ble, JmpLabel, Li};
+use sb_compiler_semcheck_hir::Cond;
 
 use crate::{GenContext, ZERO_REG};
 use super::lirgen_bit_shift;
