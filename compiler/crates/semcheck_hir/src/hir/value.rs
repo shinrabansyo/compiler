@@ -29,12 +29,9 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::Value<'input>> for Value<'input> {
                 Ok(Value::Const { value })
             }
             ast::Value::Var { name } => {
-                let var_id = VarDeclChecker::find(
-                    &ctx.var_decl,
-                    name.as_str(),
-                ).await?;
-
-                Ok(Value::Var { id: var_id })
+                Ok(Value::Var {
+                    id: VarDeclChecker::find(&mut ctx.var_decl, &name).await?,
+                })
             }
             ast::Value::Expr { expr } => {
                 Ok(Value::Expr {

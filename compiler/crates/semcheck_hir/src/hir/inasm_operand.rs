@@ -23,12 +23,10 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmOperandL<'input>> for InlineAsm
                 Ok(InlineAsmOperand::Reg { num })
             }
             ast::InlineAsmOperandL::Var { name } => {
-                let var_name = name.as_str();
-                let var_id = match VarDeclChecker::exists(&ctx.var_decl, var_name) {
+                let var_id = match VarDeclChecker::exists(&ctx.var_decl, &name) {
                     Some(var_id) => var_id,
-                    None => VarDeclChecker::register(&mut ctx.var_decl, var_name).unwrap(),
+                    None => VarDeclChecker::register(&mut ctx.var_decl, &name).unwrap(),
                 };
-
                 Ok(InlineAsmOperand::Var { id: var_id })
             }
         }
@@ -45,12 +43,9 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmOperandR<'input>> for InlineAsm
                 Ok(InlineAsmOperand::Reg { num })
             }
             ast::InlineAsmOperandR::Var { name } => {
-                let var_id = VarDeclChecker::find(
-                    &ctx.var_decl,
-                    name.as_str(),
-                ).await?;
-
-                Ok(InlineAsmOperand::Var { id: var_id })
+                Ok(InlineAsmOperand::Var {
+                    id: VarDeclChecker::find(&mut ctx.var_decl, &name).await?,
+                })
             }
         }
     }

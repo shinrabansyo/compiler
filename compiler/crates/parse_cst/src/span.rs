@@ -3,9 +3,9 @@ use copager::cfl::token::TokenTag;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Span<'a> {
-    src: &'a str,
-    body: (usize, usize),   // Trivia を含まない
-    full: (usize, usize),   // Trivia を含む
+    pub src: &'a str,
+    pub body: (usize, usize),   // Trivia を含まない
+    pub full: (usize, usize),   // Trivia を含む
 }
 
 impl<'a, T> From<Token<'a, T>> for Span<'a>

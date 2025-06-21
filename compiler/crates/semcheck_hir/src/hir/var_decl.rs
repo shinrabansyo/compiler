@@ -16,15 +16,13 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::VarDecl<'input>> for VarDecl<'input> {
     where
         Self: Sized,
     {
-        let var_id = VarDeclChecker::register(
-            &mut ctx.var_decl,
-            var_decl.ident.as_str(),
-        )?;
+        let expr = Expr::check(ctx, var_decl.expr).await?;
+        let ident = VarDeclChecker::register(&mut ctx.var_decl, &var_decl.ident)?;
 
         Ok(VarDecl {
-            ident: var_id,
+            ident,
             ty: var_decl.ty,
-            expr: Expr::check(ctx, var_decl.expr).await?,
+            expr,
         })
     }
 }

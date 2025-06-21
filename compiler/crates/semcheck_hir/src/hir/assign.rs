@@ -41,68 +41,38 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::Assign<'input>> for Assign<'input> {
     {
         match assign {
             ast::Assign::Normal { ident, assign } => {
-                let var_id = VarDeclChecker::find(
-                    &mut ctx.var_decl,
-                    ident.as_str(),
-                ).await?;
-
                 Ok(Assign::Normal {
-                    ident: var_id,
+                    ident: VarDeclChecker::find(&mut ctx.var_decl, &ident).await?,
                     assign: Box::new(Assign::check(ctx, *assign).await?),
                 })
             }
             ast::Assign::Plus { ident, assign } => {
-                let var_id = VarDeclChecker::find(
-                    &mut ctx.var_decl,
-                    ident.as_str(),
-                ).await?;
-
                 Ok(Assign::Plus {
-                    ident: var_id,
+                    ident: VarDeclChecker::find(&mut ctx.var_decl, &ident).await?,
                     assign: Box::new(Assign::check(ctx, *assign).await?),
                 })
             }
             ast::Assign::Minus { ident, assign } => {
-                let var_id = VarDeclChecker::find(
-                    &mut ctx.var_decl,
-                    ident.as_str(),
-                ).await?;
-
                 Ok(Assign::Minus {
-                    ident: var_id,
+                    ident: VarDeclChecker::find(&mut ctx.var_decl, &ident).await?,
                     assign: Box::new(Assign::check(ctx, *assign).await?),
                 })
             }
             ast::Assign::ShiftL { ident, assign } => {
-                let var_id = VarDeclChecker::find(
-                    &mut ctx.var_decl,
-                    ident.as_str(),
-                ).await?;
-
                 Ok(Assign::ShiftL {
-                    ident: var_id,
+                    ident: VarDeclChecker::find(&mut ctx.var_decl, &ident).await?,
                     assign: Box::new(Assign::check(ctx, *assign).await?),
                 })
             }
             ast::Assign::ShiftR { ident, assign } => {
-                let var_id = VarDeclChecker::find(
-                    &mut ctx.var_decl,
-                    ident.as_str(),
-                ).await?;
-
                 Ok(Assign::ShiftR {
-                    ident: var_id,
+                    ident: VarDeclChecker::find(&mut ctx.var_decl, &ident).await?,
                     assign: Box::new(Assign::check(ctx, *assign).await?),
                 })
             }
             ast::Assign::ShiftRa { ident, assign } => {
-                let var_id = VarDeclChecker::find(
-                    &mut ctx.var_decl,
-                    ident.as_str(),
-                ).await?;
-
                 Ok(Assign::ShiftRa {
-                    ident: var_id,
+                    ident: VarDeclChecker::find(&mut ctx.var_decl, &ident).await?,
                     assign: Box::new(Assign::check(ctx, *assign).await?),
                 })
             }
