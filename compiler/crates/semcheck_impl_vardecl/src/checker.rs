@@ -7,6 +7,9 @@ use string_interner::backend::StringBackend;
 use string_interner::symbol::SymbolU32;
 use string_interner::StringInterner;
 
+use sb_compiler_semcheck_async::SharedState;
+use sb_compiler_semcheck_async_macros::failable_as_async;
+
 use crate::error::VarDeclError;
 
 #[derive(Debug, Clone)]
@@ -73,7 +76,8 @@ impl VarDeclChecker {
         Ok(from)
     }
 
-    pub fn find(ctx: &VarDeclContext, name: &str) -> anyhow::Result<NodeIndex> {
+    #[failable_as_async('a)]
+    pub fn find<'a>(ctx: &'a VarDeclContext, name: &'a str) -> anyhow::Result<NodeIndex> {
         let checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を検索
@@ -106,65 +110,59 @@ impl VarDeclChecker {
 
 #[cfg(test)]
 mod tests {
+    use sb_compiler_semcheck_async::block_on;
+
     use super::VarDeclChecker;
 
     #[test]
     fn test_decl_and_find() {
         let (_, mut ctx) = VarDeclChecker::new();
 
-        // . <- var_a
-        let _ = VarDeclChecker::register(&mut ctx, "var_a").unwrap();
+        block_on(async {
+            // . <- var_a
+            let _ = VarDeclChecker::register(&mut ctx, "var_a").unwrap();
 
-        // . <- var_a <- [here]
-        let mut ctx_1 = ctx.clone();
-        {
-            // . <- var_a <- var_b
-            let _ = VarDeclChecker::register(&mut ctx_1, "var_b").unwrap();
+            // . <- var_a <- [here]
+            let mut ctx_1 = ctx.clone();
+            {
+                // . <- var_a <- var_b
+                let _ = VarDeclChecker::register(&mut ctx_1, "var_b").unwrap();
 
-            // . <- var_a <- var_b <- [here]
-            assert!(VarDeclChecker::find(&ctx_1, "var_a").is_ok());
-            assert!(VarDeclChecker::find(&ctx_1, "var_b").is_ok());
-            assert!(VarDeclChecker::find(&ctx_1, "var_c").is_err());
-        }
+                // . <- var_a <- var_b <- [here]
+                assert!(VarDeclChecker::find(&ctx_1, "var_a").await.is_ok());
+                assert!(VarDeclChecker::find(&ctx_1, "var_b").await.is_ok());
+                assert!(VarDeclChecker::find(&ctx_1, "var_c").await.is_err());
+            }
 
-        // . <- var_a <- [here]
-        let mut ctx_2 = ctx.clone();
-        {
-            // . <- var_a <- var_c
-            let _ = VarDeclChecker::register(&mut ctx_2, "var_c").unwrap();
+            // . <- var_a <- [here]
+            let mut ctx_2 = ctx.clone();
+            {
+                // . <- var_a <- var_c
+                let _ = VarDeclChecker::register(&mut ctx_2, "var_c").unwrap();
 
-            // . <- var_a <- var_c <- [here]
-            assert!(VarDeclChecker::find(&ctx_2, "var_a").is_ok());
-            assert!(VarDeclChecker::find(&ctx_2, "var_b").is_err());
-            assert!(VarDeclChecker::find(&ctx_2, "var_c").is_ok());
-        }
+                // . <- var_a <- var_c <- [here]
+                assert!(VarDeclChecker::find(&ctx_2, "var_a").await.is_ok());
+                assert!(VarDeclChecker::find(&ctx_2, "var_b").await.is_err());
+                assert!(VarDeclChecker::find(&ctx_2, "var_c").await.is_ok());
+            }
+        });
     }
 
     #[test]
-    fn test_shadowing_1() {
+    fn test_shadowing() {
         let (_, mut ctx) = VarDeclChecker::new();
 
-        // . <- var_a_0
-        let var_a_0 = VarDeclChecker::register(&mut ctx, "var_a").unwrap();
+        block_on(async {
+            // . <- var_a_0
+            let var_a_0 = VarDeclChecker::register(&mut ctx, "var_a").unwrap();
 
-        // . <- var_a_0 <- var_a_1
-        let var_a_1 = VarDeclChecker::register(&mut ctx, "var_a").unwrap();
+            // . <- var_a_0 <- var_a_1
+            let var_a_1 = VarDeclChecker::register(&mut ctx, "var_a").unwrap();
 
-        assert_ne!(var_a_0, var_a_1);
-    }
-
-    #[test]
-    fn test_shadowing_2() {
-        let (_, mut ctx) = VarDeclChecker::new();
-
-        // . <- var_a_0
-        let var_a_0 = VarDeclChecker::register(&mut ctx, "var_a").unwrap();
-
-        // . <- var_a_0 <- var_a_1
-        let var_a_1 = VarDeclChecker::register(&mut ctx, "var_a").unwrap();
-
-        // . <- var_a_0 <- var_a_1 <- [here]
-        assert_ne!(var_a_0, VarDeclChecker::find(&ctx, "var_a").unwrap());
-        assert_eq!(var_a_1, VarDeclChecker::find(&ctx, "var_a").unwrap());
+            // . <- var_a_0 <- var_a_1 <- [here]
+            assert_ne!(var_a_0, var_a_1);
+            assert_ne!(var_a_0, block_on(VarDeclChecker::find(&ctx, "var_a")).unwrap());
+            assert_eq!(var_a_1, block_on(VarDeclChecker::find(&ctx, "var_a")).unwrap());
+        });
     }
 }
