@@ -16,7 +16,7 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
         where
             Self: Sized
     {
-        ctx.push_namespace(func_def.ident.as_str());
+        ctx.name.push(func_def.ident.as_str());
 
         let mut args = vec![];
         for arg in func_def.args {
@@ -25,7 +25,7 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
 
         let block = Block::check(ctx.clone(), func_def.block).await?;
 
-        ctx.pop_namespace();
+        ctx.name.pop();
 
         Ok(FuncDef {
             ident: func_def.ident,

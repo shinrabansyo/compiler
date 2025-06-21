@@ -8,26 +8,8 @@ use name::Name;
 
 #[derive(Debug, Clone)]
 pub struct SemCheckContext<'src> {
-    name: Name,
+    pub name: Name,
     pub var_decl: VarDeclContext<'src>,
-}
-
-impl<'src> SemCheckContext<'src> {
-    pub fn push_namespace(&mut self, namespace: &str) {
-        self.name.push(namespace);
-    }
-
-    pub fn pop_namespace(&mut self) {
-        self.name.pop();
-    }
-
-    pub fn as_str_name(&mut self) -> &str {
-        self.name.as_str()
-    }
-
-    pub fn as_str_name_with(&mut self, name: &str) -> &str {
-        self.name.as_str_with(name)
-    }
 }
 
 #[derive(Debug)]
