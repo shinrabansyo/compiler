@@ -4,23 +4,23 @@ use sb_compiler_parse_syntax::{SBToken, SBRule};
 use super::{Expr, Call, Visitor};
 
 #[derive(Debug)]
-pub enum Value<'input> {
+pub enum Value<'src> {
     Const {
         value: i32,
     },
     Var {
-        name: Span<'input>,
+        name: Span<'src>,
     },
     Expr {
-        expr: Box<Expr<'input>>,
+        expr: Box<Expr<'src>>,
     },
     Call {
-        call: Call<'input>,
+        call: Call<'src>,
     }
 }
 
-impl<'input> From<Visitor<'input>> for Value<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for Value<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         match visitor.peek() {
             // 定数
             (Some(SBToken::Num), None) => {

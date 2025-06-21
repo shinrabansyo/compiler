@@ -4,23 +4,23 @@ use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use super::{Expr, Call, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub enum Value<'input> {
+pub enum Value<'src> {
     Const {
         value: i32,
     },
     Var {
-        var: Var<'input>,
+        var: Var<'src>,
     },
     Expr {
-        expr: Box<Expr<'input>>,
+        expr: Box<Expr<'src>>,
     },
     Call {
-        call: Call<'input>,
+        call: Call<'src>,
     }
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Value<'input>> for Value<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, value: ast::Value<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, value: ast::Value<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

@@ -3,13 +3,13 @@ use sb_compiler_parse_ast as ast;
 use super::{Expr, Block, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub struct While<'input> {
-    pub cond: Expr<'input>,
-    pub block: Block<'input>,
+pub struct While<'src> {
+    pub cond: Expr<'src>,
+    pub block: Block<'src>,
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::While<'input>> for While<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, r#while: ast::While<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::While<'src>> for While<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, r#while: ast::While<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

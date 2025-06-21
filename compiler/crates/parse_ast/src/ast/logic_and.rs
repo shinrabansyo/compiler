@@ -1,18 +1,18 @@
 use super::{BitOr, Visitor};
 
 #[derive(Debug)]
-pub enum LogicAnd<'input> {
+pub enum LogicAnd<'src> {
     And {
-        lhs: Box<LogicAnd<'input>>,
-        rhs: BitOr<'input>,
+        lhs: Box<LogicAnd<'src>>,
+        rhs: BitOr<'src>,
     },
     BitOr {
-        or: BitOr<'input>,
+        or: BitOr<'src>,
     },
 }
 
-impl<'input> From<Visitor<'input>> for LogicAnd<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for LogicAnd<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
             return LogicAnd::BitOr {

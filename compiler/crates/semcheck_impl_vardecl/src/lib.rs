@@ -16,27 +16,27 @@ use sb_compiler_semcheck_async_macros::failable_as_async;
 use error::VarDeclError;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct Var<'input> {
+pub struct Var<'src> {
     pub symbol: SymbolU32,
-    pub span: Span<'input>,
+    pub span: Span<'src>,
 }
 
 #[derive(Debug, Clone)]
-pub struct VarDeclContext<'input> {
-    checker: Arc<Mutex<VarDeclChecker<'input>>>,
+pub struct VarDeclContext<'src> {
+    checker: Arc<Mutex<VarDeclChecker<'src>>>,
     node: NodeIndex,
 }
 
 #[derive(Debug)]
-pub struct VarDeclChecker<'input> {
+pub struct VarDeclChecker<'src> {
     interner: StringInterner<StringBackend>,
-    graph: Graph<Var<'input>, ()>,
+    graph: Graph<Var<'src>, ()>,
     root_node: NodeIndex,
-    nodes: HashMap<Var<'input>, NodeIndex>,
+    nodes: HashMap<Var<'src>, NodeIndex>,
 }
 
-impl<'input> VarDeclChecker<'input> {
-    pub fn new() -> (Arc<Mutex<Self>>, VarDeclContext<'input>) {
+impl<'src> VarDeclChecker<'src> {
+    pub fn new() -> (Arc<Mutex<Self>>, VarDeclContext<'src>) {
         // インターン化環境 (root: `.`)
         let mut interner = StringInterner::default();
         let root_symbol = interner.get_or_intern(".");
@@ -71,7 +71,7 @@ impl<'input> VarDeclChecker<'input> {
         (checker, context)
     }
 
-    pub fn register(ctx: &mut VarDeclContext<'input>, span: &Span<'input>) -> anyhow::Result<Var<'input>> {
+    pub fn register(ctx: &mut VarDeclContext<'src>, span: &Span<'src>) -> anyhow::Result<Var<'src>> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を登録
@@ -93,7 +93,7 @@ impl<'input> VarDeclChecker<'input> {
         Ok(var)
     }
 
-    pub fn exists(ctx: &VarDeclContext<'input>, span: &Span<'input>) -> Option<Var<'input>> {
+    pub fn exists(ctx: &VarDeclContext<'src>, span: &Span<'src>) -> Option<Var<'src>> {
         let checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を検索
@@ -124,8 +124,8 @@ impl<'input> VarDeclChecker<'input> {
         None
     }
 
-    #[failable_as_async('a, 'input)]
-    pub fn find<'a>(ctx: &'a VarDeclContext<'input>, name: &'a Span<'input>) -> anyhow::Result<Var<'input>> {
+    #[failable_as_async('a, 'src)]
+    pub fn find<'a>(ctx: &'a VarDeclContext<'src>, name: &'a Span<'src>) -> anyhow::Result<Var<'src>> {
         VarDeclChecker::exists(ctx, name).ok_or(
             VarDeclError::new_not_declared(name.clone())
         )

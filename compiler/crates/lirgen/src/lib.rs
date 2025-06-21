@@ -10,13 +10,13 @@ const RET_REG: u32 = 10;
 const FARG_REG_BASE: u32 = 10;
 
 #[derive(Debug, Clone)]
-pub(crate) struct GenContext<'input> {
+pub(crate) struct GenContext<'src> {
     reserved_regs: u32,
     reserved_labels: u32,
-    var_table: LayeredTable<Var<'input>, u32>,
+    var_table: LayeredTable<Var<'src>, u32>,
 }
 
-impl<'input> Default for GenContext<'input> {
+impl<'src> Default for GenContext<'src> {
     fn default() -> Self {
         GenContext {
             reserved_regs: 20,   // r0: ゼロレジスタ, r10 ~ r19: 引数レジスタ として確保済み
@@ -26,7 +26,7 @@ impl<'input> Default for GenContext<'input> {
     }
 }
 
-impl<'input> GenContext<'input> {
+impl<'src> GenContext<'src> {
     fn alloc_reg(&mut self) -> u32 {
         let allocated_reg = self.reserved_regs;
         self.reserved_regs += 1;
@@ -39,7 +39,7 @@ impl<'input> GenContext<'input> {
         allocated_label
     }
 
-    fn set_var_reg(&mut self, var: Var<'input>, reg: u32) {
+    fn set_var_reg(&mut self, var: Var<'src>, reg: u32) {
         self.var_table.insert(var, reg);
     }
 

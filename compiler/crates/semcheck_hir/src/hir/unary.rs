@@ -3,20 +3,20 @@ use sb_compiler_parse_ast as ast;
 use super::{Value, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub enum Unary<'input> {
+pub enum Unary<'src> {
     Plus {
-        value: Value<'input>,
+        value: Value<'src>,
     },
     Minus {
-        value: Value<'input>,
+        value: Value<'src>,
     },
     Value {
-        value: Value<'input>
+        value: Value<'src>
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Unary<'input>> for Unary<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, unary: ast::Unary<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, unary: ast::Unary<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

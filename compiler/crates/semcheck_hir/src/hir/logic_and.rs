@@ -3,18 +3,18 @@ use sb_compiler_parse_ast as ast;
 use super::{BitOr, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub enum LogicAnd<'input> {
+pub enum LogicAnd<'src> {
     And {
-        lhs: Box<LogicAnd<'input>>,
-        rhs: BitOr<'input>,
+        lhs: Box<LogicAnd<'src>>,
+        rhs: BitOr<'src>,
     },
     BitOr {
-        or: BitOr<'input>,
+        or: BitOr<'src>,
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::LogicAnd<'input>> for LogicAnd<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, and: ast::LogicAnd<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::LogicAnd<'src>> for LogicAnd<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, and: ast::LogicAnd<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

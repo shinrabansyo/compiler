@@ -2,50 +2,50 @@ use super::{InlineAsmOperandL, InlineAsmOperandR, Visitor};
 
 
 #[derive(Debug)]
-pub enum InlineAsmInst<'input> {
+pub enum InlineAsmInst<'src> {
     // I-形式
-    Addi { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Subi { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Jal  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Lw   { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Lh   { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Lb   { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Lhu  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Lbu  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    In   { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Andi { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Ori  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Xori { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Srli { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Srai { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
-    Slli { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, imm: i32 },
+    Addi { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Subi { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Jal  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Lw   { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Lh   { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Lb   { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Lhu  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Lbu  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    In   { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Andi { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Ori  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Xori { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Srli { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Srai { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
+    Slli { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, imm: i32 },
 
     // S-形式
-    Sw   { rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input>, imm: i32 },
-    Sh   { rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input>, imm: i32 },
-    Sb   { rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input>, imm: i32 },
-    Isb  { rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input>, imm: i32 },
-    Out  { rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input>, imm: i32 },
+    Sw   { rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src>, imm: i32 },
+    Sh   { rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src>, imm: i32 },
+    Sb   { rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src>, imm: i32 },
+    Isb  { rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src>, imm: i32 },
+    Out  { rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src>, imm: i32 },
 
     // R-形式
-    Add  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input> },
-    Sub  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input> },
-    And  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input> },
-    Or   { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input> },
-    Xor  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input> },
-    Srl  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input> },
-    Sra  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input> },
-    Sll  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input> },
+    Add  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src> },
+    Sub  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src> },
+    And  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src> },
+    Or   { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src> },
+    Xor  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src> },
+    Srl  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src> },
+    Sra  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src> },
+    Sll  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src> },
 
     // B-形式
-    Beq  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input>, imm: i32 },
-    Bne  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input>, imm: i32 },
-    Blt  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input>, imm: i32 },
-    Ble  { rd: InlineAsmOperandL<'input>, rs1: InlineAsmOperandR<'input>, rs2: InlineAsmOperandR<'input>, imm: i32 },
+    Beq  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src>, imm: i32 },
+    Bne  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src>, imm: i32 },
+    Blt  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src>, imm: i32 },
+    Ble  { rd: InlineAsmOperandL<'src>, rs1: InlineAsmOperandR<'src>, rs2: InlineAsmOperandR<'src>, imm: i32 },
 }
 
-impl<'input> From<Visitor<'input>> for InlineAsmInst<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for InlineAsmInst<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         macro_rules! parse_i {
             (Jal $visitor:ident) => {{
                 InlineAsmInst::Jal {

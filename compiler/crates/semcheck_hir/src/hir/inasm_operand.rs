@@ -4,17 +4,17 @@ use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use super::{SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub enum InlineAsmOperand<'input> {
+pub enum InlineAsmOperand<'src> {
     Reg {
         num: u8,
     },
     Var {
-        var: Var<'input>,
+        var: Var<'src>,
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::InlineAsmOperandL<'input>> for InlineAsmOperand<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, operand: ast::InlineAsmOperandL<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineAsmOperand<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, operand: ast::InlineAsmOperandL<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {
@@ -33,8 +33,8 @@ impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::InlineAsmOperandL<'input>> for I
     }
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::InlineAsmOperandR<'input>> for InlineAsmOperand<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, operand: ast::InlineAsmOperandR<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOperand<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, operand: ast::InlineAsmOperandR<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

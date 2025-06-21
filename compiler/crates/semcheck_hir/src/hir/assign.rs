@@ -4,38 +4,38 @@ use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use super::{LogicOr, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub enum Assign<'input> {
+pub enum Assign<'src> {
     Normal {
-        var: Var<'input>,
-        assign: Box<Assign<'input>>,
+        var: Var<'src>,
+        assign: Box<Assign<'src>>,
     },
     Plus {
-        var: Var<'input>,
-        assign: Box<Assign<'input>>,
+        var: Var<'src>,
+        assign: Box<Assign<'src>>,
     },
     Minus {
-        var: Var<'input>,
-        assign: Box<Assign<'input>>,
+        var: Var<'src>,
+        assign: Box<Assign<'src>>,
     },
     ShiftL {
-        var: Var<'input>,
-        assign: Box<Assign<'input>>,
+        var: Var<'src>,
+        assign: Box<Assign<'src>>,
     },
     ShiftR {
-        var: Var<'input>,
-        assign: Box<Assign<'input>>,
+        var: Var<'src>,
+        assign: Box<Assign<'src>>,
     },
     ShiftRa {
-        var: Var<'input>,
-        assign: Box<Assign<'input>>,
+        var: Var<'src>,
+        assign: Box<Assign<'src>>,
     },
     LogicOr {
-        or: LogicOr<'input>,
+        or: LogicOr<'src>,
     }
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Assign<'input>> for Assign<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, assign: ast::Assign<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, assign: ast::Assign<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

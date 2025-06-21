@@ -4,13 +4,13 @@ use sb_compiler_parse_cst::Span;
 use super::{SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub struct ArgumentDef<'input> {
-    pub ident: Span<'input>,
-    pub ty: Span<'input>,
+pub struct ArgumentDef<'src> {
+    pub ident: Span<'src>,
+    pub ty: Span<'src>,
 }
 
-impl<'input> SemCheckFrom<Dep<'_, '_>, ast::ArgumentDef<'input>> for ArgumentDef<'input> {
-    async fn check0(_: Dep<'_, '_>, arg: ast::ArgumentDef<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, '_>, ast::ArgumentDef<'src>> for ArgumentDef<'src> {
+    async fn check0(_: Dep<'_, '_>, arg: ast::ArgumentDef<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

@@ -4,15 +4,15 @@ use sb_compiler_parse_cst::Span;
 use super::{ArgumentDef, Block, SemCheckFrom, InDep};
 
 #[derive(Debug)]
-pub struct FuncDef<'input> {
-    pub ident: Span<'input>,
-    pub args: Vec<ArgumentDef<'input>>,
-    pub ret_ty: Option<Span<'input>>,
-    pub block: Block<'input>,
+pub struct FuncDef<'src> {
+    pub ident: Span<'src>,
+    pub args: Vec<ArgumentDef<'src>>,
+    pub ret_ty: Option<Span<'src>>,
+    pub block: Block<'src>,
 }
 
-impl<'input> SemCheckFrom<InDep<'input>, ast::FuncDef<'input>> for FuncDef<'input> {
-    async fn check0(mut ctx: InDep<'input>, func_def: ast::FuncDef<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
+    async fn check0(mut ctx: InDep<'src>, func_def: ast::FuncDef<'src>) -> anyhow::Result<Self>
         where
             Self: Sized
     {

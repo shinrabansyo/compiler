@@ -4,7 +4,7 @@ use sb_compiler_semcheck_hir::FuncDef;
 use crate::{GenContext, ZERO_REG};
 use super::lirgen_block;
 
-pub fn lirgen_func_def<'input>(ctx: &mut GenContext<'input>, func: &FuncDef<'input>) -> LirTopElem {
+pub fn lirgen_func_def<'src>(ctx: &mut GenContext<'src>, func: &FuncDef<'src>) -> LirTopElem {
     // 本体
     let lir_body = lirgen_block(ctx, &func.block);
 

@@ -37,4 +37,4 @@ mod call;           pub use call::Call;
 use sb_compiler_parse_cst::CSTreeVisitor;
 use sb_compiler_parse_syntax::SBLangDef;
 
-type Visitor<'input> = CSTreeVisitor<'input, SBLangDef>;
+type Visitor<'src> = CSTreeVisitor<'src, SBLangDef>;

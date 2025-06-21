@@ -3,38 +3,38 @@ use sb_compiler_parse_syntax::SBToken;
 use super::{BitShift, Visitor};
 
 #[derive(Debug)]
-pub enum Cond<'input> {
+pub enum Cond<'src> {
     Eq {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     Neq {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     Lt {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     Lte {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     Gt {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     Gte {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     BitShift {
-        bit_shift: BitShift<'input>,
+        bit_shift: BitShift<'src>,
     },
 }
 
-impl<'input> From<Visitor<'input>> for Cond<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for Cond<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
             return Cond::BitShift {

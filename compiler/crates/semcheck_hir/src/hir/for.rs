@@ -3,15 +3,15 @@ use sb_compiler_parse_ast as ast;
 use super::{Block, Expr, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub struct For<'input> {
-    pub init: Expr<'input>,
-    pub cond: Expr<'input>,
-    pub incr: Expr<'input>,
-    pub block: Block<'input>,
+pub struct For<'src> {
+    pub init: Expr<'src>,
+    pub cond: Expr<'src>,
+    pub incr: Expr<'src>,
+    pub block: Block<'src>,
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::For<'input>> for For<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, r#fot: ast::For<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::For<'src>> for For<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, r#fot: ast::For<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

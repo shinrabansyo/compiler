@@ -3,17 +3,17 @@ use sb_compiler_parse_cst::Span;
 use super::Visitor;
 
 #[derive(Debug)]
-pub enum InlineAsmOperandL<'input> {
+pub enum InlineAsmOperandL<'src> {
     Reg {
         num: u8,
     },
     Var {
-        name: Span<'input>,
+        name: Span<'src>,
     },
 }
 
-impl<'input> From<Visitor<'input>> for InlineAsmOperandL<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for InlineAsmOperandL<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         let operand = visitor.expect_leaf().1;
         let operand_s = operand.as_str();
 
@@ -29,17 +29,17 @@ impl<'input> From<Visitor<'input>> for InlineAsmOperandL<'input> {
 }
 
 #[derive(Debug)]
-pub enum InlineAsmOperandR<'input> {
+pub enum InlineAsmOperandR<'src> {
     Reg {
         num: u8,
     },
     Var {
-        name: Span<'input>,
+        name: Span<'src>,
     },
 }
 
-impl<'input> From<Visitor<'input>> for InlineAsmOperandR<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for InlineAsmOperandR<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         let operand = visitor.expect_leaf().1;
         let operand_s = operand.as_str();
 

@@ -3,35 +3,35 @@ use sb_compiler_parse_ast as ast;
 use super::{VarDecl, Block, Expr, Return, If, While, For, InlineAsm, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub enum Stmt<'input> {
+pub enum Stmt<'src> {
     VarDecl {
-        var_decl: VarDecl<'input>,
+        var_decl: VarDecl<'src>,
     },
     Block {
-        block: Block<'input>,
+        block: Block<'src>,
     },
     Expr {
-        expr: Expr<'input>,
+        expr: Expr<'src>,
     },
     Return {
-        r#return: Return<'input>,
+        r#return: Return<'src>,
     },
     If {
-        r#if: If<'input>,
+        r#if: If<'src>,
     },
     While {
-        r#while: While<'input>,
+        r#while: While<'src>,
     },
     For {
-        r#for: For<'input>,
+        r#for: For<'src>,
     },
     InlineAsm {
-        inline_asm: InlineAsm<'input>,
+        inline_asm: InlineAsm<'src>,
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Stmt<'input>> for Stmt<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, stmt: ast::Stmt<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Stmt<'src>> for Stmt<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, stmt: ast::Stmt<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

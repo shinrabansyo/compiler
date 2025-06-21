@@ -4,13 +4,13 @@ use sb_compiler_parse_cst::Span;
 use super::{Value, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub struct Call<'input> {
-    pub ident: Span<'input>,
-    pub args: Vec<Value<'input>>,
+pub struct Call<'src> {
+    pub ident: Span<'src>,
+    pub args: Vec<Value<'src>>,
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Call<'input>> for Call<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, call: ast::Call<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Call<'src>> for Call<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, call: ast::Call<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

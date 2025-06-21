@@ -3,14 +3,14 @@ use sb_compiler_parse_ast as ast;
 use super::{Expr, Block, Stmt, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub struct If<'input> {
-    pub cond: Expr<'input>,
-    pub block: Block<'input>,
-    pub else_stmt: Option<Box<Stmt<'input>>>,
+pub struct If<'src> {
+    pub cond: Expr<'src>,
+    pub block: Block<'src>,
+    pub else_stmt: Option<Box<Stmt<'src>>>,
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::If<'input>> for If<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, r#if: ast::If<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::If<'src>> for If<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, r#if: ast::If<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

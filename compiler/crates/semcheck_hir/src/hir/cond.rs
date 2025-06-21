@@ -3,38 +3,38 @@ use sb_compiler_parse_ast as ast;
 use super::{BitShift, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub enum Cond<'input> {
+pub enum Cond<'src> {
     Eq {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     Neq {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     Lt {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     Lte {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     Gt {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     Gte {
-        lhs: Box<Cond<'input>>,
-        rhs: BitShift<'input>,
+        lhs: Box<Cond<'src>>,
+        rhs: BitShift<'src>,
     },
     BitShift {
-        bit_shift: BitShift<'input>,
+        bit_shift: BitShift<'src>,
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Cond<'input>> for Cond<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, cond: ast::Cond<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, cond: ast::Cond<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

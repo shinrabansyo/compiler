@@ -3,15 +3,15 @@ use sb_compiler_parse_cst::Span;
 use super::{ArgumentDef, Block, Visitor};
 
 #[derive(Debug)]
-pub struct FuncDef<'input> {
-    pub ident: Span<'input>,
-    pub args: Vec<ArgumentDef<'input>>,
-    pub ret_ty: Option<Span<'input>>,
-    pub block: Block<'input>,
+pub struct FuncDef<'src> {
+    pub ident: Span<'src>,
+    pub args: Vec<ArgumentDef<'src>>,
+    pub ret_ty: Option<Span<'src>>,
+    pub block: Block<'src>,
 }
 
-impl<'input> From<Visitor<'input>> for FuncDef<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for FuncDef<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         let ident = visitor.expect_leaf().1;
         let args = visitor.expect_nodes::<ArgumentDef>();
         let ret_ty = visitor

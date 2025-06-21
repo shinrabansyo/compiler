@@ -3,12 +3,12 @@ use sb_compiler_parse_ast as ast;
 use super::{Stmt, SemCheckFrom, InDep};
 
 #[derive(Debug)]
-pub struct Block<'input> {
-    pub stmts: Vec<Stmt<'input>>,
+pub struct Block<'src> {
+    pub stmts: Vec<Stmt<'src>>,
 }
 
-impl<'input> SemCheckFrom<InDep<'input>, ast::Block<'input>> for Block<'input> {
-    async fn check0(mut ctx: InDep<'input>, block: ast::Block<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<InDep<'src>, ast::Block<'src>> for Block<'src> {
+    async fn check0(mut ctx: InDep<'src>, block: ast::Block<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

@@ -3,13 +3,13 @@ use sb_compiler_parse_cst::Span;
 use super::Visitor;
 
 #[derive(Debug)]
-pub struct ArgumentDef<'input> {
-    pub ident: Span<'input>,
-    pub ty: Span<'input>,
+pub struct ArgumentDef<'src> {
+    pub ident: Span<'src>,
+    pub ty: Span<'src>,
 }
 
-impl<'input> From<Visitor<'input>> for ArgumentDef<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for ArgumentDef<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         ArgumentDef {
             ident: visitor.expect_leaf().1,
             ty: visitor.expect_leaf().1,

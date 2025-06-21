@@ -3,12 +3,12 @@ use sb_compiler_parse_ast as ast;
 use super::{Assign, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub struct Expr<'input> {
-    pub assign: Assign<'input>,
+pub struct Expr<'src> {
+    pub assign: Assign<'src>,
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Expr<'input>> for Expr<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, expr: ast::Expr<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::Expr<'src>> for Expr<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, expr: ast::Expr<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

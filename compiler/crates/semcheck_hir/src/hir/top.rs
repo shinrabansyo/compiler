@@ -3,14 +3,14 @@ use sb_compiler_parse_ast as ast;
 use super::{FuncDef, SemCheckFrom, InDep};
 
 #[derive(Debug)]
-pub enum Top<'input> {
+pub enum Top<'src> {
     FuncDef {
-        func_def: FuncDef<'input>,
+        func_def: FuncDef<'src>,
     },
 }
 
-impl<'input> SemCheckFrom<InDep<'input>, ast::Top<'input>> for Top<'input> {
-    async fn check0(ctx: InDep<'input>, top: ast::Top<'input>) -> anyhow::Result<Top<'input>>
+impl<'src> SemCheckFrom<InDep<'src>, ast::Top<'src>> for Top<'src> {
+    async fn check0(ctx: InDep<'src>, top: ast::Top<'src>) -> anyhow::Result<Top<'src>>
     where
         Self: Sized,
     {

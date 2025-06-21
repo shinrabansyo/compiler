@@ -4,12 +4,12 @@ use sb_compiler_semcheck_async::prelude::*;
 use super::{Top, SemCheckFrom, InDep};
 
 #[derive(Debug)]
-pub struct Program<'input> {
-    pub top_elems: Vec<Top<'input>>,
+pub struct Program<'src> {
+    pub top_elems: Vec<Top<'src>>,
 }
 
-impl<'input> SemCheckFrom<InDep<'input>, ast::Program<'input>> for Program<'input> {
-    async fn check0(ctx: InDep<'input>, program: ast::Program<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<InDep<'src>, ast::Program<'src>> for Program<'src> {
+    async fn check0(ctx: InDep<'src>, program: ast::Program<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

@@ -3,26 +3,26 @@ use sb_compiler_parse_ast as ast;
 use super::{Add, SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub enum BitShift<'input> {
+pub enum BitShift<'src> {
     L {
-        lhs: Box<BitShift<'input>>,
-        rhs: Add<'input>,
+        lhs: Box<BitShift<'src>>,
+        rhs: Add<'src>,
     },
     R {
-        lhs: Box<BitShift<'input>>,
-        rhs: Add<'input>,
+        lhs: Box<BitShift<'src>>,
+        rhs: Add<'src>,
     },
     Ra {
-        lhs: Box<BitShift<'input>>,
-        rhs: Add<'input>,
+        lhs: Box<BitShift<'src>>,
+        rhs: Add<'src>,
     },
     Add {
-        add: Add<'input>,
+        add: Add<'src>,
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::BitShift<'input>> for BitShift<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, shift: ast::BitShift<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::BitShift<'src>> for BitShift<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, shift: ast::BitShift<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

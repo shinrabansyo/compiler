@@ -5,50 +5,50 @@ use super::{InlineAsmOperand, SemCheckFrom, Dep};
 type Operand<'a> = InlineAsmOperand<'a>;
 
 #[derive(Debug)]
-pub enum InlineAsmInst<'input> {
+pub enum InlineAsmInst<'src> {
     // I-形式
-    Addi { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Subi { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Jal  { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Lw   { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Lh   { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Lb   { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Lhu  { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Lbu  { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    In   { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Andi { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Ori  { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Xori { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Srli { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Srai { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
-    Slli { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Addi { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Subi { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Jal  { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Lw   { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Lh   { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Lb   { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Lhu  { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Lbu  { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    In   { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Andi { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Ori  { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Xori { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Srli { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Srai { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
+    Slli { rd: Operand<'src>, rs1: Operand<'src>, imm: i32 },
 
     // S-形式
-    Sw   { rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
-    Sh   { rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
-    Sb   { rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
-    Isb  { rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
-    Out  { rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
+    Sw   { rs1: Operand<'src>, rs2: Operand<'src>, imm: i32 },
+    Sh   { rs1: Operand<'src>, rs2: Operand<'src>, imm: i32 },
+    Sb   { rs1: Operand<'src>, rs2: Operand<'src>, imm: i32 },
+    Isb  { rs1: Operand<'src>, rs2: Operand<'src>, imm: i32 },
+    Out  { rs1: Operand<'src>, rs2: Operand<'src>, imm: i32 },
 
     // R-形式
-    Add  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
-    Sub  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
-    And  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
-    Or   { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
-    Xor  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
-    Srl  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
-    Sra  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
-    Sll  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
+    Add  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src> },
+    Sub  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src> },
+    And  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src> },
+    Or   { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src> },
+    Xor  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src> },
+    Srl  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src> },
+    Sra  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src> },
+    Sll  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src> },
 
     // B-形式
-    Beq  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
-    Bne  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
-    Blt  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
-    Ble  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
+    Beq  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src>, imm: i32 },
+    Bne  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src>, imm: i32 },
+    Blt  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src>, imm: i32 },
+    Ble  { rd: Operand<'src>, rs1: Operand<'src>, rs2: Operand<'src>, imm: i32 },
 }
 
-impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::InlineAsmInst<'input>> for InlineAsmInst<'input> {
-    async fn check0(ctx: Dep<'_, 'input>, inst: ast::InlineAsmInst<'input>) -> anyhow::Result<Self>
+impl<'src> SemCheckFrom<Dep<'_, 'src>, ast::InlineAsmInst<'src>> for InlineAsmInst<'src> {
+    async fn check0(ctx: Dep<'_, 'src>, inst: ast::InlineAsmInst<'src>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {
