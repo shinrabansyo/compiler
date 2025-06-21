@@ -1,14 +1,15 @@
-use std::collections::VecDeque;
+use std::future::Future;
+use std::pin::Pin;
 
-use sb_compiler_semcheck_task::{PinnedTask, Task, block_on, join_all_task};
-use sb_compiler_semcheck_task_macros::task;
+use sb_compiler_semcheck_task::{SharedState, block_on, join_all};
+use sb_compiler_semcheck_task_macros::failable_as_async;
 
-#[task(deadlock = "return_0")]
+#[failable_as_async]
 fn return_0(num: i32) -> Option<i32> {
     Some(num)
 }
 
-#[task(deadlock = "return_1")]
+#[failable_as_async]
 fn return_1(num: i32) -> Option<i32> {
     static mut CNT: i32 = 0;
 
@@ -20,34 +21,35 @@ fn return_1(num: i32) -> Option<i32> {
     }
 }
 
-#[task(deadlock = format!("return_inf({})", _num))]
+#[failable_as_async]
 fn return_inf(_num: i32) -> Option<i32> {
     None
 }
 
 #[test]
 fn test_ok() {
-    let tasks = [
-        return_0(1),
-        return_1(2),
-    ].into_iter();
+    let tasks: [Pin<Box<dyn Future<Output = Option<i32>>>>; 2] = [
+        Box::pin(return_0(1)),
+        Box::pin(return_1(2)),
+    ];
 
-    assert_eq!(block_on(join_all_task(tasks)).unwrap(), vec![1, 2]);
+    assert_eq!(
+        block_on(join_all(tasks.into_iter())),
+        vec![Some(1), Some(2)]
+    );
 }
 
 #[test]
 fn test_err() {
-    let tasks = [
-        return_0(1),
-        return_1(2),
-        return_inf(3),
-        return_inf(4),
-    ].into_iter();
+    let tasks: [Pin<Box<dyn Future<Output = Option<i32>>>>; 4] = [
+        Box::pin(return_0(1)),
+        Box::pin(return_1(2)),
+        Box::pin(return_inf(3)),
+        Box::pin(return_inf(4)),
+    ];
 
-    let result = block_on(join_all_task(tasks));
-    assert!(result.is_err());
-
-    let mut result_err = VecDeque::from(result.err().unwrap());
-    assert_eq!(result_err.pop_front().unwrap().to_string(), "return_inf(3)");
-    assert_eq!(result_err.pop_front().unwrap().to_string(), "return_inf(4)");
+    assert_eq!(
+        block_on(join_all(tasks.into_iter())),
+        vec![Some(1), Some(2), None, None],
+    );
 }

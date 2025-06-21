@@ -1,1 +1,1 @@
-pub mod task;
+pub mod failable_as_async;

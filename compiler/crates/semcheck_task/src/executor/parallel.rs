@@ -2,9 +2,13 @@ use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
-pub fn join_all_std<'a, I, T>(futures: I) -> impl Future<Output = Vec<T>> + 'a
+use crate::state::SharedState;
+
+type Pinned<T> = Pin<Box<T>>;
+
+pub fn join_all<'a, I, T>(futures: I) -> impl Future<Output = Vec<T>> + 'a
 where
-    I: Iterator<Item = Pin<Box<dyn Future<Output = T> + 'a>>>,
+    I: Iterator<Item = Pinned<dyn Future<Output = T> + 'a>>,
     T: Unpin + 'a,
 {
     let pinned_futures = futures
@@ -21,7 +25,7 @@ where
 }
 
 struct JoinAll<'a, T> {
-    futures: Vec<Option<Pin<Box<dyn Future<Output = T> + 'a>>>>,
+    futures: Vec<Option<Pinned<dyn Future<Output = T> + 'a>>>,
     artifacts: Vec<Option<T>>,
 }
 
@@ -31,7 +35,7 @@ where
 {
     type Output = Vec<T>;
 
-    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+    fn poll(mut self: Pin<&mut Self>, ctx: &mut Context<'_>) -> Poll<Self::Output> {
         let mut all_completed = true;
         let mut any_stepped = false;
 
@@ -39,7 +43,7 @@ where
         for idx in 0..self.futures.len() {
             let mut future = self.futures[idx].as_mut();
             if future.is_some() {
-                match future.as_mut().unwrap().as_mut().poll(cx) {
+                match future.as_mut().unwrap().as_mut().poll(ctx) {
                     Poll::Ready(result) => {
                         any_stepped = true;
                         self.futures[idx] = None;
@@ -64,11 +68,10 @@ where
 
         // 全てのタスクが完了していないが，いずれかのタスクが進行した場合
         if any_stepped {
-            return Poll::Pending;
+            SharedState::notify_stepped(ctx);
         }
 
-        // いずれのタスクも進行しなかった場合
-        panic!("Deadlock detected: no task made progress");
+        Poll::Pending
     }
 }
 
@@ -78,8 +81,8 @@ mod tests {
     use std::task::Poll;
     use std::pin::Pin;
 
-    use crate::block_on;
-    use super::join_all_std;
+    use crate::{SharedState, block_on};
+    use super::join_all;
 
     #[test]
     fn test_ok_1() {
@@ -88,7 +91,7 @@ mod tests {
         ];
         let tasks = tasks.into_iter();
 
-        assert_eq!(block_on(join_all_std(tasks)), vec![Ok(1)]);
+        assert_eq!(block_on(join_all(tasks)), vec![Ok(1)]);
     }
 
     #[test]
@@ -100,19 +103,24 @@ mod tests {
         ];
         let tasks = tasks.into_iter();
 
-        assert_eq!(block_on(join_all_std(tasks)), vec![Ok(1), Ok(2), Ok(3)]);
+        assert_eq!(block_on(join_all(tasks)), vec![Ok(1), Ok(2), Ok(3)]);
     }
 
     #[test]
-    #[should_panic]
     fn test_err_1() {
         let tasks: [Pin<Box<dyn Future<Output = Result<i32, ()>>>>; 3] = [
             Box::pin(async { Ok(1) }),
             Box::pin(async { Ok(2) }),
-            Box::pin(poll_fn(|_| Poll::Pending)),
+            Box::pin(poll_fn(|ctx| {
+                if SharedState::check_deadlock(ctx) {
+                    Poll::Ready(Err(()))
+                } else {
+                    Poll::Pending
+                }
+            })),
         ];
         let tasks = tasks.into_iter();
 
-        block_on(join_all_std(tasks));
+        assert_eq!(block_on(join_all(tasks)), vec![Ok(1), Ok(2), Err(())]);
     }
 }
