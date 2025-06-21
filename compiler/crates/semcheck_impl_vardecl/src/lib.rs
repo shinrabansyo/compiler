@@ -9,7 +9,7 @@ use string_interner::backend::StringBackend;
 use string_interner::symbol::SymbolU32;
 use string_interner::StringInterner;
 
-use sb_compiler_semcheck_async::SharedState;
+use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::failable_as_async;
 
 use error::VarDeclError;
@@ -89,7 +89,7 @@ impl VarDeclChecker {
             from,
             |n| n == to,
             |_| 0,      // 連結を確認するだけなので辺の重みは無視
-            |_| 0,  // 連結を確認するだけなので辺の重みは無視
+            |_| 0,      // 連結を確認するだけなので辺の重みは無視
         ).unwrap().1;
 
         // 3. 経路を順に見て，初めて見つけた変数を検索結果とする

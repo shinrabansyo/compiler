@@ -76,17 +76,21 @@ mod tests {
     use std::task::Poll;
     use std::pin::Pin;
 
-    use crate::{SharedState, block_on};
-    use super::join_all;
+    use crate::prelude::*;
 
     #[test]
     fn test_ok_1() {
         let tasks: [Pin<Box<dyn Future<Output = Result<i32, ()>>>>; 1] = [
             Box::pin(async { Ok(1) }),
         ];
-        let tasks = tasks.into_iter();
 
-        assert_eq!(block_on(join_all(tasks)).collect::<Vec<_>>(), vec![Ok(1)]);
+        let result = tasks
+            .into_iter()
+            .join_all()
+            .block_on()
+            .collect::<Vec<_>>();
+
+        assert_eq!(result, vec![Ok(1)]);
     }
 
     #[test]
@@ -96,9 +100,13 @@ mod tests {
             Box::pin(async { Ok(2) }),
             Box::pin(async { Ok(3) }),
         ];
-        let tasks = tasks.into_iter();
 
-        assert_eq!(block_on(join_all(tasks)).collect::<Vec<_>>(), vec![Ok(1), Ok(2), Ok(3)]);
+        let result = tasks.into_iter()
+            .join_all()
+            .block_on()
+            .collect::<Vec<_>>();
+
+        assert_eq!(result, vec![Ok(1), Ok(2), Ok(3)]);
     }
 
     #[test]
@@ -114,8 +122,12 @@ mod tests {
                 }
             })),
         ];
-        let tasks = tasks.into_iter();
 
-        assert_eq!(block_on(join_all(tasks)).collect::<Vec<_>>(), vec![Ok(1), Ok(2), Err(())]);
+        let result = tasks.into_iter()
+            .join_all()
+            .block_on()
+            .collect::<Vec<_>>();
+
+        assert_eq!(result, vec![Ok(1), Ok(2), Err(())]);
     }
 }

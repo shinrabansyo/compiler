@@ -41,14 +41,13 @@ mod tests {
     use std::future::poll_fn;
     use std::task::{Context, Poll};
 
-    use crate::SharedState;
-    use super::block_on;
+    use crate::prelude::*;
 
     #[test]
     fn test_run_ok_1() {
         let task_a = async { Ok::<i32, ()>(1) };
 
-        assert_eq!(block_on(task_a).unwrap(), 1);
+        assert_eq!(task_a.block_on().unwrap(), 1);
     }
 
     #[test]
@@ -64,7 +63,7 @@ mod tests {
             Ok::<i32, ()>(a + b + c)
         };
 
-        assert_eq!(block_on(async_f).unwrap(), 6);
+        assert_eq!(async_f.block_on().unwrap(), 6);
     }
 
     #[test]
@@ -74,6 +73,6 @@ mod tests {
             Poll::Ready(now_deadlock)
         });
 
-        assert_eq!(block_on(task_a), false);
+        assert_eq!(task_a.block_on(), false);
     }
 }

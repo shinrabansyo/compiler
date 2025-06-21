@@ -1,7 +1,7 @@
 use std::future::Future;
 use std::pin::Pin;
 
-use sb_compiler_semcheck_async::{SharedState, block_on, join_all};
+use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::failable_as_async;
 
 #[failable_as_async('a)]
@@ -33,10 +33,13 @@ fn test_ok() {
         Box::pin(return_1("2")),
     ];
 
-    assert_eq!(
-        block_on(join_all(tasks.into_iter())).collect::<Vec<_>>(),
-        vec![Some(1), Some(2)]
-    );
+    let result = tasks
+        .into_iter()
+        .join_all()
+        .block_on()
+        .collect::<Vec<_>>();
+
+    assert_eq!(result, vec![Some(1), Some(2)]);
 }
 
 #[test]
@@ -48,8 +51,11 @@ fn test_err() {
         Box::pin(return_inf("4")),
     ];
 
-    assert_eq!(
-        block_on(join_all(tasks.into_iter())).collect::<Vec<_>>(),
-        vec![Some(1), Some(2), None, None],
-    );
+    let result = tasks
+        .into_iter()
+        .join_all()
+        .block_on()
+        .collect::<Vec<_>>();
+
+    assert_eq!(result, vec![Some(1), Some(2), None, None]);
 }
