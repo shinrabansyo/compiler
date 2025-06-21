@@ -15,7 +15,7 @@ pub fn compile(input: &str) -> anyhow::Result<Vec<Object>> {
 
     panic!("Success, but compilation is not yet implemented.");
 
-    // // 3. LIR生成 (AST -> [LIR])
+    // // 3. LIR生成 (HIR -> [LIR])
     // let lir = lirgen(&ast);
 
     // // 4. コード生成 & 最適化 ([LIR] -> [Obj] -> [Obj])

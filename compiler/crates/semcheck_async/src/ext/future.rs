@@ -2,11 +2,11 @@ use std::future::Future;
 
 use crate::block_on;
 
-pub trait FutureExtSerial<T> {
+pub trait FutureExt<T> {
     fn block_on(self) -> T;
 }
 
-impl<F, T> FutureExtSerial<T> for F
+impl<F, T> FutureExt<T> for F
 where
     F: Future<Output = T>,
 {
