@@ -1,8 +1,8 @@
 use std::future::Future;
 use std::pin::Pin;
 
-use sb_compiler_semcheck_task::{SharedState, block_on, join_all};
-use sb_compiler_semcheck_task_macros::failable_as_async;
+use sb_compiler_semcheck_async::{SharedState, block_on, join_all};
+use sb_compiler_semcheck_async_macros::failable_as_async;
 
 #[failable_as_async]
 fn return_0(num: i32) -> Option<i32> {

@@ -1,5 +1,5 @@
 [package]
-name = "sb_compiler_semcheck_task_macros"
+name = "sb_compiler_semcheck_async_macros"
 version = "0.1.0"
 edition = "2021"
 
@@ -11,7 +11,7 @@ quote = "1.0"
 syn = { version = "2.0", features = ["full", "extra-traits"] }
 
 [dev-dependencies]
-sb_compiler_semcheck_task = { path = "../semcheck_task" }
+sb_compiler_semcheck_async = { path = "../semcheck_async" }
 
 [lib]
 proc-macro = true

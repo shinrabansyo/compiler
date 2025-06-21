@@ -1290,12 +1290,47 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "sb_compiler_parse_ast",
+ "sb_compiler_semcheck_async",
  "sb_compiler_semcheck_hir",
+ "sb_compiler_semcheck_impl",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_compiler_semcheck_async"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "futures",
+]
+
+[[package]]
+name = "sb_compiler_semcheck_async_macros"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "proc-macro2",
+ "quote",
+ "sb_compiler_semcheck_async",
+ "syn",
  "thiserror 2.0.12",
 ]
 
 [[package]]
 name = "sb_compiler_semcheck_hir"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "sb_compiler_parse_ast",
+ "sb_compiler_parse_cst",
+ "sb_compiler_semcheck_async",
+ "sb_compiler_semcheck_impl",
+ "sb_compiler_semcheck_impl_vardecl",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_compiler_semcheck_impl"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -1309,29 +1344,9 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "petgraph",
- "sb_compiler_semcheck_task",
- "sb_compiler_semcheck_task_macros",
+ "sb_compiler_semcheck_async",
+ "sb_compiler_semcheck_async_macros",
  "string-interner",
- "thiserror 2.0.12",
-]
-
-[[package]]
-name = "sb_compiler_semcheck_task"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "futures",
-]
-
-[[package]]
-name = "sb_compiler_semcheck_task_macros"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "proc-macro2",
- "quote",
- "sb_compiler_semcheck_task",
- "syn",
  "thiserror 2.0.12",
 ]
 
