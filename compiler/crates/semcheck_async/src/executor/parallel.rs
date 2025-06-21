@@ -1,10 +1,13 @@
 use std::future::Future;
+use std::iter::Map;
 use std::pin::Pin;
 use std::task::{Context, Poll};
+use std::vec::IntoIter;
 
 type Pinned<T> = Pin<Box<T>>;
+type ResultIter<T> = Map<IntoIter<Option<T>>, fn(Option<T>) -> T>;
 
-pub fn join_all<'a, I, T>(futures: I) -> impl Future<Output = Vec<T>> + 'a
+pub fn join_all<'a, I, T>(futures: I) -> impl Future<Output = ResultIter<T>> + 'a
 where
     I: Iterator<Item = Pinned<dyn Future<Output = T> + 'a>>,
     T: Unpin + 'a,
@@ -18,20 +21,20 @@ where
 
     JoinAll {
         futures: pinned_futures,
-        artifacts: empty_artifacts,
+        artifacts: Some(empty_artifacts),
     }
 }
 
 struct JoinAll<'a, T> {
     futures: Vec<Option<Pinned<dyn Future<Output = T> + 'a>>>,
-    artifacts: Vec<Option<T>>,
+    artifacts: Option<Vec<Option<T>>>,
 }
 
 impl<'a, T> Future for JoinAll<'a, T>
 where
-    T: Unpin,
+    T: Unpin + 'a,
 {
-    type Output = Vec<T>;
+    type Output = ResultIter<T>;
 
     fn poll(mut self: Pin<&mut Self>, ctx: &mut Context<'_>) -> Poll<Self::Output> {
         let mut all_completed = true;
@@ -43,7 +46,7 @@ where
                 match future.as_mut().unwrap().as_mut().poll(ctx) {
                     Poll::Ready(result) => {
                         self.futures[idx] = None;
-                        self.artifacts[idx] = Some(result);
+                        self.artifacts.as_mut().unwrap()[idx] = Some(result);
                     }
                     Poll::Pending => {
                         all_completed = false;
@@ -54,12 +57,13 @@ where
 
         // 全ての Future が完了した場合
         if all_completed {
-            let artifactis = self
+           let artifacts = self
                 .artifacts
-                .iter_mut()
-                .map(|artifact| artifact.take().unwrap())
-                .collect();
-            return Poll::Ready(artifactis);
+                .take()
+                .unwrap()
+                .into_iter()
+                .map((|mut opt| { opt.take().unwrap() }) as fn(Option<T>) -> T);
+            return Poll::Ready(artifacts);
         }
 
         Poll::Pending
@@ -82,7 +86,7 @@ mod tests {
         ];
         let tasks = tasks.into_iter();
 
-        assert_eq!(block_on(join_all(tasks)), vec![Ok(1)]);
+        assert_eq!(block_on(join_all(tasks)).collect::<Vec<_>>(), vec![Ok(1)]);
     }
 
     #[test]
@@ -94,7 +98,7 @@ mod tests {
         ];
         let tasks = tasks.into_iter();
 
-        assert_eq!(block_on(join_all(tasks)), vec![Ok(1), Ok(2), Ok(3)]);
+        assert_eq!(block_on(join_all(tasks)).collect::<Vec<_>>(), vec![Ok(1), Ok(2), Ok(3)]);
     }
 
     #[test]
@@ -112,6 +116,6 @@ mod tests {
         ];
         let tasks = tasks.into_iter();
 
-        assert_eq!(block_on(join_all(tasks)), vec![Ok(1), Ok(2), Err(())]);
+        assert_eq!(block_on(join_all(tasks)).collect::<Vec<_>>(), vec![Ok(1), Ok(2), Err(())]);
     }
 }

@@ -34,7 +34,7 @@ fn test_ok() {
     ];
 
     assert_eq!(
-        block_on(join_all(tasks.into_iter())),
+        block_on(join_all(tasks.into_iter())).collect::<Vec<_>>(),
         vec![Some(1), Some(2)]
     );
 }
@@ -49,7 +49,7 @@ fn test_err() {
     ];
 
     assert_eq!(
-        block_on(join_all(tasks.into_iter())),
+        block_on(join_all(tasks.into_iter())).collect::<Vec<_>>(),
         vec![Some(1), Some(2), None, None],
     );
 }
