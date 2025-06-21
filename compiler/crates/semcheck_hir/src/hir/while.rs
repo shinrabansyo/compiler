@@ -8,8 +8,8 @@ pub struct While<'input> {
     pub block: Block<'input>,
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::While<'input>> for While<'input> {
-    async fn check0(ctx: Dep<'_>, r#while: ast::While<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::While<'input>> for While<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, r#while: ast::While<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

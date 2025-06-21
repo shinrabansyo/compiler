@@ -7,12 +7,12 @@ use sb_compiler_semcheck_impl_vardecl::{VarDeclChecker, VarDeclContext};
 use name::Name;
 
 #[derive(Debug, Clone)]
-pub struct SemCheckContext {
+pub struct SemCheckContext<'input> {
     name: Name,
-    pub var_decl: VarDeclContext,
+    pub var_decl: VarDeclContext<'input>,
 }
 
-impl SemCheckContext {
+impl<'input> SemCheckContext<'input> {
     pub fn push_namespace(&mut self, namespace: &str) {
         self.name.push(namespace);
     }
@@ -32,12 +32,12 @@ impl SemCheckContext {
 
 #[derive(Debug)]
 #[allow(dead_code)]
-pub struct SemCheckServer {
-    var_decl: Arc<Mutex<VarDeclChecker>>,
+pub struct SemCheckServer<'input> {
+    var_decl: Arc<Mutex<VarDeclChecker<'input>>>,
 }
 
-impl SemCheckServer {
-    pub fn new() -> (SemCheckServer, SemCheckContext) {
+impl<'input> SemCheckServer<'input> {
+    pub fn new() -> (SemCheckServer<'input>, SemCheckContext<'input>) {
         // 各種意味チェッカの初期化
         let (var_decl_checker, var_decl_ctx) = VarDeclChecker::new();
 

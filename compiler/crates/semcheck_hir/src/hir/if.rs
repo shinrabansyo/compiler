@@ -9,8 +9,8 @@ pub struct If<'input> {
     pub else_stmt: Option<Box<Stmt<'input>>>,
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::If<'input>> for If<'input> {
-    async fn check0(ctx: Dep<'_>, r#if: ast::If<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::If<'input>> for If<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, r#if: ast::If<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

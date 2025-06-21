@@ -9,8 +9,8 @@ pub struct ArgumentDef<'input> {
     pub ty: Span<'input>,
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::ArgumentDef<'input>> for ArgumentDef<'input> {
-    async fn check0(_: Dep<'_>, arg: ast::ArgumentDef<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, '_>, ast::ArgumentDef<'input>> for ArgumentDef<'input> {
+    async fn check0(_: Dep<'_, '_>, arg: ast::ArgumentDef<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

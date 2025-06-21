@@ -11,8 +11,8 @@ pub struct FuncDef<'input> {
     pub block: Block<'input>,
 }
 
-impl<'input> SemCheckFrom<InDep, ast::FuncDef<'input>> for FuncDef<'input> {
-    async fn check0(mut ctx: InDep, func_def: ast::FuncDef<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<InDep<'input>, ast::FuncDef<'input>> for FuncDef<'input> {
+    async fn check0(mut ctx: InDep<'input>, func_def: ast::FuncDef<'input>) -> anyhow::Result<Self>
         where
             Self: Sized
     {

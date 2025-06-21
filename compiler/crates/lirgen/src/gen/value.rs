@@ -10,8 +10,8 @@ pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirBlock {
             let reg_imm = ctx.alloc_reg();
             (reg_imm, vec![lir!(Li(*value) reg_imm)])
         }
-        Value::Var { id, .. } => {
-            (ctx.ref_var_reg(id).unwrap(), vec![])
+        Value::Var { var, .. } => {
+            (ctx.ref_var_reg(var).unwrap(), vec![])
         }
         Value::Expr { expr, .. } => {
             let lir_expr = lirgen_expr(ctx, expr);

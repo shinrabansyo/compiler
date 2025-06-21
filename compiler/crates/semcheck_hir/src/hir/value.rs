@@ -1,5 +1,5 @@
 use sb_compiler_parse_ast as ast;
-use sb_compiler_semcheck_impl_vardecl::{VarDeclChecker, VarId};
+use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 
 use super::{Expr, Call, SemCheckFrom, Dep};
 
@@ -9,7 +9,7 @@ pub enum Value<'input> {
         value: i32,
     },
     Var {
-        id: VarId,
+        var: Var<'input>,
     },
     Expr {
         expr: Box<Expr<'input>>,
@@ -19,8 +19,8 @@ pub enum Value<'input> {
     }
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::Value<'input>> for Value<'input> {
-    async fn check0(ctx: Dep<'_>, value: ast::Value<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Value<'input>> for Value<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, value: ast::Value<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {
@@ -30,7 +30,7 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::Value<'input>> for Value<'input> {
             }
             ast::Value::Var { name } => {
                 Ok(Value::Var {
-                    id: VarDeclChecker::find(&mut ctx.var_decl, &name).await?,
+                    var: VarDeclChecker::find(&mut ctx.var_decl, &name).await?,
                 })
             }
             ast::Value::Expr { expr } => {

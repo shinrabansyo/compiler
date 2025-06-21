@@ -10,8 +10,8 @@ pub struct For<'input> {
     pub block: Block<'input>,
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::For<'input>> for For<'input> {
-    async fn check0(ctx: Dep<'_>, r#fot: ast::For<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::For<'input>> for For<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, r#fot: ast::For<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

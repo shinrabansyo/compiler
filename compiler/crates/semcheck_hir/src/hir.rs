@@ -38,8 +38,8 @@ use std::future::Future;
 use std::pin::Pin;
 use sb_compiler_semcheck_impl::SemCheckContext;
 
-pub type Dep<'a> = &'a mut SemCheckContext;
-pub type InDep = SemCheckContext;
+pub type Dep<'a, 'input> = &'a mut SemCheckContext<'input>;
+pub type InDep<'input> = SemCheckContext<'input>;
 
 pub trait SemCheckFrom<Ctx, T> {
     fn check(ctx: Ctx, ast: T) -> Pin<Box<impl Future<Output = anyhow::Result<Self>>>>

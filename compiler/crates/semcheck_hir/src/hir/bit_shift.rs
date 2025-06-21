@@ -21,8 +21,8 @@ pub enum BitShift<'input> {
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::BitShift<'input>> for BitShift<'input> {
-    async fn check0(ctx: Dep<'_>, shift: ast::BitShift<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::BitShift<'input>> for BitShift<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, shift: ast::BitShift<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

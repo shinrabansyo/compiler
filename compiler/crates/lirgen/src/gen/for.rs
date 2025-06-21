@@ -4,7 +4,7 @@ use sb_compiler_semcheck_hir::For;
 use crate::{GenContext, ZERO_REG};
 use super::{lirgen_expr, lirgen_block};
 
-pub fn lirgen_for(ctx: &mut GenContext, r#for: &For) -> LirBlock {
+pub fn lirgen_for<'input>(ctx: &mut GenContext<'input>, r#for: &For<'input>) -> LirBlock {
     // 初期化節
     let lir_init = lirgen_expr(ctx, &r#for.init);
 

@@ -1,20 +1,20 @@
 use sb_compiler_parse_ast as ast;
-use sb_compiler_semcheck_impl_vardecl::{VarId, VarDeclChecker};
+use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 
 use super::{SemCheckFrom, Dep};
 
 #[derive(Debug)]
-pub enum InlineAsmOperand {
+pub enum InlineAsmOperand<'input> {
     Reg {
         num: u8,
     },
     Var {
-        id: VarId
+        var: Var<'input>,
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmOperandL<'input>> for InlineAsmOperand {
-    async fn check0(ctx: Dep<'_>, operand: ast::InlineAsmOperandL<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::InlineAsmOperandL<'input>> for InlineAsmOperand<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, operand: ast::InlineAsmOperandL<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {
@@ -23,18 +23,18 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmOperandL<'input>> for InlineAsm
                 Ok(InlineAsmOperand::Reg { num })
             }
             ast::InlineAsmOperandL::Var { name } => {
-                let var_id = match VarDeclChecker::exists(&ctx.var_decl, &name) {
-                    Some(var_id) => var_id,
+                let var = match VarDeclChecker::exists(&ctx.var_decl, &name) {
+                    Some(var) => var,
                     None => VarDeclChecker::register(&mut ctx.var_decl, &name).unwrap(),
                 };
-                Ok(InlineAsmOperand::Var { id: var_id })
+                Ok(InlineAsmOperand::Var { var })
             }
         }
     }
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmOperandR<'input>> for InlineAsmOperand {
-    async fn check0(ctx: Dep<'_>, operand: ast::InlineAsmOperandR<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::InlineAsmOperandR<'input>> for InlineAsmOperand<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, operand: ast::InlineAsmOperandR<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {
@@ -44,7 +44,7 @@ impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmOperandR<'input>> for InlineAsm
             }
             ast::InlineAsmOperandR::Var { name } => {
                 Ok(InlineAsmOperand::Var {
-                    id: VarDeclChecker::find(&mut ctx.var_decl, &name).await?,
+                    var: VarDeclChecker::find(&mut ctx.var_decl, &name).await?,
                 })
             }
         }

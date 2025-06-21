@@ -13,8 +13,8 @@ pub enum BitAnd<'input> {
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::BitAnd<'input>> for BitAnd<'input> {
-    async fn check0(ctx: Dep<'_>, and: ast::BitAnd<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::BitAnd<'input>> for BitAnd<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, and: ast::BitAnd<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

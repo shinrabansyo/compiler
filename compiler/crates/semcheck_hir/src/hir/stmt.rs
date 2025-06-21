@@ -26,12 +26,12 @@ pub enum Stmt<'input> {
         r#for: For<'input>,
     },
     InlineAsm {
-        inline_asm: InlineAsm,
+        inline_asm: InlineAsm<'input>,
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::Stmt<'input>> for Stmt<'input> {
-    async fn check0(ctx: Dep<'_>, stmt: ast::Stmt<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Stmt<'input>> for Stmt<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, stmt: ast::Stmt<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

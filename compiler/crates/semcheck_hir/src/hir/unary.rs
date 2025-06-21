@@ -15,8 +15,8 @@ pub enum Unary<'input> {
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::Unary<'input>> for Unary<'input> {
-    async fn check0(ctx: Dep<'_>, unary: ast::Unary<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Unary<'input>> for Unary<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, unary: ast::Unary<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

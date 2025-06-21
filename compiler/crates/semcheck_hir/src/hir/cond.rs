@@ -33,8 +33,8 @@ pub enum Cond<'input> {
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::Cond<'input>> for Cond<'input> {
-    async fn check0(ctx: Dep<'_>, cond: ast::Cond<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Cond<'input>> for Cond<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, cond: ast::Cond<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

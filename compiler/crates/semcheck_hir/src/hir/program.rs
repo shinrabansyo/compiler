@@ -8,8 +8,8 @@ pub struct Program<'input> {
     pub top_elems: Vec<Top<'input>>,
 }
 
-impl<'input> SemCheckFrom<InDep, ast::Program<'input>> for Program<'input> {
-    async fn check0(ctx: InDep, program: ast::Program<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<InDep<'input>, ast::Program<'input>> for Program<'input> {
+    async fn check0(ctx: InDep<'input>, program: ast::Program<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

@@ -7,8 +7,8 @@ pub struct Return<'input> {
     pub expr: Expr<'input>,
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::Return<'input>> for Return<'input> {
-    async fn check0(ctx: Dep<'_>, r#return: ast::Return<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Return<'input>> for Return<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, r#return: ast::Return<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

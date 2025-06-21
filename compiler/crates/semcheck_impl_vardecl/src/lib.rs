@@ -15,38 +15,53 @@ use sb_compiler_semcheck_async_macros::failable_as_async;
 
 use error::VarDeclError;
 
-pub type VarId = NodeIndex;
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct Var<'input> {
+    pub symbol: SymbolU32,
+    pub span: Span<'input>,
+}
 
 #[derive(Debug, Clone)]
-pub struct VarDeclContext {
-    checker: Arc<Mutex<VarDeclChecker>>,
+pub struct VarDeclContext<'input> {
+    checker: Arc<Mutex<VarDeclChecker<'input>>>,
     node: NodeIndex,
 }
 
 #[derive(Debug)]
-pub struct VarDeclChecker {
+pub struct VarDeclChecker<'input> {
     interner: StringInterner<StringBackend>,
-    graph: Graph<SymbolU32, ()>,
+    graph: Graph<Var<'input>, ()>,
     root_node: NodeIndex,
-    nodes: HashMap<SymbolU32, NodeIndex>,
+    nodes: HashMap<Var<'input>, NodeIndex>,
 }
 
-impl VarDeclChecker {
-    pub fn new() -> (Arc<Mutex<Self>>, VarDeclContext) {
+impl<'input> VarDeclChecker<'input> {
+    pub fn new() -> (Arc<Mutex<Self>>, VarDeclContext<'input>) {
         // インターン化環境 (root: `.`)
         let mut interner = StringInterner::default();
         let root_symbol = interner.get_or_intern(".");
 
+        // ルート用の疑似変数
+        let root_span = Span {
+            src: ".",
+            body: (0, 1),
+            full: (0, 1),
+        };
+        let root_var = Var {
+            symbol: root_symbol,
+            span: root_span,
+        };
+
         // 変数参照グラフ
         let mut graph = Graph::new();
-        let root_node = graph.add_node(root_symbol);
+        let root_node = graph.add_node(root_var);
 
         // チェッカ, コンテキスト (複数の async 文脈で共有するために Arc, Mutex でラップ)
         let checker = Arc::new(Mutex::new(VarDeclChecker {
             interner,
             graph,
             root_node,
-            nodes: HashMap::from([(root_symbol, root_node)]),
+            nodes: HashMap::from([(root_var, root_node)]),
         }));
         let context = VarDeclContext {
             checker: Arc::clone(&checker),
@@ -56,29 +71,33 @@ impl VarDeclChecker {
         (checker, context)
     }
 
-    pub fn register(ctx: &mut VarDeclContext, name: &Span) -> anyhow::Result<NodeIndex> {
+    pub fn register(ctx: &mut VarDeclContext<'input>, span: &Span<'input>) -> anyhow::Result<Var<'input>> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を登録
-        let var_symbol = checker.interner.get_or_intern(name.as_str());
+        let var_symbol = checker.interner.get_or_intern(span.as_str());
+        let var = Var {
+            symbol: var_symbol,
+            span: *span,
+        };
 
         // 2. 参照グラフに追加
-        let from = checker.graph.add_node(var_symbol);
+        let from = checker.graph.add_node(var);
         let to = ctx.node;
         checker.graph.add_edge(from, to, ());
-        checker.nodes.insert(var_symbol, from);
+        checker.nodes.insert(var, from);
 
         // 3. 以降の文脈で最新の変数を参照できるように更新
         ctx.node = from;
 
-        Ok(from)
+        Ok(var)
     }
 
-    pub fn exists(ctx: &VarDeclContext, name: &Span) -> Option<NodeIndex> {
+    pub fn exists(ctx: &VarDeclContext<'input>, span: &Span<'input>) -> Option<Var<'input>> {
         let checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を検索
-        let var_symbol = match checker.interner.get(name.as_str()) {
+        let var_symbol = match checker.interner.get(span.as_str()) {
             Some(symbol) => symbol,
             None => return None,
         };
@@ -96,16 +115,17 @@ impl VarDeclChecker {
 
         // 3. 経路を順に見て，初めて見つけた変数を検索結果とする
         for waypoint in waypoints {
-            if &var_symbol == checker.graph.node_weight(waypoint).unwrap() {
-                return Some(waypoint);
+            let waypoint_var = checker.graph.node_weight(waypoint).unwrap();
+            if var_symbol == waypoint_var.symbol {
+                return Some(*waypoint_var);
             }
         }
 
         None
     }
 
-    #[failable_as_async('a)]
-    pub fn find<'a>(ctx: &'a VarDeclContext, name: &'a Span) -> anyhow::Result<NodeIndex> {
+    #[failable_as_async('a, 'input)]
+    pub fn find<'a>(ctx: &'a VarDeclContext<'input>, name: &'a Span<'input>) -> anyhow::Result<Var<'input>> {
         VarDeclChecker::exists(ctx, name).ok_or(
             VarDeclError::new_not_declared(name.clone())
         )

@@ -13,8 +13,8 @@ pub enum BitXor<'input> {
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::BitXor<'input>> for BitXor<'input> {
-    async fn check0(ctx: Dep<'_>, xor: ast::BitXor<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::BitXor<'input>> for BitXor<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, xor: ast::BitXor<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

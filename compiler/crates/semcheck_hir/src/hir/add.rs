@@ -17,8 +17,8 @@ pub enum Add<'input> {
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::Add<'input>> for Add<'input> {
-    async fn check0(ctx: Dep<'_>, add: ast::Add<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::Add<'input>> for Add<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, add: ast::Add<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

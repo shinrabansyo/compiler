@@ -13,8 +13,8 @@ pub enum LogicOr<'input> {
     },
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::LogicOr<'input>> for LogicOr<'input> {
-    async fn check0(ctx: Dep<'_>, or: ast::LogicOr<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::LogicOr<'input>> for LogicOr<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, or: ast::LogicOr<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

@@ -9,8 +9,8 @@ pub enum Top<'input> {
     },
 }
 
-impl<'input> SemCheckFrom<InDep, ast::Top<'input>> for Top<'input> {
-    async fn check0(ctx: InDep, top: ast::Top<'input>) -> anyhow::Result<Top<'input>>
+impl<'input> SemCheckFrom<InDep<'input>, ast::Top<'input>> for Top<'input> {
+    async fn check0(ctx: InDep<'input>, top: ast::Top<'input>) -> anyhow::Result<Top<'input>>
     where
         Self: Sized,
     {

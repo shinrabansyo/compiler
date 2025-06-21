@@ -3,12 +3,12 @@ use sb_compiler_parse_ast as ast;
 use super::{InlineAsmInst, SemCheckFrom, InDep};
 
 #[derive(Debug)]
-pub struct InlineAsm {
-    pub insts: Vec<InlineAsmInst>,
+pub struct InlineAsm<'input> {
+    pub insts: Vec<InlineAsmInst<'input>>,
 }
 
-impl<'input> SemCheckFrom<InDep, ast::InlineAsm<'input>> for InlineAsm {
-    async fn check0(mut ctx: InDep, inasm: ast::InlineAsm<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<InDep<'input>, ast::InlineAsm<'input>> for InlineAsm<'input> {
+    async fn check0(mut ctx: InDep<'input>, inasm: ast::InlineAsm<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {

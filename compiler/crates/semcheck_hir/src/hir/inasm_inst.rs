@@ -2,51 +2,53 @@ use sb_compiler_parse_ast as ast;
 
 use super::{InlineAsmOperand, SemCheckFrom, Dep};
 
+type Operand<'a> = InlineAsmOperand<'a>;
+
 #[derive(Debug)]
-pub enum InlineAsmInst {
+pub enum InlineAsmInst<'input> {
     // I-形式
-    Addi { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Subi { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Jal  { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Lw   { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Lh   { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Lb   { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Lhu  { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Lbu  { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    In   { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Andi { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Ori  { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Xori { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Srli { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Srai { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
-    Slli { rd: InlineAsmOperand, rs1: InlineAsmOperand, imm: i32 },
+    Addi { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Subi { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Jal  { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Lw   { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Lh   { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Lb   { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Lhu  { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Lbu  { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    In   { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Andi { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Ori  { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Xori { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Srli { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Srai { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
+    Slli { rd: Operand<'input>, rs1: Operand<'input>, imm: i32 },
 
     // S-形式
-    Sw   { rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
-    Sh   { rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
-    Sb   { rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
-    Isb  { rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
-    Out  { rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
+    Sw   { rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
+    Sh   { rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
+    Sb   { rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
+    Isb  { rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
+    Out  { rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
 
     // R-形式
-    Add  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
-    Sub  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
-    And  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
-    Or   { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
-    Xor  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
-    Srl  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
-    Sra  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
-    Sll  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand },
+    Add  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
+    Sub  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
+    And  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
+    Or   { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
+    Xor  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
+    Srl  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
+    Sra  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
+    Sll  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input> },
 
     // B-形式
-    Beq  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
-    Bne  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
-    Blt  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
-    Ble  { rd: InlineAsmOperand, rs1: InlineAsmOperand, rs2: InlineAsmOperand, imm: i32 },
+    Beq  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
+    Bne  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
+    Blt  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
+    Ble  { rd: Operand<'input>, rs1: Operand<'input>, rs2: Operand<'input>, imm: i32 },
 }
 
-impl<'input> SemCheckFrom<Dep<'_>, ast::InlineAsmInst<'input>> for InlineAsmInst {
-    async fn check0(ctx: Dep<'_>, inst: ast::InlineAsmInst<'input>) -> anyhow::Result<Self>
+impl<'input> SemCheckFrom<Dep<'_, 'input>, ast::InlineAsmInst<'input>> for InlineAsmInst<'input> {
+    async fn check0(ctx: Dep<'_, 'input>, inst: ast::InlineAsmInst<'input>) -> anyhow::Result<Self>
     where
         Self: Sized,
     {
