@@ -4,38 +4,38 @@ use sb_compiler_parse_syntax::SBToken;
 use super::{LogicOr, Visitor};
 
 #[derive(Debug)]
-pub enum Assign<'input> {
+pub enum Assign<'src> {
     Normal {
-        ident: Span<'input>,
-        assign: Box<Assign<'input>>,
+        ident: Span<'src>,
+        assign: Box<Assign<'src>>,
     },
     Plus {
-        ident: Span<'input>,
-        assign: Box<Assign<'input>>,
+        ident: Span<'src>,
+        assign: Box<Assign<'src>>,
     },
     Minus {
-        ident: Span<'input>,
-        assign: Box<Assign<'input>>,
+        ident: Span<'src>,
+        assign: Box<Assign<'src>>,
     },
     ShiftL {
-        ident: Span<'input>,
-        assign: Box<Assign<'input>>,
+        ident: Span<'src>,
+        assign: Box<Assign<'src>>,
     },
     ShiftR {
-        ident: Span<'input>,
-        assign: Box<Assign<'input>>,
+        ident: Span<'src>,
+        assign: Box<Assign<'src>>,
     },
     ShiftRa {
-        ident: Span<'input>,
-        assign: Box<Assign<'input>>,
+        ident: Span<'src>,
+        assign: Box<Assign<'src>>,
     },
     LogicOr {
-        or: LogicOr<'input>,
+        or: LogicOr<'src>,
     }
 }
 
-impl<'input> From<Visitor<'input>> for Assign<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for Assign<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
             return Assign::LogicOr {

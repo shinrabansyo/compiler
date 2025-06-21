@@ -1,7 +1,8 @@
 mod gen;
 
-use sb_compiler_parse_ast::Program;
 use sb_compiler_lirgen_ir::LirTopElem;
+use sb_compiler_semcheck_hir::Program;
+use sb_compiler_semcheck_impl_vardecl::Var;
 use sb_compiler_utils::collections::LayeredTable;
 
 const ZERO_REG: u32 = 0;
@@ -9,23 +10,23 @@ const RET_REG: u32 = 10;
 const FARG_REG_BASE: u32 = 10;
 
 #[derive(Debug, Clone)]
-pub(crate) struct GenContext<'a> {
+pub(crate) struct GenContext<'src> {
     reserved_regs: u32,
     reserved_labels: u32,
-    sym_table: LayeredTable<&'a str, u32>,
+    var_table: LayeredTable<Var<'src>, u32>,
 }
 
-impl<'a> Default for GenContext<'a> {
+impl<'src> Default for GenContext<'src> {
     fn default() -> Self {
-        Self {
+        GenContext {
             reserved_regs: 20,   // r0: ゼロレジスタ, r10 ~ r19: 引数レジスタ として確保済み
             reserved_labels: 0,
-            sym_table: LayeredTable::default(),
+            var_table: LayeredTable::default(),
         }
     }
 }
 
-impl<'a> GenContext<'a> {
+impl<'src> GenContext<'src> {
     fn alloc_reg(&mut self) -> u32 {
         let allocated_reg = self.reserved_regs;
         self.reserved_regs += 1;
@@ -38,12 +39,12 @@ impl<'a> GenContext<'a> {
         allocated_label
     }
 
-    fn set_var_reg(&mut self, var: &'a str, reg: u32) {
-        self.sym_table.insert(var, reg);
+    fn set_var_reg(&mut self, var: Var<'src>, reg: u32) {
+        self.var_table.insert(var, reg);
     }
 
-    fn ref_var_reg(&self, var: &str) -> Option<u32> {
-        self.sym_table.get(&var).map(|v| *v)
+    fn ref_var_reg(&self, var: &Var) -> Option<u32> {
+        self.var_table.get(&var).map(|v| *v)
     }
 }
 

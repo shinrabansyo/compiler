@@ -1,5 +1,5 @@
-use sb_compiler_parse_ast::Value;
 use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Call, Li};
+use sb_compiler_semcheck_hir::Value;
 
 use crate::{GenContext, ZERO_REG, RET_REG, FARG_REG_BASE};
 use super::lirgen_expr;
@@ -10,8 +10,8 @@ pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirBlock {
             let reg_imm = ctx.alloc_reg();
             (reg_imm, vec![lir!(Li(*value) reg_imm)])
         }
-        Value::Var { name, .. } => {
-            (ctx.ref_var_reg(name.as_str()).unwrap(), vec![])
+        Value::Var { var, .. } => {
+            (ctx.ref_var_reg(var).unwrap(), vec![])
         }
         Value::Expr { expr, .. } => {
             let lir_expr = lirgen_expr(ctx, expr);

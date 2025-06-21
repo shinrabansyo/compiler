@@ -1,12 +1,12 @@
 use super::{Expr, Visitor};
 
 #[derive(Debug)]
-pub struct Return<'input> {
-    pub expr: Expr<'input>,
+pub struct Return<'src> {
+    pub expr: Expr<'src>,
 }
 
-impl<'input> From<Visitor<'input>> for Return<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for Return<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         Return {
             expr: visitor.expect_node::<Expr>(),
         }

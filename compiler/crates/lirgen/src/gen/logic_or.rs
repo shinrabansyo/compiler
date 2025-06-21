@@ -1,5 +1,5 @@
-use sb_compiler_parse_ast::LogicOr;
 use sb_compiler_lirgen_ir::{lir, LirBlock, Beq, JmpLabel, Li};
+use sb_compiler_semcheck_hir::LogicOr;
 
 use crate::{GenContext, ZERO_REG};
 use super::lirgen_logic_and;

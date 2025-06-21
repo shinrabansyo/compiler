@@ -1,5 +1,5 @@
-use sb_compiler_parse_ast::BitShift;
 use sb_compiler_lirgen_ir::{lir, LirBlock, ShiftL, ShiftR, ShiftRa};
+use sb_compiler_semcheck_hir::BitShift;
 
 use crate::GenContext;
 use super::lirgen_add;

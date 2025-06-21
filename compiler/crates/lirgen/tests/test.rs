@@ -3,6 +3,7 @@ mod utils;
 use std::fmt::Write;
 
 use sb_compiler_parse::parse;
+use sb_compiler_semcheck::semcheck;
 use sb_compiler_lirgen::lirgen;
 use sb_compiler_lirgen_ir::{LirInst, LirBlock, LirTopElem};
 use utils::{Expect, test_dir};
@@ -233,8 +234,11 @@ fn test_code(input: &str) -> anyhow::Result<String> {
     // 1. 構文解析 (&str -> AST)
     let ast = parse(input)?;
 
+    // 2. 意味解析 (AST -> HIR)
+    let hir = semcheck(ast)?;
+
     // 2. LIR生成 (AST -> LIR)
-    let lirs = lirgen(&ast);
+    let lirs = lirgen(&hir);
 
     // 3. 文字列へ変換 (LIR -> String)
     let mut lir_str = String::new();

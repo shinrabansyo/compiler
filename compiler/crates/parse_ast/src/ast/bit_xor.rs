@@ -1,18 +1,18 @@
 use super::{BitAnd, Visitor};
 
 #[derive(Debug)]
-pub enum BitXor<'input> {
+pub enum BitXor<'src> {
     Xor {
-        lhs: Box<BitXor<'input>>,
-        rhs: BitAnd<'input>,
+        lhs: Box<BitXor<'src>>,
+        rhs: BitAnd<'src>,
     },
     BitAnd {
-        and: BitAnd<'input>,
+        and: BitAnd<'src>,
     },
 }
 
-impl<'input> From<Visitor<'input>> for BitXor<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for BitXor<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
             return BitXor::BitAnd {

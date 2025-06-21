@@ -1,5 +1,5 @@
-use sb_compiler_parse_ast::Expr;
 use sb_compiler_lirgen_ir::LirBlock;
+use sb_compiler_semcheck_hir::Expr;
 
 use crate::GenContext;
 use super::lirgen_assign;

@@ -1,0 +1,17 @@
+[package]
+name = "sb_compiler_semcheck_async_macros"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "2.0", features = ["full", "extra-traits"] }
+
+[dev-dependencies]
+sb_compiler_semcheck_async = { path = "../semcheck_async" }
+
+[lib]
+proc-macro = true

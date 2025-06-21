@@ -16,6 +16,7 @@ mod r#while;        pub use r#while::While;
 mod r#for;          pub use r#for::For;
 mod inasm;          pub use inasm::InlineAsm;
 mod inasm_inst;     pub use inasm_inst::InlineAsmInst;
+mod inasm_operand;  pub use inasm_operand::{InlineAsmOperandL, InlineAsmOperandR};
 
 // 式
 mod expr;           pub use expr::Expr;
@@ -36,4 +37,4 @@ mod call;           pub use call::Call;
 use sb_compiler_parse_cst::CSTreeVisitor;
 use sb_compiler_parse_syntax::SBLangDef;
 
-type Visitor<'input> = CSTreeVisitor<'input, SBLangDef>;
+type Visitor<'src> = CSTreeVisitor<'src, SBLangDef>;

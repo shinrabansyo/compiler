@@ -1,14 +1,14 @@
 use super::{Block, Stmt, Expr, Visitor};
 
 #[derive(Debug)]
-pub struct If<'input> {
-    pub cond: Expr<'input>,
-    pub block: Block<'input>,
-    pub else_stmt: Option<Box<Stmt<'input>>>,
+pub struct If<'src> {
+    pub cond: Expr<'src>,
+    pub block: Block<'src>,
+    pub else_stmt: Option<Box<Stmt<'src>>>,
 }
 
-impl<'input> From<Visitor<'input>> for If<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for If<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         let cond = visitor.expect_node::<Expr>();
         let block = visitor.expect_node::<Block>();
         let else_stmt = visitor

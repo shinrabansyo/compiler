@@ -1,5 +1,5 @@
-use sb_compiler_parse_ast::BitXor;
 use sb_compiler_lirgen_ir::{lir, LirBlock, Xor};
+use sb_compiler_semcheck_hir::BitXor;
 
 use crate::GenContext;
 use super::lirgen_bit_and;

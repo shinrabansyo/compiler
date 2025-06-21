@@ -1,5 +1,5 @@
-use sb_compiler_parse_ast::Unary;
 use sb_compiler_lirgen_ir::{lir, LirBlock, Sub};
+use sb_compiler_semcheck_hir::Unary;
 
 use crate::{GenContext, ZERO_REG};
 use super::lirgen_value;

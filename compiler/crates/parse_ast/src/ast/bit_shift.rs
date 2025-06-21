@@ -3,26 +3,26 @@ use sb_compiler_parse_syntax::SBToken;
 use super::{Add, Visitor};
 
 #[derive(Debug)]
-pub enum BitShift<'input> {
+pub enum BitShift<'src> {
     L {
-        lhs: Box<BitShift<'input>>,
-        rhs: Add<'input>,
+        lhs: Box<BitShift<'src>>,
+        rhs: Add<'src>,
     },
     R {
-        lhs: Box<BitShift<'input>>,
-        rhs: Add<'input>,
+        lhs: Box<BitShift<'src>>,
+        rhs: Add<'src>,
     },
     Ra {
-        lhs: Box<BitShift<'input>>,
-        rhs: Add<'input>,
+        lhs: Box<BitShift<'src>>,
+        rhs: Add<'src>,
     },
     Add {
-        add: Add<'input>,
+        add: Add<'src>,
     },
 }
 
-impl<'input> From<Visitor<'input>> for BitShift<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for BitShift<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
             return BitShift::Add {

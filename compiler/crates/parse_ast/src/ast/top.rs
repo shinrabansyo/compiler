@@ -1,14 +1,14 @@
 use super::{FuncDef, Visitor};
 
 #[derive(Debug)]
-pub enum Top<'input> {
+pub enum Top<'src> {
     FuncDef {
-        func_def: FuncDef<'input>,
+        func_def: FuncDef<'src>,
     },
 }
 
-impl<'input> From<Visitor<'input>> for Top<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for Top<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         Top::FuncDef {
             func_def: visitor.expect_node::<FuncDef>(),
         }

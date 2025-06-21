@@ -1,5 +1,5 @@
-use sb_compiler_parse_ast::Stmt;
 use sb_compiler_lirgen_ir::LirBlock;
+use sb_compiler_semcheck_hir::Stmt;
 
 use crate::GenContext;
 use super::{
@@ -7,7 +7,7 @@ use super::{
     lirgen_if, lirgen_while, lirgen_for, lirgen_inline_asm
 };
 
-pub fn lirgen_stmt<'input>(ctx: &mut GenContext<'input>, stmt: &Stmt<'input>) -> LirBlock {
+pub fn lirgen_stmt<'src>(ctx: &mut GenContext<'src>, stmt: &Stmt<'src>) -> LirBlock {
     match stmt {
         Stmt::VarDecl { var_decl, .. } => {
             lirgen_var_decl(ctx, var_decl)

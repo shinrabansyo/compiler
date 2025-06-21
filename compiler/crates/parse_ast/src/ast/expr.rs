@@ -1,12 +1,12 @@
 use super::{Assign, Visitor};
 
 #[derive(Debug)]
-pub struct Expr<'input> {
-    pub assign: Assign<'input>,
+pub struct Expr<'src> {
+    pub assign: Assign<'src>,
 }
 
-impl<'input> From<Visitor<'input>> for Expr<'input> {
-    fn from(mut visitor: Visitor<'input>) -> Self {
+impl<'src> From<Visitor<'src>> for Expr<'src> {
+    fn from(mut visitor: Visitor<'src>) -> Self {
         Expr {
             assign: visitor.expect_node::<Assign>(),
         }

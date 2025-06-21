@@ -1,10 +1,10 @@
-use sb_compiler_parse_ast::If;
 use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel, Nop};
+use sb_compiler_semcheck_hir::If;
 
 use crate::{GenContext, ZERO_REG};
 use super::{lirgen_expr, lirgen_block, lirgen_stmt};
 
-pub fn lirgen_if<'input>(ctx: &mut GenContext<'input>, r#if: &If<'input>) -> LirBlock {
+pub fn lirgen_if<'src>(ctx: &mut GenContext<'src>, r#if: &If<'src>) -> LirBlock {
     // 条件節
     let lir_cond = lirgen_expr(ctx, &r#if.cond);
     let reg_cond = lir_cond.result_reg();
