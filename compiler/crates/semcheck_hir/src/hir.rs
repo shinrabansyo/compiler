@@ -33,8 +33,23 @@ mod unary;          pub use unary::Unary;
 mod value;          pub use value::Value;
 mod call;           pub use call::Call;
 
-// AST -> CST ビジター
-use sb_compiler_parse_cst::CSTreeVisitor;
-use sb_compiler_parse_syntax::SBLangDef;
+// AST --(check)--> HIR 用トレイト
+use std::future::Future;
+use std::pin::Pin;
+use sb_compiler_semcheck_impl::SemCheckContext;
 
-type Visitor<'input> = CSTreeVisitor<'input, SBLangDef>;
+pub type Dep<'a> = &'a mut SemCheckContext;
+pub type InDep = SemCheckContext;
+
+pub trait SemCheckFrom<Ctx, T> {
+    fn check(ctx: Ctx, ast: T) -> Pin<Box<impl Future<Output = anyhow::Result<Self>>>>
+    where
+        Self: Sized,
+    {
+        Box::pin(Self::check0(ctx, ast))
+    }
+
+    fn check0(ctx: Ctx, ast: T) -> impl Future<Output = anyhow::Result<Self>>
+    where
+        Self: Sized;
+}

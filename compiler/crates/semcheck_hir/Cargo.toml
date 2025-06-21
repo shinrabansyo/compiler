@@ -1,0 +1,14 @@
+[package]
+name = "sb_compiler_semcheck_hir"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+async-recursion = "1.1.1"
+sb_compiler_parse_ast = { path = "../parse_ast" }
+sb_compiler_parse_cst = { path = "../parse_cst" }
+sb_compiler_semcheck_async = { path = "../semcheck_async" }
+sb_compiler_semcheck_impl = {  path = "../semcheck_impl" }
+sb_compiler_semcheck_impl_vardecl = { path = "../semcheck_impl_vardecl" }

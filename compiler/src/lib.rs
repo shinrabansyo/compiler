@@ -10,18 +10,20 @@ pub fn compile(input: &str) -> anyhow::Result<Vec<Object>> {
     // 1. 構文解析 (&str -> AST)
     let ast = parse(input)?;
 
-    // 2. 意味解析 (AST -> AST)
+    // 2. 意味解析 (AST -> HIR)
     let ast = semcheck(ast)?;
 
-    // 3. LIR生成 (AST -> [LIR])
-    let lir = lirgen(&ast);
+    panic!("Success, but compilation is not yet implemented.");
 
-    // 4. コード生成 & 最適化 ([LIR] -> [Obj] -> [Obj])
-    let objs = lir
-        .into_iter()
-        .map(codegen)
-        .map(optimize)
-        .collect::<Vec<_>>();
+    // // 3. LIR生成 (AST -> [LIR])
+    // let lir = lirgen(&ast);
 
-    Ok(objs)
+    // // 4. コード生成 & 最適化 ([LIR] -> [Obj] -> [Obj])
+    // let objs = lir
+    //     .into_iter()
+    //     .map(codegen)
+    //     .map(optimize)
+    //     .collect::<Vec<_>>();
+
+    // Ok(objs)
 }

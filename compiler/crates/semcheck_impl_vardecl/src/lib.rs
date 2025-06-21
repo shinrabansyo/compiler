@@ -14,6 +14,8 @@ use sb_compiler_semcheck_async_macros::failable_as_async;
 
 use error::VarDeclError;
 
+pub type VarId = NodeIndex;
+
 #[derive(Debug, Clone)]
 pub struct VarDeclContext {
     checker: Arc<Mutex<VarDeclChecker>>,

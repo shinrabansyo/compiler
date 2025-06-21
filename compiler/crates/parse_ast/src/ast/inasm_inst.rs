@@ -1,48 +1,46 @@
-use sb_compiler_parse_cst::Span;
-
-use super::Visitor;
+use super::{InlineAsmReg, Visitor};
 
 #[derive(Debug)]
 pub enum InlineAsmInst<'input> {
     // I-形式
-    Addi { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Subi { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Jal  { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Lw   { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Lh   { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Lb   { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Lhu  { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Lbu  { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    In   { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Andi { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Ori  { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Xori { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Srli { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Srai { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
-    Slli { rd: Span<'input>, rs1: Span<'input>, imm: i32 },
+    Addi { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Subi { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Jal  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Lw   { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Lh   { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Lb   { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Lhu  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Lbu  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    In   { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Andi { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Ori  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Xori { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Srli { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Srai { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
+    Slli { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, imm: i32 },
 
     // S-形式
-    Sw   { rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
-    Sh   { rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
-    Sb   { rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
-    Isb  { rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
-    Out  { rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
+    Sw   { rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input>, imm: i32 },
+    Sh   { rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input>, imm: i32 },
+    Sb   { rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input>, imm: i32 },
+    Isb  { rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input>, imm: i32 },
+    Out  { rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input>, imm: i32 },
 
     // R-形式
-    Add  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
-    Sub  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
-    And  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
-    Or   { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
-    Xor  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
-    Srl  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
-    Sra  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
-    Sll  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input> },
+    Add  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input> },
+    Sub  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input> },
+    And  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input> },
+    Or   { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input> },
+    Xor  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input> },
+    Srl  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input> },
+    Sra  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input> },
+    Sll  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input> },
 
     // B-形式
-    Beq  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
-    Bne  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
-    Blt  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
-    Ble  { rd: Span<'input>, rs1: Span<'input>, rs2: Span<'input>, imm: i32 },
+    Beq  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input>, imm: i32 },
+    Bne  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input>, imm: i32 },
+    Blt  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input>, imm: i32 },
+    Ble  { rd: InlineAsmReg<'input>, rs1: InlineAsmReg<'input>, rs2: InlineAsmReg<'input>, imm: i32 },
 }
 
 impl<'input> From<Visitor<'input>> for InlineAsmInst<'input> {
@@ -50,16 +48,16 @@ impl<'input> From<Visitor<'input>> for InlineAsmInst<'input> {
         macro_rules! parse_i {
             (Jal $visitor:ident) => {{
                 InlineAsmInst::Jal {
-                    rd: $visitor.expect_leaf().1,
-                    rs1: $visitor.expect_leaf().1,
+                    rd: $visitor.expect_node::<InlineAsmReg>(),
+                    rs1: $visitor.expect_node::<InlineAsmReg>(),
                     imm: $visitor.expect_leaf().1.as_str().parse().unwrap(),
                 }
             }};
 
             ($inst:ident $visitor:ident) => {{
-                let rd = $visitor.expect_leaf().1;
-                let _ = $visitor.expect_leaf();     // '='
-                let rs1 = $visitor.expect_leaf().1;
+                let rd = $visitor.expect_node::<InlineAsmReg>();
+                let _ = $visitor.expect_leaf();  // '='
+                let rs1 = $visitor.expect_node::<InlineAsmReg>();
                 let imm = $visitor.expect_leaf().1.as_str().parse().unwrap();
                 InlineAsmInst::$inst { rd, rs1, imm }
             }};
@@ -67,20 +65,20 @@ impl<'input> From<Visitor<'input>> for InlineAsmInst<'input> {
 
         macro_rules! parse_s {
             ($inst:ident $visitor:ident) => {{
-                let rs1 = $visitor.expect_leaf().1;
+                let rs1 = $visitor.expect_node::<InlineAsmReg>();
                 let imm = $visitor.expect_leaf().1.as_str().parse().unwrap();
                 let _ = $visitor.expect_leaf();     // '='
-                let rs2 = $visitor.expect_leaf().1;
+                let rs2 = $visitor.expect_node::<InlineAsmReg>();
                 InlineAsmInst::$inst { rs1, rs2, imm }
             }};
         }
 
         macro_rules! parse_r {
             ($inst:ident $visitor:ident) => {{
-                let rd = $visitor.expect_leaf().1;
+                let rd = $visitor.expect_node::<InlineAsmReg>();
                 let _ = $visitor.expect_leaf();     // '='
-                let rs1 = $visitor.expect_leaf().1;
-                let rs2 = $visitor.expect_leaf().1;
+                let rs1 = $visitor.expect_node::<InlineAsmReg>();
+                let rs2 = $visitor.expect_node::<InlineAsmReg>();
                 InlineAsmInst::$inst { rd, rs1, rs2 }
             }};
         }
@@ -88,9 +86,9 @@ impl<'input> From<Visitor<'input>> for InlineAsmInst<'input> {
         macro_rules! parse_b {
             ($inst:ident $visitor:ident) => {{
                 InlineAsmInst::$inst {
-                    rd: $visitor.expect_leaf().1,
-                    rs1: $visitor.expect_leaf().1,
-                    rs2: $visitor.expect_leaf().1,
+                    rd: $visitor.expect_node::<InlineAsmReg>(),
+                    rs1: $visitor.expect_node::<InlineAsmReg>(),
+                    rs2: $visitor.expect_node::<InlineAsmReg>(),
                     imm: $visitor.expect_leaf().1.as_str().parse().unwrap(),
                 }
             }};
