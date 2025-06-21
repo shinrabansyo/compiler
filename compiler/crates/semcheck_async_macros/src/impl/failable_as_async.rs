@@ -2,9 +2,18 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use syn::ItemFn;
 
-pub fn proc_macro_impl(_: TokenStream, ast: ItemFn) -> TokenStream {
+pub fn proc_macro_impl(args: TokenStream, ast: ItemFn) -> TokenStream {
+    // マクロ引数
+    let cap_lifetime = if args.is_empty() {
+        quote! { }
+    } else {
+        quote! { + use <#args> }
+    };
+
+    // 関数本体
     let fn_visibility = ast.vis;
     let fn_ident = ast.sig.ident;
+    let fn_generics = ast.sig.generics;
     let fn_args = ast.sig.inputs;
     let fn_body = ast.block;
     let fn_ret_type = match ast.sig.output {
@@ -12,8 +21,9 @@ pub fn proc_macro_impl(_: TokenStream, ast: ItemFn) -> TokenStream {
         syn::ReturnType::Type(_, ty) => quote! { #ty },
     };
 
+    // マクロ適用結果
     quote! {
-        #fn_visibility fn #fn_ident <'_a> (#fn_args) -> impl std::future::Future<Output = #fn_ret_type> {
+        #fn_visibility fn #fn_ident #fn_generics (#fn_args) -> impl std::future::Future<Output = #fn_ret_type> #cap_lifetime {
             use std::future::poll_fn;
             use std::task::{Context, Poll};
 
