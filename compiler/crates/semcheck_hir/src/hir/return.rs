@@ -1,7 +1,9 @@
 pub use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_type::r#type::{Primitive, Type, Void};
+use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
+use sb_compiler_type::op::ty_can_return;
+use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
 
 use super::{Expr, SemCheck, Dep};
@@ -17,9 +19,17 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Return<'src>> for Return<'src> {
     where
         Self: Sized,
     {
+        // 式の意味解析
+        let expr = Expr::check(ctx, r#return.expr).await?;
+
+        // 戻り値の型をチェック
+        let fn_name = ctx.name.as_str();
+        let fn_ty = TypeDeclChecker::find(&ctx.type_decl, fn_name).await?;
+        ty_can_return(&fn_ty, expr.ty())?;
+
         Ok(Return {
-            expr: Expr::check(ctx, r#return.expr).await?,
-            ty: Arc::new(Primitive(Void)),
+            expr,
+            ty: fn_ty,
         })
     }
 }
