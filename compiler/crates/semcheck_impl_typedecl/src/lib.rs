@@ -51,6 +51,7 @@ impl TypeDeclChecker {
         // プリミティブ型の登録
         {
             TypeDeclChecker::register(&mut context, "i8", Primitive(I8)).unwrap();
+            TypeDeclChecker::register(&mut context, "i16", Primitive(I16)).unwrap();
             TypeDeclChecker::register(&mut context, "i32", Primitive(I32)).unwrap();
         }
 
