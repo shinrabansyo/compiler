@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_type::r#type::Type;
+use sb_compiler_type::r#type::{Bool, Primitive, Type};
 use sb_compiler_type::Typed;
 
 use super::{BitShift, SemCheck, Dep};
@@ -50,44 +50,62 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
     {
         match cond {
             ast::Cond::Eq { lhs, rhs } => {
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = Arc::clone(lhs.ty());
+
+                // == の型は Bool
+                let ty = Arc::new(Primitive(Bool));
 
                 Ok(Cond::Eq { lhs, rhs, ty })
             }
             ast::Cond::Neq { lhs, rhs } => {
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = Arc::clone(lhs.ty());
+
+                // != の型は Bool
+                let ty = Arc::new(Primitive(Bool));
 
                 Ok(Cond::Neq { lhs, rhs, ty })
             }
             ast::Cond::Lt { lhs, rhs } => {
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = Arc::clone(lhs.ty());
+
+                // < の型は Bool
+                let ty = Arc::new(Primitive(Bool));
 
                 Ok(Cond::Lt { lhs, rhs, ty })
             }
             ast::Cond::Lte { lhs, rhs } => {
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = Arc::clone(lhs.ty());
+
+                // <= の型は Bool
+                let ty = Arc::new(Primitive(Bool));
 
                 Ok(Cond::Lte { lhs, rhs, ty })
             }
             ast::Cond::Gt { lhs, rhs } => {
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = Arc::clone(lhs.ty());
+
+                // > の型は Bool
+                let ty = Arc::new(Primitive(Bool));
 
                 Ok(Cond::Gt { lhs, rhs, ty })
             }
             ast::Cond::Gte { lhs, rhs } => {
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = Arc::clone(lhs.ty());
+
+                // >= の型は bool
+                let ty = Arc::new(Primitive(Bool));
 
                 Ok(Cond::Gte { lhs, rhs, ty })
             }
