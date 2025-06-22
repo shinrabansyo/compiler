@@ -2,8 +2,8 @@ mod name;
 
 use std::sync::{Arc, Mutex};
 
-use sb_compiler_semcheck_impl_var::{VarDeclChecker, VarDeclContext};
-use sb_compiler_semcheck_impl_type::{TypeDeclChecker, TypeDeclContext};
+use sb_compiler_semcheck_impl_vardecl::{VarDeclChecker, VarDeclContext};
+use sb_compiler_semcheck_impl_typedecl::{TypeDeclChecker, TypeDeclContext};
 
 use name::Name;
 
