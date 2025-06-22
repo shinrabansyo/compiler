@@ -107,6 +107,7 @@ pub enum SBToken {
     For,
     #[token("asm!", ir_omit)]
     Asm,
+    #[token("i8")]
     #[token("i32")]
     Type,
 

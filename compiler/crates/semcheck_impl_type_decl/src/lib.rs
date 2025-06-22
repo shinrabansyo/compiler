@@ -54,6 +54,7 @@ impl TypeDeclChecker {
             use r#type::primitive::*;
             use r#type::Primitive;
 
+            TypeDeclChecker::register(&mut context, "i8", Primitive(I8)).unwrap();
             TypeDeclChecker::register(&mut context, "i32", Primitive(I32)).unwrap();
         }
 
