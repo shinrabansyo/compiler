@@ -61,6 +61,7 @@ pub enum SBToken {
     For,
     #[token("asm!", ir_omit)]
     Asm,
+    #[token("bool")]
     #[token("i8")]
     #[token("i16")]
     #[token("i32")]
@@ -115,6 +116,10 @@ pub enum SBToken {
     As,
 
     // リテラル
+    #[token("true")]
+    True,
+    #[token("false")]
+    False,
     #[token(r"[a-zA-Z_][a-zA-Z0-9_]*")]
     Ident,
     #[token(r"[0-9]+")]
@@ -259,6 +264,8 @@ pub enum SBRule {
     #[rule("<unary> ::= <value>")]
     Unary,
 
+    #[rule("<value> ::= True")]
+    #[rule("<value> ::= False")]
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]
     #[rule("<value> ::= ParenL <expr> ParenR")]

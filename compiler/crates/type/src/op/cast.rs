@@ -7,6 +7,11 @@ pub fn ty_cast(from: &Arc<Type>, to: &Arc<Type>) -> anyhow::Result<()> {
     match (from.as_ref(), to.as_ref()) {
         // プリミティブ型
         (Primitive(Void),     Primitive(Void)) => Ok(()),
+        (Primitive(Bool),     Primitive(Bool)) => Ok(()),
+        (Primitive(I8),       Primitive(Bool)) => Ok(()),
+        (Primitive(I16),      Primitive(Bool)) => Ok(()),
+        (Primitive(I32),      Primitive(Bool)) => Ok(()),
+        (Primitive(NumConst), Primitive(Bool)) => Ok(()),
         (Primitive(I8),       Primitive(I8))   => Ok(()),
         (Primitive(I16),      Primitive(I16))  => Ok(()),
         (Primitive(I32),      Primitive(I32))  => Ok(()),

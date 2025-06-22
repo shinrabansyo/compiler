@@ -49,23 +49,26 @@ impl TypeDeclChecker {
         };
 
         // プリミティブ型の登録
-        {
-            TypeDeclChecker::register(
-                &mut context,
-                "i8",
-                Arc::new(Primitive(I8))
-            ).unwrap();
-            TypeDeclChecker::register(
-                &mut context,
-                "i16",
-                Arc::new(Primitive(I16))
-            ).unwrap();
-            TypeDeclChecker::register(
-                &mut context,
-                "i32",
-                Arc::new(Primitive(I32))
-            ).unwrap();
-        }
+        TypeDeclChecker::register(
+            &mut context,
+            "bool",
+            Arc::new(Primitive(Bool))
+        ).unwrap();
+        TypeDeclChecker::register(
+            &mut context,
+            "i8",
+            Arc::new(Primitive(I8))
+        ).unwrap();
+        TypeDeclChecker::register(
+            &mut context,
+            "i16",
+            Arc::new(Primitive(I16))
+        ).unwrap();
+        TypeDeclChecker::register(
+            &mut context,
+            "i32",
+            Arc::new(Primitive(I32))
+        ).unwrap();
 
         (checker, context)
     }

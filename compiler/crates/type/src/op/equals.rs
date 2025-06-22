@@ -7,6 +7,7 @@ pub fn ty_equals(a: &Arc<Type>, b: &Arc<Type>) -> anyhow::Result<()> {
     match (a.as_ref(), b.as_ref()) {
         // プリミティブ型
         (Primitive(Void),     Primitive(Void))     => Ok(()),
+        (Primitive(Bool),     Primitive(Bool))     => Ok(()),
         (Primitive(I8),       Primitive(I8))       => Ok(()),
         (Primitive(I16),      Primitive(I16))      => Ok(()),
         (Primitive(I32),      Primitive(I32))      => Ok(()),

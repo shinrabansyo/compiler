@@ -4,6 +4,7 @@ pub use Primitive::*;
 pub enum Primitive {
     // ユーザに見える型
     Void,
+    Bool,
     I8,
     I16,
     I32,

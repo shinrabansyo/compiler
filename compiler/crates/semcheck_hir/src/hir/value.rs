@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_type::r#type::{NumConst, Primitive, Type};
+use sb_compiler_type::r#type::{Bool, NumConst, Primitive, Type};
 use sb_compiler_type::Typed;
 
 use super::{Expr, Call, SemCheck, Dep};
@@ -30,6 +30,12 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
         Self: Sized,
     {
         match value {
+            ast::Value::Bool { value } => {
+                Ok(Value::Const {
+                    value: if value { 1 } else { 0 },
+                    value_ty: Arc::new(Primitive(Bool)),
+                })
+            }
             ast::Value::Const { value } => {
                 Ok(Value::Const {
                     value,
