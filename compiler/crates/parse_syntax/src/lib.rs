@@ -162,21 +162,21 @@ pub enum SBRule {
 
     #[rule("<stmt_list> ::= <stmt_list> <stmt>")]
     #[rule("<stmt_list> ::= <stmt>")]
-    #[rule("<stmt> ::= <var_decl>")]
+    #[rule("<stmt> ::= <var_decl> Semicolon")]
     #[rule("<stmt> ::= <block>")]
     #[rule("<stmt> ::= <expr> Semicolon")]
-    #[rule("<stmt> ::= <return>")]
+    #[rule("<stmt> ::= <return> Semicolon")]
     #[rule("<stmt> ::= <if>")]
     #[rule("<stmt> ::= <while>")]
     #[rule("<stmt> ::= <for>")]
     #[rule("<stmt> ::= <inasm>")]
     Stmt,
 
-    #[rule("<var_decl> ::= Var Ident Colon Type Assign <expr> Semicolon")]
-    #[rule("<var_decl> ::= Var Ident Assign <expr> Semicolon")]
+    #[rule("<var_decl> ::= Var Ident Colon Type Assign <expr>")]
+    #[rule("<var_decl> ::= Var Ident Assign <expr>")]
     VarDecl,
 
-    #[rule("<return> ::= Return <expr> Semicolon")]
+    #[rule("<return> ::= Return <expr>")]
     Return,
 
     #[rule("<if> ::= If ParenL <expr> ParenR <block>")]
@@ -186,7 +186,7 @@ pub enum SBRule {
     #[rule("<while> ::= While ParenL <expr> ParenR <block>")]
     While,
 
-    #[rule("<for> ::= For ParenL <expr> Semicolon <expr> Semicolon <expr> ParenR <block>")]
+    #[rule("<for> ::= For ParenL <var_decl> Semicolon <expr> Semicolon <expr> ParenR <block>")]
     For,
 
     #[rule("<inasm> ::= Asm BraceL <inasm_inst_list> BraceR")]
