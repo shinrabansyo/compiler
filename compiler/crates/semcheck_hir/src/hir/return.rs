@@ -25,11 +25,11 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Return<'src>> for Return<'src> {
         // 戻り値の型をチェック
         let fn_name = ctx.name.as_str();
         let fn_ty = TypeDeclChecker::find(&ctx.type_decl, fn_name).await?;
-        ty_can_return(&fn_ty, expr.ty())?;
+        let fn_ret_ty = ty_can_return(&fn_ty, expr.ty())?;
 
         Ok(Return {
             expr,
-            ty: fn_ty,
+            ty: fn_ret_ty,
         })
     }
 }
