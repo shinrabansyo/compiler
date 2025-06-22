@@ -7,3 +7,4 @@ edition = "2021"
 anyhow = { workspace = true }
 thiserror = { workspace = true }
 sb_compiler_semcheck_impl_vardecl = { path = "../semcheck_impl_vardecl" }
+sb_compiler_semcheck_impl_type = { path = "../semcheck_impl_type" }

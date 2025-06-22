@@ -1350,7 +1350,21 @@ name = "sb_compiler_semcheck_impl"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "sb_compiler_semcheck_impl_type",
  "sb_compiler_semcheck_impl_vardecl",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_compiler_semcheck_impl_type"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "petgraph",
+ "sb_compiler_parse_cst",
+ "sb_compiler_semcheck_async",
+ "sb_compiler_semcheck_async_macros",
+ "string-interner",
  "thiserror 2.0.12",
 ]
 
