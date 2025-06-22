@@ -1,5 +1,5 @@
 use sb_compiler_parse_ast as ast;
-use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
+use sb_compiler_semcheck_impl_var::{Var, VarDeclChecker};
 use sb_compiler_type::{I32, Primitive, Type, Typed};
 
 use super::{SemCheck, Dep};

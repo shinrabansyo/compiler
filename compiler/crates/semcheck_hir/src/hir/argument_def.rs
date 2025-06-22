@@ -1,6 +1,6 @@
 use sb_compiler_parse_ast as ast;
-use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_semcheck_impl_type_decl::TypeDeclChecker;
+use sb_compiler_semcheck_impl_var::{Var, VarDeclChecker};
+use sb_compiler_semcheck_impl_type::TypeDeclChecker;
 use sb_compiler_type::{Type, Typed};
 
 use super::{SemCheck, Dep};

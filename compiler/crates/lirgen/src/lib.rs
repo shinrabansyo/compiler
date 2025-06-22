@@ -2,7 +2,7 @@ mod gen;
 
 use sb_compiler_lirgen_ir::LirTopElem;
 use sb_compiler_semcheck_hir::Program;
-use sb_compiler_semcheck_impl_vardecl::Var;
+use sb_compiler_semcheck_impl_var::Var;
 use sb_compiler_utils::collections::LayeredTable;
 
 const ZERO_REG: u32 = 0;

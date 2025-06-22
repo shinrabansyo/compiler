@@ -6,5 +6,5 @@ edition = "2021"
 [dependencies]
 anyhow = { workspace = true }
 thiserror = { workspace = true }
-sb_compiler_semcheck_impl_vardecl = { path = "../semcheck_impl_vardecl" }
-sb_compiler_semcheck_impl_type_decl = { path = "../semcheck_impl_type_decl" }
+sb_compiler_semcheck_impl_var = { path = "../semcheck_impl_var" }
+sb_compiler_semcheck_impl_type = { path = "../semcheck_impl_type" }
