@@ -166,6 +166,7 @@ pub enum SBRule {
     Stmt,
 
     #[rule("<var_decl> ::= Var Ident Colon Type Assign <expr> Semicolon")]
+    #[rule("<var_decl> ::= Var Ident Assign <expr> Semicolon")]
     VarDecl,
 
     #[rule("<return> ::= Return <expr> Semicolon")]
