@@ -1239,8 +1239,8 @@ dependencies = [
  "sb_compiler_parse_cst",
  "sb_compiler_semcheck",
  "sb_compiler_semcheck_hir",
- "sb_compiler_semcheck_impl_var",
  "sb_compiler_utils",
+ "string-interner",
  "thiserror 2.0.12",
 ]
 
