@@ -3,22 +3,22 @@ use sb_compiler_type::op::ty_infer2;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
 
-use super::{Unary, SemCheck, Dep};
+use super::{Cast, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum Add<'src> {
     Plus {
         lhs: Box<Add<'src>>,
-        rhs: Unary<'src>,
+        rhs: Cast<'src>,
         ty: Type,
     },
     Minus {
         lhs: Box<Add<'src>>,
-        rhs: Unary<'src>,
+        rhs: Cast<'src>,
         ty: Type,
     },
-    Unary {
-        value: Unary<'src>,
+    Cast {
+        value: Cast<'src>,
     },
 }
 
@@ -31,7 +31,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
             ast::Add::Plus { lhs, rhs } => {
                 // 両辺の式の意味解析
                 let lhs = Box::new(Add::check(ctx, *lhs).await?);
-                let rhs = Unary::check(ctx, rhs).await?;
+                let rhs = Cast::check(ctx, rhs).await?;
 
                 // 型決定
                 let ty = ty_infer2(lhs.ty(), rhs.ty())?;
@@ -41,16 +41,16 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
             ast::Add::Minus { lhs, rhs } => {
                 // 両辺の式の意味解析
                 let lhs = Box::new(Add::check(ctx, *lhs).await?);
-                let rhs = Unary::check(ctx, rhs).await?;
+                let rhs = Cast::check(ctx, rhs).await?;
 
                 // 型決定
                 let ty = ty_infer2(lhs.ty(), rhs.ty())?;
 
                 Ok(Add::Minus { lhs, rhs, ty })
             }
-            ast::Add::Unary { value } => {
-                Ok(Add::Unary {
-                    value: Unary::check(ctx, value).await?,
+            ast::Add::Cast { value } => {
+                Ok(Add::Cast {
+                    value: Cast::check(ctx, value).await?,
                 })
             }
         }
@@ -62,7 +62,7 @@ impl Typed for Add<'_> {
         match self {
             Add::Plus { ty, .. } => ty,
             Add::Minus { ty, .. } => ty,
-            Add::Unary { value } => value.ty(),
+            Add::Cast { value } => value.ty(),
         }
     }
 }
