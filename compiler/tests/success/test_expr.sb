@@ -8,16 +8,16 @@ fn main() -> i32 {
     }
 
     // テスト実行
-    if (test_01() != true) { return 1; }
-    if (test_02() != true) { return 2; }
-    if (test_03() != true) { return 3; }
-    if (test_04() != true) { return 4; }
-    if (test_05() != true) { return 5; }
-    if (test_06() != true) { return 6; }
-    if (test_07() != true) { return 7; }
-    if (test_08() != true) { return 8; }
-    if (test_09() != true) { return 9; }
-    if (test_10() != true) { return 10; }
+    if (!test_01()) { return 1; }
+    if (!test_02()) { return 2; }
+    if (!test_03()) { return 3; }
+    if (!test_04()) { return 4; }
+    if (!test_05()) { return 5; }
+    if (!test_06()) { return 6; }
+    if (!test_07()) { return 7; }
+    if (!test_08()) { return 8; }
+    if (!test_09()) { return 9; }
+    if (!test_10()) { return 10; }
 
     // 正常時は 0
     return 0;

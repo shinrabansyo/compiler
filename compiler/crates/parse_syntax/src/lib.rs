@@ -108,6 +108,8 @@ pub enum SBToken {
     Gte,
     #[token(r">")]
     Gt,
+    #[token(r"!")]
+    Not,
     #[token(r"\+")]
     Plus,
     #[token(r"\-")]
@@ -259,6 +261,7 @@ pub enum SBRule {
     #[rule("<cast> ::= <unary>")]
     Cast,
 
+    #[rule("<unary> ::= Not <value>")]
     #[rule("<unary> ::= Plus <value>")]
     #[rule("<unary> ::= Minus <value>")]
     #[rule("<unary> ::= <value>")]

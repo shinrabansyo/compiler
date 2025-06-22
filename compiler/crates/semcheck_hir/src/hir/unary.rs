@@ -1,13 +1,17 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_type::r#type::Type;
+use sb_compiler_type::op::ty_equals;
+use sb_compiler_type::r#type::{Bool, Primitive, Type};
 use sb_compiler_type::Typed;
 
 use super::{Value, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum Unary<'src> {
+    Not {
+        value: Value<'src>,
+    },
     Plus {
         value: Value<'src>,
     },
@@ -25,6 +29,13 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
         Self: Sized,
     {
         match unary {
+            ast::Unary::Not { value } => {
+                // 式の意味解析 & 型チェック
+                let value = Value::check(ctx, value).await?;
+                ty_equals(value.ty(), &Arc::new(Primitive(Bool)))?;
+
+                Ok(Unary::Not { value })
+            }
             ast::Unary::Plus { value } => {
                 Ok(Unary::Plus {
                     value: Value::check(ctx, value).await?,
@@ -47,6 +58,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
 impl Typed for Unary<'_> {
     fn ty(&self) -> &Arc<Type> {
         match self {
+            Unary::Not { value } => value.ty(),
             Unary::Plus { value } => value.ty(),
             Unary::Minus { value } => value.ty(),
             Unary::Value { value } => value.ty(),
