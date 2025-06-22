@@ -8,9 +8,9 @@ fn main() -> i32 {
     }
 
     // テスト実行
-    if (test_01() != true) { return 1; }
-    if (test_02() != true) { return 2; }
-    if (test_03() != true) { return 3; }
+    if (!test_01()) { return 1; }
+    if (!test_02()) { return 2; }
+    if (!test_03()) { return 3; }
 
     // 正常時は 0
     return 0;

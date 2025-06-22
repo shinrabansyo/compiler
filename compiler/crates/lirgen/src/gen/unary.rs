@@ -1,4 +1,4 @@
-use sb_compiler_lirgen_ir::{lir, LirBlock, Sub};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Beq, JmpLabel, Li, Sub};
 use sb_compiler_semcheck_hir::Unary;
 
 use crate::{GenContext, ZERO_REG};
@@ -6,6 +6,29 @@ use super::lirgen_value;
 
 pub fn lirgen_unary(ctx: &mut GenContext, unary: &Unary) -> LirBlock {
     let (result_reg, lirs) = match unary {
+        Unary::Not { value, .. } => {
+            let lir_value = lirgen_value(ctx, value);
+            let reg_value = lir_value.result_reg();
+
+            let reg_result = ctx.alloc_reg();
+
+            let label_false = ctx.alloc_label();
+            let label_end = ctx.alloc_label();
+
+            (
+                reg_result,
+                vec![
+                    lir_value,
+                    lir!(Beq(12) ZERO_REG, ZERO_REG, reg_value),
+                    lir!(JmpLabel(label_false)),
+                    lir!(Li(1) reg_result),
+                    lir!(JmpLabel(label_end)),
+                    lir!(Label label_false),
+                    lir!(Li(0) reg_result),
+                    lir!(Label label_end),
+                ],
+            )
+        }
         Unary::Plus { value, .. } => {
             let lir_value = lirgen_value(ctx, value);
             let reg_value = lir_value.result_reg();

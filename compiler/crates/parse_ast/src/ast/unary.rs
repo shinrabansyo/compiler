@@ -4,6 +4,9 @@ use super::{Value, Visitor};
 
 #[derive(Debug)]
 pub enum Unary<'src> {
+    Not {
+        value: Value<'src>,
+    },
     Plus {
         value: Value<'src>,
     },
@@ -26,6 +29,11 @@ impl<'src> From<Visitor<'src>> for Unary<'src> {
 
         // 演算子付き
         match visitor.expect_leaf().0 {
+            SBToken::Not => {
+                Unary::Not {
+                    value: visitor.expect_node::<Value>(),
+                }
+            }
             SBToken::Plus => {
                 Unary::Plus {
                     value: visitor.expect_node::<Value>(),
