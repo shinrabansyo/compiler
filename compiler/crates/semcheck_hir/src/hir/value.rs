@@ -1,6 +1,7 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_type::{I32, Primitive, Type, Typed};
+use sb_compiler_type::r#type::{NumConst, Primitive, Type};
+use sb_compiler_type::Typed;
 
 use super::{Expr, Call, SemCheck, Dep};
 
@@ -30,7 +31,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
             ast::Value::Const { value } => {
                 Ok(Value::Const {
                     value,
-                    value_ty: Primitive(I32),
+                    value_ty: Primitive(NumConst),
                 })
             }
             ast::Value::Var { name } => {

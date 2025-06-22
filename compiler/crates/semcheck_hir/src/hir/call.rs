@@ -1,6 +1,7 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::Span;
-use sb_compiler_type::{Primitive, Type, Typed, Void};
+use sb_compiler_type::r#type::{Primitive, Type, Void};
+use sb_compiler_type::Typed;
 
 use super::{Value, SemCheck, Dep};
 

@@ -1,7 +1,9 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
-use sb_compiler_type::{Primitive, Type, Typed, Void};
+use sb_compiler_type::op::ty_equals;
+use sb_compiler_type::r#type::{Primitive, Type, Void};
+use sb_compiler_type::Typed;
 
 use super::{Expr, SemCheck, Dep};
 
@@ -25,6 +27,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
             &ctx.type_decl,
             &var_decl.ty.as_str()
         ).await?;
+        ty_equals(&expr.ty(), &var_ty)?;
 
         // 変数宣言
         let var = VarDeclChecker::register(

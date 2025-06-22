@@ -1,6 +1,8 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_type::{I32, Primitive, Type, Typed};
+use sb_compiler_type::op::ty_equals;
+use sb_compiler_type::r#type::{I32, Primitive, Type};
+use sb_compiler_type::Typed;
 
 use super::{SemCheck, Dep};
 
@@ -24,11 +26,13 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineAsmOp
                 Ok(InlineAsmOperand::Reg { num })
             }
             ast::InlineAsmOperandL::Var { name } => {
+                // 変数宣言
                 let var = VarDeclChecker::register(
                     &mut ctx.var_decl,
                     &name,
                     Primitive(I32)
                 ).unwrap();
+
                 Ok(InlineAsmOperand::Var { var })
             }
         }
@@ -45,9 +49,11 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOp
                 Ok(InlineAsmOperand::Reg { num })
             }
             ast::InlineAsmOperandR::Var { name } => {
-                Ok(InlineAsmOperand::Var {
-                    var: VarDeclChecker::find(&mut ctx.var_decl, &name).await?,
-                })
+                // 変数の型チェック
+                let var = VarDeclChecker::find(&mut ctx.var_decl, &name).await?;
+                ty_equals(&var.ty, &Primitive(I32))?;
+
+                Ok(InlineAsmOperand::Var { var })
             }
         }
     }

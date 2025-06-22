@@ -1,5 +1,7 @@
 use sb_compiler_parse_ast as ast;
-use sb_compiler_type::{Type, Typed};
+use sb_compiler_type::op::ty_infer2;
+use sb_compiler_type::r#type::Type;
+use sb_compiler_type::Typed;
 
 use super::{Cond, SemCheck, Dep};
 
@@ -22,9 +24,12 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitAnd<'src>> for BitAnd<'src> {
     {
         match and {
             ast::BitAnd::And { lhs, rhs } => {
+                // 両辺の式の意味解析
                 let lhs = Box::new(BitAnd::check(ctx, *lhs).await?);
                 let rhs = Cond::check(ctx, rhs).await?;
-                let ty = *lhs.ty();
+
+                // 型決定
+                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
 
                 Ok(BitAnd::And { lhs, rhs, ty })
             }

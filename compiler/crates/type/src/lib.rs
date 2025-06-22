@@ -1,14 +1,7 @@
-mod primitive;
-
-#[allow(ambiguous_glob_reexports)]
-pub use primitive::*;
-pub use Type::*;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Type {
-    Primitive(primitive::Primitive),
-}
+mod error;
+pub mod op;
+pub mod r#type;
 
 pub trait Typed {
-    fn ty(&self) -> &Type;
+    fn ty(&self) -> &r#type::Type;
 }
