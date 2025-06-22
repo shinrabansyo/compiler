@@ -86,7 +86,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Stmt<'src>> for Stmt<'src> {
             },
             ast::Stmt::For { r#for } => {
                 Ok(Stmt::For {
-                    r#for: For::check(ctx, r#for).await?,
+                    r#for: For::check(ctx.clone(), r#for).await?,
                     ty: Arc::new(Primitive(Void)),
                 })
             },

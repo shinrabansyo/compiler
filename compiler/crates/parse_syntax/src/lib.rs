@@ -186,7 +186,7 @@ pub enum SBRule {
     #[rule("<while> ::= While ParenL <expr> ParenR <block>")]
     While,
 
-    #[rule("<for> ::= For ParenL <expr> Semicolon <expr> Semicolon <expr> ParenR <block>")]
+    #[rule("<for> ::= For ParenL <var_decl> Semicolon <expr> Semicolon <expr> ParenR <block>")]
     For,
 
     #[rule("<inasm> ::= Asm BraceL <inasm_inst_list> BraceR")]

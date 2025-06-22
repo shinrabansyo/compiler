@@ -2,11 +2,11 @@ use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel};
 use sb_compiler_semcheck_hir::For;
 
 use crate::{GenContext, ZERO_REG};
-use super::{lirgen_expr, lirgen_block};
+use super::{lirgen_expr, lirgen_block, lirgen_var_decl};
 
 pub fn lirgen_for(ctx: &mut GenContext, r#for: &For) -> LirBlock {
     // 初期化節
-    let lir_init = lirgen_expr(ctx, &r#for.init);
+    let lir_init = lirgen_var_decl(ctx, &r#for.init);
 
     // 条件節
     let lir_cond = lirgen_expr(ctx, &r#for.cond);
