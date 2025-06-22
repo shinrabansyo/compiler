@@ -1,6 +1,6 @@
 // 代入のテスト
 
-fn main() {
+fn main() -> i32 {
     // r10 レジスタを 0 以外の値にする
     asm! {
         addi R4 = R0, 9999
@@ -8,42 +8,42 @@ fn main() {
     }
 
     // テスト実行
-    if (test_01() != 1) { return 1; }
-    if (test_02() != 1) { return 2; }
-    if (test_03() != 1) { return 3; }
-    if (test_04() != 1) { return 4; }
-    if (test_05() != 1) { return 5; }
+    if (test_01() != true) { return 1; }
+    if (test_02() != true) { return 2; }
+    if (test_03() != true) { return 3; }
+    if (test_04() != true) { return 4; }
+    if (test_05() != true) { return 5; }
 
     // 正常時は 0
     return 0;
 }
 
-fn test_01() {
-    var value: i32 = 10;
+fn test_01() -> bool {
+    var value = 10;
     value = 20;
     return value == 20;
 }
 
-fn test_02() {
-    var value: i32 = 10;
+fn test_02() -> bool {
+    var value = 10;
     value += 20;
     return value == 30;
 }
 
-fn test_03() {
-    var value: i32 = 10;
+fn test_03() -> bool {
+    var value = 10;
     value -= 20;
     return value == (0-10);
 }
 
-fn test_04() {
-    var value: i32 = 1;
+fn test_04() -> bool {
+    var value = 1;
     value <<= 4;
     return value == 16;
 }
 
-fn test_05() {
-    var value: i32 = 16;
+fn test_05() -> bool {
+    var value = 16;
     value >>= 4;
     return value == 1;
 }

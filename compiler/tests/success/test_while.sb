@@ -1,6 +1,6 @@
 // while 文のテスト
 
-fn main() {
+fn main() -> i32 {
     // r10 レジスタを 0 以外の値にする
     asm! {
         addi R4 = R0, 9999
@@ -8,16 +8,16 @@ fn main() {
     }
 
     // テスト実行
-    if (test_01() != 1) { return 1; }
-    if (test_02() != 1) { return 2; }
+    if (test_01() != true) { return 1; }
+    if (test_02() != true) { return 2; }
 
     // 正常時は 0
     return 0;
 }
 
-fn test_01() {
-    var idx: i32 = 10;
-    var cnt: i32 = 0;
+fn test_01() -> bool {
+    var idx = 10;
+    var cnt = 0;
     while (idx > 0) {
         idx -= 1;
         cnt += 1;
@@ -25,9 +25,9 @@ fn test_01() {
     return cnt == 10;
 }
 
-fn test_02() {
-    var sum: i32 = 0;
-    var cnt: i32 = 0;
+fn test_02() -> bool {
+    var sum = 0;
+    var cnt = 0;
     while (sum < 50) {
         cnt += 1;
         sum += cnt;

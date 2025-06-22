@@ -1,6 +1,6 @@
 // インラインアセンブリ記述のテスト
 
-fn main() {
+fn main() -> i32 {
     // r10 レジスタを 0 以外の値にする
     asm! {
         addi R4 = R0, 9999
@@ -8,28 +8,28 @@ fn main() {
     }
 
     // テスト実行
-    if (test_01() != 1) { return 1; }
-    if (test_02() != 1) { return 2; }
-    if (test_03() != 1) { return 3; }
-    if (test_04() != 1) { return 4; }
-    if (test_05() != 1) { return 5; }
-    if (test_06() != 1) { return 6; }
+    if (test_01() != true) { return 1; }
+    if (test_02() != true) { return 2; }
+    if (test_03() != true) { return 3; }
+    if (test_04() != true) { return 4; }
+    if (test_05() != true) { return 5; }
+    if (test_06() != true) { return 6; }
 
     // 正常時は 0
     return 0;
 }
 
-fn test_01() {
-    var result: i32 = 0;
+fn test_01() -> bool {
+    var result = 0;
     asm! {
         addi R4 = R0, 1
         add result = R0, R4
     }
-    return result;
+    return result as bool;
 }
 
-fn test_02() {
-    var result: i32 = 0;
+fn test_02() -> bool {
+    var result = 0;
     asm! {
         addi R4 = R0, 10
         addi R5 = R0, 10
@@ -40,11 +40,11 @@ fn test_02() {
         beq R0, (R0, R0) -> 12
         add result = R0, R0
     }
-    return result;
+    return result as bool;
 }
 
-fn test_03() {
-    var result: i32 = 0;
+fn test_03() -> bool {
+    var result = 0;
     asm! {
         addi R4 = R0, 10
         addi R5 = R0, 10
@@ -59,31 +59,31 @@ fn test_03() {
         beq R0, (R0, R0) -> 12
         add result = R0, R0
     }
-    return result;
+    return result as bool;
 }
 
-fn test_04() {
-    var result: i32 = 0;
+fn test_04() -> bool {
+    var result = 0;
     asm! {
         addi R4 = R0, 1
         sw R0[0] = R4
         lw result = R0[0]
     }
-    return result;
+    return result as bool;
 }
 
-fn test_05() {
-    var result: i32 = 1;
+fn test_05() -> bool {
+    var result = 1;
     asm! {
         in result = R0[0]
     }
     return result == 0;
 }
 
-fn test_06() {
+fn test_06() -> bool {
     asm! {
         addi R4 = R0, 98
         out R0[0] = R4
     }
-    return 1;
+    return true;
 }
