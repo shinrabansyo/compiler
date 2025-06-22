@@ -1,4 +1,5 @@
 use sb_compiler_parse_ast as ast;
+use sb_compiler_semcheck_impl_type_decl::Type;
 
 use super::{VarDecl, Block, Expr, Return, If, While, For, InlineAsm, SemCheck, Dep};
 
@@ -76,6 +77,19 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Stmt<'src>> for Stmt<'src> {
                     inline_asm: InlineAsm::check(ctx.clone(), inline_asm).await?,
                 })
             },
+        }
+    }
+
+    fn ty(&self) -> &Type {
+        match self {
+            Stmt::VarDecl { var_decl } => var_decl.ty(),
+            Stmt::Block { block } => block.ty(),
+            Stmt::Expr { expr } => expr.ty(),
+            Stmt::Return { r#return } => r#return.ty(),
+            Stmt::If { r#if } => r#if.ty(),
+            Stmt::While { r#while } => r#while.ty(),
+            Stmt::For { r#for } => r#for.ty(),
+            Stmt::InlineAsm { inline_asm } => inline_asm.ty(),
         }
     }
 }

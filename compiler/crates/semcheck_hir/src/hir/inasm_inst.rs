@@ -1,4 +1,6 @@
 use sb_compiler_parse_ast as ast;
+use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
+use sb_compiler_semcheck_impl_type_decl::r#type::*;
 
 use super::{InlineAsmOperand, SemCheck, Dep};
 
@@ -135,5 +137,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmInst<'src>> for InlineAsmInst<'
             Blt { rd, rs1, rs2, imm } => check_reg_b!(Blt rd, rs1, rs2, imm),
             Ble { rd, rs1, rs2, imm } => check_reg_b!(Ble rd, rs1, rs2, imm),
         }
+    }
+
+    fn ty(&self) -> &Type {
+        &Primitive(Void)
     }
 }

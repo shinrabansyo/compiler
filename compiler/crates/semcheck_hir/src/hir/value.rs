@@ -1,5 +1,7 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
+use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
+use sb_compiler_semcheck_impl_type_decl::r#type::*;
 
 use super::{Expr, Call, SemCheck, Dep};
 
@@ -7,6 +9,7 @@ use super::{Expr, Call, SemCheck, Dep};
 pub enum Value<'src> {
     Const {
         value: i32,
+        value_ty: Type,
     },
     Var {
         var: Var<'src>,
@@ -26,7 +29,10 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
     {
         match value {
             ast::Value::Const { value } => {
-                Ok(Value::Const { value })
+                Ok(Value::Const {
+                    value,
+                    value_ty: Primitive(I32),
+                })
             }
             ast::Value::Var { name } => {
                 Ok(Value::Var {
@@ -43,6 +49,15 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                     call: Call::check(ctx, call).await?,
                 })
             }
+        }
+    }
+
+    fn ty(&self) -> &Type {
+        match self {
+            Value::Const { value_ty, .. } => value_ty,
+            Value::Var { var, .. } => &var.ty,
+            Value::Expr { expr, .. } => expr.ty(),
+            Value::Call { call } => call.ty(),
         }
     }
 }

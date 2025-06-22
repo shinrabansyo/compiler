@@ -1384,6 +1384,7 @@ dependencies = [
  "sb_compiler_parse_cst",
  "sb_compiler_semcheck_async",
  "sb_compiler_semcheck_async_macros",
+ "sb_compiler_semcheck_impl_type_decl",
  "string-interner",
  "thiserror 2.0.12",
 ]

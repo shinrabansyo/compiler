@@ -1,4 +1,6 @@
 use sb_compiler_parse_ast as ast;
+use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
+use sb_compiler_semcheck_impl_type_decl::r#type::*;
 
 use super::{Expr, SemCheck, Dep};
 
@@ -15,5 +17,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Return<'src>> for Return<'src> {
         Ok(Return {
             expr: Expr::check(ctx, r#return.expr).await?,
         })
+    }
+
+    fn ty(&self) -> &Type {
+        &Primitive(Void)
     }
 }

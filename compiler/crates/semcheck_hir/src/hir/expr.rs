@@ -1,4 +1,5 @@
 use sb_compiler_parse_ast as ast;
+use sb_compiler_semcheck_impl_type_decl::Type;
 
 use super::{Assign, SemCheck, Dep};
 
@@ -15,5 +16,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Expr<'src>> for Expr<'src> {
         Ok(Expr {
             assign: Assign::check(ctx, expr.assign).await?,
         })
+    }
+
+    fn ty(&self) -> &Type {
+        self.assign.ty()
     }
 }

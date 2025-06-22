@@ -1,5 +1,6 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
+use sb_compiler_semcheck_impl_type_decl::Type;
 
 use super::{LogicOr, SemCheck, Dep};
 
@@ -81,6 +82,18 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                     or: LogicOr::check(ctx, or).await?,
                 })
             }
+        }
+    }
+
+    fn ty(&self) -> &Type {
+        match self {
+            Assign::Normal { var, .. } => &var.ty,
+            Assign::Plus { var, .. } => &var.ty,
+            Assign::Minus { var, .. } => &var.ty,
+            Assign::ShiftL { var, .. } => &var.ty,
+            Assign::ShiftR { var, .. } => &var.ty,
+            Assign::ShiftRa { var, .. } => &var.ty,
+            Assign::LogicOr { or } => or.ty(),
         }
     }
 }

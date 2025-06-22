@@ -102,7 +102,7 @@ impl TypeDeclChecker {
         // 2. 型が可視であるか確認
         let node = *checker.nodes.get(&symbol).unwrap();
         if checker.tree.connected(ctx.current_pos, node) {
-            Ok(checker.types.get(&symbol).unwrap().clone())
+            Ok(*checker.types.get(&symbol).unwrap())
         } else {
             let err = TypeDeclError::new_not_declared_in_scope(name.to_string());
             Err(err.into())

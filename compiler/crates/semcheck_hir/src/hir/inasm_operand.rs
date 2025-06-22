@@ -1,5 +1,7 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
+use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
+use sb_compiler_semcheck_impl_type_decl::r#type::*;
 
 use super::{SemCheck, Dep};
 
@@ -25,11 +27,15 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineAsmOp
             ast::InlineAsmOperandL::Var { name } => {
                 let var = match VarDeclChecker::exists(&ctx.var_decl, &name) {
                     Some(var) => var,
-                    None => VarDeclChecker::register(&mut ctx.var_decl, &name).unwrap(),
+                    None => VarDeclChecker::register(&mut ctx.var_decl, &name, Primitive(I32)).unwrap(),
                 };
                 Ok(InlineAsmOperand::Var { var })
             }
         }
+    }
+
+    fn ty(&self) -> &Type {
+        &Primitive(I32)
     }
 }
 
@@ -48,5 +54,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOp
                 })
             }
         }
+    }
+
+    fn ty(&self) -> &Type {
+        &Primitive(I32)
     }
 }

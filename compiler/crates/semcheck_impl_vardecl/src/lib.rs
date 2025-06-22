@@ -12,6 +12,9 @@ use string_interner::StringInterner;
 use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::failable_as_async;
+use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
+use sb_compiler_semcheck_impl_type_decl::r#type::*;
+use sb_compiler_semcheck_impl_type_decl::Type;
 
 use error::VarDeclError;
 
@@ -19,6 +22,7 @@ use error::VarDeclError;
 pub struct Var<'src> {
     pub symbol: SymbolU32,
     pub span: Span<'src>,
+    pub ty: Type,
 }
 
 #[derive(Debug, Clone)]
@@ -50,6 +54,7 @@ impl<'src> VarDeclChecker<'src> {
         let root_var = Var {
             symbol: root_symbol,
             span: root_span,
+            ty: Primitive(I32),
         };
 
         // 変数参照グラフ
@@ -71,7 +76,7 @@ impl<'src> VarDeclChecker<'src> {
         (checker, context)
     }
 
-    pub fn register(ctx: &mut VarDeclContext<'src>, span: &Span<'src>) -> anyhow::Result<Var<'src>> {
+    pub fn register(ctx: &mut VarDeclContext<'src>, span: &Span<'src>, ty: Type) -> anyhow::Result<Var<'src>> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を登録
@@ -79,6 +84,7 @@ impl<'src> VarDeclChecker<'src> {
         let var = Var {
             symbol: var_symbol,
             span: *span,
+            ty,
         };
 
         // 2. 参照グラフに追加
@@ -136,6 +142,8 @@ impl<'src> VarDeclChecker<'src> {
 mod tests {
     use sb_compiler_parse_cst::Span;
     use sb_compiler_semcheck_async::block_on;
+    use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
+    use sb_compiler_semcheck_impl_type_decl::r#type::*;
 
     use super::VarDeclChecker;
 
@@ -145,13 +153,13 @@ mod tests {
 
         block_on(async {
             // . <- var_a
-            let _ = VarDeclChecker::register(&mut ctx, &span("var_a")).unwrap();
+            let _ = VarDeclChecker::register(&mut ctx, &span("var_a"), Primitive(I32)).unwrap();
 
             // . <- var_a <- [here]
             let mut ctx_1 = ctx.clone();
             {
                 // . <- var_a <- var_b
-                let _ = VarDeclChecker::register(&mut ctx_1, &span("var_b")).unwrap();
+                let _ = VarDeclChecker::register(&mut ctx_1, &span("var_b"), Primitive(I32)).unwrap();
 
                 // . <- var_a <- var_b <- [here]
                 assert!(VarDeclChecker::find(&ctx_1, &span("var_a")).await.is_ok());
@@ -163,7 +171,7 @@ mod tests {
             let mut ctx_2 = ctx.clone();
             {
                 // . <- var_a <- var_c
-                let _ = VarDeclChecker::register(&mut ctx_2, &span("var_c")).unwrap();
+                let _ = VarDeclChecker::register(&mut ctx_2, &span("var_c"), Primitive(I32)).unwrap();
 
                 // . <- var_a <- var_c <- [here]
                 assert!(VarDeclChecker::find(&ctx_2, &span("var_a")).await.is_ok());
@@ -179,10 +187,10 @@ mod tests {
 
         block_on(async {
             // . <- var_a_0
-            let var_a_0 = VarDeclChecker::register(&mut ctx, &span("var_a")).unwrap();
+            let var_a_0 = VarDeclChecker::register(&mut ctx, &span("var_a"), Primitive(I32)).unwrap();
 
             // . <- var_a_0 <- var_a_1
-            let var_a_1 = VarDeclChecker::register(&mut ctx, &span("var_a")).unwrap();
+            let var_a_1 = VarDeclChecker::register(&mut ctx, &span("var_a"), Primitive(I32)).unwrap();
 
             // . <- var_a_0 <- var_a_1 <- [here]
             assert_ne!(var_a_0, var_a_1);

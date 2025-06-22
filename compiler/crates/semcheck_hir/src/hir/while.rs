@@ -1,4 +1,6 @@
 use sb_compiler_parse_ast as ast;
+use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
+use sb_compiler_semcheck_impl_type_decl::r#type::*;
 
 use super::{Expr, Block, SemCheck, Dep};
 
@@ -17,5 +19,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::While<'src>> for While<'src> {
             cond: Expr::check(ctx, r#while.cond).await?,
             block: Block::check(ctx.clone(), r#while.block).await?,
         })
+    }
+
+    fn ty(&self) -> &Type {
+        &Primitive(Void)
     }
 }

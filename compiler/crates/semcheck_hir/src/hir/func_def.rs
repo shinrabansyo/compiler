@@ -1,5 +1,7 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::Span;
+use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
+use sb_compiler_semcheck_impl_type_decl::r#type::*;
 
 use super::{ArgumentDef, Block, SemCheck, InDep};
 
@@ -33,5 +35,9 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             ret_ty: func_def.ret_ty,
             block,
         })
+    }
+
+    fn ty(&self) -> &Type {
+        &Primitive(Void)
     }
 }

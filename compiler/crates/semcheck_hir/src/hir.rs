@@ -37,11 +37,13 @@ mod call;           pub use call::Call;
 use std::future::Future;
 use std::pin::Pin;
 use sb_compiler_semcheck_impl::SemCheckContext;
+use sb_compiler_semcheck_impl_type_decl::Type;
 
 pub type Dep<'a, 'src> = &'a mut SemCheckContext<'src>;
 pub type InDep<'src> = SemCheckContext<'src>;
 
 pub trait SemCheck<Ctx, T> {
+    // 自動生成 (再帰 async 用)
     fn check(ctx: Ctx, ast: T) -> Pin<Box<impl Future<Output = anyhow::Result<Self>>>>
     where
         Self: Sized,
@@ -49,7 +51,10 @@ pub trait SemCheck<Ctx, T> {
         Box::pin(Self::check0(ctx, ast))
     }
 
+    // ユーザ実装用
     fn check0(ctx: Ctx, ast: T) -> impl Future<Output = anyhow::Result<Self>>
     where
         Self: Sized;
+
+    fn ty(&self) -> &Type;
 }
