@@ -17,6 +17,7 @@ pub fn ty_equals(a: &Arc<Type>, b: &Arc<Type>) -> anyhow::Result<()> {
         (Primitive(NumConst), Primitive(I16))      => Ok(()),
         (Primitive(I32),      Primitive(NumConst)) => Ok(()),
         (Primitive(NumConst), Primitive(I32))      => Ok(()),
+        (Primitive(NumConst), Primitive(NumConst)) => Ok(()),
 
         // 比較失敗
         _ => {

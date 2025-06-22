@@ -1,6 +1,6 @@
 // 変数のテスト
 
-fn main() {
+fn main() -> i32 {
     // r10 レジスタを 0 以外の値にする
     asm! {
         addi R4 = R0, 9999
@@ -8,46 +8,46 @@ fn main() {
     }
 
     // テスト実行
-    if (test_01() != 1) { return 1; }
-    if (test_02() != 1) { return 2; }
-    if (test_03() != 1) { return 3; }
+    if (test_01() != true) { return 1; }
+    if (test_02() != true) { return 2; }
+    if (test_03() != true) { return 3; }
 
     // 正常時は 0
     return 0;
 }
 
-fn test_01() {
-    var a: i32 = 10;
+fn test_01() -> bool {
+    var a = 10;
     return a == 10;
 }
 
-fn test_02() {
-    var a: i32 = 10;
-    var b: i32 = 10;
+fn test_02() -> bool {
+    var a = 10;
+    var b = 10;
     return a == b;
 }
 
-fn test_03() {
-    var a: i32 = 1;
-    var b: i32 = 2;
-    var c: i32 = 3;
-    var d: i32 = 4;
-    var e: i32 = 5;
-    var f: i32 = 6;
-    var g: i32 = 7;
-    var h: i32 = 8;
-    var i: i32 = 9;
-    var j: i32 = 10;
-    var k: i32 = 11;
-    var l: i32 = 12;
-    var m: i32 = 13;
-    var n: i32 = 14;
-    var o: i32 = 15;
-    var p: i32 = 16;
-    var q: i32 = 17;
-    var r: i32 = 18;
-    var s: i32 = 19;
-    var t: i32 = 20;
-    var sum: i32 = a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t;
+fn test_03() -> bool {
+    var a = 1;
+    var b = 2;
+    var c = 3;
+    var d = 4;
+    var e = 5;
+    var f = 6;
+    var g = 7;
+    var h = 8;
+    var i = 9;
+    var j = 10;
+    var k = 11;
+    var l = 12;
+    var m = 13;
+    var n = 14;
+    var o = 15;
+    var p = 16;
+    var q = 17;
+    var r = 18;
+    var s = 19;
+    var t = 20;
+    var sum = a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t;
     return sum == 210;
 }

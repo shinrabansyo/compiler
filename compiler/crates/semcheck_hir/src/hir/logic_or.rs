@@ -1,8 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_type::op::ty_infer2;
-use sb_compiler_type::r#type::Type;
+use sb_compiler_type::r#type::{Bool, Primitive, Type};
 use sb_compiler_type::Typed;
 
 use super::{LogicAnd, SemCheck, Dep};
@@ -30,8 +29,8 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::LogicOr<'src>> for LogicOr<'src> {
                 let lhs = Box::new(LogicOr::check(ctx, *lhs).await?);
                 let rhs = LogicAnd::check(ctx, rhs).await?;
 
-                // 型決定
-                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
+                // || の型は Bool
+                let ty = Arc::new(Primitive(Bool));
 
                 Ok(LogicOr::Or { lhs, rhs, ty })
             }

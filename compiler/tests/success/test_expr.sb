@@ -1,6 +1,6 @@
 // 変数，式のテスト
 
-fn main() {
+fn main() -> i32 {
     // r10 レジスタを 0 以外の値にする
     asm! {
         addi R4 = R0, 9999
@@ -8,79 +8,79 @@ fn main() {
     }
 
     // テスト実行
-    if (test_01() != 1) { return 1; }
-    if (test_02() != 1) { return 2; }
-    if (test_03() != 1) { return 3; }
-    if (test_04() != 1) { return 4; }
-    if (test_05() != 1) { return 5; }
-    if (test_06() != 1) { return 6; }
-    if (test_07() != 1) { return 7; }
-    if (test_08() != 1) { return 8; }
-    if (test_09() != 1) { return 9; }
-    if (test_10() != 1) { return 10; }
+    if (test_01() != true) { return 1; }
+    if (test_02() != true) { return 2; }
+    if (test_03() != true) { return 3; }
+    if (test_04() != true) { return 4; }
+    if (test_05() != true) { return 5; }
+    if (test_06() != true) { return 6; }
+    if (test_07() != true) { return 7; }
+    if (test_08() != true) { return 8; }
+    if (test_09() != true) { return 9; }
+    if (test_10() != true) { return 10; }
 
     // 正常時は 0
     return 0;
 }
 
-fn test_01() {
-    var value: i32 = 10;
+fn test_01() -> bool {
+    var value = 10;
     return value == 10;
 }
 
-fn test_02() {
-    var value: i32 = (10 + 20) - 30;
+fn test_02() -> bool {
+    var value = (10 + 20) - 30;
     return value == 0;
 }
 
-fn test_03() {
-    var value_1: i32 = 10;
-    var value_2: i32 = 20;
-    var value_3: i32 = 30;
-    var sum: i32 = value_1 + value_2 + value_3;
+fn test_03() -> bool {
+    var value_1 = 10;
+    var value_2 = 20;
+    var value_3 = 30;
+    var sum = value_1 + value_2 + value_3;
     return sum == 60;
 }
 
-fn test_04() {
-    var value_1: i32 = 10;
-    var value_2: i32 = 20;
-    var sum_1: i32 = value_1 + value_2;
-    var sum_2: i32 = 10 + sum_1;
+fn test_04() -> bool {
+    var value_1 = 10;
+    var value_2 = 20;
+    var sum_1 = value_1 + value_2;
+    var sum_2 = 10 + sum_1;
     return sum_2 == 40;
 }
 
-fn test_05() {
-    var value_1: i32 = 0;
-    var value_2: i32 = 10;
-    var diff: i32 = value_1 - value_2;
+fn test_05() -> bool {
+    var value_1 = 0;
+    var value_2 = 10;
+    var diff = value_1 - value_2;
     return diff == -10;
 }
 
-fn test_06() {
-    var value_1: i32 = 0;
-    var value_2: i32 = 10;
-    var sum: i32 = value_1 + value_2;
+fn test_06() -> bool {
+    var value_1 = 0;
+    var value_2 = 10;
+    var sum = value_1 + value_2;
     return sum == +10;
 }
 
-fn test_07() {
+fn test_07() -> bool {
     return (1 << 4) == 16;
 }
 
-fn test_08() {
-    var a: i32 = 5;
-    var b: i32 = 2;
+fn test_08() -> bool {
+    var a = 5;
+    var b = 2;
     return (a | b) == 7;
 }
 
-fn test_09() {
-    var a: i32 = 5;
-    var b: i32 = 2;
+fn test_09() -> bool {
+    var a = 5;
+    var b = 2;
     return (a ^ b) == 7;
 }
 
-fn test_10() {
-    var a: i32 = 5;
-    var b: i32 = 2;
+fn test_10() -> bool {
+    var a = 5;
+    var b = 2;
     return (a & b) == 0;
 }
