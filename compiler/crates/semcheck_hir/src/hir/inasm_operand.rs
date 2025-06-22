@@ -24,10 +24,11 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineAsmOp
                 Ok(InlineAsmOperand::Reg { num })
             }
             ast::InlineAsmOperandL::Var { name } => {
-                let var = match VarDeclChecker::exists(&ctx.var_decl, &name) {
-                    Some(var) => var,
-                    None => VarDeclChecker::register(&mut ctx.var_decl, &name, Primitive(I32)).unwrap(),
-                };
+                let var = VarDeclChecker::register(
+                    &mut ctx.var_decl,
+                    &name,
+                    Primitive(I32)
+                ).unwrap();
                 Ok(InlineAsmOperand::Var { var })
             }
         }

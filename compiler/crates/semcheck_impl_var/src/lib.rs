@@ -97,13 +97,14 @@ impl<'src> VarDeclChecker<'src> {
         Ok(var)
     }
 
-    pub fn exists(ctx: &VarDeclContext<'src>, span: &Span<'src>) -> Option<Var<'src>> {
+    #[failable_as_async('a, 'src)]
+    pub fn find<'a>(ctx: &'a VarDeclContext<'src>, span: &'a Span<'src>) -> anyhow::Result<Var<'src>> {
         let checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を検索
         let var_symbol = match checker.interner.get(span.as_str()) {
             Some(symbol) => symbol,
-            None => return None,
+            None => return Err(VarDeclError::new_not_declared(*span).into()),
         };
 
         // 2. 可視変数の洗い出し
@@ -121,18 +122,11 @@ impl<'src> VarDeclChecker<'src> {
         for waypoint in waypoints {
             let waypoint_var = checker.graph.node_weight(waypoint).unwrap();
             if var_symbol == waypoint_var.symbol {
-                return Some(*waypoint_var);
+                return Ok(*waypoint_var);
             }
         }
 
-        None
-    }
-
-    #[failable_as_async('a, 'src)]
-    pub fn find<'a>(ctx: &'a VarDeclContext<'src>, name: &'a Span<'src>) -> anyhow::Result<Var<'src>> {
-        VarDeclChecker::exists(ctx, name).ok_or(
-            VarDeclError::new_not_declared(name.clone())
-        )
+        Err(VarDeclError::new_not_declared(*span))
     }
 }
 
