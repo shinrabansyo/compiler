@@ -1,4 +1,9 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
+use sb_compiler_type::op::ty_infer2;
+use sb_compiler_type::r#type::Type;
+use sb_compiler_type::Typed;
 
 use super::{BitAnd, SemCheck, Dep};
 
@@ -7,6 +12,7 @@ pub enum BitXor<'src> {
     Xor {
         lhs: Box<BitXor<'src>>,
         rhs: BitAnd<'src>,
+        ty: Arc<Type>,
     },
     BitAnd {
         and: BitAnd<'src>,
@@ -20,16 +26,29 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitXor<'src>> for BitXor<'src> {
     {
         match xor {
             ast::BitXor::Xor { lhs, rhs } => {
-                Ok(BitXor::Xor {
-                    lhs: Box::new(BitXor::check(ctx, *lhs).await?),
-                    rhs: BitAnd::check(ctx, rhs).await?,
-                })
+                // 両辺の式の意味解析
+                let lhs = Box::new(BitXor::check(ctx, *lhs).await?);
+                let rhs = BitAnd::check(ctx, rhs).await?;
+
+                // 型決定
+                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
+
+                Ok(BitXor::Xor { lhs, rhs, ty })
             }
             ast::BitXor::BitAnd { and } => {
                 Ok(BitXor::BitAnd {
                     and: BitAnd::check(ctx, and).await?,
                 })
             }
+        }
+    }
+}
+
+impl Typed for BitXor<'_> {
+    fn ty(&self) -> &Arc<Type> {
+        match self {
+            BitXor::Xor { ty, .. } => ty,
+            BitXor::BitAnd { and } => and.ty(),
         }
     }
 }

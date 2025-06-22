@@ -1,19 +1,19 @@
 use sb_compiler_parse_syntax::SBToken;
 
-use super::{Unary, Visitor};
+use super::{Cast, Visitor};
 
 #[derive(Debug)]
 pub enum Add<'src> {
     Plus {
         lhs: Box<Add<'src>>,
-        rhs: Unary<'src>,
+        rhs: Cast<'src>,
     },
     Minus {
         lhs: Box<Add<'src>>,
-        rhs: Unary<'src>,
+        rhs: Cast<'src>,
     },
-    Unary {
-        value: Unary<'src>,
+    Cast {
+        value: Cast<'src>,
     },
 }
 
@@ -21,8 +21,8 @@ impl<'src> From<Visitor<'src>> for Add<'src> {
     fn from(mut visitor: Visitor<'src>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
-            return Add::Unary {
-                value: visitor.expect_node::<Unary>(),
+            return Add::Cast {
+                value: visitor.expect_node::<Cast>(),
             };
         }
 
@@ -32,13 +32,13 @@ impl<'src> From<Visitor<'src>> for Add<'src> {
             SBToken::Plus => {
                 Add::Plus {
                     lhs: Box::new(lhs),
-                    rhs: visitor.expect_node::<Unary>(),
+                    rhs: visitor.expect_node::<Cast>(),
                 }
             }
             SBToken::Minus => {
                 Add::Minus {
                     lhs: Box::new(lhs),
-                    rhs: visitor.expect_node::<Unary>(),
+                    rhs: visitor.expect_node::<Cast>(),
                 }
             }
             _ => unreachable!(),

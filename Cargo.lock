@@ -756,6 +756,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f5d4a7da358eff58addd2877a45865158f0d78c911d43a5784ceb7bbf52833b0"
 
 [[package]]
+name = "lctree"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dc2d23462bf4ceea70b8e06a314706b26d64424ca0c701414e3db49ff742dae3"
+
+[[package]]
 name = "lebe"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1233,8 +1239,8 @@ dependencies = [
  "sb_compiler_parse_cst",
  "sb_compiler_semcheck",
  "sb_compiler_semcheck_hir",
- "sb_compiler_semcheck_impl_vardecl",
  "sb_compiler_utils",
+ "string-interner",
  "thiserror 2.0.12",
 ]
 
@@ -1340,7 +1346,9 @@ dependencies = [
  "sb_compiler_parse_cst",
  "sb_compiler_semcheck_async",
  "sb_compiler_semcheck_impl",
+ "sb_compiler_semcheck_impl_typedecl",
  "sb_compiler_semcheck_impl_vardecl",
+ "sb_compiler_type",
  "sb_compiler_utils",
  "thiserror 2.0.12",
 ]
@@ -1350,7 +1358,22 @@ name = "sb_compiler_semcheck_impl"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "sb_compiler_semcheck_impl_typedecl",
  "sb_compiler_semcheck_impl_vardecl",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_compiler_semcheck_impl_typedecl"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "lctree",
+ "sb_compiler_parse_cst",
+ "sb_compiler_semcheck_async",
+ "sb_compiler_semcheck_async_macros",
+ "sb_compiler_type",
+ "string-interner",
  "thiserror 2.0.12",
 ]
 
@@ -1363,7 +1386,16 @@ dependencies = [
  "sb_compiler_parse_cst",
  "sb_compiler_semcheck_async",
  "sb_compiler_semcheck_async_macros",
+ "sb_compiler_type",
  "string-interner",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_compiler_type"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
  "thiserror 2.0.12",
 ]
 

@@ -5,6 +5,9 @@ use super::{Expr, Call, Visitor};
 
 #[derive(Debug)]
 pub enum Value<'src> {
+    Bool {
+        value: bool,
+    },
     Const {
         value: i32,
     },
@@ -22,9 +25,16 @@ pub enum Value<'src> {
 impl<'src> From<Visitor<'src>> for Value<'src> {
     fn from(mut visitor: Visitor<'src>) -> Self {
         match visitor.peek() {
+            // 論理値
+            (Some(SBToken::True), None) => {
+                Value::Bool { value: true }
+            }
+            (Some(SBToken::False), None) => {
+                Value::Bool { value: false }
+            }
             // 定数
             (Some(SBToken::Num), None) => {
-                Value::Const{
+                Value::Const {
                     value: visitor.expect_leaf().1.as_str().parse().unwrap(),
                 }
             }

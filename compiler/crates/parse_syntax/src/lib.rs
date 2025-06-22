@@ -44,6 +44,29 @@ pub enum SBToken {
     #[token(r";", ir_omit)]
     Semicolon,
 
+    // 予約語
+    #[token("fn" ir_omit)]
+    Fn,
+    #[token("var", ir_omit)]
+    Var,
+    #[token("return", ir_omit)]
+    Return,
+    #[token("if", ir_omit)]
+    If,
+    #[token("else", ir_omit)]
+    Else,
+    #[token("while", ir_omit)]
+    While,
+    #[token("for", ir_omit)]
+    For,
+    #[token("asm!", ir_omit)]
+    Asm,
+    #[token("bool")]
+    #[token("i8")]
+    #[token("i16")]
+    #[token("i32")]
+    Type,
+
     // 演算子
     #[token(r"==")]
     Eq,
@@ -89,28 +112,14 @@ pub enum SBToken {
     Plus,
     #[token(r"\-")]
     Minus,
-
-    // 予約語
-    #[token("fn" ir_omit)]
-    Fn,
-    #[token("var", ir_omit)]
-    Var,
-    #[token("return", ir_omit)]
-    Return,
-    #[token("if", ir_omit)]
-    If,
-    #[token("else", ir_omit)]
-    Else,
-    #[token("while", ir_omit)]
-    While,
-    #[token("for", ir_omit)]
-    For,
-    #[token("asm!", ir_omit)]
-    Asm,
-    #[token("i32")]
-    Type,
+    #[token("as", ir_omit)]
+    As,
 
     // リテラル
+    #[token("true")]
+    True,
+    #[token("false")]
+    False,
     #[token(r"[a-zA-Z_][a-zA-Z0-9_]*")]
     Ident,
     #[token(r"[0-9]+")]
@@ -164,6 +173,7 @@ pub enum SBRule {
     Stmt,
 
     #[rule("<var_decl> ::= Var Ident Colon Type Assign <expr> Semicolon")]
+    #[rule("<var_decl> ::= Var Ident Assign <expr> Semicolon")]
     VarDecl,
 
     #[rule("<return> ::= Return <expr> Semicolon")]
@@ -240,16 +250,22 @@ pub enum SBRule {
     #[rule("<bit_shift> ::= <add>")]
     BitShift,
 
-    #[rule("<add> ::= <add> Plus <unary>")]
-    #[rule("<add> ::= <add> Minus <unary>")]
-    #[rule("<add> ::= <unary>")]
+    #[rule("<add> ::= <add> Plus <cast>")]
+    #[rule("<add> ::= <add> Minus <cast>")]
+    #[rule("<add> ::= <cast>")]
     Add,
+
+    #[rule("<cast> ::= <unary> As Type")]
+    #[rule("<cast> ::= <unary>")]
+    Cast,
 
     #[rule("<unary> ::= Plus <value>")]
     #[rule("<unary> ::= Minus <value>")]
     #[rule("<unary> ::= <value>")]
     Unary,
 
+    #[rule("<value> ::= True")]
+    #[rule("<value> ::= False")]
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]
     #[rule("<value> ::= ParenL <expr> ParenR")]

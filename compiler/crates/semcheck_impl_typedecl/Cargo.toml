@@ -1,0 +1,14 @@
+[package]
+name = "sb_compiler_semcheck_impl_typedecl"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+string-interner = { workspace = true }
+lctree = "0.3.3"
+sb_compiler_parse_cst = { path = "../parse_cst" }
+sb_compiler_semcheck_async = { path = "../semcheck_async" }
+sb_compiler_semcheck_async_macros = { path = "../semcheck_async_macros" }
+sb_compiler_type = { path = "../type" }

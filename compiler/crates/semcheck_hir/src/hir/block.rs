@@ -1,10 +1,15 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
+use sb_compiler_type::r#type::{Primitive, Type, Void};
+use sb_compiler_type::Typed;
 
 use super::{Stmt, SemCheck, InDep};
 
 #[derive(Debug)]
 pub struct Block<'src> {
     pub stmts: Vec<Stmt<'src>>,
+    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::Block<'src>> for Block<'src> {
@@ -12,11 +17,21 @@ impl<'src> SemCheck<InDep<'src>, ast::Block<'src>> for Block<'src> {
     where
         Self: Sized,
     {
+        // 文を順に意味解析
         let mut stmts = vec![];
         for stmt in block.stmts {
             stmts.push(Stmt::check(&mut ctx, stmt).await?);
         }
 
-        Ok(Block { stmts })
+        // ブロックの型は Void
+        let ty = Arc::new(Primitive(Void));
+
+        Ok(Block { stmts, ty })
+    }
+}
+
+impl Typed for Block<'_> {
+    fn ty(&self) -> &Arc<Type> {
+        &self.ty
     }
 }

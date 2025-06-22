@@ -1,4 +1,8 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
+use sb_compiler_type::r#type::Type;
+use sb_compiler_type::Typed;
 
 use super::{Value, SemCheck, Dep};
 
@@ -36,6 +40,16 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
                     value: Value::check(ctx, value).await?,
                 })
             }
+        }
+    }
+}
+
+impl Typed for Unary<'_> {
+    fn ty(&self) -> &Arc<Type> {
+        match self {
+            Unary::Plus { value } => value.ty(),
+            Unary::Minus { value } => value.ty(),
+            Unary::Value { value } => value.ty(),
         }
     }
 }

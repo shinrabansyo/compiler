@@ -1,19 +1,26 @@
-use sb_compiler_parse_ast as ast;
+use std::sync::Arc;
 
-use super::{Unary, SemCheck, Dep};
+use sb_compiler_parse_ast as ast;
+use sb_compiler_type::op::ty_infer2;
+use sb_compiler_type::r#type::Type;
+use sb_compiler_type::Typed;
+
+use super::{Cast, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum Add<'src> {
     Plus {
         lhs: Box<Add<'src>>,
-        rhs: Unary<'src>,
+        rhs: Cast<'src>,
+        ty: Arc<Type>,
     },
     Minus {
         lhs: Box<Add<'src>>,
-        rhs: Unary<'src>,
+        rhs: Cast<'src>,
+        ty: Arc<Type>,
     },
-    Unary {
-        value: Unary<'src>,
+    Cast {
+        value: Cast<'src>,
     },
 }
 
@@ -24,22 +31,40 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
     {
         match add {
             ast::Add::Plus { lhs, rhs } => {
-                Ok(Add::Plus {
-                    lhs: Box::new(Add::check(ctx, *lhs).await?),
-                    rhs: Unary::check(ctx, rhs).await?,
-                })
+                // 両辺の式の意味解析
+                let lhs = Box::new(Add::check(ctx, *lhs).await?);
+                let rhs = Cast::check(ctx, rhs).await?;
+
+                // 型決定
+                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
+
+                Ok(Add::Plus { lhs, rhs, ty })
             }
             ast::Add::Minus { lhs, rhs } => {
-                Ok(Add::Minus {
-                    lhs: Box::new(Add::check(ctx, *lhs).await?),
-                    rhs: Unary::check(ctx, rhs).await?,
+                // 両辺の式の意味解析
+                let lhs = Box::new(Add::check(ctx, *lhs).await?);
+                let rhs = Cast::check(ctx, rhs).await?;
+
+                // 型決定
+                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
+
+                Ok(Add::Minus { lhs, rhs, ty })
+            }
+            ast::Add::Cast { value } => {
+                Ok(Add::Cast {
+                    value: Cast::check(ctx, value).await?,
                 })
             }
-            ast::Add::Unary { value } => {
-                Ok(Add::Unary {
-                    value: Unary::check(ctx, value).await?,
-                })
-            }
+        }
+    }
+}
+
+impl Typed for Add<'_> {
+    fn ty(&self) -> &Arc<Type> {
+        match self {
+            Add::Plus { ty, .. } => ty,
+            Add::Minus { ty, .. } => ty,
+            Add::Cast { value } => value.ty(),
         }
     }
 }

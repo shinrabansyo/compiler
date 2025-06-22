@@ -1,4 +1,8 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
+use sb_compiler_type::r#type::Type;
+use sb_compiler_type::Typed;
 
 use super::{FuncDef, SemCheck, InDep};
 
@@ -20,6 +24,14 @@ impl<'src> SemCheck<InDep<'src>, ast::Top<'src>> for Top<'src> {
                     func_def: FuncDef::check(ctx, func_def).await?,
                 })
             }
+        }
+    }
+}
+
+impl Typed for Top<'_> {
+    fn ty(&self) -> &Arc<Type> {
+        match self {
+            Top::FuncDef { func_def } => func_def.ty(),
         }
     }
 }

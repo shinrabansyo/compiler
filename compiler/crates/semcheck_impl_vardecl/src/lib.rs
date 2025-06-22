@@ -12,13 +12,15 @@ use string_interner::StringInterner;
 use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::failable_as_async;
+use sb_compiler_type::r#type::*;
 
 use error::VarDeclError;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Var<'src> {
     pub symbol: SymbolU32,
     pub span: Span<'src>,
+    pub ty: Arc<Type>,
 }
 
 #[derive(Debug, Clone)]
@@ -50,11 +52,12 @@ impl<'src> VarDeclChecker<'src> {
         let root_var = Var {
             symbol: root_symbol,
             span: root_span,
+            ty: Arc::new(Primitive(I32)),
         };
 
         // 変数参照グラフ
         let mut graph = Graph::new();
-        let root_node = graph.add_node(root_var);
+        let root_node = graph.add_node(root_var.clone());
 
         // チェッカ, コンテキスト (複数の async 文脈で共有するために Arc, Mutex でラップ)
         let checker = Arc::new(Mutex::new(VarDeclChecker {
@@ -71,7 +74,7 @@ impl<'src> VarDeclChecker<'src> {
         (checker, context)
     }
 
-    pub fn register(ctx: &mut VarDeclContext<'src>, span: &Span<'src>) -> anyhow::Result<Var<'src>> {
+    pub fn register(ctx: &mut VarDeclContext<'src>, span: &Span<'src>, ty: Arc<Type>) -> anyhow::Result<Var<'src>> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を登録
@@ -79,13 +82,14 @@ impl<'src> VarDeclChecker<'src> {
         let var = Var {
             symbol: var_symbol,
             span: *span,
+            ty,
         };
 
         // 2. 参照グラフに追加
-        let from = checker.graph.add_node(var);
+        let from = checker.graph.add_node(var.clone());
         let to = ctx.node;
         checker.graph.add_edge(from, to, ());
-        checker.nodes.insert(var, from);
+        checker.nodes.insert(var.clone(), from);
 
         // 3. 以降の文脈で最新の変数を参照できるように更新
         ctx.node = from;
@@ -93,13 +97,14 @@ impl<'src> VarDeclChecker<'src> {
         Ok(var)
     }
 
-    pub fn exists(ctx: &VarDeclContext<'src>, span: &Span<'src>) -> Option<Var<'src>> {
+    #[failable_as_async('a, 'src)]
+    pub fn find<'a>(ctx: &'a VarDeclContext<'src>, span: &'a Span<'src>) -> anyhow::Result<Var<'src>> {
         let checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を検索
         let var_symbol = match checker.interner.get(span.as_str()) {
             Some(symbol) => symbol,
-            None => return None,
+            None => return Err(VarDeclError::new_not_declared(*span).into()),
         };
 
         // 2. 可視変数の洗い出し
@@ -117,25 +122,21 @@ impl<'src> VarDeclChecker<'src> {
         for waypoint in waypoints {
             let waypoint_var = checker.graph.node_weight(waypoint).unwrap();
             if var_symbol == waypoint_var.symbol {
-                return Some(*waypoint_var);
+                return Ok(waypoint_var.clone());
             }
         }
 
-        None
-    }
-
-    #[failable_as_async('a, 'src)]
-    pub fn find<'a>(ctx: &'a VarDeclContext<'src>, name: &'a Span<'src>) -> anyhow::Result<Var<'src>> {
-        VarDeclChecker::exists(ctx, name).ok_or(
-            VarDeclError::new_not_declared(name.clone())
-        )
+        Err(VarDeclError::new_not_declared(*span))
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use std::sync::Arc;
+
     use sb_compiler_parse_cst::Span;
     use sb_compiler_semcheck_async::block_on;
+    use sb_compiler_type::r#type::*;
 
     use super::VarDeclChecker;
 
@@ -145,13 +146,21 @@ mod tests {
 
         block_on(async {
             // . <- var_a
-            let _ = VarDeclChecker::register(&mut ctx, &span("var_a")).unwrap();
+            let _ = VarDeclChecker::register(
+                &mut ctx,
+                &span("var_a"),
+                Arc::new(Primitive(I32)),
+            ).unwrap();
 
             // . <- var_a <- [here]
             let mut ctx_1 = ctx.clone();
             {
                 // . <- var_a <- var_b
-                let _ = VarDeclChecker::register(&mut ctx_1, &span("var_b")).unwrap();
+                let _ = VarDeclChecker::register(
+                    &mut ctx_1,
+                    &span("var_b"),
+                    Arc::new(Primitive(I32)),
+                ).unwrap();
 
                 // . <- var_a <- var_b <- [here]
                 assert!(VarDeclChecker::find(&ctx_1, &span("var_a")).await.is_ok());
@@ -163,7 +172,11 @@ mod tests {
             let mut ctx_2 = ctx.clone();
             {
                 // . <- var_a <- var_c
-                let _ = VarDeclChecker::register(&mut ctx_2, &span("var_c")).unwrap();
+                let _ = VarDeclChecker::register(
+                    &mut ctx_2,
+                    &span("var_c"),
+                    Arc::new(Primitive(I32)),
+                ).unwrap();
 
                 // . <- var_a <- var_c <- [here]
                 assert!(VarDeclChecker::find(&ctx_2, &span("var_a")).await.is_ok());
@@ -179,10 +192,18 @@ mod tests {
 
         block_on(async {
             // . <- var_a_0
-            let var_a_0 = VarDeclChecker::register(&mut ctx, &span("var_a")).unwrap();
+            let var_a_0 = VarDeclChecker::register(
+                &mut ctx,
+                &span("var_a"),
+                Arc::new(Primitive(I32))
+            ).unwrap();
 
             // . <- var_a_0 <- var_a_1
-            let var_a_1 = VarDeclChecker::register(&mut ctx, &span("var_a")).unwrap();
+            let var_a_1 = VarDeclChecker::register(
+                &mut ctx,
+                &span("var_a"),
+                Arc::new(Primitive(I32)),
+            ).unwrap();
 
             // . <- var_a_0 <- var_a_1 <- [here]
             assert_ne!(var_a_0, var_a_1);

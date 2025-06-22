@@ -6,8 +6,9 @@ edition = "2021"
 [dependencies]
 anyhow = { workspace = true }
 thiserror = { workspace = true }
-string-interner = "0.19.0"
+string-interner = { workspace = true }
 petgraph = "0.8.2"
 sb_compiler_parse_cst = { path = "../parse_cst" }
 sb_compiler_semcheck_async = { path = "../semcheck_async" }
 sb_compiler_semcheck_async_macros = { path = "../semcheck_async_macros" }
+sb_compiler_type = { path = "../type" }

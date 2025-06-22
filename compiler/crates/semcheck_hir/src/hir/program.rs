@@ -1,5 +1,9 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_async::prelude::*;
+use sb_compiler_type::r#type::{Primitive, Type, Void};
+use sb_compiler_type::Typed;
 use sb_compiler_utils::error::ErrComposer;
 
 use super::{Top, SemCheck, InDep};
@@ -7,6 +11,7 @@ use super::{Top, SemCheck, InDep};
 #[derive(Debug)]
 pub struct Program<'src> {
     pub top_elems: Vec<Top<'src>>,
+    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::Program<'src>> for Program<'src> {
@@ -14,6 +19,7 @@ impl<'src> SemCheck<InDep<'src>, ast::Program<'src>> for Program<'src> {
     where
         Self: Sized,
     {
+        // トップ要素を意味解析
         let top_elems = program
             .top_elems
             .into_iter()
@@ -22,6 +28,15 @@ impl<'src> SemCheck<InDep<'src>, ast::Program<'src>> for Program<'src> {
             .await
             .compose()?;
 
-        Ok(Program { top_elems })
+        // プログラム全体の型は Void
+        let ty = Arc::new(Primitive(Void));
+
+        Ok(Program { top_elems, ty })
+    }
+}
+
+impl Typed for Program<'_> {
+    fn ty(&self) -> &Arc<Type> {
+        &self.ty
     }
 }

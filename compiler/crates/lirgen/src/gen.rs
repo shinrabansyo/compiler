@@ -26,5 +26,6 @@ mod bit_and;    pub use bit_and::lirgen_bit_and;
 mod cond;       pub use cond::lirgen_cond;
 mod bit_shift;  pub use bit_shift::lirgen_bit_shift;
 mod add;        pub use add::lirgen_add;
+mod cast;       pub use cast::lirgen_cast;
 mod unary;      pub use unary::lirgen_unary;
 mod value;      pub use value::lirgen_value;
