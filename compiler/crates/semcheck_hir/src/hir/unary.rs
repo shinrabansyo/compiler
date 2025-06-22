@@ -1,5 +1,5 @@
 use sb_compiler_parse_ast as ast;
-use sb_compiler_semcheck_impl_type_decl::Type;
+use sb_compiler_type::{Type, Typed};
 
 use super::{Value, SemCheck, Dep};
 
@@ -39,7 +39,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
             }
         }
     }
+}
 
+impl Typed for Unary<'_> {
     fn ty(&self) -> &Type {
         match self {
             Unary::Plus { value } => value.ty(),

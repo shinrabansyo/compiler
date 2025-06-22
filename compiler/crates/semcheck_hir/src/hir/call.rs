@@ -1,7 +1,6 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::Span;
-use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
-use sb_compiler_semcheck_impl_type_decl::r#type::*;
+use sb_compiler_type::{Primitive, Type, Typed, Void};
 
 use super::{Value, SemCheck, Dep};
 
@@ -23,7 +22,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Call<'src>> for Call<'src> {
 
         Ok(Call { ident: call.ident, args })
     }
+}
 
+impl Typed for Call<'_> {
     fn ty(&self) -> &Type {
         &Primitive(Void)
     }

@@ -13,4 +13,5 @@ sb_compiler_semcheck_async = { path = "../semcheck_async" }
 sb_compiler_semcheck_impl = {  path = "../semcheck_impl" }
 sb_compiler_semcheck_impl_vardecl = { path = "../semcheck_impl_vardecl" }
 sb_compiler_semcheck_impl_type_decl = { path = "../semcheck_impl_type_decl" }
+sb_compiler_type = { path = "../type" }
 sb_compiler_utils = { path = "../utils" }

@@ -1,5 +1,4 @@
 mod error;
-pub mod r#type;
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -11,9 +10,9 @@ use string_interner::StringInterner;
 
 use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::failable_as_async;
+use sb_compiler_type::*;
 
 use error::TypeDeclError;
-pub use r#type::Type;
 
 #[derive(Clone)]
 pub struct TypeDeclContext {
@@ -23,7 +22,7 @@ pub struct TypeDeclContext {
 
 pub struct TypeDeclChecker {
     interner: StringInterner<StringBackend>,
-    types: HashMap<SymbolU32, r#type::Type>,
+    types: HashMap<SymbolU32, Type>,
     tree: LinkCutTree<FindMax>,
     nodes: HashMap<SymbolU32, usize>,
 }
@@ -51,9 +50,6 @@ impl TypeDeclChecker {
 
         // プリミティブ型の登録
         {
-            use r#type::primitive::*;
-            use r#type::Primitive;
-
             TypeDeclChecker::register(&mut context, "i8", Primitive(I8)).unwrap();
             TypeDeclChecker::register(&mut context, "i32", Primitive(I32)).unwrap();
         }
@@ -113,9 +109,8 @@ impl TypeDeclChecker {
 #[cfg(test)]
 mod tests {
     use sb_compiler_semcheck_async::block_on;
+    use sb_compiler_type::*;
 
-    use super::r#type::primitive::*;
-    use super::r#type::*;
     use super::TypeDeclChecker;
 
     #[test]

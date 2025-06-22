@@ -1,8 +1,7 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
-use sb_compiler_semcheck_impl_type_decl::r#type::*;
-use sb_compiler_semcheck_impl_type_decl::{Type, TypeDeclChecker};
+use sb_compiler_semcheck_impl_type_decl::TypeDeclChecker;
+use sb_compiler_type::{Primitive, Type, Typed, Void};
 
 use super::{Expr, SemCheck, Dep};
 
@@ -40,7 +39,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
             expr,
         })
     }
+}
 
+impl Typed for VarDecl<'_> {
     fn ty(&self) -> &Type {
         &Primitive(Void)
     }

@@ -12,9 +12,7 @@ use string_interner::StringInterner;
 use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::failable_as_async;
-use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
-use sb_compiler_semcheck_impl_type_decl::r#type::*;
-use sb_compiler_semcheck_impl_type_decl::Type;
+use sb_compiler_type::*;
 
 use error::VarDeclError;
 
@@ -142,8 +140,7 @@ impl<'src> VarDeclChecker<'src> {
 mod tests {
     use sb_compiler_parse_cst::Span;
     use sb_compiler_semcheck_async::block_on;
-    use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
-    use sb_compiler_semcheck_impl_type_decl::r#type::*;
+    use sb_compiler_type::*;
 
     use super::VarDeclChecker;
 

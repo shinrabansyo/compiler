@@ -1,5 +1,5 @@
 use sb_compiler_parse_ast as ast;
-use sb_compiler_semcheck_impl_type_decl::Type;
+use sb_compiler_type::{Type, Typed};
 
 use super::{BitShift, SemCheck, Dep};
 
@@ -95,7 +95,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
             }
         }
     }
+}
 
+impl Typed for Cond<'_> {
     fn ty(&self) -> &Type {
         match self {
             Cond::Eq { ty, .. } => ty,

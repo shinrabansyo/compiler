@@ -1,7 +1,6 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
-use sb_compiler_semcheck_impl_type_decl::r#type::*;
+use sb_compiler_type::{I32, Primitive, Type, Typed};
 
 use super::{SemCheck, Dep};
 
@@ -33,10 +32,6 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineAsmOp
             }
         }
     }
-
-    fn ty(&self) -> &Type {
-        &Primitive(I32)
-    }
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOperand<'src> {
@@ -55,7 +50,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOp
             }
         }
     }
+}
 
+impl Typed for InlineAsmOperand<'_> {
     fn ty(&self) -> &Type {
         &Primitive(I32)
     }

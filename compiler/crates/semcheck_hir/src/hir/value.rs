@@ -1,7 +1,6 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
-use sb_compiler_semcheck_impl_type_decl::r#type::*;
+use sb_compiler_type::{I32, Primitive, Type, Typed};
 
 use super::{Expr, Call, SemCheck, Dep};
 
@@ -51,7 +50,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
             }
         }
     }
+}
 
+impl Typed for Value<'_> {
     fn ty(&self) -> &Type {
         match self {
             Value::Const { value_ty, .. } => value_ty,

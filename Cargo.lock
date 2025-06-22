@@ -1348,6 +1348,7 @@ dependencies = [
  "sb_compiler_semcheck_impl",
  "sb_compiler_semcheck_impl_type_decl",
  "sb_compiler_semcheck_impl_vardecl",
+ "sb_compiler_type",
  "sb_compiler_utils",
  "thiserror 2.0.12",
 ]
@@ -1371,6 +1372,7 @@ dependencies = [
  "sb_compiler_parse_cst",
  "sb_compiler_semcheck_async",
  "sb_compiler_semcheck_async_macros",
+ "sb_compiler_type",
  "string-interner",
  "thiserror 2.0.12",
 ]
@@ -1385,7 +1387,16 @@ dependencies = [
  "sb_compiler_semcheck_async",
  "sb_compiler_semcheck_async_macros",
  "sb_compiler_semcheck_impl_type_decl",
+ "sb_compiler_type",
  "string-interner",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "sb_compiler_type"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
  "thiserror 2.0.12",
 ]
 

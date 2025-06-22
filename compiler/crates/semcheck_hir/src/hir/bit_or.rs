@@ -1,5 +1,5 @@
 use sb_compiler_parse_ast as ast;
-use sb_compiler_semcheck_impl_type_decl::Type;
+use sb_compiler_type::{Type, Typed};
 
 use super::{BitXor, SemCheck, Dep};
 
@@ -35,7 +35,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitOr<'src>> for BitOr<'src> {
             }
         }
     }
+}
 
+impl Typed for BitOr<'_> {
     fn ty(&self) -> &Type {
         match self {
             BitOr::Or { ty, .. } => ty,

@@ -1,6 +1,7 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_semcheck_impl_type_decl::{Type, TypeDeclChecker};
+use sb_compiler_semcheck_impl_type_decl::TypeDeclChecker;
+use sb_compiler_type::{Type, Typed};
 
 use super::{SemCheck, Dep};
 
@@ -26,7 +27,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::ArgumentDef<'src>> for ArgumentDef<'src>
 
         Ok(ArgumentDef { var })
     }
+}
 
+impl Typed for ArgumentDef<'_> {
     fn ty(&self) -> &Type {
         &self.var.ty
     }

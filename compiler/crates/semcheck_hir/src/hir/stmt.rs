@@ -1,5 +1,5 @@
 use sb_compiler_parse_ast as ast;
-use sb_compiler_semcheck_impl_type_decl::Type;
+use sb_compiler_type::{Type, Typed};
 
 use super::{VarDecl, Block, Expr, Return, If, While, For, InlineAsm, SemCheck, Dep};
 
@@ -79,7 +79,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Stmt<'src>> for Stmt<'src> {
             },
         }
     }
+}
 
+impl Typed for Stmt<'_> {
     fn ty(&self) -> &Type {
         match self {
             Stmt::VarDecl { var_decl } => var_decl.ty(),

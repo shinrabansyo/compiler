@@ -1,7 +1,6 @@
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_async::prelude::*;
-use sb_compiler_semcheck_impl_type_decl::r#type::primitive::*;
-use sb_compiler_semcheck_impl_type_decl::r#type::*;
+use sb_compiler_type::{Primitive, Type, Typed, Void};
 use sb_compiler_utils::error::ErrComposer;
 
 use super::{Top, SemCheck, InDep};
@@ -26,7 +25,9 @@ impl<'src> SemCheck<InDep<'src>, ast::Program<'src>> for Program<'src> {
 
         Ok(Program { top_elems })
     }
+}
 
+impl Typed for Program<'_> {
     fn ty(&self) -> &Type {
         &Primitive(Void)
     }
