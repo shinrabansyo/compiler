@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_type::op::ty_infer2;
 use sb_compiler_type::r#type::Type;
@@ -10,7 +12,7 @@ pub enum LogicAnd<'src> {
     And {
         lhs: Box<LogicAnd<'src>>,
         rhs: BitOr<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     BitOr {
         or: BitOr<'src>,
@@ -43,7 +45,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::LogicAnd<'src>> for LogicAnd<'src> {
 }
 
 impl Typed for LogicAnd<'_> {
-    fn ty(&self) -> &Type {
+    fn ty(&self) -> &Arc<Type> {
         match self {
             LogicAnd::And { ty, .. } => ty,
             LogicAnd::BitOr { or } => or.ty(),

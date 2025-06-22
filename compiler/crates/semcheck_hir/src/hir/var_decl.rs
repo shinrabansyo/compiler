@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
@@ -10,8 +12,9 @@ use super::{Expr, SemCheck, Dep};
 #[derive(Debug)]
 pub struct VarDecl<'src> {
     pub var: Var<'src>,
-    pub var_ty: Type,
+    pub var_ty: Arc<Type>,
     pub expr: Expr<'src>,
+    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
@@ -29,26 +32,30 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
                 ty_equals(&expr.ty(), &var_ty)?;
                 var_ty
             }
-            None => ty_infer(&expr.ty())?,
+            None => ty_infer(expr.ty())?,
         };
 
         // 変数宣言
         let var = VarDeclChecker::register(
             &mut ctx.var_decl,
             &var_decl.ident,
-            var_ty
+            Arc::clone(&var_ty),
         )?;
+
+        // 変数宣言文の型は Void
+        let ty = Arc::new(Primitive(Void));
 
         Ok(VarDecl {
             var,
             var_ty,
             expr,
+            ty,
         })
     }
 }
 
 impl Typed for VarDecl<'_> {
-    fn ty(&self) -> &Type {
-        &Primitive(Void)
+    fn ty(&self) -> &Arc<Type> {
+        &self.var_ty
     }
 }

@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
@@ -31,7 +33,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::ArgumentDef<'src>> for ArgumentDef<'src>
 }
 
 impl Typed for ArgumentDef<'_> {
-    fn ty(&self) -> &Type {
+    fn ty(&self) -> &Arc<Type> {
         &self.var.ty
     }
 }

@@ -1,8 +1,9 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_type::op::ty_equals;
-use sb_compiler_type::r#type::{I32, Primitive, Type};
-use sb_compiler_type::Typed;
+use sb_compiler_type::r#type::{I32, Primitive};
 
 use super::{SemCheck, Dep};
 
@@ -30,7 +31,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineAsmOp
                 let var = VarDeclChecker::register(
                     &mut ctx.var_decl,
                     &name,
-                    Primitive(I32)
+                    Arc::new(Primitive(I32))
                 ).unwrap();
 
                 Ok(InlineAsmOperand::Var { var })
@@ -51,16 +52,10 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOp
             ast::InlineAsmOperandR::Var { name } => {
                 // 変数の型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &name).await?;
-                ty_equals(&var.ty, &Primitive(I32))?;
+                ty_equals(&var.ty, &Arc::new(Primitive(I32)))?;
 
                 Ok(InlineAsmOperand::Var { var })
             }
         }
-    }
-}
-
-impl Typed for InlineAsmOperand<'_> {
-    fn ty(&self) -> &Type {
-        &Primitive(I32)
     }
 }

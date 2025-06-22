@@ -22,7 +22,7 @@ pub struct TypeDeclContext {
 
 pub struct TypeDeclChecker {
     interner: StringInterner<StringBackend>,
-    types: HashMap<SymbolU32, Type>,
+    types: HashMap<SymbolU32, Arc<Type>>,
     tree: LinkCutTree<FindMax>,
     nodes: HashMap<SymbolU32, usize>,
 }
@@ -50,15 +50,27 @@ impl TypeDeclChecker {
 
         // プリミティブ型の登録
         {
-            TypeDeclChecker::register(&mut context, "i8", Primitive(I8)).unwrap();
-            TypeDeclChecker::register(&mut context, "i16", Primitive(I16)).unwrap();
-            TypeDeclChecker::register(&mut context, "i32", Primitive(I32)).unwrap();
+            TypeDeclChecker::register(
+                &mut context,
+                "i8",
+                Arc::new(Primitive(I8))
+            ).unwrap();
+            TypeDeclChecker::register(
+                &mut context,
+                "i16",
+                Arc::new(Primitive(I16))
+            ).unwrap();
+            TypeDeclChecker::register(
+                &mut context,
+                "i32",
+                Arc::new(Primitive(I32))
+            ).unwrap();
         }
 
         (checker, context)
     }
 
-    pub fn register(ctx: &mut TypeDeclContext, name: &str, ty: Type) -> anyhow::Result<()> {
+    pub fn register(ctx: &mut TypeDeclContext, name: &str, ty: Arc<Type>) -> anyhow::Result<()> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 型名を登録
@@ -84,7 +96,7 @@ impl TypeDeclChecker {
     }
 
     #[failable_as_async('a)]
-    pub fn find<'a>(ctx: &'a TypeDeclContext, name: &'a str) -> anyhow::Result<Type> {
+    pub fn find<'a>(ctx: &'a TypeDeclContext, name: &'a str) -> anyhow::Result<Arc<Type>> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 型名を検索
@@ -99,7 +111,7 @@ impl TypeDeclChecker {
         // 2. 型が可視であるか確認
         let node = *checker.nodes.get(&symbol).unwrap();
         if checker.tree.connected(ctx.current_pos, node) {
-            Ok(*checker.types.get(&symbol).unwrap())
+            Ok(Arc::clone(&checker.types.get(&symbol).unwrap()))
         } else {
             let err = TypeDeclError::new_not_declared_in_scope(name.to_string());
             Err(err.into())
@@ -120,7 +132,7 @@ mod tests {
 
         block_on(async {
             assert_eq!(
-                TypeDeclChecker::find(&ctx, "i32").await.unwrap(),
+                *TypeDeclChecker::find(&ctx, "i32").await.unwrap(),
                 Primitive(I32),
             );
         });

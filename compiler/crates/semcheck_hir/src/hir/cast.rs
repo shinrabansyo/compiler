@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
 use sb_compiler_type::op::ty_cast;
@@ -10,7 +12,7 @@ use super::{Unary, SemCheck, Dep};
 pub enum Cast<'src> {
     Casting {
         unary: Unary<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     Unary {
         unary: Unary<'src>
@@ -43,7 +45,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cast<'src>> for Cast<'src> {
 }
 
 impl Typed for Cast<'_> {
-    fn ty(&self) -> &Type {
+    fn ty(&self) -> &Arc<Type> {
         match self {
             Cast::Casting { ty, .. } => ty,
             Cast::Unary { unary } => unary.ty(),

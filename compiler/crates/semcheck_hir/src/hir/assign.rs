@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_type::op::ty_equals;
@@ -112,7 +114,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
     }
 }
 impl Typed for Assign<'_> {
-    fn ty(&self) -> &Type {
+    fn ty(&self) -> &Arc<Type> {
         match self {
             Assign::Normal { var, .. } => &var.ty,
             Assign::Plus { var, .. } => &var.ty,

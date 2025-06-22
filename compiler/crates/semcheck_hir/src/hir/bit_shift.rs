@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_type::op::ty_infer2;
 use sb_compiler_type::r#type::Type;
@@ -10,17 +12,17 @@ pub enum BitShift<'src> {
     L {
         lhs: Box<BitShift<'src>>,
         rhs: Add<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     R {
         lhs: Box<BitShift<'src>>,
         rhs: Add<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     Ra {
         lhs: Box<BitShift<'src>>,
         rhs: Add<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     Add {
         add: Add<'src>,
@@ -73,7 +75,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitShift<'src>> for BitShift<'src> {
 }
 
 impl Typed for BitShift<'_> {
-    fn ty(&self) -> &Type {
+    fn ty(&self) -> &Arc<Type> {
         match self {
             BitShift::L { ty, .. } => ty,
             BitShift::R { ty, .. } => ty,

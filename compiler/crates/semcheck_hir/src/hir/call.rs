@@ -1,6 +1,10 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::Span;
-use sb_compiler_type::r#type::{Primitive, Type, Void};
+use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
+use sb_compiler_type::op::ty_can_call;
+use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
 
 use super::{Value, SemCheck, Dep};
@@ -9,6 +13,7 @@ use super::{Value, SemCheck, Dep};
 pub struct Call<'src> {
     pub ident: Span<'src>,
     pub args: Vec<Value<'src>>,
+    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Call<'src>> for Call<'src> {
@@ -16,17 +21,27 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Call<'src>> for Call<'src> {
     where
         Self: Sized,
     {
+        // 実引数を順に意味解析
         let mut args = vec![];
         for arg in call.args {
             args.push(Value::check(ctx, arg).await?);
         }
 
-        Ok(Call { ident: call.ident, args })
+        // 型チェック
+        let fn_name = format!(".{}", call.ident.as_str());
+        let fn_ty = TypeDeclChecker::find(&ctx.type_decl, &fn_name).await?;
+        let arg_tys = args
+            .iter()
+            .map(|a| a.ty())
+            .collect::<Vec<_>>();
+        let ty = ty_can_call(&fn_ty, &arg_tys)?;
+
+        Ok(Call { ident: call.ident, args, ty })
     }
 }
 
 impl Typed for Call<'_> {
-    fn ty(&self) -> &Type {
-        &Primitive(Void)
+    fn ty(&self) -> &Arc<Type> {
+        &self.ty
     }
 }

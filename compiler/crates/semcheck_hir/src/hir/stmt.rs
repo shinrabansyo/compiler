@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
@@ -83,7 +85,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Stmt<'src>> for Stmt<'src> {
 }
 
 impl Typed for Stmt<'_> {
-    fn ty(&self) -> &Type {
+    fn ty(&self) -> &Arc<Type> {
         match self {
             Stmt::VarDecl { var_decl } => var_decl.ty(),
             Stmt::Block { block } => block.ty(),

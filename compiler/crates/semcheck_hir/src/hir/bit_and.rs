@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_type::op::ty_infer2;
 use sb_compiler_type::r#type::Type;
@@ -10,7 +12,7 @@ pub enum BitAnd<'src> {
     And {
         lhs: Box<BitAnd<'src>>,
         rhs: Cond<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     Cond {
         cond: Cond<'src>,
@@ -43,7 +45,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitAnd<'src>> for BitAnd<'src> {
 }
 
 impl Typed for BitAnd<'_> {
-    fn ty(&self) -> &Type {
+    fn ty(&self) -> &Arc<Type> {
         match self {
             BitAnd::And { ty, .. } => ty,
             BitAnd::Cond { cond } => cond.ty(),

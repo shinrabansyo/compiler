@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_type::op::ty_infer2;
 use sb_compiler_type::r#type::Type;
@@ -10,7 +12,7 @@ pub enum BitXor<'src> {
     Xor {
         lhs: Box<BitXor<'src>>,
         rhs: BitAnd<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     BitAnd {
         and: BitAnd<'src>,
@@ -43,7 +45,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitXor<'src>> for BitXor<'src> {
 }
 
 impl Typed for BitXor<'_> {
-    fn ty(&self) -> &Type {
+    fn ty(&self) -> &Arc<Type> {
         match self {
             BitXor::Xor { ty, .. } => ty,
             BitXor::BitAnd { and } => and.ty(),

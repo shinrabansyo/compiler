@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_type::r#type::{NumConst, Primitive, Type};
@@ -9,7 +11,7 @@ use super::{Expr, Call, SemCheck, Dep};
 pub enum Value<'src> {
     Const {
         value: i32,
-        value_ty: Type,
+        value_ty: Arc<Type>,
     },
     Var {
         var: Var<'src>,
@@ -31,7 +33,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
             ast::Value::Const { value } => {
                 Ok(Value::Const {
                     value,
-                    value_ty: Primitive(NumConst),
+                    value_ty: Arc::new(Primitive(NumConst)),
                 })
             }
             ast::Value::Var { name } => {
@@ -54,7 +56,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
 }
 
 impl Typed for Value<'_> {
-    fn ty(&self) -> &Type {
+    fn ty(&self) -> &Arc<Type> {
         match self {
             Value::Const { value_ty, .. } => value_ty,
             Value::Var { var, .. } => &var.ty,

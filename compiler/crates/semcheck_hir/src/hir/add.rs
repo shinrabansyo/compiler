@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_type::op::ty_infer2;
 use sb_compiler_type::r#type::Type;
@@ -10,12 +12,12 @@ pub enum Add<'src> {
     Plus {
         lhs: Box<Add<'src>>,
         rhs: Cast<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     Minus {
         lhs: Box<Add<'src>>,
         rhs: Cast<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     Cast {
         value: Cast<'src>,
@@ -58,7 +60,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
 }
 
 impl Typed for Add<'_> {
-    fn ty(&self) -> &Type {
+    fn ty(&self) -> &Arc<Type> {
         match self {
             Add::Plus { ty, .. } => ty,
             Add::Minus { ty, .. } => ty,

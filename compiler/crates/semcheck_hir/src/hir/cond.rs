@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
@@ -9,32 +11,32 @@ pub enum Cond<'src> {
     Eq {
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     Neq {
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     Lt {
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     Lte {
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     Gt {
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     Gte {
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Type,
+        ty: Arc<Type>,
     },
     BitShift {
         bit_shift: BitShift<'src>,
@@ -50,42 +52,42 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
             ast::Cond::Eq { lhs, rhs } => {
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = *lhs.ty();
+                let ty = Arc::clone(lhs.ty());
 
                 Ok(Cond::Eq { lhs, rhs, ty })
             }
             ast::Cond::Neq { lhs, rhs } => {
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = *lhs.ty();
+                let ty = Arc::clone(lhs.ty());
 
                 Ok(Cond::Neq { lhs, rhs, ty })
             }
             ast::Cond::Lt { lhs, rhs } => {
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = *lhs.ty();
+                let ty = Arc::clone(lhs.ty());
 
                 Ok(Cond::Lt { lhs, rhs, ty })
             }
             ast::Cond::Lte { lhs, rhs } => {
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = *lhs.ty();
+                let ty = Arc::clone(lhs.ty());
 
                 Ok(Cond::Lte { lhs, rhs, ty })
             }
             ast::Cond::Gt { lhs, rhs } => {
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = *lhs.ty();
+                let ty = Arc::clone(lhs.ty());
 
                 Ok(Cond::Gt { lhs, rhs, ty })
             }
             ast::Cond::Gte { lhs, rhs } => {
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                let ty = *lhs.ty();
+                let ty = Arc::clone(lhs.ty());
 
                 Ok(Cond::Gte { lhs, rhs, ty })
             }
@@ -99,7 +101,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
 }
 
 impl Typed for Cond<'_> {
-    fn ty(&self) -> &Type {
+    fn ty(&self) -> &Arc<Type> {
         match self {
             Cond::Eq { ty, .. } => ty,
             Cond::Neq { ty, .. } => ty,

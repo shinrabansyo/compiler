@@ -1,8 +1,9 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
-use sb_compiler_type::op::ty_equals;
-use sb_compiler_type::r#type::{Primitive, Type, Void};
+use sb_compiler_type::r#type::{Function, Primitive, Type, Void};
 use sb_compiler_type::Typed;
 
 use super::{ArgumentDef, Block, SemCheck, InDep};
@@ -13,6 +14,7 @@ pub struct FuncDef<'src> {
     pub args: Vec<ArgumentDef<'src>>,
     pub ret_ty: Option<Span<'src>>,
     pub block: Block<'src>,
+    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
@@ -29,15 +31,30 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             args.push(ArgumentDef::check(&mut ctx, arg).await?);
         }
 
+        // 関数の型を登録
+        let arg_tys = args
+            .iter()
+            .map(|arg| Arc::clone(arg.ty()))
+            .collect::<Vec<_>>();
+        let ret_ty = match &func_def.ret_ty {
+            Some(ty) => TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?,
+            None => Arc::new(Primitive(Void)),
+        };
+        let fn_ty = Arc::new(Function {
+            args: arg_tys,
+            ret_ty: Arc::clone(&ret_ty),
+        });
+        TypeDeclChecker::register(
+            &mut ctx.type_decl,
+            ctx.name.as_str(),
+            fn_ty,
+        )?;
+
         // ブロックの意味解析
         let block = Block::check(ctx.clone(), func_def.block).await?;
 
-        // 戻り値の型チェック
-        let ret_type = match &func_def.ret_ty {
-            Some(ty) => TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?,
-            None => Primitive(Void),
-        };
-        ty_equals(&ret_type, block.ty())?;
+        // 関数定義の型は Void
+        let ty = Arc::new(Primitive(Void));
 
         // 作成した名前空間を削除
         ctx.name.pop();
@@ -47,12 +64,13 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             args,
             ret_ty: func_def.ret_ty,
             block,
+            ty,
         })
     }
 }
 
 impl Typed for FuncDef<'_> {
-    fn ty(&self) -> &Type {
-        &Primitive(Void)
+    fn ty(&self) -> &Arc<Type> {
+        &self.ty
     }
 }
