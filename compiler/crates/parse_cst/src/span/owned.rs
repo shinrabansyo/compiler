@@ -1,10 +1,23 @@
 use std::cmp::{max, min};
+use std::fmt::{Debug, Display};
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub struct SpanOwned {
     pub src: String,
     pub body: (usize, usize),   // Trivia を含まない
     pub full: (usize, usize),   // Trivia を含む
+}
+
+impl Debug for SpanOwned {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.as_str())
+    }
+}
+
+impl Display for SpanOwned {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.as_str())
+    }
 }
 
 impl SpanOwned {

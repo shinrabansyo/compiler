@@ -1,13 +1,27 @@
+use std::fmt::{Debug, Display};
+
 use copager::cfl::token::Token;
 use copager::cfl::token::TokenTag;
 
 use super::SpanOwned;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Span<'a> {
     pub src: &'a str,
     pub body: (usize, usize),   // Trivia を含まない
     pub full: (usize, usize),   // Trivia を含む
+}
+
+impl Debug for Span<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.as_str())
+    }
+}
+
+impl Display for Span<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.as_str())
+    }
 }
 
 impl<'a, T> From<Token<'a, T>> for Span<'a>
