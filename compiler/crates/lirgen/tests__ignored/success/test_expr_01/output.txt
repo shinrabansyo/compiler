@@ -1,6 +1,0 @@
-@global.test
-    fn_prologue
-    li   t20 = 10
-    li   t21 = 20
-    add  t22 = t20 + t21
-    fn_epilogue

@@ -1,5 +1,0 @@
-fn test() {
-    var a: i32 = 10;
-    var b: i32 = 20;
-    var c: i32 = a land b;
-}
