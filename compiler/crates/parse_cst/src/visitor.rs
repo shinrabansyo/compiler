@@ -1,19 +1,15 @@
-use copager::cfl::token::{Token, TokenTag};
 use copager::cfl::CFL;
-use copager::ir::{IR, IRBuilder, RawIR};
 
 use super::{CSTree, Span};
 
-#[derive(Debug, IR, IRBuilder)]
+#[derive(Debug)]
 pub struct CSTreeVisitor<'input, Lang: CFL> {
     cst: Option<CSTree<'input, Lang>>,
 }
 
-impl <'input, Lang: CFL> From<RawIR<'input, Lang>> for CSTreeVisitor<'input, Lang> {
-    fn from(raw_ir: RawIR<'input, Lang>) -> Self {
-        CSTreeVisitor {
-            cst: Some(CSTree::from(raw_ir)),
-        }
+impl <'input, Lang: CFL> From<CSTree<'input, Lang>> for CSTreeVisitor<'input, Lang> {
+    fn from(cst: CSTree<'input, Lang>) -> Self {
+        CSTreeVisitor { cst: Some(cst) }
     }
 }
 
@@ -42,7 +38,7 @@ impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
 
     pub fn expect_leaf(&mut self) -> (Lang::TokenTag, Span<'input>) {
         match self.pop_front() {
-            Some(CSTree::Leaf { tag, text }) => (tag, text),
+            Some(CSTree::Leaf { span, tag, .. }) => (tag, span),
             Some(..) => panic!("Expected a leaf but found a node"),
             None => panic!("No more elements in the CSTreeVisitor"),
         }
@@ -113,7 +109,7 @@ mod tests {
     use copager::prelude::*;
     use copager::Processor;
 
-    use super::CSTreeVisitor;
+    use super::{CSTree, CSTreeVisitor};
 
     type TestLang = LALR1<TestLangDef>;
 
@@ -162,10 +158,11 @@ mod tests {
 
     #[test]
     fn test_visitor_peek() -> anyhow::Result<()> {
-        let mut visitor = Processor::<TestLang>::new()
+        let cst = Processor::<TestLang>::new()
             .build_lexer()?
             .build_parser()?
-            .process::<CSTreeVisitor<_>>("abc")?;
+            .process::<CSTree<_>>("abc")?;
+        let mut visitor = CSTreeVisitor::from(cst);
 
         assert_eq!(visitor.peek(), (Some(TestToken::A), None));
         assert_eq!(visitor.expect_leaf().0, TestToken::A);
@@ -219,10 +216,11 @@ mod tests {
             }
         }
 
-        let visitor = Processor::<TestLang>::new()
+        let cst = Processor::<TestLang>::new()
             .build_lexer()?
             .build_parser()?
-            .process::<CSTreeVisitor<_>>("abccc")?;
+            .process::<CSTree<_>>("abccc")?;
+        let visitor = CSTreeVisitor::from(cst);
 
         assert_eq!(AstA::from(visitor), AstA);
 
