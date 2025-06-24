@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Spanned;
 use sb_compiler_type::r#type::{Primitive, Type, Void};
 use sb_compiler_type::Typed;
 
@@ -96,6 +97,21 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Stmt<'src>> for Stmt<'src> {
                     ty: Arc::new(Primitive(Void)),
                 })
             },
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Stmt<'src> {
+    fn span(&self) -> sb_compiler_parse_cst::Span<'src> {
+        match self {
+            Stmt::VarDecl { var_decl, .. } => var_decl.span(),
+            Stmt::Block { block, .. } => block.span(),
+            Stmt::Expr { expr, .. } => expr.span(),
+            Stmt::Return { r#return, .. } => r#return.span(),
+            Stmt::If { r#if, .. } => r#if.span(),
+            Stmt::While { r#while, .. } => r#while.span(),
+            Stmt::For { r#for, .. } => r#for.span(),
+            Stmt::InlineAsm { inline_asm, .. } => inline_asm.span(),
         }
     }
 }

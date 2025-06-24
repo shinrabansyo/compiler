@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::SBToken;
 
 use super::{Cast, Visitor};
@@ -47,6 +47,16 @@ impl<'src> From<Visitor<'src>> for Add<'src> {
                 }
             }
             _ => unreachable!(),
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Add<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            Add::Plus { span, .. } => *span,
+            Add::Minus { span, .. } => *span,
+            Add::Cast { value } => value.span(),
         }
     }
 }

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_type::r#type::{Bool, Primitive, Type};
 use sb_compiler_type::Typed;
 
@@ -41,6 +41,15 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::LogicAnd<'src>> for LogicAnd<'src> {
                     or: BitOr::check(ctx, or).await?,
                 })
             }
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for LogicAnd<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            LogicAnd::And { span, .. } => *span,
+            LogicAnd::BitOr { or } => or.span(),
         }
     }
 }

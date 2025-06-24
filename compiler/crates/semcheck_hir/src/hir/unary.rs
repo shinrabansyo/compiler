@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::{Bool, Primitive, Type};
 use sb_compiler_type::Typed;
@@ -57,6 +57,17 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
                     value: Value::check(ctx, value).await?,
                 })
             }
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Unary<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            Unary::Not { span, .. } => *span,
+            Unary::Plus { span, .. } => *span,
+            Unary::Minus { span, .. } => *span,
+            Unary::Value { value, .. } => value.span(),
         }
     }
 }

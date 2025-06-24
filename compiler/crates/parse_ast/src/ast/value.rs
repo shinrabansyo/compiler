@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::{SBToken, SBRule};
 
 use super::{Expr, Call, Visitor};
@@ -66,6 +66,18 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
                 }
             }
             _ => unreachable!(),
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Value<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            Value::Bool { span, .. } => *span,
+            Value::Const { span, .. } => *span,
+            Value::Var { name } => *name,
+            Value::Expr { expr } => expr.span(),
+            Value::Call { call } => call.span(),
         }
     }
 }

@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::SBToken;
 
 use super::{Add, Visitor};
@@ -59,6 +59,17 @@ impl<'src> From<Visitor<'src>> for BitShift<'src> {
                 }
             }
             _=> unreachable!(),
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for BitShift<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            BitShift::L { span, .. } => *span,
+            BitShift::R { span, .. } => *span,
+            BitShift::Ra { span, .. } => *span,
+            BitShift::Add { add } => add.span(),
         }
     }
 }

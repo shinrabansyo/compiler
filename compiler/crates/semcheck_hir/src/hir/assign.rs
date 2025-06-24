@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::Type;
@@ -117,6 +117,20 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                     or: LogicOr::check(ctx, or).await?,
                 })
             }
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Assign<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            Assign::Normal { span, .. } => *span,
+            Assign::Plus { span, .. } => *span,
+            Assign::Minus { span, .. } => *span,
+            Assign::ShiftL { span, .. } => *span,
+            Assign::ShiftR { span, .. } => *span,
+            Assign::ShiftRa { span, .. } => *span,
+            Assign::LogicOr { or } => or.span(),
         }
     }
 }

@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 
 use super::{InlineAsmInst, Visitor};
 
@@ -14,5 +14,11 @@ impl<'src> From<Visitor<'src>> for InlineAsm<'src> {
             span: visitor.span(),
             insts: visitor.expect_nodes::<InlineAsmInst>(),
         }
+    }
+}
+
+impl<'src> Spanned<'src> for InlineAsm<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
     }
 }

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::{I32, Primitive};
@@ -58,6 +58,15 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOp
 
                 Ok(InlineAsmOperand::Var { var })
             }
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for InlineAsmOperand<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            InlineAsmOperand::Reg { span, .. } => *span,
+            InlineAsmOperand::Var { var } => var.span(),
         }
     }
 }

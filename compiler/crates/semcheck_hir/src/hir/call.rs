@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
 use sb_compiler_type::op::ty_can_call;
 use sb_compiler_type::r#type::Type;
@@ -43,6 +43,12 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Call<'src>> for Call<'src> {
             args,
             ty,
         })
+    }
+}
+
+impl<'src> Spanned<'src> for Call<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
     }
 }
 

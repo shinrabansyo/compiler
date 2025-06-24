@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 
 use super::{Block, Expr, VarDecl, Visitor};
 
@@ -20,5 +20,11 @@ impl<'src> From<Visitor<'src>> for For<'src> {
             incr: visitor.expect_node::<Expr>(),
             block: visitor.expect_node::<Block>(),
         }
+    }
+}
+
+impl<'src> Spanned<'src> for For<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
     }
 }

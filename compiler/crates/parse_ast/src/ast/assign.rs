@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::SBToken;
 
 use super::{LogicOr, Visitor};
@@ -95,6 +95,20 @@ impl<'src> From<Visitor<'src>> for Assign<'src> {
                 }
             }
             _ => unreachable!(),
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Assign<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            Assign::Normal { span, .. } => *span,
+            Assign::Plus { span, .. } => *span,
+            Assign::Minus { span, .. } => *span,
+            Assign::ShiftL { span, .. } => *span,
+            Assign::ShiftR { span, .. } => *span,
+            Assign::ShiftRa { span, .. } => *span,
+            Assign::LogicOr { or } => or.span(),
         }
     }
 }

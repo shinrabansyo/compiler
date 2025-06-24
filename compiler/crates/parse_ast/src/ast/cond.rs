@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::SBToken;
 
 use super::{BitShift, Visitor};
@@ -95,6 +95,20 @@ impl<'src> From<Visitor<'src>> for Cond<'src> {
                 }
             }
             _=> unreachable!(),
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Cond<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            Cond::Eq { span, .. } => *span,
+            Cond::Neq { span, .. } => *span,
+            Cond::Lt { span, .. } => *span,
+            Cond::Lte { span, .. } => *span,
+            Cond::Gt { span, .. } => *span,
+            Cond::Gte { span, .. } => *span,
+            Cond::BitShift { bit_shift } => bit_shift.span(),
         }
     }
 }

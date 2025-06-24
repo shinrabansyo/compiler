@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 
 use super::{Block, Stmt, Expr, Visitor};
 
@@ -23,5 +23,11 @@ impl<'src> From<Visitor<'src>> for If<'src> {
             });
 
         If { span, cond, block, else_stmt }
+    }
+}
+
+impl<'src> Spanned<'src> for If<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
     }
 }

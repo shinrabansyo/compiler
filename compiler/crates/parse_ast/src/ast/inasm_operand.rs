@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 
 use super::Visitor;
 
@@ -30,6 +30,15 @@ impl<'src> From<Visitor<'src>> for InlineAsmOperandL<'src> {
     }
 }
 
+impl<'src> Spanned<'src> for InlineAsmOperandL<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            InlineAsmOperandL::Reg { span, .. } => *span,
+            InlineAsmOperandL::Var { name } => *name,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum InlineAsmOperandR<'src> {
     Reg {
@@ -55,5 +64,14 @@ impl<'src> From<Visitor<'src>> for InlineAsmOperandR<'src> {
 
         // 変数
         InlineAsmOperandR::Var { name: operand }
+    }
+}
+
+impl<'src> Spanned<'src> for InlineAsmOperandR<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            InlineAsmOperandR::Reg { span, .. } => *span,
+            InlineAsmOperandR::Var { name } => *name,
+        }
     }
 }

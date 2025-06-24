@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 
 use super::{LogicAnd, Visitor};
 
@@ -30,5 +30,14 @@ impl<'src> From<Visitor<'src>> for LogicOr<'src> {
         let rhs = visitor.expect_node::<LogicAnd>();
 
         LogicOr::Or { span, lhs, rhs }
+    }
+}
+
+impl<'src> Spanned<'src> for LogicOr<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            LogicOr::Or { span, .. } => *span,
+            LogicOr::LogicAnd { and } => and.span(),
+        }
     }
 }

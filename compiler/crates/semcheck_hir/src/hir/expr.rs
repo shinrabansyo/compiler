@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Spanned;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
 
@@ -19,6 +20,12 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Expr<'src>> for Expr<'src> {
         Ok(Expr {
             assign: Assign::check(ctx, expr.assign).await?,
         })
+    }
+}
+
+impl<'src> Spanned<'src> for Expr<'src> {
+    fn span(&self) -> sb_compiler_parse_cst::Span<'src> {
+        self.assign.span()
     }
 }
 

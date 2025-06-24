@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 
 use super::{Unary, Visitor};
 
@@ -29,5 +29,14 @@ impl<'src> From<Visitor<'src>> for Cast<'src> {
         let ty = visitor.expect_leaf().1;
 
         Cast::Casting { span, unary, ty }
+    }
+}
+
+impl<'src> Spanned<'src> for Cast<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            Cast::Casting { span, .. } => *span,
+            Cast::Unary { unary } => unary.span(),
+        }
     }
 }

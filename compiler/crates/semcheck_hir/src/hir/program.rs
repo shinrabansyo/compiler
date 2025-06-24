@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_type::r#type::{Primitive, Type, Void};
 use sb_compiler_type::Typed;
@@ -34,6 +34,12 @@ impl<'src> SemCheck<InDep<'src>, ast::Program<'src>> for Program<'src> {
         let ty = Arc::new(Primitive(Void));
 
         Ok(Program { span: program.span, top_elems, ty })
+    }
+}
+
+impl<'src> Spanned<'src> for Program<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
     }
 }
 

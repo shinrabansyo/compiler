@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 
 use super::{Cond, Visitor};
 
@@ -30,5 +30,14 @@ impl<'src> From<Visitor<'src>> for BitAnd<'src> {
         let rhs = visitor.expect_node::<Cond>();
 
         BitAnd::And { span, lhs, rhs }
+    }
+}
+
+impl<'src> Spanned<'src> for BitAnd<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            BitAnd::And { span, .. } => *span,
+            BitAnd::Cond { cond } => cond.span(),
+        }
     }
 }

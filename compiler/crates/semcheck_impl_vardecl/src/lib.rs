@@ -9,7 +9,7 @@ use string_interner::backend::StringBackend;
 use string_interner::symbol::SymbolU32;
 use string_interner::StringInterner;
 
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::failable_as_async;
 use sb_compiler_type::r#type::*;
@@ -21,6 +21,12 @@ pub struct Var<'src> {
     pub symbol: SymbolU32,
     pub span: Span<'src>,
     pub ty: Arc<Type>,
+}
+
+impl<'src> Spanned<'src> for Var<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
+    }
 }
 
 #[derive(Debug, Clone)]

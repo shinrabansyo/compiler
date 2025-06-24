@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_type::r#type::{Bool, NumConst, Primitive, Type};
 use sb_compiler_type::Typed;
@@ -61,6 +61,17 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                     call: Call::check(ctx, call).await?,
                 })
             }
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Value<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            Value::Const { span, .. } => *span,
+            Value::Var { var } => var.span(),
+            Value::Expr { expr } => expr.span(),
+            Value::Call { call } => call.span(),
         }
     }
 }

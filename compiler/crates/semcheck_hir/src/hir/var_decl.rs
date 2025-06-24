@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
 use sb_compiler_type::op::{ty_equals, ty_infer};
@@ -54,6 +54,12 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
             expr,
             ty,
         })
+    }
+}
+
+impl<'src> Spanned<'src> for VarDecl<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
     }
 }
 

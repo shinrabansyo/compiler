@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 
 use super::{Top, Visitor};
 
@@ -14,5 +14,11 @@ impl<'src> From<Visitor<'src>> for Program<'src> {
             span: visitor.span(),
             top_elems: visitor.expect_nodes::<Top>(),
         }
+    }
+}
+
+impl<'src> Spanned<'src> for Program<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
     }
 }

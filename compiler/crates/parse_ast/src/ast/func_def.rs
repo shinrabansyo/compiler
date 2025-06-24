@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 
 use super::{ArgumentDef, Block, Visitor};
 
@@ -23,5 +23,11 @@ impl<'src> From<Visitor<'src>> for FuncDef<'src> {
         let block = visitor.expect_node::<Block>();
 
         FuncDef { span, ident, args, ret_ty, block }
+    }
+}
+
+impl<'src> Spanned<'src> for FuncDef<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
     }
 }

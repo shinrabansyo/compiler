@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_type::op::ty_infer2;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
@@ -74,6 +74,17 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitShift<'src>> for BitShift<'src> {
                     add: Add::check(ctx, add).await?,
                 })
             }
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for BitShift<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            BitShift::L { span, .. } => *span,
+            BitShift::R { span, .. } => *span,
+            BitShift::Ra { span, .. } => *span,
+            BitShift::Add { add } => add.span(),
         }
     }
 }

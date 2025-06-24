@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_type::op::ty_infer2;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
@@ -58,6 +58,16 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
                     value: Cast::check(ctx, value).await?,
                 })
             }
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Add<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            Add::Plus { span, .. } => *span,
+            Add::Minus { span, .. } => *span,
+            Add::Cast { value } => value.span(),
         }
     }
 }

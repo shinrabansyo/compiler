@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 
 use super::{Value, Visitor};
 
@@ -16,5 +16,11 @@ impl<'src> From<Visitor<'src>> for Call<'src> {
             ident: visitor.expect_leaf().1,
             args: visitor.expect_nodes::<Value>(),
         }
+    }
+}
+
+impl<'src> Spanned<'src> for Call<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
     }
 }

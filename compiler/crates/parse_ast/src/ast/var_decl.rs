@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::SBToken;
 
 use super::{Expr, Visitor};
@@ -24,5 +24,11 @@ impl<'src> From<Visitor<'src>> for VarDecl<'src> {
         let expr = visitor.expect_node::<Expr>();
 
         VarDecl { span, ident, ty, expr }
+    }
+}
+
+impl<'src> Spanned<'src> for VarDecl<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
     }
 }

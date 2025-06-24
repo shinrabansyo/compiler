@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
 use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::{Function, Primitive, Type, Void};
@@ -76,6 +76,12 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             block,
             ty,
         })
+    }
+}
+
+impl<'src> Spanned<'src> for FuncDef<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
     }
 }
 

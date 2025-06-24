@@ -1,5 +1,5 @@
 use sb_compiler_parse_ast as ast;
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 
 use super::{InlineAsmOperand, SemCheck, Dep};
 
@@ -139,6 +139,45 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmInst<'src>> for InlineAsmInst<'
             Bne { span, rd, rs1, rs2, imm } => check_reg_b!(span : Bne rd, rs1, rs2, imm),
             Blt { span, rd, rs1, rs2, imm } => check_reg_b!(span : Blt rd, rs1, rs2, imm),
             Ble { span, rd, rs1, rs2, imm } => check_reg_b!(span : Ble rd, rs1, rs2, imm),
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for InlineAsmInst<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            InlineAsmInst::Addi { span, .. } => *span,
+            InlineAsmInst::Subi { span, .. } => *span,
+            InlineAsmInst::Jal { span, .. } => *span,
+            InlineAsmInst::Lw { span, .. } => *span,
+            InlineAsmInst::Lh { span, .. } => *span,
+            InlineAsmInst::Lb { span, .. } => *span,
+            InlineAsmInst::Lhu { span, .. } => *span,
+            InlineAsmInst::Lbu { span, .. } => *span,
+            InlineAsmInst::In { span, .. } => *span,
+            InlineAsmInst::Andi { span, .. } => *span,
+            InlineAsmInst::Ori { span, .. } => *span,
+            InlineAsmInst::Xori { span, .. } => *span,
+            InlineAsmInst::Srli { span, .. } => *span,
+            InlineAsmInst::Srai { span, .. } => *span,
+            InlineAsmInst::Slli { span, .. } => *span,
+            InlineAsmInst::Sw { span, .. } => *span,
+            InlineAsmInst::Sh { span, .. } => *span,
+            InlineAsmInst::Sb { span, .. } => *span,
+            InlineAsmInst::Isb { span, .. } => *span,
+            InlineAsmInst::Out { span, .. } => *span,
+            InlineAsmInst::Add { span, .. } => *span,
+            InlineAsmInst::Sub { span, .. } => *span,
+            InlineAsmInst::And { span, .. } => *span,
+            InlineAsmInst::Or  { span, .. } => *span,
+            InlineAsmInst::Xor { span, .. } => *span,
+            InlineAsmInst::Srl { span, .. } => *span,
+            InlineAsmInst::Sra { span, .. } => *span,
+            InlineAsmInst::Sll { span, .. } => *span,
+            InlineAsmInst::Beq { span, .. } => *span,
+            InlineAsmInst::Bne { span, .. } => *span,
+            InlineAsmInst::Blt { span, .. } => *span,
+            InlineAsmInst::Ble { span, .. } => *span,
         }
     }
 }
