@@ -75,8 +75,8 @@ impl<'src> Spanned<'src> for Add<'src> {
 impl Typed for Add<'_> {
     fn ty(&self) -> Arc<Type> {
         match self {
-            Add::Plus { ty, .. } => Arc::clone(ty),
-            Add::Minus { ty, .. } => Arc::clone(ty),
+            Add::Plus { ty, .. } => ty.ty(),
+            Add::Minus { ty, .. } => ty.ty(),
             Add::Cast { value } => value.ty(),
         }
     }

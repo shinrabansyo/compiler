@@ -2,7 +2,14 @@ use crate::error::TypeError;
 use crate::r#type::*;
 use crate::Typed;
 
-pub fn ty_equals<A, B>(a: &A, b: &B) -> miette::Result<()>
+pub fn ty_equals<A>(ty: Type, a: &A) -> miette::Result<()>
+where
+    A: Typed,
+{
+    ty_equals2(&ty.ty(), a)
+}
+
+pub fn ty_equals2<A, B>(a: &A, b: &B) -> miette::Result<()>
 where
     A: Typed,
     B: Typed,

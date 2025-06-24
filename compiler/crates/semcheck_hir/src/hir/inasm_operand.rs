@@ -55,7 +55,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOp
             ast::InlineAsmOperandR::Var { name } => {
                 // 変数の型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &name).await?;
-                ty_equals(&var.ty, &I32.ty())?;
+                ty_equals(I32, &var.ty)?;
 
                 Ok(InlineAsmOperand::Var { var })
             }

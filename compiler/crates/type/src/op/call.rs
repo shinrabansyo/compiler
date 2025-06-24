@@ -3,7 +3,7 @@ use std::sync::Arc;
 use crate::error::TypeError;
 use crate::r#type::*;
 use crate::Typed;
-use super::ty_equals;
+use super::ty_equals2;
 
 pub fn ty_can_call<C, A>(callee: &C, args: &[A]) -> miette::Result<Arc<Type>>
 where
@@ -22,7 +22,7 @@ where
 
             // 引数の型が一致しない場合エラー
             for (req_arg, arg) in req_args.iter().zip(args) {
-                ty_equals(req_arg, arg)?;
+                ty_equals2(req_arg, arg)?;
             }
 
             Ok(Arc::clone(ret_ty))

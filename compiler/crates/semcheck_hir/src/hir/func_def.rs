@@ -3,7 +3,7 @@ use std::sync::Arc;
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
-use sb_compiler_type::op::ty_equals;
+use sb_compiler_type::op::ty_equals2;
 use sb_compiler_type::r#type::{Function, Type, Void};
 use sb_compiler_type::Typed;
 
@@ -39,11 +39,11 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             .collect::<Vec<_>>();
         let ret_ty = match &func_def.ret_ty {
             Some(ty) => TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?,
-            None => Arc::new(Void),
+            None => Void.ty(),
         };
         let fn_ty = Arc::new(Function {
             args: arg_tys,
-            ret_ty: Arc::clone(&ret_ty),
+            ret_ty: ret_ty.ty(),
         });
         TypeDeclChecker::register(
             &mut ctx.type_decl,
@@ -57,9 +57,9 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
         // ブロックの意味解析
         let block_ty = match block.stmts.last() {
             Some(Stmt::Return { r#return, .. }) => r#return.ty(),
-            _ => Arc::new(Void),
+            _ => Void.ty(),
         };
-        ty_equals(&ret_ty, &block_ty)?;
+        ty_equals2(&ret_ty, &block_ty)?;
 
         // 作成した名前空間を削除
         ctx.name.pop();
