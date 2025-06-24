@@ -44,7 +44,7 @@ pub enum Stmt<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Stmt<'src>> for Stmt<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, stmt: ast::Stmt<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, stmt: ast::Stmt<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

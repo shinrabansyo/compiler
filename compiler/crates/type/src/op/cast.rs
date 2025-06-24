@@ -3,7 +3,7 @@ use std::sync::Arc;
 use crate::error::TypeError;
 use crate::r#type::*;
 
-pub fn ty_cast(from: &Arc<Type>, to: &Arc<Type>) -> anyhow::Result<()> {
+pub fn ty_cast(from: &Arc<Type>, to: &Arc<Type>) -> miette::Result<()> {
     match (from.as_ref(), to.as_ref()) {
         // プリミティブ型
         (Primitive(Void),     Primitive(Void)) => Ok(()),
@@ -23,7 +23,7 @@ pub fn ty_cast(from: &Arc<Type>, to: &Arc<Type>) -> anyhow::Result<()> {
         _ => {
             let from = from.as_ref().clone();
             let to = to.as_ref().clone();
-            Err(TypeError::new_cast_failed(from, to).into())
+            Err(TypeError::new_cast_failed(from, to))
         }
     }
 }

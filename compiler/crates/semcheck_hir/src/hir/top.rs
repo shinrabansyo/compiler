@@ -15,7 +15,7 @@ pub enum Top<'src> {
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::Top<'src>> for Top<'src> {
-    async fn check0(ctx: InDep<'src>, top: ast::Top<'src>) -> anyhow::Result<Top<'src>>
+    async fn check0(ctx: InDep<'src>, top: ast::Top<'src>) -> miette::Result<Top<'src>>
     where
         Self: Sized,
     {

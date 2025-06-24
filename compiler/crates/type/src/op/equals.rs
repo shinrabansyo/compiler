@@ -3,7 +3,7 @@ use std::sync::Arc;
 use crate::error::TypeError;
 use crate::r#type::*;
 
-pub fn ty_equals(a: &Arc<Type>, b: &Arc<Type>) -> anyhow::Result<()> {
+pub fn ty_equals(a: &Arc<Type>, b: &Arc<Type>) -> miette::Result<()> {
     match (a.as_ref(), b.as_ref()) {
         // プリミティブ型
         (Primitive(Void),     Primitive(Void))     => Ok(()),
@@ -23,7 +23,7 @@ pub fn ty_equals(a: &Arc<Type>, b: &Arc<Type>) -> anyhow::Result<()> {
         _ => {
             let a = a.as_ref().clone();
             let b = b.as_ref().clone();
-            Err(TypeError::new_mismatch(a, b).into())
+            Err(TypeError::new_mismatch(a, b))
         }
     }
 }

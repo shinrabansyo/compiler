@@ -49,7 +49,7 @@ pub enum InlineAsmInst<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmInst<'src>> for InlineAsmInst<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, inst: ast::InlineAsmInst<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, inst: ast::InlineAsmInst<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

@@ -17,7 +17,7 @@ pub struct While<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::While<'src>> for While<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, r#while: ast::While<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, r#while: ast::While<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

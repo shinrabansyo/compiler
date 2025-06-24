@@ -80,7 +80,7 @@ impl<'src> VarDeclChecker<'src> {
         (checker, context)
     }
 
-    pub fn register(ctx: &mut VarDeclContext<'src>, span: &Span<'src>, ty: Arc<Type>) -> anyhow::Result<Var<'src>> {
+    pub fn register(ctx: &mut VarDeclContext<'src>, span: &Span<'src>, ty: Arc<Type>) -> miette::Result<Var<'src>> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を登録
@@ -104,13 +104,13 @@ impl<'src> VarDeclChecker<'src> {
     }
 
     #[failable_as_async('a, 'src)]
-    pub fn find<'a>(ctx: &'a VarDeclContext<'src>, span: &'a Span<'src>) -> anyhow::Result<Var<'src>> {
+    pub fn find<'a>(ctx: &'a VarDeclContext<'src>, span: &'a Span<'src>) -> miette::Result<Var<'src>> {
         let checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を検索
         let var_symbol = match checker.interner.get(span.as_str()) {
             Some(symbol) => symbol,
-            None => return Err(VarDeclError::new_not_declared(*span).into()),
+            None => return Err(VarDeclError::new_not_declared(*span)),
         };
 
         // 2. 可視変数の洗い出し

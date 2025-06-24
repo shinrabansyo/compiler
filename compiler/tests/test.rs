@@ -11,18 +11,18 @@ use sb_linker::link;
 use utils::{Expect, test_dir};
 use sb_compiler::compile;
 
-fn test_code(input: &str) -> anyhow::Result<()> {
+fn test_code(input: &str) -> Result<(), i32> {
     // コンパイル
-    let objs = compile(input)?;
+    let objs = compile(input).unwrap();
     let mut buf = vec![];
-    Object::dump(&mut buf, &objs)?;
+    Object::dump(&mut buf, &objs).unwrap();
     let objs = Cursor::new(buf);
 
     // リンク
-    let asm = link(Config::default(), vec![objs])?;
+    let asm = link(Config::default(), vec![objs]).unwrap();
 
     // アセンブル
-    let (dmem, imem) = assemble(&asm)?;
+    let (dmem, imem) = assemble(&asm).unwrap();
     let dmem = dmem
         .lines()
         .map(|line| u8::from_str_radix(line, 16).unwrap())
@@ -36,18 +36,18 @@ fn test_code(input: &str) -> anyhow::Result<()> {
     let mut emu = Emulator::new(0, &dmem, &imem);
     loop {
         let old_pc = emu.pc;
-        emu.step()?;
+        emu.step().unwrap();
         if old_pc == emu.pc {
             break;
         }
     }
 
     // main 関数の返り値を確認
-    let r10 = emu.regs.read(10)?;
+    let r10 = emu.regs.read(10).unwrap();
     if r10 == 0 {
         Ok(())
     } else {
-        Err(anyhow::anyhow!("Failed: expected {}, but got {}", 0, r10))
+        Err(r10)
     }
 }
 

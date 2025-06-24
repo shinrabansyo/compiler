@@ -19,7 +19,7 @@ pub struct For<'src> {
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::For<'src>> for For<'src> {
-    async fn check0(mut ctx: InDep<'src>, r#for: ast::For<'src>) -> anyhow::Result<Self>
+    async fn check0(mut ctx: InDep<'src>, r#for: ast::For<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

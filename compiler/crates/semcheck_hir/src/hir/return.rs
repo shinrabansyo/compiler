@@ -17,7 +17,7 @@ pub struct Return<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Return<'src>> for Return<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, r#return: ast::Return<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, r#return: ast::Return<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

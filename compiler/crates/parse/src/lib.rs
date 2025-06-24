@@ -17,8 +17,12 @@ const PROCESSOR: LazyCell<Processor<SBLang>> = LazyCell::new(|| {
     loader()
 });
 
-pub fn parse(input: &str) -> anyhow::Result<Program> {
-    let cst = PROCESSOR.process::<CSTree<_>>(input)?;
+pub fn parse(input: &str) -> miette::Result<Program> {
+    let cst = match PROCESSOR.process::<CSTree<_>>(input) {
+        Ok(cst) => cst,
+        Err(err) => return Err(miette::miette!("Failed to parse input: {}", err)),
+    };
+
     let visitor = CSTreeVisitor::from(cst);
     let ast = Program::from(visitor);
     Ok(ast)

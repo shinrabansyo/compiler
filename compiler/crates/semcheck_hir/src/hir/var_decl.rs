@@ -20,7 +20,7 @@ pub struct VarDecl<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, var_decl: ast::VarDecl<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, var_decl: ast::VarDecl<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

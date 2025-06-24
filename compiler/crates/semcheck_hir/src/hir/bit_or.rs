@@ -22,7 +22,7 @@ pub enum BitOr<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::BitOr<'src>> for BitOr<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, or: ast::BitOr<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, or: ast::BitOr<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

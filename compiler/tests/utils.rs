@@ -1,4 +1,5 @@
 use std::fs;
+use std::fmt::Debug;
 use std::panic;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
@@ -7,9 +8,10 @@ pub enum Expect {
     Err,
 }
 
-pub fn test_dir<T, U>(dir: &str, expect: Expect, test_fn: &T)
+pub fn test_dir<T, U, E>(dir: &str, expect: Expect, test_fn: &T)
 where
-    T: Fn(&str) -> anyhow::Result<U> + panic::RefUnwindSafe,
+    T: Fn(&str) -> Result<U, E> + panic::RefUnwindSafe,
+    E: Debug,
 {
     let mut entries = fs::read_dir(dir)
         .unwrap()
@@ -24,16 +26,16 @@ where
 
     for (path, body) in entries {
         print!("Testing {:?} ... ", path);
-        let result = panic::catch_unwind(|| test_fn(&body).unwrap());
+        let result = panic::catch_unwind(|| test_fn(&body));
         match result {
             Ok(_) if expect == Expect::Err => {
-                println!("Failed (expected Error, but got Ok)");
-                panic!("");
-
+                panic!("Failed (expected Error, but got Ok)");
+            }
+            Ok(Err(e)) if expect == Expect::Ok => {
+                println!("Failed (expected Ok, but got Error)\n{:?}", e);
             }
             Err(e) if expect == Expect::Ok => {
-                println!("expected Ok, but got Error.");
-                panic!("{}", e.downcast_ref::<anyhow::Error>().unwrap());
+                panic!("Failed (expected Ok, but got panic)\n{:?}", e);
             }
             _ => println!("Ok"),
         }

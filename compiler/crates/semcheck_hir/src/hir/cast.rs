@@ -22,7 +22,7 @@ pub enum Cast<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Cast<'src>> for Cast<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, unary: ast::Cast<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, unary: ast::Cast<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

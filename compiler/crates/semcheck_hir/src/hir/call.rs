@@ -18,7 +18,7 @@ pub struct Call<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Call<'src>> for Call<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, call: ast::Call<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, call: ast::Call<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

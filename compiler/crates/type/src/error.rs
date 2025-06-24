@@ -15,19 +15,23 @@ pub enum TypeError {
 }
 
 impl TypeError {
-    pub fn new_callee_args_mismatch(expected: usize, got: usize) -> Self {
-        TypeError::CalleeArgsMismatch(expected, got)
+    pub fn new_callee_args_mismatch(expected: usize, got: usize) -> miette::Report {
+        miette::miette!("Callee requires {} arguments, but got {}", expected, got)
+        // TypeError::CalleeArgsMismatch(expected, got)
     }
 
-    pub fn new_cast_failed(a: Type, b: Type) -> Self {
-        TypeError::TypeCastFailed(a, b)
+    pub fn new_cast_failed(a: Type, b: Type) -> miette::Report {
+        miette::miette!("Type cast failed: {:?} -> {:?}", a, b)
+        // TypeError::TypeCastFailed(a, b)
     }
 
-    pub fn new_mismatch(a: Type, b: Type) -> Self {
-        TypeError::TypeMismatch(a, b)
+    pub fn new_mismatch(a: Type, b: Type) -> miette::Report {
+        miette::miette!("Type mismatch: {:?} != {:?}", a, b)
+        // TypeError::TypeMismatch(a, b)
     }
 
-    pub fn new_infer2_failed(a: Type, b: Type) -> Self {
-        TypeError::TypeInfer2Failed(a, b)
+    pub fn new_infer2_failed(a: Type, b: Type) -> miette::Report {
+        miette::miette!("Type inference failed: {:?}, {:?}", a, b)
+        // TypeError::TypeInfer2Failed(a, b)
     }
 }

@@ -18,7 +18,7 @@ pub struct If<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::If<'src>> for If<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, r#if: ast::If<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, r#if: ast::If<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

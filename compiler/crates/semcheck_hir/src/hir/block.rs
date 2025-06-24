@@ -15,7 +15,7 @@ pub struct Block<'src> {
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::Block<'src>> for Block<'src> {
-    async fn check0(mut ctx: InDep<'src>, block: ast::Block<'src>) -> anyhow::Result<Self>
+    async fn check0(mut ctx: InDep<'src>, block: ast::Block<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

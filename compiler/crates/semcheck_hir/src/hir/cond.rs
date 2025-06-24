@@ -52,7 +52,7 @@ pub enum Cond<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, cond: ast::Cond<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, cond: ast::Cond<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

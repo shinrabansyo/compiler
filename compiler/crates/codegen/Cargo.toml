@@ -4,8 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = { workspace = true }
-thiserror = { workspace = true }
 sb_linker = { workspace = true }
 sb_compiler_lirgen_ir = { path = "../lirgen_ir" }
 

@@ -20,7 +20,7 @@ pub struct FuncDef<'src> {
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
-    async fn check0(mut ctx: InDep<'src>, func_def: ast::FuncDef<'src>) -> anyhow::Result<Self>
+    async fn check0(mut ctx: InDep<'src>, func_def: ast::FuncDef<'src>) -> miette::Result<Self>
         where
             Self: Sized
     {

@@ -73,14 +73,14 @@ impl TypeDeclChecker {
         (checker, context)
     }
 
-    pub fn register(ctx: &mut TypeDeclContext, name: &str, ty: Arc<Type>) -> anyhow::Result<()> {
+    pub fn register(ctx: &mut TypeDeclContext, name: &str, ty: Arc<Type>) -> miette::Result<()> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 型名を登録
         let symbol = match checker.interner.get(name) {
             Some(_) => {
                 let err = TypeDeclError::new_already_declared(name.to_string());
-                return Err(err.into());
+                return Err(err);
             }
             None => checker.interner.get_or_intern(name),
         };
@@ -99,7 +99,7 @@ impl TypeDeclChecker {
     }
 
     #[failable_as_async('a)]
-    pub fn find<'a>(ctx: &'a TypeDeclContext, name: &'a str) -> anyhow::Result<Arc<Type>> {
+    pub fn find<'a>(ctx: &'a TypeDeclContext, name: &'a str) -> miette::Result<Arc<Type>> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 型名を検索
@@ -107,7 +107,7 @@ impl TypeDeclChecker {
             Some(symbol) => symbol,
             None => {
                 let err = TypeDeclError::new_not_declared(name.to_string());
-                return Err(err.into());
+                return Err(err);
             }
         };
 
@@ -117,7 +117,7 @@ impl TypeDeclChecker {
             Ok(Arc::clone(&checker.types.get(&symbol).unwrap()))
         } else {
             let err = TypeDeclError::new_not_declared_in_scope(name.to_string());
-            Err(err.into())
+            Err(err)
         }
     }
 }

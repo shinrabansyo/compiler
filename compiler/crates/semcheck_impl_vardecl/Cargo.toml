@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = { workspace = true }
+miette = { workspace = true }
 thiserror = { workspace = true }
 string-interner = { workspace = true }
 petgraph = "0.8.2"

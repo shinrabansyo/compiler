@@ -4,8 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = { workspace = true }
-thiserror = { workspace = true }
+miette = { workspace = true, features = ["fancy"] }
 sb_linker = { workspace = true }
 sb_compiler = { path = "./compiler" }
 
@@ -16,7 +15,7 @@ members = [
 ]
 
 [workspace.dependencies]
-anyhow = "1.0.98"
+miette = "7.6.0"
 thiserror = "2.0.3"
 serde = "1.0.215"
 string-interner = "0.19.0"

@@ -4,8 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = { workspace = true }
-thiserror = { workspace = true }
+anyhow = "1.0.98"
 copager = { workspace = true, features = ["derive", "tree"] }
 
 [dev-dependencies]

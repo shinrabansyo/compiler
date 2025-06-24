@@ -28,7 +28,7 @@ pub enum Unary<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, unary: ast::Unary<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, unary: ast::Unary<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

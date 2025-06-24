@@ -17,15 +17,18 @@ pub enum TypeDeclError {
 }
 
 impl TypeDeclError {
-    pub fn new_already_declared(name: String) -> Self {
-        TypeDeclError::TypeAlreadyDeclared { name }
+    pub fn new_already_declared(name: String) -> miette::Report {
+        miette::miette!("Type {} is already declared.", name)
+        // TypeDeclError::TypeAlreadyDeclared { name }.into()
     }
 
-    pub fn new_not_declared(name: String) -> Self {
-        TypeDeclError::TypeNotDeclared { name }
+    pub fn new_not_declared(name: String) -> miette::Report {
+        miette::miette!("Type {} is not declared.", name)
+        // TypeDeclError::TypeNotDeclared { name }.into()
     }
 
-    pub fn new_not_declared_in_scope(name: String) -> Self {
-        TypeDeclError::TypeNotDeclaredInScope { name }
+    pub fn new_not_declared_in_scope(name: String) -> miette::Report {
+        miette::miette!("Type {} is not declared in this scope.", name)
+        // TypeDeclError::TypeNotDeclaredInScope { name }.into()
     }
 }

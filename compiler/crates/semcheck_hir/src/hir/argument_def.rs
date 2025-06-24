@@ -16,7 +16,7 @@ pub struct ArgumentDef<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::ArgumentDef<'src>> for ArgumentDef<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, arg: ast::ArgumentDef<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, arg: ast::ArgumentDef<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

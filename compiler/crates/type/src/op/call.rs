@@ -4,7 +4,7 @@ use crate::error::TypeError;
 use crate::r#type::*;
 use super::ty_equals;
 
-pub fn ty_can_call(callee: &Arc<Type>, args: &[&Arc<Type>]) -> anyhow::Result<Arc<Type>> {
+pub fn ty_can_call(callee: &Arc<Type>, args: &[&Arc<Type>]) -> miette::Result<Arc<Type>> {
     match callee.as_ref() {
         // 関数
         Function { args: req_args, ret_ty } => {
@@ -12,7 +12,7 @@ pub fn ty_can_call(callee: &Arc<Type>, args: &[&Arc<Type>]) -> anyhow::Result<Ar
             if req_args.len() != args.len() {
                 let expected = req_args.len();
                 let got = args.len();
-                return Err(TypeError::new_callee_args_mismatch(expected, got).into());
+                return Err(TypeError::new_callee_args_mismatch(expected, got));
             }
 
             // 引数の型が一致しない場合エラー

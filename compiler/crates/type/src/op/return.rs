@@ -3,7 +3,7 @@ use std::sync::Arc;
 use crate::r#type::*;
 use super::ty_equals;
 
-pub fn ty_can_return(namespace: &Arc<Type>, ret_ty: &Arc<Type>) -> anyhow::Result<Arc<Type>> {
+pub fn ty_can_return(namespace: &Arc<Type>, ret_ty: &Arc<Type>) -> miette::Result<Arc<Type>> {
     match namespace.as_ref() {
         // 関数
         Function { ret_ty: req_ret_ty, .. } => {

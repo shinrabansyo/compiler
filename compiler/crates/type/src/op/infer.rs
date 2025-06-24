@@ -3,7 +3,7 @@ use std::sync::Arc;
 use crate::error::TypeError;
 use crate::r#type::*;
 
-pub fn ty_infer(a: &Arc<Type>) -> anyhow::Result<Arc<Type>> {
+pub fn ty_infer(a: &Arc<Type>) -> miette::Result<Arc<Type>> {
     match a.as_ref() {
         // プリミティブ型
         Primitive(Void)     => Ok(Arc::clone(a)),
@@ -17,7 +17,7 @@ pub fn ty_infer(a: &Arc<Type>) -> anyhow::Result<Arc<Type>> {
     }
 }
 
-pub fn ty_infer2(a: &Arc<Type>, b: &Arc<Type>) -> anyhow::Result<Arc<Type>> {
+pub fn ty_infer2(a: &Arc<Type>, b: &Arc<Type>) -> miette::Result<Arc<Type>> {
     match (a.as_ref(), b.as_ref()) {
         // プリミティブ型
         (Primitive(Void),     Primitive(Void))     => Ok(Arc::clone(a)),
@@ -37,7 +37,7 @@ pub fn ty_infer2(a: &Arc<Type>, b: &Arc<Type>) -> anyhow::Result<Arc<Type>> {
         _ => {
             let a = a.as_ref().clone();
             let b = b.as_ref().clone();
-            Err(TypeError::new_infer2_failed(a, b).into())
+            Err(TypeError::new_infer2_failed(a, b))
         }
     }
 }

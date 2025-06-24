@@ -21,7 +21,7 @@ pub enum LogicOr<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::LogicOr<'src>> for LogicOr<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, or: ast::LogicOr<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, or: ast::LogicOr<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

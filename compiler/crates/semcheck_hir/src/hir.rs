@@ -43,14 +43,14 @@ pub type Dep<'a, 'src> = &'a mut SemCheckContext<'src>;
 pub type InDep<'src> = SemCheckContext<'src>;
 
 pub trait SemCheck<Ctx, T> {
-    fn check(ctx: Ctx, ast: T) -> Pin<Box<impl Future<Output = anyhow::Result<Self>>>>
+    fn check(ctx: Ctx, ast: T) -> Pin<Box<impl Future<Output = miette::Result<Self>>>>
     where
         Self: Sized,
     {
         Box::pin(Self::check0(ctx, ast))
     }
 
-    fn check0(ctx: Ctx, ast: T) -> impl Future<Output = anyhow::Result<Self>>
+    fn check0(ctx: Ctx, ast: T) -> impl Future<Output = miette::Result<Self>>
     where
         Self: Sized;
 }

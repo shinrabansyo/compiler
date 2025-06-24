@@ -13,7 +13,7 @@ pub struct Expr<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Expr<'src>> for Expr<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, expr: ast::Expr<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, expr: ast::Expr<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {

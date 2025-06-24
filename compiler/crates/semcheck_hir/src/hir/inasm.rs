@@ -15,7 +15,7 @@ pub struct InlineAsm<'src> {
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::InlineAsm<'src>> for InlineAsm<'src> {
-    async fn check0(mut ctx: InDep<'src>, inasm: ast::InlineAsm<'src>) -> anyhow::Result<Self>
+    async fn check0(mut ctx: InDep<'src>, inasm: ast::InlineAsm<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {
