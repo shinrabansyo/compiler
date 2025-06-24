@@ -11,7 +11,6 @@ use super::{InlineAsmInst, SemCheck, InDep};
 pub struct InlineAsm<'src> {
     pub span: Span<'src>,
     pub insts: Vec<InlineAsmInst<'src>>,
-    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::InlineAsm<'src>> for InlineAsm<'src> {
@@ -25,10 +24,7 @@ impl<'src> SemCheck<InDep<'src>, ast::InlineAsm<'src>> for InlineAsm<'src> {
             insts.push(InlineAsmInst::check(&mut ctx, inst).await?);
         }
 
-        // インラインアセンブリの型は Void
-        let ty = Arc::new(Void);
-
-        Ok(InlineAsm { span: inasm.span, insts, ty })
+        Ok(InlineAsm { span: inasm.span, insts })
     }
 }
 
@@ -39,7 +35,7 @@ impl<'src> Spanned<'src> for InlineAsm<'src> {
 }
 
 impl Typed for InlineAsm<'_> {
-    fn ty(&self) -> &Arc<Type> {
-        &self.ty
+    fn ty(&self) -> Arc<Type> {
+        Void.ty()
     }
 }

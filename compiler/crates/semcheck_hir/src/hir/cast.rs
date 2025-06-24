@@ -33,7 +33,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cast<'src>> for Cast<'src> {
 
                 // 型チェック
                 let ty = TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?;
-                ty_cast(unary.ty(), &ty)?;
+                ty_cast(&unary, &ty)?;
 
                 Ok(Cast::Casting { span, unary, ty })
             }
@@ -56,9 +56,9 @@ impl<'src> Spanned<'src> for Cast<'src> {
 }
 
 impl Typed for Cast<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
-            Cast::Casting { ty, .. } => ty,
+            Cast::Casting { ty, .. } => ty.ty(),
             Cast::Unary { unary } => unary.ty(),
         }
     }

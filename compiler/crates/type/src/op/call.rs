@@ -2,10 +2,15 @@ use std::sync::Arc;
 
 use crate::error::TypeError;
 use crate::r#type::*;
+use crate::Typed;
 use super::ty_equals;
 
-pub fn ty_can_call(callee: &Arc<Type>, args: &[&Arc<Type>]) -> miette::Result<Arc<Type>> {
-    match callee.as_ref() {
+pub fn ty_can_call<C, A>(callee: &C, args: &[A]) -> miette::Result<Arc<Type>>
+where
+    C: Typed,
+    A: Typed,
+{
+    match callee.ty().as_ref() {
         // 関数
         Function { args: req_args, ret_ty } => {
             // 引数の数が一致しない場合エラー

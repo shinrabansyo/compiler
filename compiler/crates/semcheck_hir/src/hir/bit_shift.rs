@@ -45,7 +45,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitShift<'src>> for BitShift<'src> {
                 let rhs = Add::check(ctx, rhs).await?;
 
                 // 型決定
-                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
+                let ty = ty_infer2(&lhs, &rhs)?;
 
                 Ok(BitShift::L { span, lhs, rhs, ty })
             }
@@ -55,7 +55,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitShift<'src>> for BitShift<'src> {
                 let rhs = Add::check(ctx, rhs).await?;
 
                 // 型決定
-                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
+                let ty = ty_infer2(&lhs, &rhs)?;
 
                 Ok(BitShift::R { span, lhs, rhs, ty })
             }
@@ -65,7 +65,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitShift<'src>> for BitShift<'src> {
                 let rhs = Add::check(ctx, rhs).await?;
 
                 // 型決定
-                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
+                let ty = ty_infer2(&lhs, &rhs)?;
 
                 Ok(BitShift::Ra { span, lhs, rhs, ty })
             }
@@ -90,11 +90,11 @@ impl<'src> Spanned<'src> for BitShift<'src> {
 }
 
 impl Typed for BitShift<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
-            BitShift::L { ty, .. } => ty,
-            BitShift::R { ty, .. } => ty,
-            BitShift::Ra { ty, .. } => ty,
+            BitShift::L { ty, .. } => ty.ty(),
+            BitShift::R { ty, .. } => ty.ty(),
+            BitShift::Ra { ty, .. } => ty.ty(),
             BitShift::Add { add } => add.ty(),
         }
     }

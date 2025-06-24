@@ -11,7 +11,6 @@ use super::{Stmt, SemCheck, InDep};
 pub struct Block<'src> {
     pub span: Span<'src>,
     pub stmts: Vec<Stmt<'src>>,
-    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::Block<'src>> for Block<'src> {
@@ -25,10 +24,7 @@ impl<'src> SemCheck<InDep<'src>, ast::Block<'src>> for Block<'src> {
             stmts.push(Stmt::check(&mut ctx, stmt).await?);
         }
 
-        // ブロックの型は Void
-        let ty = Arc::new(Void);
-
-        Ok(Block { span: block.span, stmts, ty })
+        Ok(Block { span: block.span, stmts })
     }
 }
 
@@ -39,7 +35,7 @@ impl<'src> Spanned<'src> for Block<'src> {
 }
 
 impl Typed for Block<'_> {
-    fn ty(&self) -> &Arc<Type> {
-        &self.ty
+    fn ty(&self) -> Arc<Type> {
+        Void.ty()
     }
 }

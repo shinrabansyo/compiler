@@ -36,7 +36,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
             ast::Unary::Not { span, value } => {
                 // 式の意味解析 & 型チェック
                 let value = Value::check(ctx, value).await?;
-                ty_equals(value.ty(), &Arc::new(Bool))?;
+                ty_equals(&value.ty(), &Bool.ty())?;
 
                 Ok(Unary::Not { span, value })
             }
@@ -73,7 +73,7 @@ impl<'src> Spanned<'src> for Unary<'src> {
 }
 
 impl Typed for Unary<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
             Unary::Not { value, .. } => value.ty(),
             Unary::Plus { value, .. } => value.ty(),

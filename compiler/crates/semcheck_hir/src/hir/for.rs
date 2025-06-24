@@ -15,7 +15,6 @@ pub struct For<'src> {
     pub cond: Expr<'src>,
     pub incr: Expr<'src>,
     pub block: Block<'src>,
-    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::For<'src>> for For<'src> {
@@ -33,12 +32,9 @@ impl<'src> SemCheck<InDep<'src>, ast::For<'src>> for For<'src> {
 
         // 条件式の意味解析 & 型チェック
         let cond = Expr::check(&mut ctx, r#for.cond).await?;
-        ty_equals(cond.ty(), &Arc::new(Bool))?;
+        ty_equals(&cond.ty(), &Bool.ty())?;
 
-        // For 文の型は Void
-        let ty = Arc::new(Void);
-
-        Ok(For { span, init, cond, incr, block, ty })
+        Ok(For { span, init, cond, incr, block })
     }
 }
 
@@ -49,7 +45,7 @@ impl<'src> Spanned<'src> for For<'src> {
 }
 
 impl Typed for For<'_> {
-    fn ty(&self) -> &Arc<Type> {
-        &self.ty
+    fn ty(&self) -> Arc<Type> {
+        Void.ty()
     }
 }

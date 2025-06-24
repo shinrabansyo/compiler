@@ -14,7 +14,6 @@ pub struct If<'src> {
     pub cond: Expr<'src>,
     pub block: Block<'src>,
     pub else_stmt: Option<Box<Stmt<'src>>>,
-    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::If<'src>> for If<'src> {
@@ -24,7 +23,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::If<'src>> for If<'src> {
     {
         // 条件式の意味解析 & 型チェック
         let cond = Expr::check(ctx, r#if.cond).await?;
-        ty_equals(cond.ty(), &Arc::new(Bool))?;
+        ty_equals(&cond.ty(), &Arc::new(Bool))?;
 
         // ブロックの意味解析
         let block = Block::check(ctx.clone(), r#if.block).await?;
@@ -35,10 +34,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::If<'src>> for If<'src> {
             None => None,
         };
 
-        // If 文の型は Void
-        let ty = Arc::new(Void);
-
-        Ok(If { span: r#if.span, cond, block, else_stmt, ty })
+        Ok(If { span: r#if.span, cond, block, else_stmt })
     }
 }
 
@@ -49,7 +45,7 @@ impl<'src> Spanned<'src> for If<'src> {
 }
 
 impl Typed for If<'_> {
-    fn ty(&self) -> &Arc<Type> {
-        &self.ty
+    fn ty(&self) -> Arc<Type> {
+        Void.ty()
     }
 }

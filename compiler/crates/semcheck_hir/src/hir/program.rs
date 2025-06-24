@@ -13,7 +13,6 @@ use super::{Top, SemCheck, InDep};
 pub struct Program<'src> {
     pub span: Span<'src>,
     pub top_elems: Vec<Top<'src>>,
-    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::Program<'src>> for Program<'src> {
@@ -30,10 +29,7 @@ impl<'src> SemCheck<InDep<'src>, ast::Program<'src>> for Program<'src> {
             .await
             .compose()?;
 
-        // プログラム全体の型は Void
-        let ty = Arc::new(Void);
-
-        Ok(Program { span: program.span, top_elems, ty })
+        Ok(Program { span: program.span, top_elems })
     }
 }
 
@@ -44,7 +40,7 @@ impl<'src> Spanned<'src> for Program<'src> {
 }
 
 impl Typed for Program<'_> {
-    fn ty(&self) -> &Arc<Type> {
-        &self.ty
+    fn ty(&self) -> Arc<Type> {
+        Void.ty()
     }
 }

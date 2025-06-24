@@ -58,7 +58,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals(&var.ty, assign.ty())?;
+                ty_equals(&var.ty, &assign)?;
 
                 Ok(Assign::Normal { span, var, assign })
             }
@@ -68,7 +68,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals(&var.ty, assign.ty())?;
+                ty_equals(&var.ty, &assign)?;
 
                 Ok(Assign::Plus { span, var, assign })
             }
@@ -78,7 +78,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals(&var.ty, assign.ty())?;
+                ty_equals(&var.ty, &assign)?;
 
                 Ok(Assign::Minus { span, var, assign })
             }
@@ -88,7 +88,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals(&var.ty, assign.ty())?;
+                ty_equals(&var.ty, &assign)?;
 
                 Ok(Assign::ShiftL { span, var, assign })
             }
@@ -98,7 +98,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals(&var.ty, assign.ty())?;
+                ty_equals(&var.ty, &assign)?;
 
                 Ok(Assign::ShiftR { span, var, assign })
             }
@@ -108,7 +108,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals(&var.ty, assign.ty())?;
+                ty_equals(&var.ty, &assign)?;
 
                 Ok(Assign::ShiftRa { span, var, assign })
             }
@@ -136,14 +136,14 @@ impl<'src> Spanned<'src> for Assign<'src> {
 }
 
 impl Typed for Assign<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
-            Assign::Normal { var, .. } => &var.ty,
-            Assign::Plus { var, .. } => &var.ty,
-            Assign::Minus { var, .. } => &var.ty,
-            Assign::ShiftL { var, .. } => &var.ty,
-            Assign::ShiftR { var, .. } => &var.ty,
-            Assign::ShiftRa { var, .. } => &var.ty,
+            Assign::Normal { var, .. } => Arc::clone(&var.ty),
+            Assign::Plus { var, .. } => Arc::clone(&var.ty),
+            Assign::Minus { var, .. } => Arc::clone(&var.ty),
+            Assign::ShiftL { var, .. } => Arc::clone(&var.ty),
+            Assign::ShiftR { var, .. } => Arc::clone(&var.ty),
+            Assign::ShiftRa { var, .. } => Arc::clone(&var.ty),
             Assign::LogicOr { or } => or.ty(),
         }
     }

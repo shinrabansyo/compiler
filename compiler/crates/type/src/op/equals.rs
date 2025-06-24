@@ -1,10 +1,13 @@
-use std::sync::Arc;
-
 use crate::error::TypeError;
 use crate::r#type::*;
+use crate::Typed;
 
-pub fn ty_equals(a: &Arc<Type>, b: &Arc<Type>) -> miette::Result<()> {
-    match (a.as_ref(), b.as_ref()) {
+pub fn ty_equals<A, B>(a: &A, b: &B) -> miette::Result<()>
+where
+    A: Typed,
+    B: Typed,
+{
+    match (a.ty().as_ref(), b.ty().as_ref()) {
         // プリミティブ型
         (Void,     Void)     => Ok(()),
         (Bool,     Bool)     => Ok(()),
@@ -21,9 +24,9 @@ pub fn ty_equals(a: &Arc<Type>, b: &Arc<Type>) -> miette::Result<()> {
 
         // 比較失敗
         _ => {
-            let a = a.as_ref().clone();
-            let b = b.as_ref().clone();
-            Err(TypeError::new_mismatch(a, b))
+            let a_ty = (*a.ty()).clone();
+            let b_ty = (*b.ty()).clone();
+            Err(TypeError::new_mismatch(a_ty, b_ty))
         }
     }
 }

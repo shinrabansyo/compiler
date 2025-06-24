@@ -16,7 +16,6 @@ pub struct VarDecl<'src> {
     pub var: Var<'src>,
     pub var_ty: Arc<Type>,
     pub expr: Expr<'src>,
-    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
@@ -34,7 +33,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
                 ty_equals(&expr.ty(), &var_ty)?;
                 var_ty
             }
-            None => ty_infer(expr.ty())?,
+            None => ty_infer(&expr.ty())?,
         };
 
         // 変数宣言
@@ -44,16 +43,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
             Arc::clone(&var_ty),
         )?;
 
-        // 変数宣言文の型は Void
-        let ty = Arc::new(Void);
-
-        Ok(VarDecl {
-            span: var_decl.span,
-            var,
-            var_ty,
-            expr,
-            ty,
-        })
+        Ok(VarDecl { span: var_decl.span, var, var_ty, expr })
     }
 }
 
@@ -64,7 +54,7 @@ impl<'src> Spanned<'src> for VarDecl<'src> {
 }
 
 impl Typed for VarDecl<'_> {
-    fn ty(&self) -> &Arc<Type> {
-        &self.var_ty
+    fn ty(&self) -> Arc<Type> {
+        Void.ty()
     }
 }

@@ -13,7 +13,6 @@ pub struct While<'src> {
     pub span: Span<'src>,
     pub cond: Expr<'src>,
     pub block: Block<'src>,
-    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::While<'src>> for While<'src> {
@@ -23,15 +22,12 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::While<'src>> for While<'src> {
     {
         // 状建設の意味解析 & 型チェック
         let cond = Expr::check(ctx, r#while.cond).await?;
-        ty_equals(cond.ty(), &Arc::new(Bool))?;
+        ty_equals(&cond.ty(), &Bool.ty())?;
 
         // ブロックの意味解析
         let block = Block::check(ctx.clone(), r#while.block).await?;
 
-        // While 文の型は Void
-        let ty = Arc::new(Void);
-
-        Ok(While { span: r#while.span, cond, block, ty })
+        Ok(While { span: r#while.span, cond, block })
     }
 }
 
@@ -42,7 +38,7 @@ impl<'src> Spanned<'src> for While<'src> {
 }
 
 impl Typed for While<'_> {
-    fn ty(&self) -> &Arc<Type> {
-        &self.ty
+    fn ty(&self) -> Arc<Type> {
+        Void.ty()
     }
 }

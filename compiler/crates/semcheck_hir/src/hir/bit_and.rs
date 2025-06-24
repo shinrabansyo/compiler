@@ -33,7 +33,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitAnd<'src>> for BitAnd<'src> {
                 let rhs = Cond::check(ctx, rhs).await?;
 
                 // 型決定
-                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
+                let ty = ty_infer2(&lhs, &rhs)?;
 
                 Ok(BitAnd::And { span, lhs, rhs, ty })
             }
@@ -56,9 +56,9 @@ impl<'src> Spanned<'src> for BitAnd<'src> {
 }
 
 impl Typed for BitAnd<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
-            BitAnd::And { ty, .. } => ty,
+            BitAnd::And { ty, .. } => ty.ty(),
             BitAnd::Cond { cond } => cond.ty(),
         }
     }

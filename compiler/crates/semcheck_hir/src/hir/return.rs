@@ -27,7 +27,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Return<'src>> for Return<'src> {
         // 戻り値の型をチェック
         let fn_name = ctx.name.as_str();
         let fn_ty = TypeDeclChecker::find(&ctx.type_decl, fn_name).await?;
-        let fn_ret_ty = ty_can_return(&fn_ty, expr.ty())?;
+        let fn_ret_ty = ty_can_return(&fn_ty, &expr.ty())?;
 
         Ok(Return {
             span: r#return.span,
@@ -44,7 +44,7 @@ impl<'src> Spanned<'src> for Return<'src> {
 }
 
 impl Typed for Return<'_> {
-    fn ty(&self) -> &Arc<Type> {
-        &self.ty
+    fn ty(&self) -> Arc<Type> {
+        self.ty.ty()
     }
 }

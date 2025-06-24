@@ -1,10 +1,13 @@
-use std::sync::Arc;
-
 use crate::error::TypeError;
 use crate::r#type::*;
+use crate::Typed;
 
-pub fn ty_cast(from: &Arc<Type>, to: &Arc<Type>) -> miette::Result<()> {
-    match (from.as_ref(), to.as_ref()) {
+pub fn ty_cast<F, T>(from: &F, to: &T) -> miette::Result<()>
+where
+    F: Typed,
+    T: Typed,
+{
+    match (from.ty().as_ref(), to.ty().as_ref()) {
         // プリミティブ型
         (Void,     Void) => Ok(()),
         (Bool,     Bool) => Ok(()),
@@ -21,9 +24,9 @@ pub fn ty_cast(from: &Arc<Type>, to: &Arc<Type>) -> miette::Result<()> {
 
         // キャスト失敗
         _ => {
-            let from = from.as_ref().clone();
-            let to = to.as_ref().clone();
-            Err(TypeError::new_cast_failed(from, to))
+            let from_ty = (*from.ty()).clone();
+            let to_ty = (*to.ty()).clone();
+            Err(TypeError::new_cast_failed(from_ty, to_ty))
         }
     }
 }

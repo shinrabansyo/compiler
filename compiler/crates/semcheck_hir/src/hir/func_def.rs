@@ -16,7 +16,6 @@ pub struct FuncDef<'src> {
     pub args: Vec<ArgumentDef<'src>>,
     pub ret_ty: Option<Span<'src>>,
     pub block: Block<'src>,
-    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
@@ -36,7 +35,7 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
         // 関数の型を登録
         let arg_tys = args
             .iter()
-            .map(|arg| Arc::clone(arg.ty()))
+            .map(|arg| arg.ty())
             .collect::<Vec<_>>();
         let ret_ty = match &func_def.ret_ty {
             Some(ty) => TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?,
@@ -57,13 +56,10 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
 
         // ブロックの意味解析
         let block_ty = match block.stmts.last() {
-            Some(Stmt::Return { r#return, .. }) => Arc::clone(r#return.ty()),
+            Some(Stmt::Return { r#return, .. }) => r#return.ty(),
             _ => Arc::new(Void),
         };
         ty_equals(&ret_ty, &block_ty)?;
-
-        // 関数定義の型は Void
-        let ty = Arc::new(Void);
 
         // 作成した名前空間を削除
         ctx.name.pop();
@@ -74,7 +70,6 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             args,
             ret_ty: func_def.ret_ty,
             block,
-            ty,
         })
     }
 }
@@ -86,7 +81,7 @@ impl<'src> Spanned<'src> for FuncDef<'src> {
 }
 
 impl Typed for FuncDef<'_> {
-    fn ty(&self) -> &Arc<Type> {
-        &self.ty
+    fn ty(&self) -> Arc<Type> {
+        Void.ty()
     }
 }

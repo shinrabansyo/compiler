@@ -36,14 +36,14 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                 Ok(Value::Const {
                     span,
                     value: if value { 1 } else { 0 },
-                    value_ty: Arc::new(Bool),
+                    value_ty: Bool.ty(),
                 })
             }
             ast::Value::Const { span, value } => {
                 Ok(Value::Const {
                     span,
                     value,
-                    value_ty: Arc::new(NumConst),
+                    value_ty: NumConst.ty(),
                 })
             }
             ast::Value::Var { name } => {
@@ -77,10 +77,10 @@ impl<'src> Spanned<'src> for Value<'src> {
 }
 
 impl Typed for Value<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
-            Value::Const { value_ty, .. } => value_ty,
-            Value::Var { var, .. } => &var.ty,
+            Value::Const { value_ty, .. } => value_ty.ty(),
+            Value::Var { var, .. } => var.ty.ty(),
             Value::Expr { expr, .. } => expr.ty(),
             Value::Call { call } => call.ty(),
         }

@@ -14,37 +14,31 @@ pub enum Cond<'src> {
         span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Arc<Type>,
     },
     Neq {
         span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Arc<Type>,
     },
     Lt {
         span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Arc<Type>,
     },
     Lte {
         span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Arc<Type>,
     },
     Gt {
         span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Arc<Type>,
     },
     Gte {
         span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
-        ty: Arc<Type>,
     },
     BitShift {
         bit_shift: BitShift<'src>,
@@ -61,67 +55,49 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals(lhs.ty(), rhs.ty())?;
+                ty_equals(&lhs.ty(), &rhs.ty())?;
 
-                // == の型は Bool
-                let ty = Arc::new(Bool);
-
-                Ok(Cond::Eq { span, lhs, rhs, ty })
+                Ok(Cond::Eq { span, lhs, rhs })
             }
             ast::Cond::Neq { span, lhs, rhs } => {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals(lhs.ty(), rhs.ty())?;
+                ty_equals(&lhs.ty(), &rhs.ty())?;
 
-                // != の型は Bool
-                let ty = Arc::new(Bool);
-
-                Ok(Cond::Neq { span, lhs, rhs, ty })
+                Ok(Cond::Neq { span, lhs, rhs })
             }
             ast::Cond::Lt { span, lhs, rhs } => {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals(lhs.ty(), rhs.ty())?;
+                ty_equals(&lhs.ty(), &rhs.ty())?;
 
-                // < の型は Bool
-                let ty = Arc::new(Bool);
-
-                Ok(Cond::Lt { span, lhs, rhs, ty })
+                Ok(Cond::Lt { span, lhs, rhs })
             }
             ast::Cond::Lte { span, lhs, rhs } => {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals(lhs.ty(), rhs.ty())?;
+                ty_equals(&lhs.ty(), &rhs.ty())?;
 
-                // <= の型は Bool
-                let ty = Arc::new(Bool);
-
-                Ok(Cond::Lte { span, lhs, rhs, ty })
+                Ok(Cond::Lte { span, lhs, rhs })
             }
             ast::Cond::Gt { span, lhs, rhs } => {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals(lhs.ty(), rhs.ty())?;
+                ty_equals(&lhs.ty(), &rhs.ty())?;
 
-                // > の型は Bool
-                let ty = Arc::new(Bool);
-
-                Ok(Cond::Gt { span, lhs, rhs, ty })
+                Ok(Cond::Gt { span, lhs, rhs })
             }
             ast::Cond::Gte { span, lhs, rhs } => {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals(lhs.ty(), rhs.ty())?;
+                ty_equals(&lhs.ty(), &rhs.ty())?;
 
-                // >= の型は bool
-                let ty = Arc::new(Bool);
-
-                Ok(Cond::Gte { span, lhs, rhs, ty })
+                Ok(Cond::Gte { span, lhs, rhs })
             }
             ast::Cond::BitShift { bit_shift } => {
                 Ok(Cond::BitShift {
@@ -147,15 +123,10 @@ impl<'src> Spanned<'src> for Cond<'src> {
 }
 
 impl Typed for Cond<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
-            Cond::Eq { ty, .. } => ty,
-            Cond::Neq { ty, .. } => ty,
-            Cond::Lt { ty, .. } => ty,
-            Cond::Lte { ty, .. } => ty,
-            Cond::Gt { ty, .. } => ty,
-            Cond::Gte { ty, .. } => ty,
             Cond::BitShift { bit_shift } => bit_shift.ty(),
+            _ => Bool.ty(),
         }
     }
 }

@@ -13,7 +13,6 @@ pub enum LogicOr<'src> {
         span: Span<'src>,
         lhs: Box<LogicOr<'src>>,
         rhs: LogicAnd<'src>,
-        ty: Arc<Type>,
     },
     LogicAnd {
         and: LogicAnd<'src>,
@@ -31,10 +30,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::LogicOr<'src>> for LogicOr<'src> {
                 let lhs = Box::new(LogicOr::check(ctx, *lhs).await?);
                 let rhs = LogicAnd::check(ctx, rhs).await?;
 
-                // || の型は Bool
-                let ty = Arc::new(Bool);
-
-                Ok(LogicOr::Or { span, lhs, rhs, ty })
+                Ok(LogicOr::Or { span, lhs, rhs })
             }
             ast::LogicOr::LogicAnd { and } => {
                 Ok(LogicOr::LogicAnd {
@@ -55,9 +51,9 @@ impl<'src> Spanned<'src> for LogicOr<'src> {
 }
 
 impl Typed for LogicOr<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
-            LogicOr::Or { ty, .. } => ty,
+            LogicOr::Or { .. } => Bool.ty(),
             LogicOr::LogicAnd { and } => and.ty(),
         }
     }

@@ -1,10 +1,15 @@
 use std::sync::Arc;
 
 use crate::r#type::*;
+use crate::Typed;
 use super::ty_equals;
 
-pub fn ty_can_return(namespace: &Arc<Type>, ret_ty: &Arc<Type>) -> miette::Result<Arc<Type>> {
-    match namespace.as_ref() {
+pub fn ty_can_return<A, B>(namespace: &A, ret_ty: &B) -> miette::Result<Arc<Type>>
+where
+    A: Typed,
+    B: Typed,
+{
+    match namespace.ty().as_ref() {
         // 関数
         Function { ret_ty: req_ret_ty, .. } => {
             ty_equals(req_ret_ty, ret_ty)?;

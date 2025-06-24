@@ -33,7 +33,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitXor<'src>> for BitXor<'src> {
                 let rhs = BitAnd::check(ctx, rhs).await?;
 
                 // 型決定
-                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
+                let ty = ty_infer2(&lhs, &rhs)?;
 
                 Ok(BitXor::Xor { span, lhs, rhs, ty })
             }
@@ -56,9 +56,9 @@ impl<'src> Spanned<'src> for BitXor<'src> {
 }
 
 impl Typed for BitXor<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
-            BitXor::Xor { ty, .. } => ty,
+            BitXor::Xor { ty, .. } => ty.ty(),
             BitXor::BitAnd { and } => and.ty(),
         }
     }

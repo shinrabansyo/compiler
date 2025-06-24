@@ -30,7 +30,7 @@ impl<'src> Spanned<'src> for Expr<'src> {
 }
 
 impl Typed for Expr<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         self.assign.ty()
     }
 }

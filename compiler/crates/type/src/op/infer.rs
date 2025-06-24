@@ -2,43 +2,54 @@ use std::sync::Arc;
 
 use crate::error::TypeError;
 use crate::r#type::*;
+use crate::Typed;
 
-pub fn ty_infer(a: &Arc<Type>) -> miette::Result<Arc<Type>> {
-    match a.as_ref() {
+pub fn ty_infer<A>(a: &A) -> miette::Result<Arc<Type>>
+where
+    A: Typed,
+{
+    let a_ty = a.ty();
+    match a_ty.as_ref() {
         // プリミティブ型
-        Void     => Ok(Arc::clone(a)),
-        Bool     => Ok(Arc::clone(a)),
-        I8       => Ok(Arc::clone(a)),
-        I16      => Ok(Arc::clone(a)),
-        I32      => Ok(Arc::clone(a)),
-        NumConst => Ok(Arc::clone(a)),
+        Void     => Ok(a_ty),
+        Bool     => Ok(a_ty),
+        I8       => Ok(a_ty),
+        I16      => Ok(a_ty),
+        I32      => Ok(a_ty),
+        NumConst => Ok(a_ty),
 
         // 推論失敗
         _ => panic!(""),
     }
 }
 
-pub fn ty_infer2(a: &Arc<Type>, b: &Arc<Type>) -> miette::Result<Arc<Type>> {
-    match (a.as_ref(), b.as_ref()) {
+pub fn ty_infer2<A, B>(a: &A, b: &B) -> miette::Result<Arc<Type>>
+where
+    A: Typed,
+    B: Typed,
+{
+    let a_ty = a.ty();
+    let b_ty = b.ty();
+    match (a_ty.as_ref(), b_ty.as_ref()) {
         // プリミティブ型
-        (Void,     Void)     => Ok(Arc::clone(a)),
-        (Bool,     Bool)     => Ok(Arc::clone(a)),
-        (I8,       I8)       => Ok(Arc::clone(a)),
-        (I8,       NumConst) => Ok(Arc::clone(a)),
-        (I16,      I16)      => Ok(Arc::clone(a)),
-        (I16,      NumConst) => Ok(Arc::clone(a)),
-        (I32,      I32)      => Ok(Arc::clone(a)),
-        (I32,      NumConst) => Ok(Arc::clone(a)),
-        (NumConst, I8)       => Ok(Arc::clone(b)),
-        (NumConst, I16)      => Ok(Arc::clone(b)),
-        (NumConst, I32)      => Ok(Arc::clone(b)),
-        (NumConst, NumConst) => Ok(Arc::clone(a)),
+        (Void,     Void)     => Ok(a_ty),
+        (Bool,     Bool)     => Ok(a_ty),
+        (I8,       I8)       => Ok(a_ty),
+        (I8,       NumConst) => Ok(a_ty),
+        (I16,      I16)      => Ok(a_ty),
+        (I16,      NumConst) => Ok(a_ty),
+        (I32,      I32)      => Ok(a_ty),
+        (I32,      NumConst) => Ok(a_ty),
+        (NumConst, I8)       => Ok(b_ty),
+        (NumConst, I16)      => Ok(b_ty),
+        (NumConst, I32)      => Ok(b_ty),
+        (NumConst, NumConst) => Ok(a_ty),
 
         // 推論失敗
         _ => {
-            let a = a.as_ref().clone();
-            let b = b.as_ref().clone();
-            Err(TypeError::new_infer2_failed(a, b))
+            let a_ty = (*a_ty).clone();
+            let b_ty = (*b_ty).clone();
+            Err(TypeError::new_infer2_failed(a_ty, b_ty))
         }
     }
 }

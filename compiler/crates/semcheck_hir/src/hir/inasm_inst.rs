@@ -1,5 +1,9 @@
+use std::sync::Arc;
+
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
+use sb_compiler_type::r#type::{I32, Type};
+use sb_compiler_type::Typed;
 
 use super::{InlineAsmOperand, SemCheck, Dep};
 
@@ -179,5 +183,11 @@ impl<'src> Spanned<'src> for InlineAsmInst<'src> {
             InlineAsmInst::Blt { span, .. } => *span,
             InlineAsmInst::Ble { span, .. } => *span,
         }
+    }
+}
+
+impl Typed for InlineAsmInst<'_> {
+    fn ty(&self) -> Arc<Type> {
+        I32.ty()
     }
 }

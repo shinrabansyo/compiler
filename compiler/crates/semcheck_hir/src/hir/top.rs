@@ -38,7 +38,7 @@ impl<'src> Spanned<'src> for Top<'src> {
 }
 
 impl Typed for Top<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
             Top::FuncDef { func_def } => func_def.ty(),
         }

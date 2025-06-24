@@ -53,7 +53,7 @@ impl<'src> Spanned<'src> for Call<'src> {
 }
 
 impl Typed for Call<'_> {
-    fn ty(&self) -> &Arc<Type> {
-        &self.ty
+    fn ty(&self) -> Arc<Type> {
+        self.ty.ty()
     }
 }

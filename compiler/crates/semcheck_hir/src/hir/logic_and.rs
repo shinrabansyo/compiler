@@ -13,7 +13,6 @@ pub enum LogicAnd<'src> {
         span: Span<'src>,
         lhs: Box<LogicAnd<'src>>,
         rhs: BitOr<'src>,
-        ty: Arc<Type>,
     },
     BitOr {
         or: BitOr<'src>,
@@ -31,10 +30,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::LogicAnd<'src>> for LogicAnd<'src> {
                 let lhs = Box::new(LogicAnd::check(ctx, *lhs).await?);
                 let rhs = BitOr::check(ctx, rhs).await?;
 
-                // && の型は bool
-                let ty = Arc::new(Bool);
-
-                Ok(LogicAnd::And { span, lhs, rhs, ty })
+                Ok(LogicAnd::And { span, lhs, rhs })
             }
             ast::LogicAnd::BitOr { or } => {
                 Ok(LogicAnd::BitOr {
@@ -55,9 +51,9 @@ impl<'src> Spanned<'src> for LogicAnd<'src> {
 }
 
 impl Typed for LogicAnd<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
-            LogicAnd::And { ty, .. } => ty,
+            LogicAnd::And { .. } => Bool.ty(),
             LogicAnd::BitOr { or } => or.ty(),
         }
     }

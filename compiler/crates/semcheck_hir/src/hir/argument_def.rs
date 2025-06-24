@@ -41,7 +41,7 @@ impl<'src> Spanned<'src> for ArgumentDef<'src> {
 }
 
 impl Typed for ArgumentDef<'_> {
-    fn ty(&self) -> &Arc<Type> {
-        &self.var.ty
+    fn ty(&self) -> Arc<Type> {
+        Arc::clone(&self.var.ty)
     }
 }

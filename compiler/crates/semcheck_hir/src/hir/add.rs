@@ -39,7 +39,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
                 let rhs = Cast::check(ctx, rhs).await?;
 
                 // 型決定
-                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
+                let ty = ty_infer2(&lhs, &rhs)?;
 
                 Ok(Add::Plus { span, lhs, rhs, ty })
             }
@@ -49,7 +49,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
                 let rhs = Cast::check(ctx, rhs).await?;
 
                 // 型決定
-                let ty = ty_infer2(lhs.ty(), rhs.ty())?;
+                let ty = ty_infer2(&lhs, &rhs)?;
 
                 Ok(Add::Minus { span, lhs, rhs, ty })
             }
@@ -73,10 +73,10 @@ impl<'src> Spanned<'src> for Add<'src> {
 }
 
 impl Typed for Add<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
-            Add::Plus { ty, .. } => ty,
-            Add::Minus { ty, .. } => ty,
+            Add::Plus { ty, .. } => Arc::clone(ty),
+            Add::Minus { ty, .. } => Arc::clone(ty),
             Add::Cast { value } => value.ty(),
         }
     }
