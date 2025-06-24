@@ -3,7 +3,7 @@ use std::sync::Arc;
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_type::op::ty_equals;
-use sb_compiler_type::r#type::{Bool, Primitive, Type};
+use sb_compiler_type::r#type::{Bool, Type};
 use sb_compiler_type::Typed;
 
 use super::{Value, SemCheck, Dep};
@@ -36,7 +36,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
             ast::Unary::Not { span, value } => {
                 // 式の意味解析 & 型チェック
                 let value = Value::check(ctx, value).await?;
-                ty_equals(value.ty(), &Arc::new(Primitive(Bool)))?;
+                ty_equals(value.ty(), &Arc::new(Bool))?;
 
                 Ok(Unary::Not { span, value })
             }

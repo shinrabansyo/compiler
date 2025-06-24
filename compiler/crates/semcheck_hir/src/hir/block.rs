@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_type::r#type::{Primitive, Type, Void};
+use sb_compiler_type::r#type::{Type, Void};
 use sb_compiler_type::Typed;
 
 use super::{Stmt, SemCheck, InDep};
@@ -26,7 +26,7 @@ impl<'src> SemCheck<InDep<'src>, ast::Block<'src>> for Block<'src> {
         }
 
         // ブロックの型は Void
-        let ty = Arc::new(Primitive(Void));
+        let ty = Arc::new(Void);
 
         Ok(Block { span: block.span, stmts, ty })
     }

@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_type::r#type::{Bool, Primitive, Type};
+use sb_compiler_type::r#type::{Bool, Type};
 use sb_compiler_type::Typed;
 
 use super::{BitOr, SemCheck, Dep};
@@ -32,7 +32,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::LogicAnd<'src>> for LogicAnd<'src> {
                 let rhs = BitOr::check(ctx, rhs).await?;
 
                 // && の型は bool
-                let ty = Arc::new(Primitive(Bool));
+                let ty = Arc::new(Bool);
 
                 Ok(LogicAnd::And { span, lhs, rhs, ty })
             }

@@ -3,7 +3,7 @@ use std::sync::Arc;
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_type::op::ty_equals;
-use sb_compiler_type::r#type::{Bool, Primitive, Type};
+use sb_compiler_type::r#type::{Bool, Type};
 use sb_compiler_type::Typed;
 
 use super::{BitShift, SemCheck, Dep};
@@ -64,7 +64,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 ty_equals(lhs.ty(), rhs.ty())?;
 
                 // == の型は Bool
-                let ty = Arc::new(Primitive(Bool));
+                let ty = Arc::new(Bool);
 
                 Ok(Cond::Eq { span, lhs, rhs, ty })
             }
@@ -75,7 +75,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 ty_equals(lhs.ty(), rhs.ty())?;
 
                 // != の型は Bool
-                let ty = Arc::new(Primitive(Bool));
+                let ty = Arc::new(Bool);
 
                 Ok(Cond::Neq { span, lhs, rhs, ty })
             }
@@ -86,7 +86,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 ty_equals(lhs.ty(), rhs.ty())?;
 
                 // < の型は Bool
-                let ty = Arc::new(Primitive(Bool));
+                let ty = Arc::new(Bool);
 
                 Ok(Cond::Lt { span, lhs, rhs, ty })
             }
@@ -97,7 +97,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 ty_equals(lhs.ty(), rhs.ty())?;
 
                 // <= の型は Bool
-                let ty = Arc::new(Primitive(Bool));
+                let ty = Arc::new(Bool);
 
                 Ok(Cond::Lte { span, lhs, rhs, ty })
             }
@@ -108,7 +108,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 ty_equals(lhs.ty(), rhs.ty())?;
 
                 // > の型は Bool
-                let ty = Arc::new(Primitive(Bool));
+                let ty = Arc::new(Bool);
 
                 Ok(Cond::Gt { span, lhs, rhs, ty })
             }
@@ -119,7 +119,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 ty_equals(lhs.ty(), rhs.ty())?;
 
                 // >= の型は bool
-                let ty = Arc::new(Primitive(Bool));
+                let ty = Arc::new(Bool);
 
                 Ok(Cond::Gte { span, lhs, rhs, ty })
             }
@@ -159,3 +159,4 @@ impl Typed for Cond<'_> {
         }
     }
 }
+

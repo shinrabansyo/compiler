@@ -52,22 +52,22 @@ impl TypeDeclChecker {
         TypeDeclChecker::register(
             &mut context,
             "bool",
-            Arc::new(Primitive(Bool))
+            Arc::new(Bool)
         ).unwrap();
         TypeDeclChecker::register(
             &mut context,
             "i8",
-            Arc::new(Primitive(I8))
+            Arc::new(I8)
         ).unwrap();
         TypeDeclChecker::register(
             &mut context,
             "i16",
-            Arc::new(Primitive(I16))
+            Arc::new(I16)
         ).unwrap();
         TypeDeclChecker::register(
             &mut context,
             "i32",
-            Arc::new(Primitive(I32))
+            Arc::new(I32)
         ).unwrap();
 
         (checker, context)
@@ -134,10 +134,7 @@ mod tests {
         let (_, ctx) = TypeDeclChecker::new();
 
         block_on(async {
-            assert_eq!(
-                *TypeDeclChecker::find(&ctx, "i32").await.unwrap(),
-                Primitive(I32),
-            );
+            assert_eq!(*TypeDeclChecker::find(&ctx, "i32").await.unwrap(), I32);
         });
     }
 }

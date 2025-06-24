@@ -3,7 +3,7 @@ use std::sync::Arc;
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_async::prelude::*;
-use sb_compiler_type::r#type::{Primitive, Type, Void};
+use sb_compiler_type::r#type::{Type, Void};
 use sb_compiler_type::Typed;
 use sb_compiler_utils::error::ErrComposer;
 
@@ -31,7 +31,7 @@ impl<'src> SemCheck<InDep<'src>, ast::Program<'src>> for Program<'src> {
             .compose()?;
 
         // プログラム全体の型は Void
-        let ty = Arc::new(Primitive(Void));
+        let ty = Arc::new(Void);
 
         Ok(Program { span: program.span, top_elems, ty })
     }

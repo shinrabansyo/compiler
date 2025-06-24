@@ -6,18 +6,18 @@ use crate::r#type::*;
 pub fn ty_cast(from: &Arc<Type>, to: &Arc<Type>) -> miette::Result<()> {
     match (from.as_ref(), to.as_ref()) {
         // プリミティブ型
-        (Primitive(Void),     Primitive(Void)) => Ok(()),
-        (Primitive(Bool),     Primitive(Bool)) => Ok(()),
-        (Primitive(I8),       Primitive(Bool)) => Ok(()),
-        (Primitive(I16),      Primitive(Bool)) => Ok(()),
-        (Primitive(I32),      Primitive(Bool)) => Ok(()),
-        (Primitive(NumConst), Primitive(Bool)) => Ok(()),
-        (Primitive(I8),       Primitive(I8))   => Ok(()),
-        (Primitive(I16),      Primitive(I16))  => Ok(()),
-        (Primitive(I32),      Primitive(I32))  => Ok(()),
-        (Primitive(NumConst), Primitive(I8))   => Ok(()),
-        (Primitive(NumConst), Primitive(I16))  => Ok(()),
-        (Primitive(NumConst), Primitive(I32))  => Ok(()),
+        (Void,     Void) => Ok(()),
+        (Bool,     Bool) => Ok(()),
+        (I8,       Bool) => Ok(()),
+        (I16,      Bool) => Ok(()),
+        (I32,      Bool) => Ok(()),
+        (NumConst, Bool) => Ok(()),
+        (I8,       I8)   => Ok(()),
+        (I16,      I16)  => Ok(()),
+        (I32,      I32)  => Ok(()),
+        (NumConst, I8)   => Ok(()),
+        (NumConst, I16)  => Ok(()),
+        (NumConst, I32)  => Ok(()),
 
         // キャスト失敗
         _ => {

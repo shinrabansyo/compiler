@@ -6,18 +6,18 @@ use crate::r#type::*;
 pub fn ty_equals(a: &Arc<Type>, b: &Arc<Type>) -> miette::Result<()> {
     match (a.as_ref(), b.as_ref()) {
         // プリミティブ型
-        (Primitive(Void),     Primitive(Void))     => Ok(()),
-        (Primitive(Bool),     Primitive(Bool))     => Ok(()),
-        (Primitive(I8),       Primitive(I8))       => Ok(()),
-        (Primitive(I16),      Primitive(I16))      => Ok(()),
-        (Primitive(I32),      Primitive(I32))      => Ok(()),
-        (Primitive(I8),       Primitive(NumConst)) => Ok(()),
-        (Primitive(NumConst), Primitive(I8))       => Ok(()),
-        (Primitive(I16),      Primitive(NumConst)) => Ok(()),
-        (Primitive(NumConst), Primitive(I16))      => Ok(()),
-        (Primitive(I32),      Primitive(NumConst)) => Ok(()),
-        (Primitive(NumConst), Primitive(I32))      => Ok(()),
-        (Primitive(NumConst), Primitive(NumConst)) => Ok(()),
+        (Void,     Void)     => Ok(()),
+        (Bool,     Bool)     => Ok(()),
+        (I8,       I8)       => Ok(()),
+        (I8,       NumConst) => Ok(()),
+        (I16,      I16)      => Ok(()),
+        (I16,      NumConst) => Ok(()),
+        (I32,      I32)      => Ok(()),
+        (I32,      NumConst) => Ok(()),
+        (NumConst, I8)       => Ok(()),
+        (NumConst, I16)      => Ok(()),
+        (NumConst, I32)      => Ok(()),
+        (NumConst, NumConst) => Ok(()),
 
         // 比較失敗
         _ => {

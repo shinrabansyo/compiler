@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::Spanned;
-use sb_compiler_type::r#type::{Primitive, Type, Void};
+use sb_compiler_type::r#type::{Type, Void};
 use sb_compiler_type::Typed;
 
 use super::{VarDecl, Block, Expr, Return, If, While, For, InlineAsm, SemCheck, Dep};
@@ -52,49 +52,49 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Stmt<'src>> for Stmt<'src> {
             ast::Stmt::VarDecl { var_decl } => {
                 Ok(Stmt::VarDecl {
                     var_decl: VarDecl::check(ctx, var_decl).await?,
-                    ty: Arc::new(Primitive(Void)),
+                    ty: Arc::new(Void),
                 })
             },
             ast::Stmt::Block { block } => {
                 Ok(Stmt::Block {
                     block: Block::check(ctx.clone(), block).await?,
-                    ty: Arc::new(Primitive(Void)),
+                    ty: Arc::new(Void),
                 })
             },
             ast::Stmt::Expr { expr } => {
                 Ok(Stmt::Expr {
                     expr: Expr::check(ctx, expr).await?,
-                    ty: Arc::new(Primitive(Void)),
+                    ty: Arc::new(Void),
                 })
             },
             ast::Stmt::Return { r#return } => {
                 Ok(Stmt::Return {
                     r#return: Return::check(ctx, r#return).await?,
-                    ty: Arc::new(Primitive(Void)),
+                    ty: Arc::new(Void),
                 })
             },
             ast::Stmt::If { r#if } => {
                 Ok(Stmt::If {
                     r#if: If::check(ctx, r#if).await?,
-                    ty: Arc::new(Primitive(Void)),
+                    ty: Arc::new(Void),
                 })
             },
             ast::Stmt::While { r#while } => {
                 Ok(Stmt::While {
                     r#while: While::check(ctx, r#while).await?,
-                    ty: Arc::new(Primitive(Void)),
+                    ty: Arc::new(Void),
                 })
             },
             ast::Stmt::For { r#for } => {
                 Ok(Stmt::For {
                     r#for: For::check(ctx.clone(), r#for).await?,
-                    ty: Arc::new(Primitive(Void)),
+                    ty: Arc::new(Void),
                 })
             },
             ast::Stmt::InlineAsm { inline_asm } => {
                 Ok(Stmt::InlineAsm {
                     inline_asm: InlineAsm::check(ctx.clone(), inline_asm).await?,
-                    ty: Arc::new(Primitive(Void)),
+                    ty: Arc::new(Void),
                 })
             },
         }

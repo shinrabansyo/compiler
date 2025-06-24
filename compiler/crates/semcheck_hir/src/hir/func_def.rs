@@ -4,7 +4,7 @@ use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
 use sb_compiler_type::op::ty_equals;
-use sb_compiler_type::r#type::{Function, Primitive, Type, Void};
+use sb_compiler_type::r#type::{Function, Type, Void};
 use sb_compiler_type::Typed;
 
 use super::{ArgumentDef, Block, Stmt, SemCheck, InDep};
@@ -40,7 +40,7 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             .collect::<Vec<_>>();
         let ret_ty = match &func_def.ret_ty {
             Some(ty) => TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?,
-            None => Arc::new(Primitive(Void)),
+            None => Arc::new(Void),
         };
         let fn_ty = Arc::new(Function {
             args: arg_tys,
@@ -58,12 +58,12 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
         // ブロックの意味解析
         let block_ty = match block.stmts.last() {
             Some(Stmt::Return { r#return, .. }) => Arc::clone(r#return.ty()),
-            _ => Arc::new(Primitive(Void)),
+            _ => Arc::new(Void),
         };
         ty_equals(&ret_ty, &block_ty)?;
 
         // 関数定義の型は Void
-        let ty = Arc::new(Primitive(Void));
+        let ty = Arc::new(Void);
 
         // 作成した名前空間を削除
         ctx.name.pop();

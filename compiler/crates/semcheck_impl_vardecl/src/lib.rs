@@ -58,7 +58,7 @@ impl<'src> VarDeclChecker<'src> {
         let root_var = Var {
             symbol: root_symbol,
             span: root_span,
-            ty: Arc::new(Primitive(I32)),
+            ty: Arc::new(I32),
         };
 
         // 変数参照グラフ
@@ -155,7 +155,7 @@ mod tests {
             let _ = VarDeclChecker::register(
                 &mut ctx,
                 &span("var_a"),
-                Arc::new(Primitive(I32)),
+                Arc::new(I32),
             ).unwrap();
 
             // . <- var_a <- [here]
@@ -165,7 +165,7 @@ mod tests {
                 let _ = VarDeclChecker::register(
                     &mut ctx_1,
                     &span("var_b"),
-                    Arc::new(Primitive(I32)),
+                    Arc::new(I32),
                 ).unwrap();
 
                 // . <- var_a <- var_b <- [here]
@@ -181,7 +181,7 @@ mod tests {
                 let _ = VarDeclChecker::register(
                     &mut ctx_2,
                     &span("var_c"),
-                    Arc::new(Primitive(I32)),
+                    Arc::new(I32),
                 ).unwrap();
 
                 // . <- var_a <- var_c <- [here]
@@ -201,14 +201,14 @@ mod tests {
             let var_a_0 = VarDeclChecker::register(
                 &mut ctx,
                 &span("var_a"),
-                Arc::new(Primitive(I32))
+                Arc::new(I32),
             ).unwrap();
 
             // . <- var_a_0 <- var_a_1
             let var_a_1 = VarDeclChecker::register(
                 &mut ctx,
                 &span("var_a"),
-                Arc::new(Primitive(I32)),
+                Arc::new(I32),
             ).unwrap();
 
             // . <- var_a_0 <- var_a_1 <- [here]

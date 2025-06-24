@@ -6,13 +6,14 @@ use crate::r#type::*;
 pub fn ty_infer(a: &Arc<Type>) -> miette::Result<Arc<Type>> {
     match a.as_ref() {
         // プリミティブ型
-        Primitive(Void)     => Ok(Arc::clone(a)),
-        Primitive(Bool)     => Ok(Arc::clone(a)),
-        Primitive(I8)       => Ok(Arc::clone(a)),
-        Primitive(I16)      => Ok(Arc::clone(a)),
-        Primitive(I32)      => Ok(Arc::clone(a)),
-        Primitive(NumConst) => Ok(Arc::new(Primitive(I32))),
+        Void     => Ok(Arc::clone(a)),
+        Bool     => Ok(Arc::clone(a)),
+        I8       => Ok(Arc::clone(a)),
+        I16      => Ok(Arc::clone(a)),
+        I32      => Ok(Arc::clone(a)),
+        NumConst => Ok(Arc::clone(a)),
 
+        // 推論失敗
         _ => panic!(""),
     }
 }
@@ -20,18 +21,18 @@ pub fn ty_infer(a: &Arc<Type>) -> miette::Result<Arc<Type>> {
 pub fn ty_infer2(a: &Arc<Type>, b: &Arc<Type>) -> miette::Result<Arc<Type>> {
     match (a.as_ref(), b.as_ref()) {
         // プリミティブ型
-        (Primitive(Void),     Primitive(Void))     => Ok(Arc::clone(a)),
-        (Primitive(Bool),     Primitive(Bool))     => Ok(Arc::clone(a)),
-        (Primitive(I8),       Primitive(I8))       => Ok(Arc::clone(a)),
-        (Primitive(I16),      Primitive(I16))      => Ok(Arc::clone(a)),
-        (Primitive(I32),      Primitive(I32))      => Ok(Arc::clone(a)),
-        (Primitive(I8),       Primitive(NumConst)) => Ok(Arc::clone(a)),
-        (Primitive(I16),      Primitive(NumConst)) => Ok(Arc::clone(a)),
-        (Primitive(I32),      Primitive(NumConst)) => Ok(Arc::clone(a)),
-        (Primitive(NumConst), Primitive(I8))       => Ok(Arc::clone(b)),
-        (Primitive(NumConst), Primitive(I16))      => Ok(Arc::clone(b)),
-        (Primitive(NumConst), Primitive(I32))      => Ok(Arc::clone(b)),
-        (Primitive(NumConst), Primitive(NumConst)) => Ok(Arc::clone(b)),
+        (Void,     Void)     => Ok(Arc::clone(a)),
+        (Bool,     Bool)     => Ok(Arc::clone(a)),
+        (I8,       I8)       => Ok(Arc::clone(a)),
+        (I8,       NumConst) => Ok(Arc::clone(a)),
+        (I16,      I16)      => Ok(Arc::clone(a)),
+        (I16,      NumConst) => Ok(Arc::clone(a)),
+        (I32,      I32)      => Ok(Arc::clone(a)),
+        (I32,      NumConst) => Ok(Arc::clone(a)),
+        (NumConst, I8)       => Ok(Arc::clone(b)),
+        (NumConst, I16)      => Ok(Arc::clone(b)),
+        (NumConst, I32)      => Ok(Arc::clone(b)),
+        (NumConst, NumConst) => Ok(Arc::clone(a)),
 
         // 推論失敗
         _ => {

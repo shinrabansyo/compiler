@@ -5,7 +5,7 @@ use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
 use sb_compiler_type::op::{ty_equals, ty_infer};
-use sb_compiler_type::r#type::{Primitive, Type, Void};
+use sb_compiler_type::r#type::{Type, Void};
 use sb_compiler_type::Typed;
 
 use super::{Expr, SemCheck, Dep};
@@ -45,7 +45,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
         )?;
 
         // 変数宣言文の型は Void
-        let ty = Arc::new(Primitive(Void));
+        let ty = Arc::new(Void);
 
         Ok(VarDecl {
             span: var_decl.span,

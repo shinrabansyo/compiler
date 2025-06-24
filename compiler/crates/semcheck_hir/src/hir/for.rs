@@ -3,7 +3,7 @@ use std::sync::Arc;
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_type::op::ty_equals;
-use sb_compiler_type::r#type::{Bool, Primitive, Type, Void};
+use sb_compiler_type::r#type::{Bool, Type, Void};
 use sb_compiler_type::Typed;
 
 use super::{Block, Expr, SemCheck, VarDecl, InDep};
@@ -33,10 +33,10 @@ impl<'src> SemCheck<InDep<'src>, ast::For<'src>> for For<'src> {
 
         // 条件式の意味解析 & 型チェック
         let cond = Expr::check(&mut ctx, r#for.cond).await?;
-        ty_equals(cond.ty(), &Arc::new(Primitive(Bool)))?;
+        ty_equals(cond.ty(), &Arc::new(Bool))?;
 
         // For 文の型は Void
-        let ty = Arc::new(Primitive(Void));
+        let ty = Arc::new(Void);
 
         Ok(For { span, init, cond, incr, block, ty })
     }
