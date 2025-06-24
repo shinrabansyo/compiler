@@ -22,8 +22,8 @@ pub enum VarDeclError {
 impl VarDeclError {
     pub fn new_not_declared(span: Span) -> miette::Report {
         VarDeclError::NotDeclared {
-            src: span.src().to_string(),
-            span: (span.body.0, span.body.1-span.body.0).into(),
+            src: span.src.to_string(),
+            span: span.into(),
             name: span.as_str().to_string(),
         }.into()
     }

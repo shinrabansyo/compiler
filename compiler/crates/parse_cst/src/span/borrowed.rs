@@ -2,6 +2,7 @@ use std::fmt::{Debug, Display};
 
 use copager::cfl::token::Token;
 use copager::cfl::token::TokenTag;
+use miette::SourceSpan;
 
 use super::SpanOwned;
 
@@ -37,11 +38,13 @@ where
     }
 }
 
-impl<'a> Span<'a> {
-    pub fn src(&self) -> &'a str {
-        self.src
+impl<'a> Into<SourceSpan> for Span<'a> {
+    fn into(self) -> SourceSpan {
+        (self.body.0, self.body.1 - self.body.0).into()
     }
+}
 
+impl<'a> Span<'a> {
     pub fn as_str(&self) -> &'a str {
         let (l, r) = self.body;
         &self.src[l..r]
