@@ -5,6 +5,7 @@ use super::Visitor;
 #[derive(Debug)]
 pub enum InlineAsmOperandL<'src> {
     Reg {
+        span: Span<'src>,
         num: u8,
     },
     Var {
@@ -14,13 +15,14 @@ pub enum InlineAsmOperandL<'src> {
 
 impl<'src> From<Visitor<'src>> for InlineAsmOperandL<'src> {
     fn from(mut visitor: Visitor<'src>) -> Self {
+        let span = visitor.span();
         let operand = visitor.expect_leaf().1;
         let operand_s = operand.as_str();
 
         // 生レジスタ
         if operand_s.starts_with("R") {
             let num = operand_s[1..].parse().unwrap();
-            return InlineAsmOperandL::Reg { num };
+            return InlineAsmOperandL::Reg { span, num };
         }
 
         // 変数
@@ -31,6 +33,7 @@ impl<'src> From<Visitor<'src>> for InlineAsmOperandL<'src> {
 #[derive(Debug)]
 pub enum InlineAsmOperandR<'src> {
     Reg {
+        span: Span<'src>,
         num: u8,
     },
     Var {
@@ -40,13 +43,14 @@ pub enum InlineAsmOperandR<'src> {
 
 impl<'src> From<Visitor<'src>> for InlineAsmOperandR<'src> {
     fn from(mut visitor: Visitor<'src>) -> Self {
+        let span = visitor.span();
         let operand = visitor.expect_leaf().1;
         let operand_s = operand.as_str();
 
         // 生レジスタ
         if operand_s.starts_with("R") {
             let num = operand_s[1..].parse().unwrap();
-            return InlineAsmOperandR::Reg { num };
+            return InlineAsmOperandR::Reg { span, num };
         }
 
         // 変数

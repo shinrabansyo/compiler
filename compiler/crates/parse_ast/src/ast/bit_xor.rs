@@ -1,8 +1,11 @@
+use sb_compiler_parse_cst::Span;
+
 use super::{BitAnd, Visitor};
 
 #[derive(Debug)]
 pub enum BitXor<'src> {
     Xor {
+        span: Span<'src>,
         lhs: Box<BitXor<'src>>,
         rhs: BitAnd<'src>,
     },
@@ -21,10 +24,11 @@ impl<'src> From<Visitor<'src>> for BitXor<'src> {
         }
 
         // 演算子付き
+        let span = visitor.span();
         let lhs = Box::new(visitor.expect_node::<BitXor>());
         let _ = visitor.expect_leaf();
         let rhs = visitor.expect_node::<BitAnd>();
 
-        BitXor::Xor { lhs, rhs }
+        BitXor::Xor { span, lhs, rhs }
     }
 }

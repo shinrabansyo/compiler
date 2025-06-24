@@ -1,8 +1,11 @@
+use sb_compiler_parse_cst::Span;
+
 use super::{Cond, Visitor};
 
 #[derive(Debug)]
 pub enum BitAnd<'src> {
     And {
+        span: Span<'src>,
         lhs: Box<BitAnd<'src>>,
         rhs: Cond<'src>,
     },
@@ -21,10 +24,11 @@ impl<'src> From<Visitor<'src>> for BitAnd<'src> {
         }
 
         // 演算子付き
+        let span = visitor.span();
         let lhs = Box::new(visitor.expect_node::<BitAnd>());
         let _ = visitor.expect_leaf();
         let rhs = visitor.expect_node::<Cond>();
 
-        BitAnd::And { lhs, rhs }
+        BitAnd::And { span, lhs, rhs }
     }
 }

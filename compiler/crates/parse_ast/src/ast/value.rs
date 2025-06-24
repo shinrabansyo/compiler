@@ -6,9 +6,11 @@ use super::{Expr, Call, Visitor};
 #[derive(Debug)]
 pub enum Value<'src> {
     Bool {
+        span: Span<'src>,
         value: bool,
     },
     Const {
+        span: Span<'src>,
         value: i32,
     },
     Var {
@@ -27,14 +29,21 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
         match visitor.peek() {
             // 論理値
             (Some(SBToken::True), None) => {
-                Value::Bool { value: true }
+                Value::Bool {
+                    span: visitor.span(),
+                    value: true,
+                }
             }
             (Some(SBToken::False), None) => {
-                Value::Bool { value: false }
+                Value::Bool {
+                    span: visitor.span(),
+                    value: false,
+                }
             }
             // 定数
             (Some(SBToken::Num), None) => {
                 Value::Const {
+                    span: visitor.span(),
                     value: visitor.expect_leaf().1.as_str().parse().unwrap(),
                 }
             }

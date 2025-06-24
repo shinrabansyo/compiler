@@ -6,7 +6,7 @@ use crate::{GenContext, ZERO_REG};
 pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: &InlineAsm) -> LirBlock {
     let mut use_reg = |operand: &InlineAsmOperand| {
         match operand {
-            InlineAsmOperand::Reg { num } => *num as u32,
+            InlineAsmOperand::Reg { num, .. } => *num as u32,
             InlineAsmOperand::Var { var } => {
                 if let Some(reg) = ctx.ref_var_reg(&var.symbol) {
                     reg

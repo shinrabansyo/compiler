@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::{Bool, Primitive, Type, Void};
 use sb_compiler_type::Typed;
@@ -9,6 +10,7 @@ use super::{Expr, Block, SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct While<'src> {
+    pub span: Span<'src>,
     pub cond: Expr<'src>,
     pub block: Block<'src>,
     pub ty: Arc<Type>,
@@ -29,7 +31,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::While<'src>> for While<'src> {
         // While 文の型は Void
         let ty = Arc::new(Primitive(Void));
 
-        Ok(While { cond, block, ty })
+        Ok(While { span: r#while.span, cond, block, ty })
     }
 }
 

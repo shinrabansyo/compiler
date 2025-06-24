@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_type::r#type::{Primitive, Type, Void};
 use sb_compiler_type::Typed;
 
@@ -8,6 +9,7 @@ use super::{InlineAsmInst, SemCheck, InDep};
 
 #[derive(Debug)]
 pub struct InlineAsm<'src> {
+    pub span: Span<'src>,
     pub insts: Vec<InlineAsmInst<'src>>,
     pub ty: Arc<Type>,
 }
@@ -26,7 +28,7 @@ impl<'src> SemCheck<InDep<'src>, ast::InlineAsm<'src>> for InlineAsm<'src> {
         // インラインアセンブリの型は Void
         let ty = Arc::new(Primitive(Void));
 
-        Ok(InlineAsm { insts, ty })
+        Ok(InlineAsm { span: inasm.span, insts, ty })
     }
 }
 

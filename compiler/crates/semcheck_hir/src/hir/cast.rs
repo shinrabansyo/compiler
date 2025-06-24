@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
 use sb_compiler_type::op::ty_cast;
 use sb_compiler_type::r#type::Type;
@@ -11,6 +12,7 @@ use super::{Unary, SemCheck, Dep};
 #[derive(Debug)]
 pub enum Cast<'src> {
     Casting {
+        span: Span<'src>,
         unary: Unary<'src>,
         ty: Arc<Type>,
     },
@@ -25,7 +27,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cast<'src>> for Cast<'src> {
         Self: Sized,
     {
         match unary {
-            ast::Cast::Casting { unary, ty } => {
+            ast::Cast::Casting { span, unary, ty } => {
                 // 式の意味解析
                 let unary = Unary::check(ctx, unary).await?;
 
@@ -33,7 +35,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cast<'src>> for Cast<'src> {
                 let ty = TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?;
                 ty_cast(unary.ty(), &ty)?;
 
-                Ok(Cast::Casting { unary, ty })
+                Ok(Cast::Casting { span, unary, ty })
             }
             ast::Cast::Unary { unary } => {
                 Ok(Cast::Unary {

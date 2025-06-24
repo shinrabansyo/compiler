@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_type::r#type::{Bool, NumConst, Primitive, Type};
 use sb_compiler_type::Typed;
@@ -10,6 +11,7 @@ use super::{Expr, Call, SemCheck, Dep};
 #[derive(Debug)]
 pub enum Value<'src> {
     Const {
+        span: Span<'src>,
         value: i32,
         value_ty: Arc<Type>,
     },
@@ -30,14 +32,16 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
         Self: Sized,
     {
         match value {
-            ast::Value::Bool { value } => {
+            ast::Value::Bool { span, value } => {
                 Ok(Value::Const {
+                    span,
                     value: if value { 1 } else { 0 },
                     value_ty: Arc::new(Primitive(Bool)),
                 })
             }
-            ast::Value::Const { value } => {
+            ast::Value::Const { span, value } => {
                 Ok(Value::Const {
+                    span,
                     value,
                     value_ty: Arc::new(Primitive(NumConst)),
                 })

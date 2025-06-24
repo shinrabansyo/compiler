@@ -11,6 +11,7 @@ use super::{ArgumentDef, Block, Stmt, SemCheck, InDep};
 
 #[derive(Debug)]
 pub struct FuncDef<'src> {
+    pub span: Span<'src>,
     pub ident: Span<'src>,
     pub args: Vec<ArgumentDef<'src>>,
     pub ret_ty: Option<Span<'src>>,
@@ -68,6 +69,7 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
         ctx.name.pop();
 
         Ok(FuncDef {
+            span: func_def.span,
             ident: func_def.ident,
             args,
             ret_ty: func_def.ret_ty,

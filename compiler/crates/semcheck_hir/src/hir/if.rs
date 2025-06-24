@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::{Bool, Primitive, Type, Void};
 use sb_compiler_type::Typed;
@@ -9,6 +10,7 @@ use super::{Expr, Block, Stmt, SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct If<'src> {
+    pub span: Span<'src>,
     pub cond: Expr<'src>,
     pub block: Block<'src>,
     pub else_stmt: Option<Box<Stmt<'src>>>,
@@ -36,7 +38,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::If<'src>> for If<'src> {
         // If 文の型は Void
         let ty = Arc::new(Primitive(Void));
 
-        Ok(If { cond, block, else_stmt, ty })
+        Ok(If { span: r#if.span, cond, block, else_stmt, ty })
     }
 }
 

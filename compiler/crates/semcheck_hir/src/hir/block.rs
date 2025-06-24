@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_type::r#type::{Primitive, Type, Void};
 use sb_compiler_type::Typed;
 
@@ -8,6 +9,7 @@ use super::{Stmt, SemCheck, InDep};
 
 #[derive(Debug)]
 pub struct Block<'src> {
+    pub span: Span<'src>,
     pub stmts: Vec<Stmt<'src>>,
     pub ty: Arc<Type>,
 }
@@ -26,7 +28,7 @@ impl<'src> SemCheck<InDep<'src>, ast::Block<'src>> for Block<'src> {
         // ブロックの型は Void
         let ty = Arc::new(Primitive(Void));
 
-        Ok(Block { stmts, ty })
+        Ok(Block { span: block.span, stmts, ty })
     }
 }
 

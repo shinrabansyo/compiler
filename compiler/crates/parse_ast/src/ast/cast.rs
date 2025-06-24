@@ -5,6 +5,7 @@ use super::{Unary, Visitor};
 #[derive(Debug)]
 pub enum Cast<'src> {
     Casting {
+        span: Span<'src>,
         unary: Unary<'src>,
         ty: Span<'src>,
     },
@@ -23,8 +24,10 @@ impl<'src> From<Visitor<'src>> for Cast<'src> {
         }
 
         // キャスト指示付き
+        let span = visitor.span();
         let unary = visitor.expect_node::<Unary>();
         let ty = visitor.expect_leaf().1;
-        Cast::Casting { unary, ty }
+
+        Cast::Casting { span, unary, ty }
     }
 }

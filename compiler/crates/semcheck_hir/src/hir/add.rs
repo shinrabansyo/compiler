@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_type::op::ty_infer2;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
@@ -10,11 +11,13 @@ use super::{Cast, SemCheck, Dep};
 #[derive(Debug)]
 pub enum Add<'src> {
     Plus {
+        span: Span<'src>,
         lhs: Box<Add<'src>>,
         rhs: Cast<'src>,
         ty: Arc<Type>,
     },
     Minus {
+        span: Span<'src>,
         lhs: Box<Add<'src>>,
         rhs: Cast<'src>,
         ty: Arc<Type>,
@@ -30,7 +33,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
         Self: Sized,
     {
         match add {
-            ast::Add::Plus { lhs, rhs } => {
+            ast::Add::Plus { span, lhs, rhs } => {
                 // 両辺の式の意味解析
                 let lhs = Box::new(Add::check(ctx, *lhs).await?);
                 let rhs = Cast::check(ctx, rhs).await?;
@@ -38,9 +41,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
                 // 型決定
                 let ty = ty_infer2(lhs.ty(), rhs.ty())?;
 
-                Ok(Add::Plus { lhs, rhs, ty })
+                Ok(Add::Plus { span, lhs, rhs, ty })
             }
-            ast::Add::Minus { lhs, rhs } => {
+            ast::Add::Minus { span, lhs, rhs } => {
                 // 両辺の式の意味解析
                 let lhs = Box::new(Add::check(ctx, *lhs).await?);
                 let rhs = Cast::check(ctx, rhs).await?;
@@ -48,7 +51,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
                 // 型決定
                 let ty = ty_infer2(lhs.ty(), rhs.ty())?;
 
-                Ok(Add::Minus { lhs, rhs, ty })
+                Ok(Add::Minus { span, lhs, rhs, ty })
             }
             ast::Add::Cast { value } => {
                 Ok(Add::Cast {

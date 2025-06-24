@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::{Bool, Primitive, Type};
 use sb_compiler_type::Typed;
@@ -10,31 +11,37 @@ use super::{BitShift, SemCheck, Dep};
 #[derive(Debug)]
 pub enum Cond<'src> {
     Eq {
+        span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
         ty: Arc<Type>,
     },
     Neq {
+        span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
         ty: Arc<Type>,
     },
     Lt {
+        span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
         ty: Arc<Type>,
     },
     Lte {
+        span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
         ty: Arc<Type>,
     },
     Gt {
+        span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
         ty: Arc<Type>,
     },
     Gte {
+        span: Span<'src>,
         lhs: Box<Cond<'src>>,
         rhs: BitShift<'src>,
         ty: Arc<Type>,
@@ -50,7 +57,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
         Self: Sized,
     {
         match cond {
-            ast::Cond::Eq { lhs, rhs } => {
+            ast::Cond::Eq { span, lhs, rhs } => {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
@@ -59,9 +66,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // == の型は Bool
                 let ty = Arc::new(Primitive(Bool));
 
-                Ok(Cond::Eq { lhs, rhs, ty })
+                Ok(Cond::Eq { span, lhs, rhs, ty })
             }
-            ast::Cond::Neq { lhs, rhs } => {
+            ast::Cond::Neq { span, lhs, rhs } => {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
@@ -70,9 +77,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // != の型は Bool
                 let ty = Arc::new(Primitive(Bool));
 
-                Ok(Cond::Neq { lhs, rhs, ty })
+                Ok(Cond::Neq { span, lhs, rhs, ty })
             }
-            ast::Cond::Lt { lhs, rhs } => {
+            ast::Cond::Lt { span, lhs, rhs } => {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
@@ -81,9 +88,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // < の型は Bool
                 let ty = Arc::new(Primitive(Bool));
 
-                Ok(Cond::Lt { lhs, rhs, ty })
+                Ok(Cond::Lt { span, lhs, rhs, ty })
             }
-            ast::Cond::Lte { lhs, rhs } => {
+            ast::Cond::Lte { span, lhs, rhs } => {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
@@ -92,9 +99,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // <= の型は Bool
                 let ty = Arc::new(Primitive(Bool));
 
-                Ok(Cond::Lte { lhs, rhs, ty })
+                Ok(Cond::Lte { span, lhs, rhs, ty })
             }
-            ast::Cond::Gt { lhs, rhs } => {
+            ast::Cond::Gt { span, lhs, rhs } => {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
@@ -103,9 +110,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // > の型は Bool
                 let ty = Arc::new(Primitive(Bool));
 
-                Ok(Cond::Gt { lhs, rhs, ty })
+                Ok(Cond::Gt { span, lhs, rhs, ty })
             }
-            ast::Cond::Gte { lhs, rhs } => {
+            ast::Cond::Gte { span, lhs, rhs } => {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
@@ -114,7 +121,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // >= の型は bool
                 let ty = Arc::new(Primitive(Bool));
 
-                Ok(Cond::Gte { lhs, rhs, ty })
+                Ok(Cond::Gte { span, lhs, rhs, ty })
             }
             ast::Cond::BitShift { bit_shift } => {
                 Ok(Cond::BitShift {

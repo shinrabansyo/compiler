@@ -1,3 +1,4 @@
+use sb_compiler_parse_cst::Span;
 use sb_compiler_parse_syntax::SBToken;
 
 use super::{Add, Visitor};
@@ -5,14 +6,17 @@ use super::{Add, Visitor};
 #[derive(Debug)]
 pub enum BitShift<'src> {
     L {
+        span: Span<'src>,
         lhs: Box<BitShift<'src>>,
         rhs: Add<'src>,
     },
     R {
+        span: Span<'src>,
         lhs: Box<BitShift<'src>>,
         rhs: Add<'src>,
     },
     Ra {
+        span: Span<'src>,
         lhs: Box<BitShift<'src>>,
         rhs: Add<'src>,
     },
@@ -35,18 +39,21 @@ impl<'src> From<Visitor<'src>> for BitShift<'src> {
         match visitor.expect_leaf().0 {
             SBToken::ShiftL => {
                 BitShift::L {
+                    span: visitor.span(),
                     lhs,
                     rhs: visitor.expect_node::<Add>(),
                 }
             }
             SBToken::ShiftR => {
                 BitShift::R {
+                    span: visitor.span(),
                     lhs,
                     rhs: visitor.expect_node::<Add>(),
                 }
             }
             SBToken::ShiftRa => {
                 BitShift::Ra {
+                    span: visitor.span(),
                     lhs,
                     rhs: visitor.expect_node::<Add>(),
                 }

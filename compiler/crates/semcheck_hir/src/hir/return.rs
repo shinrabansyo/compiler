@@ -1,6 +1,7 @@
 pub use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
 use sb_compiler_type::op::ty_can_return;
 use sb_compiler_type::r#type::Type;
@@ -10,6 +11,7 @@ use super::{Expr, SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct Return<'src> {
+    pub span: Span<'src>,
     pub expr: Expr<'src>,
     pub ty: Arc<Type>,
 }
@@ -28,6 +30,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Return<'src>> for Return<'src> {
         let fn_ret_ty = ty_can_return(&fn_ty, expr.ty())?;
 
         Ok(Return {
+            span: r#return.span,
             expr,
             ty: fn_ret_ty,
         })

@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::{I32, Primitive};
@@ -10,6 +11,7 @@ use super::{SemCheck, Dep};
 #[derive(Debug)]
 pub enum InlineAsmOperand<'src> {
     Reg {
+        span: Span<'src>,
         num: u8,
     },
     Var {
@@ -23,8 +25,8 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineAsmOp
         Self: Sized,
     {
         match operand {
-            ast::InlineAsmOperandL::Reg { num } => {
-                Ok(InlineAsmOperand::Reg { num })
+            ast::InlineAsmOperandL::Reg { span, num } => {
+                Ok(InlineAsmOperand::Reg { span, num })
             }
             ast::InlineAsmOperandL::Var { name } => {
                 // 変数宣言
@@ -46,8 +48,8 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOp
         Self: Sized,
     {
         match operand {
-            ast::InlineAsmOperandR::Reg { num } => {
-                Ok(InlineAsmOperand::Reg { num })
+            ast::InlineAsmOperandR::Reg { span, num } => {
+                Ok(InlineAsmOperand::Reg { span, num })
             }
             ast::InlineAsmOperandR::Var { name } => {
                 // 変数の型チェック

@@ -1,8 +1,11 @@
+use sb_compiler_parse_cst::Span;
+
 use super::{BitOr, Visitor};
 
 #[derive(Debug)]
 pub enum LogicAnd<'src> {
     And {
+        span: Span<'src>,
         lhs: Box<LogicAnd<'src>>,
         rhs: BitOr<'src>,
     },
@@ -21,10 +24,11 @@ impl<'src> From<Visitor<'src>> for LogicAnd<'src> {
         }
 
         // 演算子付き
+        let span = visitor.span();
         let lhs = Box::new(visitor.expect_node::<LogicAnd>());
         let _ = visitor.expect_leaf();
         let rhs = visitor.expect_node::<BitOr>();
 
-        LogicAnd::And { lhs, rhs }
+        LogicAnd::And { span, lhs, rhs }
     }
 }

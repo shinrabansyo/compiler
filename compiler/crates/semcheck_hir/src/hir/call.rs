@@ -11,6 +11,7 @@ use super::{Value, SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct Call<'src> {
+    pub span: Span<'src>,
     pub ident: Span<'src>,
     pub args: Vec<Value<'src>>,
     pub ty: Arc<Type>,
@@ -36,7 +37,12 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Call<'src>> for Call<'src> {
             .collect::<Vec<_>>();
         let ty = ty_can_call(&fn_ty, &arg_tys)?;
 
-        Ok(Call { ident: call.ident, args, ty })
+        Ok(Call {
+            span: call.span,
+            ident: call.ident,
+            args,
+            ty,
+        })
     }
 }
 

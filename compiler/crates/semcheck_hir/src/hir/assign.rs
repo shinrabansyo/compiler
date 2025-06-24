@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::Type;
@@ -11,26 +12,32 @@ use super::{LogicOr, SemCheck, Dep};
 #[derive(Debug)]
 pub enum Assign<'src> {
     Normal {
+        span: Span<'src>,
         var: Var<'src>,
         assign: Box<Assign<'src>>,
     },
     Plus {
+        span: Span<'src>,
         var: Var<'src>,
         assign: Box<Assign<'src>>,
     },
     Minus {
+        span: Span<'src>,
         var: Var<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftL {
+        span: Span<'src>,
         var: Var<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftR {
+        span: Span<'src>,
         var: Var<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftRa {
+        span: Span<'src>,
         var: Var<'src>,
         assign: Box<Assign<'src>>,
     },
@@ -45,7 +52,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
         Self: Sized,
     {
         match assign {
-            ast::Assign::Normal { ident, assign } => {
+            ast::Assign::Normal { span, ident, assign } => {
                 // 式の意味解析
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
@@ -53,9 +60,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
                 ty_equals(&var.ty, assign.ty())?;
 
-                Ok(Assign::Normal { var, assign })
+                Ok(Assign::Normal { span, var, assign })
             }
-            ast::Assign::Plus { ident, assign } => {
+            ast::Assign::Plus { span, ident, assign } => {
                 // 式の意味解析
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
@@ -63,9 +70,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
                 ty_equals(&var.ty, assign.ty())?;
 
-                Ok(Assign::Plus { var, assign })
+                Ok(Assign::Plus { span, var, assign })
             }
-            ast::Assign::Minus { ident, assign } => {
+            ast::Assign::Minus { span, ident, assign } => {
                 // 式の意味解析
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
@@ -73,9 +80,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
                 ty_equals(&var.ty, assign.ty())?;
 
-                Ok(Assign::Minus { var, assign })
+                Ok(Assign::Minus { span, var, assign })
             }
-            ast::Assign::ShiftL { ident, assign } => {
+            ast::Assign::ShiftL { span, ident, assign } => {
                 // 式の意味解析
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
@@ -83,9 +90,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
                 ty_equals(&var.ty, assign.ty())?;
 
-                Ok(Assign::ShiftL { var, assign })
+                Ok(Assign::ShiftL { span, var, assign })
             }
-            ast::Assign::ShiftR { ident, assign } => {
+            ast::Assign::ShiftR { span, ident, assign } => {
                 // 式の意味解析
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
@@ -93,9 +100,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
                 ty_equals(&var.ty, assign.ty())?;
 
-                Ok(Assign::ShiftR { var, assign })
+                Ok(Assign::ShiftR { span, var, assign })
             }
-            ast::Assign::ShiftRa { ident, assign } => {
+            ast::Assign::ShiftRa { span, ident, assign } => {
                 // 式の意味解析
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
@@ -103,7 +110,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
                 ty_equals(&var.ty, assign.ty())?;
 
-                Ok(Assign::ShiftRa { var, assign })
+                Ok(Assign::ShiftRa { span, var, assign })
             }
             ast::Assign::LogicOr { or } => {
                 Ok(Assign::LogicOr {
@@ -113,6 +120,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
         }
     }
 }
+
 impl Typed for Assign<'_> {
     fn ty(&self) -> &Arc<Type> {
         match self {

@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
 use sb_compiler_type::r#type::Type;
@@ -10,6 +11,7 @@ use super::{SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct ArgumentDef<'src> {
+    pub span: Span<'src>,
     pub var: Var<'src>,
 }
 
@@ -28,7 +30,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::ArgumentDef<'src>> for ArgumentDef<'src>
             ty,
         )?;
 
-        Ok(ArgumentDef { var })
+        Ok(ArgumentDef { span: arg.span, var })
     }
 }
 

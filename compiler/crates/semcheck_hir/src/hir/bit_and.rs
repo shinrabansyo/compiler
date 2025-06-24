@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Span;
 use sb_compiler_type::op::ty_infer2;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
@@ -10,6 +11,7 @@ use super::{Cond, SemCheck, Dep};
 #[derive(Debug)]
 pub enum BitAnd<'src> {
     And {
+        span: Span<'src>,
         lhs: Box<BitAnd<'src>>,
         rhs: Cond<'src>,
         ty: Arc<Type>,
@@ -25,7 +27,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitAnd<'src>> for BitAnd<'src> {
         Self: Sized,
     {
         match and {
-            ast::BitAnd::And { lhs, rhs } => {
+            ast::BitAnd::And { span, lhs, rhs } => {
                 // 両辺の式の意味解析
                 let lhs = Box::new(BitAnd::check(ctx, *lhs).await?);
                 let rhs = Cond::check(ctx, rhs).await?;
@@ -33,7 +35,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitAnd<'src>> for BitAnd<'src> {
                 // 型決定
                 let ty = ty_infer2(lhs.ty(), rhs.ty())?;
 
-                Ok(BitAnd::And { lhs, rhs, ty })
+                Ok(BitAnd::And { span, lhs, rhs, ty })
             }
             ast::BitAnd::Cond { cond } => {
                 Ok(BitAnd::Cond {
