@@ -1,3 +1,5 @@
+use sb_compiler_parse_cst::Spanned;
+
 use super::{Assign, Visitor};
 
 #[derive(Debug)]
@@ -10,5 +12,11 @@ impl<'src> From<Visitor<'src>> for Expr<'src> {
         Expr {
             assign: visitor.expect_node::<Assign>(),
         }
+    }
+}
+
+impl<'src> Spanned<'src> for Expr<'src> {
+    fn span(&self) -> sb_compiler_parse_cst::Span<'src> {
+        self.assign.span()
     }
 }

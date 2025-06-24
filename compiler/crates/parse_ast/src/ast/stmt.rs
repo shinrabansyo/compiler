@@ -1,3 +1,4 @@
+use sb_compiler_parse_cst::Spanned;
 use sb_compiler_parse_syntax::SBRule;
 
 use super::{VarDecl, Block, Return, If, While, For, InlineAsm, Expr, Visitor};
@@ -74,6 +75,21 @@ impl<'src> From<Visitor<'src>> for Stmt<'src> {
                 }
             }
             _ => unreachable!(),
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Stmt<'src> {
+    fn span(&self) -> sb_compiler_parse_cst::Span<'src> {
+        match self {
+            Stmt::VarDecl { var_decl } => var_decl.span(),
+            Stmt::Block { block } => block.span(),
+            Stmt::Expr { expr } => expr.span(),
+            Stmt::Return { r#return } => r#return.span(),
+            Stmt::If { r#if } => r#if.span(),
+            Stmt::While { r#while } => r#while.span(),
+            Stmt::For { r#for } => r#for.span(),
+            Stmt::InlineAsm { inline_asm } => inline_asm.span(),
         }
     }
 }

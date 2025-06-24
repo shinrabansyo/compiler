@@ -9,10 +9,11 @@ use string_interner::backend::StringBackend;
 use string_interner::symbol::SymbolU32;
 use string_interner::StringInterner;
 
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::failable_as_async;
 use sb_compiler_type::r#type::*;
+use sb_compiler_type::Typed;
 
 use error::VarDeclError;
 
@@ -21,6 +22,18 @@ pub struct Var<'src> {
     pub symbol: SymbolU32,
     pub span: Span<'src>,
     pub ty: Arc<Type>,
+}
+
+impl<'src> Spanned<'src> for Var<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
+    }
+}
+
+impl Typed for Var<'_> {
+    fn ty(&self) -> Arc<Type> {
+        self.ty.ty()
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -52,7 +65,7 @@ impl<'src> VarDeclChecker<'src> {
         let root_var = Var {
             symbol: root_symbol,
             span: root_span,
-            ty: Arc::new(Primitive(I32)),
+            ty: Arc::new(I32),
         };
 
         // 変数参照グラフ
@@ -74,7 +87,7 @@ impl<'src> VarDeclChecker<'src> {
         (checker, context)
     }
 
-    pub fn register(ctx: &mut VarDeclContext<'src>, span: &Span<'src>, ty: Arc<Type>) -> anyhow::Result<Var<'src>> {
+    pub fn register(ctx: &mut VarDeclContext<'src>, span: &Span<'src>, ty: Arc<Type>) -> miette::Result<Var<'src>> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を登録
@@ -98,13 +111,13 @@ impl<'src> VarDeclChecker<'src> {
     }
 
     #[failable_as_async('a, 'src)]
-    pub fn find<'a>(ctx: &'a VarDeclContext<'src>, span: &'a Span<'src>) -> anyhow::Result<Var<'src>> {
+    pub fn find<'a>(ctx: &'a VarDeclContext<'src>, span: &'a Span<'src>) -> miette::Result<Var<'src>> {
         let checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を検索
         let var_symbol = match checker.interner.get(span.as_str()) {
             Some(symbol) => symbol,
-            None => return Err(VarDeclError::new_not_declared(*span).into()),
+            None => return Err(VarDeclError::new_not_declared(*span)),
         };
 
         // 2. 可視変数の洗い出し
@@ -149,7 +162,7 @@ mod tests {
             let _ = VarDeclChecker::register(
                 &mut ctx,
                 &span("var_a"),
-                Arc::new(Primitive(I32)),
+                Arc::new(I32),
             ).unwrap();
 
             // . <- var_a <- [here]
@@ -159,7 +172,7 @@ mod tests {
                 let _ = VarDeclChecker::register(
                     &mut ctx_1,
                     &span("var_b"),
-                    Arc::new(Primitive(I32)),
+                    Arc::new(I32),
                 ).unwrap();
 
                 // . <- var_a <- var_b <- [here]
@@ -175,7 +188,7 @@ mod tests {
                 let _ = VarDeclChecker::register(
                     &mut ctx_2,
                     &span("var_c"),
-                    Arc::new(Primitive(I32)),
+                    Arc::new(I32),
                 ).unwrap();
 
                 // . <- var_a <- var_c <- [here]
@@ -195,14 +208,14 @@ mod tests {
             let var_a_0 = VarDeclChecker::register(
                 &mut ctx,
                 &span("var_a"),
-                Arc::new(Primitive(I32))
+                Arc::new(I32),
             ).unwrap();
 
             // . <- var_a_0 <- var_a_1
             let var_a_1 = VarDeclChecker::register(
                 &mut ctx,
                 &span("var_a"),
-                Arc::new(Primitive(I32)),
+                Arc::new(I32),
             ).unwrap();
 
             // . <- var_a_0 <- var_a_1 <- [here]

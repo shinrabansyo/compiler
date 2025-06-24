@@ -1,28 +1,30 @@
-use std::error::Error;
-use std::fmt::Display;
+use thiserror::Error;
+use miette::{Diagnostic, SourceSpan};
 
-use sb_compiler_parse_cst::{Span, SpanOwned};
+use sb_compiler_parse_cst::Span;
 
-#[derive(Debug)]
+#[derive(Debug, Error, Diagnostic)]
+#[diagnostic(
+    code(semantics::variable::declaration),
+    url("this link is not working yet"),
+)]
 pub enum VarDeclError {
-    NotDeclared(SpanOwned),
+    #[error("Variable '{name}' is not declared in this scope.")]
+    NotDeclared {
+        #[source_code]
+        src: String,
+        #[label("here")]
+        span: SourceSpan,
+        name: String,
+    },
 }
 
 impl VarDeclError {
-    pub fn new_not_declared(span: Span) -> anyhow::Error {
-        VarDeclError::NotDeclared(span.to_owned()).into()
-    }
-}
-
-impl Error for VarDeclError {}
-
-impl Display for VarDeclError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            VarDeclError::NotDeclared(span) => {
-                writeln!(f, "Variable '{}' is not declared in this scope.", span.as_str())?;
-                span.pretty_display(f)
-            }
-        }
+    pub fn new_not_declared(span: Span) -> miette::Report {
+        VarDeclError::NotDeclared {
+            src: span.src.to_string(),
+            span: span.into(),
+            name: span.as_str().to_string(),
+        }.into()
     }
 }

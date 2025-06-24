@@ -1,14 +1,21 @@
 use std::sync::Arc;
 
+use sb_compiler_parse_cst::Spanned;
+
 use crate::r#type::*;
+use crate::Typed;
 use super::ty_equals;
 
-pub fn ty_can_return(namespace: &Arc<Type>, ret_ty: &Arc<Type>) -> anyhow::Result<Arc<Type>> {
-    match namespace.as_ref() {
+pub fn ty_can_return<'src, A, B>(returnee: &A, ret_ty: &B) -> miette::Result<Arc<Type>>
+where
+    A: Typed,
+    B: Typed + Spanned<'src>,
+{
+    match returnee.ty().as_ref() {
         // 関数
         Function { ret_ty: req_ret_ty, .. } => {
-            ty_equals(req_ret_ty, ret_ty)?;
-            Ok(Arc::clone(req_ret_ty))
+            ty_equals(req_ret_ty.as_ref().clone(), ret_ty)?;
+            Ok(req_ret_ty.ty())
         }
 
         // return 失敗

@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::{SBToken, SBRule};
 
 use super::{Expr, Call, Visitor};
@@ -6,12 +6,15 @@ use super::{Expr, Call, Visitor};
 #[derive(Debug)]
 pub enum Value<'src> {
     Bool {
+        span: Span<'src>,
         value: bool,
     },
     Const {
+        span: Span<'src>,
         value: i32,
     },
     Var {
+        span: Span<'src>,
         name: Span<'src>,
     },
     Expr {
@@ -27,20 +30,28 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
         match visitor.peek() {
             // 論理値
             (Some(SBToken::True), None) => {
-                Value::Bool { value: true }
+                Value::Bool {
+                    span: visitor.span(),
+                    value: true,
+                }
             }
             (Some(SBToken::False), None) => {
-                Value::Bool { value: false }
+                Value::Bool {
+                    span: visitor.span(),
+                    value: false,
+                }
             }
             // 定数
             (Some(SBToken::Num), None) => {
                 Value::Const {
+                    span: visitor.span(),
                     value: visitor.expect_leaf().1.as_str().parse().unwrap(),
                 }
             }
             // 変数
             (Some(SBToken::Ident), None) => {
                 Value::Var {
+                    span: visitor.span(),
                     name: visitor.expect_leaf().1,
                 }
             }
@@ -57,6 +68,18 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
                 }
             }
             _ => unreachable!(),
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Value<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            Value::Bool { span, .. } => *span,
+            Value::Const { span, .. } => *span,
+            Value::Var { span, .. } => *span,
+            Value::Expr { expr } => expr.span(),
+            Value::Call { call } => call.span(),
         }
     }
 }

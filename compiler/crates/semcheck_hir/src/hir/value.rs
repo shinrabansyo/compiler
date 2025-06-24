@@ -1,8 +1,9 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_type::r#type::{Bool, NumConst, Primitive, Type};
+use sb_compiler_type::r#type::{Bool, NumConst, Type};
 use sb_compiler_type::Typed;
 
 use super::{Expr, Call, SemCheck, Dep};
@@ -10,10 +11,12 @@ use super::{Expr, Call, SemCheck, Dep};
 #[derive(Debug)]
 pub enum Value<'src> {
     Const {
+        span: Span<'src>,
         value: i32,
         value_ty: Arc<Type>,
     },
     Var {
+        span: Span<'src>,
         var: Var<'src>,
     },
     Expr {
@@ -25,25 +28,28 @@ pub enum Value<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, value: ast::Value<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, value: ast::Value<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {
         match value {
-            ast::Value::Bool { value } => {
+            ast::Value::Bool { span, value } => {
                 Ok(Value::Const {
+                    span,
                     value: if value { 1 } else { 0 },
-                    value_ty: Arc::new(Primitive(Bool)),
+                    value_ty: Bool.ty(),
                 })
             }
-            ast::Value::Const { value } => {
+            ast::Value::Const { span, value } => {
                 Ok(Value::Const {
+                    span,
                     value,
-                    value_ty: Arc::new(Primitive(NumConst)),
+                    value_ty: NumConst.ty(),
                 })
             }
-            ast::Value::Var { name } => {
+            ast::Value::Var { span, name } => {
                 Ok(Value::Var {
+                    span,
                     var: VarDeclChecker::find(&mut ctx.var_decl, &name).await?,
                 })
             }
@@ -61,11 +67,22 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
     }
 }
 
-impl Typed for Value<'_> {
-    fn ty(&self) -> &Arc<Type> {
+impl<'src> Spanned<'src> for Value<'src> {
+    fn span(&self) -> Span<'src> {
         match self {
-            Value::Const { value_ty, .. } => value_ty,
-            Value::Var { var, .. } => &var.ty,
+            Value::Const { span, .. } => *span,
+            Value::Var { span, .. } => *span,
+            Value::Expr { expr } => expr.span(),
+            Value::Call { call } => call.span(),
+        }
+    }
+}
+
+impl Typed for Value<'_> {
+    fn ty(&self) -> Arc<Type> {
+        match self {
+            Value::Const { value_ty, .. } => value_ty.ty(),
+            Value::Var { var, .. } => var.ty.ty(),
             Value::Expr { expr, .. } => expr.ty(),
             Value::Call { call } => call.ty(),
         }

@@ -6,7 +6,7 @@ use sb_compiler_lirgen::lirgen;
 use sb_compiler_codegen::codegen;
 use sb_compiler_opt::optimize;
 
-pub fn compile(input: &str) -> anyhow::Result<Vec<Object>> {
+pub fn compile(input: &str) -> miette::Result<Vec<Object>> {
     // 1. 構文解析 (&str -> AST)
     let ast = parse(input)?;
 

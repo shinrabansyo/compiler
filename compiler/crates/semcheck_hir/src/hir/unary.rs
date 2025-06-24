@@ -1,8 +1,9 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_type::op::ty_equals;
-use sb_compiler_type::r#type::{Bool, Primitive, Type};
+use sb_compiler_type::r#type::{Bool, Type};
 use sb_compiler_type::Typed;
 
 use super::{Value, SemCheck, Dep};
@@ -10,12 +11,15 @@ use super::{Value, SemCheck, Dep};
 #[derive(Debug)]
 pub enum Unary<'src> {
     Not {
+        span: Span<'src>,
         value: Value<'src>,
     },
     Plus {
+        span: Span<'src>,
         value: Value<'src>,
     },
     Minus {
+        span: Span<'src>,
         value: Value<'src>,
     },
     Value {
@@ -24,25 +28,27 @@ pub enum Unary<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, unary: ast::Unary<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, unary: ast::Unary<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {
         match unary {
-            ast::Unary::Not { value } => {
+            ast::Unary::Not { span, value } => {
                 // 式の意味解析 & 型チェック
                 let value = Value::check(ctx, value).await?;
-                ty_equals(value.ty(), &Arc::new(Primitive(Bool)))?;
+                ty_equals(Bool, &value)?;
 
-                Ok(Unary::Not { value })
+                Ok(Unary::Not { span, value })
             }
-            ast::Unary::Plus { value } => {
+            ast::Unary::Plus { span, value } => {
                 Ok(Unary::Plus {
+                    span,
                     value: Value::check(ctx, value).await?,
                 })
             }
-            ast::Unary::Minus { value } => {
+            ast::Unary::Minus { span, value } => {
                 Ok(Unary::Minus {
+                    span,
                     value: Value::check(ctx, value).await?,
                 })
             }
@@ -55,13 +61,24 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
     }
 }
 
-impl Typed for Unary<'_> {
-    fn ty(&self) -> &Arc<Type> {
+impl<'src> Spanned<'src> for Unary<'src> {
+    fn span(&self) -> Span<'src> {
         match self {
-            Unary::Not { value } => value.ty(),
-            Unary::Plus { value } => value.ty(),
-            Unary::Minus { value } => value.ty(),
-            Unary::Value { value } => value.ty(),
+            Unary::Not { span, .. } => *span,
+            Unary::Plus { span, .. } => *span,
+            Unary::Minus { span, .. } => *span,
+            Unary::Value { value, .. } => value.span(),
+        }
+    }
+}
+
+impl Typed for Unary<'_> {
+    fn ty(&self) -> Arc<Type> {
+        match self {
+            Unary::Not { value, .. } => value.ty(),
+            Unary::Plus { value, .. } => value.ty(),
+            Unary::Minus { value, .. } => value.ty(),
+            Unary::Value { value, .. } => value.ty(),
         }
     }
 }

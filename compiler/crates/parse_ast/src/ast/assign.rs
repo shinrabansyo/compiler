@@ -1,4 +1,4 @@
-use sb_compiler_parse_cst::Span;
+use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::SBToken;
 
 use super::{LogicOr, Visitor};
@@ -6,26 +6,32 @@ use super::{LogicOr, Visitor};
 #[derive(Debug)]
 pub enum Assign<'src> {
     Normal {
+        span: Span<'src>,
         ident: Span<'src>,
         assign: Box<Assign<'src>>,
     },
     Plus {
+        span: Span<'src>,
         ident: Span<'src>,
         assign: Box<Assign<'src>>,
     },
     Minus {
+        span: Span<'src>,
         ident: Span<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftL {
+        span: Span<'src>,
         ident: Span<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftR {
+        span: Span<'src>,
         ident: Span<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftRa {
+        span: Span<'src>,
         ident: Span<'src>,
         assign: Box<Assign<'src>>,
     },
@@ -48,41 +54,61 @@ impl<'src> From<Visitor<'src>> for Assign<'src> {
         match visitor.expect_leaf().0 {
             SBToken::Assign => {
                 Assign::Normal {
+                    span: visitor.span(),
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::PlusAssign => {
                 Assign::Plus {
+                    span: visitor.span(),
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::MinusAssign => {
                 Assign::Minus {
+                    span: visitor.span(),
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::ShiftLAssign => {
                 Assign::ShiftL {
+                    span: visitor.span(),
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::ShiftRAssign => {
                 Assign::ShiftR {
+                    span: visitor.span(),
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::ShiftRaAssign => {
                 Assign::ShiftRa {
+                    span: visitor.span(),
                     ident,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             _ => unreachable!(),
+        }
+    }
+}
+
+impl<'src> Spanned<'src> for Assign<'src> {
+    fn span(&self) -> Span<'src> {
+        match self {
+            Assign::Normal { span, .. } => *span,
+            Assign::Plus { span, .. } => *span,
+            Assign::Minus { span, .. } => *span,
+            Assign::ShiftL { span, .. } => *span,
+            Assign::ShiftR { span, .. } => *span,
+            Assign::ShiftRa { span, .. } => *span,
+            Assign::LogicOr { or } => or.span(),
         }
     }
 }

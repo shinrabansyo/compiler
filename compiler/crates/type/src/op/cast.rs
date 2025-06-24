@@ -1,29 +1,30 @@
-use std::sync::Arc;
+use sb_compiler_parse_cst::Spanned;
 
 use crate::error::TypeError;
 use crate::r#type::*;
+use crate::Typed;
 
-pub fn ty_cast(from: &Arc<Type>, to: &Arc<Type>) -> anyhow::Result<()> {
-    match (from.as_ref(), to.as_ref()) {
+pub fn ty_cast<'src, F, T>(from: &F, to: &T) -> miette::Result<()>
+where
+    F: Typed + Spanned<'src>,
+    T: Typed,
+{
+    match (from.ty().as_ref(), to.ty().as_ref()) {
         // プリミティブ型
-        (Primitive(Void),     Primitive(Void)) => Ok(()),
-        (Primitive(Bool),     Primitive(Bool)) => Ok(()),
-        (Primitive(I8),       Primitive(Bool)) => Ok(()),
-        (Primitive(I16),      Primitive(Bool)) => Ok(()),
-        (Primitive(I32),      Primitive(Bool)) => Ok(()),
-        (Primitive(NumConst), Primitive(Bool)) => Ok(()),
-        (Primitive(I8),       Primitive(I8))   => Ok(()),
-        (Primitive(I16),      Primitive(I16))  => Ok(()),
-        (Primitive(I32),      Primitive(I32))  => Ok(()),
-        (Primitive(NumConst), Primitive(I8))   => Ok(()),
-        (Primitive(NumConst), Primitive(I16))  => Ok(()),
-        (Primitive(NumConst), Primitive(I32))  => Ok(()),
+        (Void,     Void) => Ok(()),
+        (Bool,     Bool) => Ok(()),
+        (I8,       Bool) => Ok(()),
+        (I16,      Bool) => Ok(()),
+        (I32,      Bool) => Ok(()),
+        (NumConst, Bool) => Ok(()),
+        (I8,       I8)   => Ok(()),
+        (I16,      I16)  => Ok(()),
+        (I32,      I32)  => Ok(()),
+        (NumConst, I8)   => Ok(()),
+        (NumConst, I16)  => Ok(()),
+        (NumConst, I32)  => Ok(()),
 
         // キャスト失敗
-        _ => {
-            let from = from.as_ref().clone();
-            let to = to.as_ref().clone();
-            Err(TypeError::new_cast_failed(from, to).into())
-        }
+        _ => Err(TypeError::new_cast_failed(from, to)),
     }
 }

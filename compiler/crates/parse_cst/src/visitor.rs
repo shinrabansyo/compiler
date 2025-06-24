@@ -1,28 +1,32 @@
-use copager::cfl::token::{Token, TokenTag};
 use copager::cfl::CFL;
-use copager::ir::{IR, IRBuilder, RawIR};
 
 use super::{CSTree, Span};
 
-#[derive(Debug, IR, IRBuilder)]
-pub struct CSTreeVisitor<'input, Lang: CFL> {
-    cst: Option<CSTree<'input, Lang>>,
+#[derive(Debug)]
+pub struct CSTreeVisitor<'src, Lang: CFL> {
+    cst: Option<CSTree<'src, Lang>>,
 }
 
-impl <'input, Lang: CFL> From<RawIR<'input, Lang>> for CSTreeVisitor<'input, Lang> {
-    fn from(raw_ir: RawIR<'input, Lang>) -> Self {
-        CSTreeVisitor {
-            cst: Some(CSTree::from(raw_ir)),
-        }
+impl <'src, Lang: CFL> From<CSTree<'src, Lang>> for CSTreeVisitor<'src, Lang> {
+    fn from(cst: CSTree<'src, Lang>) -> Self {
+        CSTreeVisitor { cst: Some(cst) }
     }
 }
 
-impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
+impl<'src, Lang: CFL> CSTreeVisitor<'src, Lang> {
     pub fn len(&self) -> usize {
         match &self.cst {
             Some(CSTree::Node { children, .. }) => children.len(),
             Some(CSTree::Leaf { .. }) => 1,
             None => 0,
+        }
+    }
+
+    pub fn span(&self) -> Span<'src> {
+        match &self.cst {
+            Some(CSTree::Leaf { span, .. }) => *span,
+            Some(CSTree::Node { span, .. }) => *span,
+            _ => panic!("No more elements in the CSTreeVisitor"),
         }
     }
 
@@ -40,9 +44,9 @@ impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
         }
     }
 
-    pub fn expect_leaf(&mut self) -> (Lang::TokenTag, Span<'input>) {
+    pub fn expect_leaf(&mut self) -> (Lang::TokenTag, Span<'src>) {
         match self.pop_front() {
-            Some(CSTree::Leaf { tag, text }) => (tag, text),
+            Some(CSTree::Leaf { span, tag, .. }) => (tag, span),
             Some(..) => panic!("Expected a leaf but found a node"),
             None => panic!("No more elements in the CSTreeVisitor"),
         }
@@ -50,7 +54,7 @@ impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
 
     pub fn expect_node<T>(&mut self) -> T
     where
-        T: From<CSTreeVisitor<'input, Lang>>,
+        T: From<CSTreeVisitor<'src, Lang>>,
     {
         match self.pop_spawn() {
             Some(node_visitor) => T::from(node_visitor),
@@ -60,7 +64,7 @@ impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
 
     pub fn expect_nodes<T>(&mut self) -> Vec<T>
     where
-        T: From<CSTreeVisitor<'input, Lang>>,
+        T: From<CSTreeVisitor<'src, Lang>>,
     {
         match self.pop_spawn() {
             Some(mut node_visitor) => node_visitor.expect_nodes_lrec::<T>(),
@@ -70,7 +74,7 @@ impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
 
     fn expect_nodes_lrec<T>(&mut self) -> Vec<T>
     where
-        T: From<CSTreeVisitor<'input, Lang>>,
+        T: From<CSTreeVisitor<'src, Lang>>,
     {
         match (self.pop_spawn(), self.pop_spawn()) {
             (Some(mut lrec_visitor), Some(last_visitor)) => {
@@ -87,7 +91,7 @@ impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
         }
     }
 
-    fn pop_front(&mut self) -> Option<CSTree<'input, Lang>> {
+    fn pop_front(&mut self) -> Option<CSTree<'src, Lang>> {
         match &mut self.cst {
             Some(CSTree::Node { children, .. }) => children.pop_front(),
             Some(CSTree::Leaf { .. }) => self.cst.take(),
@@ -95,7 +99,7 @@ impl<'input, Lang: CFL> CSTreeVisitor<'input, Lang> {
         }
     }
 
-    fn pop_spawn(&mut self) -> Option<CSTreeVisitor<'input, Lang>> {
+    fn pop_spawn(&mut self) -> Option<CSTreeVisitor<'src, Lang>> {
         match self.pop_front() {
             Some(tree) => {
                 // println!("Popping tree: {:?}\n\n", tree);
@@ -113,7 +117,7 @@ mod tests {
     use copager::prelude::*;
     use copager::Processor;
 
-    use super::CSTreeVisitor;
+    use super::{CSTree, CSTreeVisitor};
 
     type TestLang = LALR1<TestLangDef>;
 
@@ -162,10 +166,11 @@ mod tests {
 
     #[test]
     fn test_visitor_peek() -> anyhow::Result<()> {
-        let mut visitor = Processor::<TestLang>::new()
+        let cst = Processor::<TestLang>::new()
             .build_lexer()?
             .build_parser()?
-            .process::<CSTreeVisitor<_>>("abc")?;
+            .process::<CSTree<_>>("abc")?;
+        let mut visitor = CSTreeVisitor::from(cst);
 
         assert_eq!(visitor.peek(), (Some(TestToken::A), None));
         assert_eq!(visitor.expect_leaf().0, TestToken::A);
@@ -219,10 +224,11 @@ mod tests {
             }
         }
 
-        let visitor = Processor::<TestLang>::new()
+        let cst = Processor::<TestLang>::new()
             .build_lexer()?
             .build_parser()?
-            .process::<CSTreeVisitor<_>>("abccc")?;
+            .process::<CSTree<_>>("abccc")?;
+        let visitor = CSTreeVisitor::from(cst);
 
         assert_eq!(AstA::from(visitor), AstA);
 

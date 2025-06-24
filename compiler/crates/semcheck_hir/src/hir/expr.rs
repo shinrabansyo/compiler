@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Spanned;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
 
@@ -12,7 +13,7 @@ pub struct Expr<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Expr<'src>> for Expr<'src> {
-    async fn check0(ctx: Dep<'_, 'src>, expr: ast::Expr<'src>) -> anyhow::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, expr: ast::Expr<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {
@@ -22,8 +23,14 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Expr<'src>> for Expr<'src> {
     }
 }
 
+impl<'src> Spanned<'src> for Expr<'src> {
+    fn span(&self) -> sb_compiler_parse_cst::Span<'src> {
+        self.assign.span()
+    }
+}
+
 impl Typed for Expr<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         self.assign.ty()
     }
 }

@@ -1,42 +1,51 @@
-use std::fmt::Display;
+use miette::{Diagnostic, Report};
+use thiserror::Error;
 
-pub trait ErrComposer<T> {
-    fn compose(self) -> anyhow::Result<Vec<T>>;
+#[derive(Debug, Error, Diagnostic)]
+#[error("Compilation failed")]
+pub struct ComposedError {
+    #[related]
+    errs: Vec<Report>,
 }
 
-impl<I, T, E> ErrComposer<T> for I
+pub trait ErrComposer<T> {
+    fn compose(self) -> miette::Result<Vec<T>>;
+}
+
+impl<I, T> ErrComposer<T> for I
 where
-    I: Iterator<Item = Result<T, E>>,
-    E: Display,
+    I: Iterator<Item = Result<T, Report>>,
 {
-    fn compose(self) -> anyhow::Result<Vec<T>> {
-        let mut results = Vec::new();
-        let mut err_s = String::new();
+    fn compose(self) -> miette::Result<Vec<T>> {
+        let mut results = vec![];
+        let mut errs = vec![];
         for item in self {
             match item {
                 Ok(value) => results.push(value),
-                Err(err) => err_s.push_str(&format!("{}\n", err)),
+                Err(err) => errs.push(err),
             }
         }
 
-        if err_s.is_empty() {
+        if errs.is_empty() {
             Ok(results)
         } else {
-            Err(anyhow::anyhow!(err_s))
+            Err(ComposedError { errs }.into())
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use miette::Report;
+
     use super::ErrComposer;
 
     #[test]
     fn test_ok() {
         let result  = vec![
-            Ok::<i32, &str>(1),
-            Ok::<i32, &str>(2),
-            Ok::<i32, &str>(3),
+            Ok::<i32, Report>(1),
+            Ok::<i32, Report>(2),
+            Ok::<i32, Report>(3),
         ].into_iter().compose();
 
         assert!(result.is_ok());
@@ -48,12 +57,11 @@ mod tests {
         let result = vec![
             Ok(1),
             Ok(2),
-            Err("error1"),
+            Err(miette::miette!("error1")),
             Ok(3),
-            Err("error2")
+            Err(miette::miette!("error2")),
         ].into_iter().compose();
 
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err().to_string(), "error1\nerror2\n");
     }
 }

@@ -52,35 +52,35 @@ impl TypeDeclChecker {
         TypeDeclChecker::register(
             &mut context,
             "bool",
-            Arc::new(Primitive(Bool))
+            Arc::new(Bool)
         ).unwrap();
         TypeDeclChecker::register(
             &mut context,
             "i8",
-            Arc::new(Primitive(I8))
+            Arc::new(I8)
         ).unwrap();
         TypeDeclChecker::register(
             &mut context,
             "i16",
-            Arc::new(Primitive(I16))
+            Arc::new(I16)
         ).unwrap();
         TypeDeclChecker::register(
             &mut context,
             "i32",
-            Arc::new(Primitive(I32))
+            Arc::new(I32)
         ).unwrap();
 
         (checker, context)
     }
 
-    pub fn register(ctx: &mut TypeDeclContext, name: &str, ty: Arc<Type>) -> anyhow::Result<()> {
+    pub fn register(ctx: &mut TypeDeclContext, name: &str, ty: Arc<Type>) -> miette::Result<()> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 型名を登録
         let symbol = match checker.interner.get(name) {
             Some(_) => {
                 let err = TypeDeclError::new_already_declared(name.to_string());
-                return Err(err.into());
+                return Err(err);
             }
             None => checker.interner.get_or_intern(name),
         };
@@ -99,7 +99,7 @@ impl TypeDeclChecker {
     }
 
     #[failable_as_async('a)]
-    pub fn find<'a>(ctx: &'a TypeDeclContext, name: &'a str) -> anyhow::Result<Arc<Type>> {
+    pub fn find<'a>(ctx: &'a TypeDeclContext, name: &'a str) -> miette::Result<Arc<Type>> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 型名を検索
@@ -107,7 +107,7 @@ impl TypeDeclChecker {
             Some(symbol) => symbol,
             None => {
                 let err = TypeDeclError::new_not_declared(name.to_string());
-                return Err(err.into());
+                return Err(err);
             }
         };
 
@@ -117,7 +117,7 @@ impl TypeDeclChecker {
             Ok(Arc::clone(&checker.types.get(&symbol).unwrap()))
         } else {
             let err = TypeDeclError::new_not_declared_in_scope(name.to_string());
-            Err(err.into())
+            Err(err)
         }
     }
 }
@@ -134,10 +134,7 @@ mod tests {
         let (_, ctx) = TypeDeclChecker::new();
 
         block_on(async {
-            assert_eq!(
-                *TypeDeclChecker::find(&ctx, "i32").await.unwrap(),
-                Primitive(I32),
-            );
+            assert_eq!(*TypeDeclChecker::find(&ctx, "i32").await.unwrap(), I32);
         });
     }
 }

@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::Spanned;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
 
@@ -14,7 +15,7 @@ pub enum Top<'src> {
 }
 
 impl<'src> SemCheck<InDep<'src>, ast::Top<'src>> for Top<'src> {
-    async fn check0(ctx: InDep<'src>, top: ast::Top<'src>) -> anyhow::Result<Top<'src>>
+    async fn check0(ctx: InDep<'src>, top: ast::Top<'src>) -> miette::Result<Top<'src>>
     where
         Self: Sized,
     {
@@ -28,8 +29,16 @@ impl<'src> SemCheck<InDep<'src>, ast::Top<'src>> for Top<'src> {
     }
 }
 
+impl<'src> Spanned<'src> for Top<'src> {
+    fn span(&self) -> sb_compiler_parse_cst::Span<'src> {
+        match self {
+            Top::FuncDef { func_def } => func_def.span(),
+        }
+    }
+}
+
 impl Typed for Top<'_> {
-    fn ty(&self) -> &Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
         match self {
             Top::FuncDef { func_def } => func_def.ty(),
         }
