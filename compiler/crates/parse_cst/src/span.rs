@@ -1,11 +1,24 @@
 use std::fmt::{Debug, Display};
+use std::sync::Arc;
 
 use copager::cfl::token::Token;
 use copager::cfl::token::TokenTag;
 use miette::SourceSpan;
 
-pub trait Spanned<'src> {
-    fn span(&self) -> Span<'src>;
+pub trait Spanned<'a> {
+    fn span(&self) -> Span<'a>;
+}
+
+impl<'a, T: Spanned<'a>> Spanned<'a> for Box<T> {
+    fn span(&self) -> Span<'a> {
+        self.as_ref().span()
+    }
+}
+
+impl<'a, T: Spanned<'a>> Spanned<'a> for Arc<T> {
+    fn span(&self) -> Span<'a> {
+        self.as_ref().span()
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]

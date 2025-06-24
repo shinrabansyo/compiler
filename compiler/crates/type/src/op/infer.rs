@@ -1,5 +1,7 @@
 use std::sync::Arc;
 
+use sb_compiler_parse_cst::Spanned;
+
 use crate::error::TypeError;
 use crate::r#type::*;
 use crate::Typed;
@@ -16,17 +18,17 @@ where
         I8       => Ok(a_ty),
         I16      => Ok(a_ty),
         I32      => Ok(a_ty),
-        NumConst => Ok(a_ty),
+        NumConst => Ok(I32.ty()),
 
         // 推論失敗
         _ => panic!(""),
     }
 }
 
-pub fn ty_infer2<A, B>(a: &A, b: &B) -> miette::Result<Arc<Type>>
+pub fn ty_infer2<'src, A, B>(a: &A, b: &B) -> miette::Result<Arc<Type>>
 where
-    A: Typed,
-    B: Typed,
+    A: Typed + Spanned<'src>,
+    B: Typed + Spanned<'src>,
 {
     let a_ty = a.ty();
     let b_ty = b.ty();
@@ -46,10 +48,6 @@ where
         (NumConst, NumConst) => Ok(a_ty),
 
         // 推論失敗
-        _ => {
-            let a_ty = (*a_ty).clone();
-            let b_ty = (*b_ty).clone();
-            Err(TypeError::new_infer2_failed(a_ty, b_ty))
-        }
+        _ => Err(TypeError::new_infer2_failed(a, b)),
     }
 }

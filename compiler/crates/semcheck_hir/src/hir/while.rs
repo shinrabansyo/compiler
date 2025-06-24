@@ -22,7 +22,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::While<'src>> for While<'src> {
     {
         // 状建設の意味解析 & 型チェック
         let cond = Expr::check(ctx, r#while.cond).await?;
-        ty_equals(Bool, &cond.ty())?;
+        ty_equals(Bool, &cond)?;
 
         // ブロックの意味解析
         let block = Block::check(ctx.clone(), r#while.block).await?;

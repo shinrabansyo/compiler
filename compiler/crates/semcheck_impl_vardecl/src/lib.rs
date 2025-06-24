@@ -13,6 +13,7 @@ use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::failable_as_async;
 use sb_compiler_type::r#type::*;
+use sb_compiler_type::Typed;
 
 use error::VarDeclError;
 
@@ -26,6 +27,12 @@ pub struct Var<'src> {
 impl<'src> Spanned<'src> for Var<'src> {
     fn span(&self) -> Span<'src> {
         self.span
+    }
+}
+
+impl Typed for Var<'_> {
+    fn ty(&self) -> Arc<Type> {
+        self.ty.ty()
     }
 }
 

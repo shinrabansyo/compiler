@@ -1,10 +1,12 @@
+use sb_compiler_parse_cst::Spanned;
+
 use crate::error::TypeError;
 use crate::r#type::*;
 use crate::Typed;
 
-pub fn ty_cast<F, T>(from: &F, to: &T) -> miette::Result<()>
+pub fn ty_cast<'src, F, T>(from: &F, to: &T) -> miette::Result<()>
 where
-    F: Typed,
+    F: Typed + Spanned<'src>,
     T: Typed,
 {
     match (from.ty().as_ref(), to.ty().as_ref()) {
@@ -23,10 +25,6 @@ where
         (NumConst, I32)  => Ok(()),
 
         // キャスト失敗
-        _ => {
-            let from_ty = (*from.ty()).clone();
-            let to_ty = (*to.ty()).clone();
-            Err(TypeError::new_cast_failed(from_ty, to_ty))
-        }
+        _ => Err(TypeError::new_cast_failed(from, to)),
     }
 }

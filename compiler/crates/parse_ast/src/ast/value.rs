@@ -14,6 +14,7 @@ pub enum Value<'src> {
         value: i32,
     },
     Var {
+        span: Span<'src>,
         name: Span<'src>,
     },
     Expr {
@@ -50,6 +51,7 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
             // 変数
             (Some(SBToken::Ident), None) => {
                 Value::Var {
+                    span: visitor.span(),
                     name: visitor.expect_leaf().1,
                 }
             }
@@ -75,7 +77,7 @@ impl<'src> Spanned<'src> for Value<'src> {
         match self {
             Value::Bool { span, .. } => *span,
             Value::Const { span, .. } => *span,
-            Value::Var { name } => *name,
+            Value::Var { span, .. } => *span,
             Value::Expr { expr } => expr.span(),
             Value::Call { call } => call.span(),
         }

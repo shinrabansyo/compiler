@@ -55,7 +55,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals2(&lhs.ty(), &rhs.ty())?;
+                ty_equals2(&lhs, &rhs)?;
 
                 Ok(Cond::Eq { span, lhs, rhs })
             }
@@ -63,7 +63,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals2(&lhs.ty(), &rhs.ty())?;
+                ty_equals2(&lhs, &rhs)?;
 
                 Ok(Cond::Neq { span, lhs, rhs })
             }
@@ -71,7 +71,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals2(&lhs.ty(), &rhs.ty())?;
+                ty_equals2(&lhs, &rhs)?;
 
                 Ok(Cond::Lt { span, lhs, rhs })
             }
@@ -79,7 +79,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals2(&lhs.ty(), &rhs.ty())?;
+                ty_equals2(&lhs, &rhs)?;
 
                 Ok(Cond::Lte { span, lhs, rhs })
             }
@@ -87,7 +87,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals2(&lhs.ty(), &rhs.ty())?;
+                ty_equals2(&lhs, &rhs)?;
 
                 Ok(Cond::Gt { span, lhs, rhs })
             }
@@ -95,7 +95,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
                 // 式の意味解析 & 型チェック
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals2(&lhs.ty(), &rhs.ty())?;
+                ty_equals2(&lhs, &rhs)?;
 
                 Ok(Cond::Gte { span, lhs, rhs })
             }

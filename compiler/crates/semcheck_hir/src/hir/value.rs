@@ -16,6 +16,7 @@ pub enum Value<'src> {
         value_ty: Arc<Type>,
     },
     Var {
+        span: Span<'src>,
         var: Var<'src>,
     },
     Expr {
@@ -46,8 +47,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                     value_ty: NumConst.ty(),
                 })
             }
-            ast::Value::Var { name } => {
+            ast::Value::Var { span, name } => {
                 Ok(Value::Var {
+                    span,
                     var: VarDeclChecker::find(&mut ctx.var_decl, &name).await?,
                 })
             }
@@ -69,7 +71,7 @@ impl<'src> Spanned<'src> for Value<'src> {
     fn span(&self) -> Span<'src> {
         match self {
             Value::Const { span, .. } => *span,
-            Value::Var { var } => var.span(),
+            Value::Var { span, .. } => *span,
             Value::Expr { expr } => expr.span(),
             Value::Call { call } => call.span(),
         }

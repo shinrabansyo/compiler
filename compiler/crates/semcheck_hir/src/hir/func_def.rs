@@ -3,7 +3,7 @@ use std::sync::Arc;
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
-use sb_compiler_type::op::ty_equals2;
+use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::{Function, Type, Void};
 use sb_compiler_type::Typed;
 
@@ -51,15 +51,15 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             fn_ty,
         )?;
 
-        // ブロックの意味解析
+        // ブロックの意味解析 & 型チェック
         let block = Block::check(ctx.clone(), func_def.block).await?;
-
-        // ブロックの意味解析
-        let block_ty = match block.stmts.last() {
-            Some(Stmt::Return { r#return, .. }) => r#return.ty(),
-            _ => Void.ty(),
+        match block.stmts.last() {
+            Some(Stmt::Return { r#return, .. }) => {
+                let ret_ty = ret_ty.as_ref().clone();
+                ty_equals(ret_ty, r#return)?;
+            }
+            _ => ty_equals(Void, &block)?,
         };
-        ty_equals2(&ret_ty, &block_ty)?;
 
         // 作成した名前空間を削除
         ctx.name.pop();

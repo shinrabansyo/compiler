@@ -31,11 +31,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Call<'src>> for Call<'src> {
         // 型チェック
         let fn_name = format!(".{}", call.ident.as_str());
         let fn_ty = TypeDeclChecker::find(&ctx.type_decl, &fn_name).await?;
-        let arg_tys = args
-            .iter()
-            .map(|a| a.ty())
-            .collect::<Vec<_>>();
-        let ty = ty_can_call(&fn_ty, &arg_tys)?;
+        let ty = ty_can_call(&fn_ty, &args)?;
 
         Ok(Call {
             span: call.span,

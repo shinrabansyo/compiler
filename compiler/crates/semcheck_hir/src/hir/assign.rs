@@ -58,7 +58,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals2(&var.ty, &assign)?;
+                ty_equals2(&var, &assign)?;
 
                 Ok(Assign::Normal { span, var, assign })
             }
@@ -68,7 +68,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals2(&var.ty, &assign)?;
+                ty_equals2(&var, &assign)?;
 
                 Ok(Assign::Plus { span, var, assign })
             }
@@ -78,7 +78,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals2(&var.ty, &assign)?;
+                ty_equals2(&var, &assign)?;
 
                 Ok(Assign::Minus { span, var, assign })
             }
@@ -88,7 +88,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals2(&var.ty, &assign)?;
+                ty_equals2(&var, &assign)?;
 
                 Ok(Assign::ShiftL { span, var, assign })
             }
@@ -98,7 +98,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals2(&var.ty, &assign)?;
+                ty_equals2(&var, &assign)?;
 
                 Ok(Assign::ShiftR { span, var, assign })
             }
@@ -108,7 +108,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
 
                 // 型チェック
                 let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
-                ty_equals2(&var.ty, &assign)?;
+                ty_equals2(&var, &assign)?;
 
                 Ok(Assign::ShiftRa { span, var, assign })
             }

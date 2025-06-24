@@ -36,7 +36,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
             ast::Unary::Not { span, value } => {
                 // 式の意味解析 & 型チェック
                 let value = Value::check(ctx, value).await?;
-                ty_equals(Bool, &value.ty())?;
+                ty_equals(Bool, &value)?;
 
                 Ok(Unary::Not { span, value })
             }

@@ -4,7 +4,7 @@ use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
 use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
-use sb_compiler_type::op::{ty_equals2, ty_infer};
+use sb_compiler_type::op::{ty_equals, ty_infer};
 use sb_compiler_type::r#type::{Type, Void};
 use sb_compiler_type::Typed;
 
@@ -30,10 +30,10 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
         let var_ty = match &var_decl.ty {
             Some(ty) => {
                 let var_ty = TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?;
-                ty_equals2(&expr.ty(), &var_ty)?;
+                ty_equals(var_ty.as_ref().clone(), &expr)?;
                 var_ty
             }
-            None => ty_infer(&expr.ty())?,
+            None => ty_infer(&expr)?,
         };
 
         // 変数宣言
