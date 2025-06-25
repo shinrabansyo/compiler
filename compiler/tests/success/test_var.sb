@@ -11,6 +11,7 @@ fn main() -> i32 {
     if (!test_01()) { return 1; }
     if (!test_02()) { return 2; }
     if (!test_03()) { return 3; }
+    if (!test_04()) { return 4; }
 
     // 正常時は 0
     return 0;
@@ -28,6 +29,13 @@ fn test_02() -> bool {
 }
 
 fn test_03() -> bool {
+    var a = 10;
+    var a = 20;
+    var b = 20;
+    return a == b;
+}
+
+fn test_04() -> bool {
     var a = 1;
     var b = 2;
     var c = 3;

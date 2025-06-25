@@ -1,0 +1,29 @@
+// 関数のテスト
+
+fn main() -> i32 {
+    // r10 レジスタを 0 以外の値にする
+    asm! {
+        addi R4 = R0, 9999
+        add R10 = R0, R4
+    }
+
+    // テスト実行
+    if (!test_01()) { return 1; }
+    if (!test_02()) { return 2; }
+
+
+    // 正常時は 0
+    return 0;
+}
+
+fn test_01() -> bool {
+    return true;
+}
+
+fn test_02() -> bool {
+    return test_02_fn(1, 2) == 3;
+}
+
+fn test_02_fn(a: i32, b: i32) -> i32 {
+    return a + b;
+}
