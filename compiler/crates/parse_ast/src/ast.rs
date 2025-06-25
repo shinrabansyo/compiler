@@ -29,6 +29,7 @@ mod bit_and;        pub use bit_and::BitAnd;
 mod cond;           pub use cond::Cond;
 mod bit_shift;      pub use bit_shift::BitShift;
 mod add;            pub use add::Add;
+mod mul;            pub use mul::Mul;
 mod cast;           pub use cast::Cast;
 mod unary;          pub use unary::Unary;
 mod value;          pub use value::Value;

@@ -18,6 +18,12 @@ fn main() -> i32 {
     if (!test_08()) { return 8; }
     if (!test_09()) { return 9; }
     if (!test_10()) { return 10; }
+    if (!test_11()) { return 11; }
+    if (!test_12()) { return 12; }
+    if (!test_13()) { return 13; }
+    if (!test_14()) { return 14; }
+    if (!test_15()) { return 15; }
+    if (!test_16()) { return 16; }
 
     // 正常時は 0
     return 0;
@@ -83,4 +89,40 @@ fn test_10() -> bool {
     var a = 5;
     var b = 2;
     return (a & b) == 0;
+}
+
+fn test_11() -> bool {
+    var a = 12;
+    var b = 4;
+    return (a * b) == 48;
+}
+
+fn test_12() -> bool {
+    var a = 12;
+    var b = 0;
+    return (a * b) == 0;
+}
+
+fn test_13() -> bool {
+    var a = 12;
+    var b = 4;
+    return (a / b) == 3;
+}
+
+fn test_14() -> bool {
+    var a = 12;
+    var b = 0;
+    return (a / b) == 0;
+}
+
+fn test_15() -> bool {
+    var a = 13;
+    var b = 5;
+    return (a % b) == 3;
+}
+
+fn test_16() -> bool {
+    var a = 13;
+    var b = 0;
+    return (a % b) == 0;
 }

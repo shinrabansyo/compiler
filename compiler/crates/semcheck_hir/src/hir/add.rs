@@ -6,24 +6,24 @@ use sb_compiler_type::op::ty_infer2;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
 
-use super::{Cast, SemCheck, Dep};
+use super::{Mul, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum Add<'src> {
     Plus {
         span: Span<'src>,
         lhs: Box<Add<'src>>,
-        rhs: Cast<'src>,
+        rhs: Mul<'src>,
         ty: Arc<Type>,
     },
     Minus {
         span: Span<'src>,
         lhs: Box<Add<'src>>,
-        rhs: Cast<'src>,
+        rhs: Mul<'src>,
         ty: Arc<Type>,
     },
-    Cast {
-        value: Cast<'src>,
+    Mul {
+        value: Mul<'src>,
     },
 }
 
@@ -36,7 +36,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
             ast::Add::Plus { span, lhs, rhs } => {
                 // 両辺の式の意味解析
                 let lhs = Box::new(Add::check(ctx, *lhs).await?);
-                let rhs = Cast::check(ctx, rhs).await?;
+                let rhs = Mul::check(ctx, rhs).await?;
 
                 // 型決定
                 let ty = ty_infer2(&lhs, &rhs)?;
@@ -46,16 +46,16 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Add<'src>> for Add<'src> {
             ast::Add::Minus { span, lhs, rhs } => {
                 // 両辺の式の意味解析
                 let lhs = Box::new(Add::check(ctx, *lhs).await?);
-                let rhs = Cast::check(ctx, rhs).await?;
+                let rhs = Mul::check(ctx, rhs).await?;
 
                 // 型決定
                 let ty = ty_infer2(&lhs, &rhs)?;
 
                 Ok(Add::Minus { span, lhs, rhs, ty })
             }
-            ast::Add::Cast { value } => {
-                Ok(Add::Cast {
-                    value: Cast::check(ctx, value).await?,
+            ast::Add::Mul { value } => {
+                Ok(Add::Mul {
+                    value: Mul::check(ctx, value).await?,
                 })
             }
         }
@@ -67,7 +67,7 @@ impl<'src> Spanned<'src> for Add<'src> {
         match self {
             Add::Plus { span, .. } => *span,
             Add::Minus { span, .. } => *span,
-            Add::Cast { value } => value.span(),
+            Add::Mul { value } => value.span(),
         }
     }
 }
@@ -77,7 +77,7 @@ impl Typed for Add<'_> {
         match self {
             Add::Plus { ty, .. } => ty.ty(),
             Add::Minus { ty, .. } => ty.ty(),
-            Add::Cast { value } => value.ty(),
+            Add::Mul { value } => value.ty(),
         }
     }
 }

@@ -2,7 +2,7 @@ use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Sub};
 use sb_compiler_semcheck_hir::Add as AddHir;
 
 use crate::GenContext;
-use super::lirgen_cast;
+use super::lirgen_mul;
 
 pub fn lirgen_add(ctx: &mut GenContext, add: &AddHir) -> LirBlock {
     let (result_reg, lirs) = match add {
@@ -10,7 +10,7 @@ pub fn lirgen_add(ctx: &mut GenContext, add: &AddHir) -> LirBlock {
             let lir_lhs = lirgen_add(ctx, lhs);
             let reg_lhs = lir_lhs.result_reg();
 
-            let lir_rhs = lirgen_cast(ctx, rhs);
+            let lir_rhs = lirgen_mul(ctx, rhs);
             let reg_rhs = lir_rhs.result_reg();
 
             let reg_result = ctx.alloc_reg();
@@ -28,7 +28,7 @@ pub fn lirgen_add(ctx: &mut GenContext, add: &AddHir) -> LirBlock {
             let lir_lhs = lirgen_add(ctx, lhs);
             let reg_lhs = lir_lhs.result_reg();
 
-            let lir_rhs = lirgen_cast(ctx, rhs);
+            let lir_rhs = lirgen_mul(ctx, rhs);
             let reg_rhs = lir_rhs.result_reg();
 
             let reg_result = ctx.alloc_reg();
@@ -42,8 +42,8 @@ pub fn lirgen_add(ctx: &mut GenContext, add: &AddHir) -> LirBlock {
                 ],
             )
         }
-        AddHir::Cast { value, .. } => {
-            return lirgen_cast(ctx, value);
+        AddHir::Mul { value, .. } => {
+            return lirgen_mul(ctx, value);
         }
     };
 
