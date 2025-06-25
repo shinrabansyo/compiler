@@ -33,21 +33,21 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
         Self: Sized,
     {
         match value {
-            ast::Value::Bool { span, value } => {
+            ast::Value::CBool { span, value } => {
                 Ok(Value::Const {
                     span,
                     value: if value { 1 } else { 0 },
                     value_ty: Bool.ty(),
                 })
             }
-            ast::Value::Char { span, value } => {
+            ast::Value::CChar { span, value } => {
                 Ok(Value::Const {
                     span,
                     value: value as i32,
                     value_ty: Char.ty(),
                 })
             }
-            ast::Value::Const { span, value } => {
+            ast::Value::CNum { span, value } => {
                 Ok(Value::Const {
                     span,
                     value,

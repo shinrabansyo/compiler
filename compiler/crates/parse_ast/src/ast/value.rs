@@ -5,15 +5,15 @@ use super::{Expr, Call, Visitor};
 
 #[derive(Debug)]
 pub enum Value<'src> {
-    Bool {
+    CBool {
         span: Span<'src>,
         value: bool,
     },
-    Char {
+    CChar {
         span: Span<'src>,
         value: char,
     },
-    Const {
+    CNum {
         span: Span<'src>,
         value: i32,
     },
@@ -34,13 +34,13 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
         match visitor.peek() {
             // 論理値
             (Some(SBToken::True), None) => {
-                Value::Bool {
+                Value::CBool {
                     span: visitor.span(),
                     value: true,
                 }
             }
             (Some(SBToken::False), None) => {
-                Value::Bool {
+                Value::CBool {
                     span: visitor.span(),
                     value: false,
                 }
@@ -53,11 +53,11 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
                     "\\t" => '\t',
                     c => c.chars().next().unwrap(),
                 };
-                Value::Char { span: visitor.span(), value }
+                Value::CChar { span: visitor.span(), value }
             }
             // 定数
             (Some(SBToken::Num), None) => {
-                Value::Const {
+                Value::CNum {
                     span: visitor.span(),
                     value: visitor.expect_leaf().1.as_str().parse().unwrap(),
                 }
@@ -89,9 +89,9 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
 impl<'src> Spanned<'src> for Value<'src> {
     fn span(&self) -> Span<'src> {
         match self {
-            Value::Bool { span, .. } => *span,
-            Value::Char { span, .. } => *span,
-            Value::Const { span, .. } => *span,
+            Value::CBool { span, .. } => *span,
+            Value::CChar { span, .. } => *span,
+            Value::CNum { span, .. } => *span,
             Value::Var { span, .. } => *span,
             Value::Expr { expr } => expr.span(),
             Value::Call { call } => call.span(),
