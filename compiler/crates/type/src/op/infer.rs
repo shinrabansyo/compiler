@@ -18,6 +18,7 @@ where
         I8       => Ok(a_ty),
         I16      => Ok(a_ty),
         I32      => Ok(a_ty),
+        Char     => Ok(a_ty),
         NumConst => Ok(I32.ty()),
 
         // 推論失敗
@@ -36,6 +37,7 @@ where
         // プリミティブ型
         (Void,     Void)     => Ok(a_ty),
         (Bool,     Bool)     => Ok(a_ty),
+        (Char,     Char)     => Ok(a_ty),
         (I8,       I8)       => Ok(a_ty),
         (I8,       NumConst) => Ok(a_ty),
         (I16,      I16)      => Ok(a_ty),

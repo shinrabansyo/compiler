@@ -12,6 +12,7 @@ where
         // プリミティブ型
         (Void,     Void)     => Ok(()),
         (Bool,     Bool)     => Ok(()),
+        (Char,     Char)     => Ok(()),
         (I8,       I8)       => Ok(()),
         (I8,       NumConst) => Ok(()),
         (I16,      I16)      => Ok(()),
@@ -37,6 +38,7 @@ where
         // プリミティブ型
         (Void,     Void)     => Ok(()),
         (Bool,     Bool)     => Ok(()),
+        (Char,     Char)     => Ok(()),
         (I8,       I8)       => Ok(()),
         (I8,       NumConst) => Ok(()),
         (I16,      I16)      => Ok(()),

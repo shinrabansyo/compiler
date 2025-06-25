@@ -11,6 +11,7 @@ use string_interner::StringInterner;
 use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::failable_as_async;
 use sb_compiler_type::r#type::*;
+use sb_compiler_type::Typed;
 
 use error::TypeDeclError;
 
@@ -49,26 +50,11 @@ impl TypeDeclChecker {
         };
 
         // プリミティブ型の登録
-        TypeDeclChecker::register(
-            &mut context,
-            "bool",
-            Arc::new(Bool)
-        ).unwrap();
-        TypeDeclChecker::register(
-            &mut context,
-            "i8",
-            Arc::new(I8)
-        ).unwrap();
-        TypeDeclChecker::register(
-            &mut context,
-            "i16",
-            Arc::new(I16)
-        ).unwrap();
-        TypeDeclChecker::register(
-            &mut context,
-            "i32",
-            Arc::new(I32)
-        ).unwrap();
+        TypeDeclChecker::register(&mut context, "bool", Bool.ty()).unwrap();
+        TypeDeclChecker::register(&mut context, "char", Char.ty()).unwrap();
+        TypeDeclChecker::register(&mut context, "i8", I8.ty()).unwrap();
+        TypeDeclChecker::register(&mut context, "i16", I16.ty()).unwrap();
+        TypeDeclChecker::register(&mut context, "i32", I32.ty()).unwrap();
 
         (checker, context)
     }

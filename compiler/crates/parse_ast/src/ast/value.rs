@@ -9,6 +9,10 @@ pub enum Value<'src> {
         span: Span<'src>,
         value: bool,
     },
+    Char {
+        span: Span<'src>,
+        value: char,
+    },
     Const {
         span: Span<'src>,
         value: i32,
@@ -40,6 +44,16 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
                     span: visitor.span(),
                     value: false,
                 }
+            }
+            // 文字
+            (Some(SBToken::Char), None) => {
+                let c = visitor.expect_leaf().1.as_str().trim_matches('\'');
+                let value = match c {
+                    "\\n" => '\n',
+                    "\\t" => '\t',
+                    c => c.chars().next().unwrap(),
+                };
+                Value::Char { span: visitor.span(), value }
             }
             // 定数
             (Some(SBToken::Num), None) => {
@@ -76,6 +90,7 @@ impl<'src> Spanned<'src> for Value<'src> {
     fn span(&self) -> Span<'src> {
         match self {
             Value::Bool { span, .. } => *span,
+            Value::Char { span, .. } => *span,
             Value::Const { span, .. } => *span,
             Value::Var { span, .. } => *span,
             Value::Expr { expr } => expr.span(),
