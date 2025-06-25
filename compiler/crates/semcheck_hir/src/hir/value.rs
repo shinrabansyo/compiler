@@ -43,7 +43,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
             ast::Value::Char { span, value } => {
                 Ok(Value::Const {
                     span,
-                    value: dbg!(value as i32),
+                    value: value as i32,
                     value_ty: Char.ty(),
                 })
             }
