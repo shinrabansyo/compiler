@@ -1,0 +1,57 @@
+// 値のテスト
+
+fn main() -> i32 {
+    // r10 レジスタを 0 以外の値にする
+    asm! {
+        addi R4 = R0, 9999
+        add R10 = R0, R4
+    }
+
+    // テスト実行
+    if (!test_01()) { return 1; }
+    if (!test_02()) { return 2; }
+    if (!test_03()) { return 3; }
+    if (!test_04()) { return 4; }
+    if (!test_05()) { return 5; }
+    if (!test_06()) { return 6; }
+    if (!test_07()) { return 7; }
+    if (!test_08()) { return 8; }
+
+    // 正常時は 0
+    return 0;
+}
+
+fn test_01() -> bool {
+    return true;
+}
+
+fn test_02() -> bool {
+    return !false;
+}
+
+fn test_03() -> bool {
+    return 'a' == 'a';
+}
+
+fn test_04() -> bool {
+    return 'a' == (97 as char);
+}
+
+fn test_05() -> bool {
+    return 10 == 10;
+}
+
+fn test_06() -> bool {
+    var value: i8 = 10;
+    return value == (10 as i8);
+}
+
+fn test_07() -> bool {
+    var value: i16 = 10;
+    return value == (10 as i16);
+}
+
+fn test_08() -> bool {
+    var value: i32 = 10;
+    return value == (10 as i32);
+}
