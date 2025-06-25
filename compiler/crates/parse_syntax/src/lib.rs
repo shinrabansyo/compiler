@@ -115,6 +115,12 @@ pub enum SBToken {
     Plus,
     #[token(r"\-")]
     Minus,
+    #[token(r"\*")]
+    Mul,
+    #[token(r"/")]
+    Div,
+    #[token(r"%")]
+    Mod,
     #[token(r"as", ir_omit)]
     As,
 
@@ -258,10 +264,16 @@ pub enum SBRule {
     #[rule("<bit_shift> ::= <add>")]
     BitShift,
 
-    #[rule("<add> ::= <add> Plus <cast>")]
-    #[rule("<add> ::= <add> Minus <cast>")]
-    #[rule("<add> ::= <cast>")]
+    #[rule("<add> ::= <add> Plus <mul>")]
+    #[rule("<add> ::= <add> Minus <mul>")]
+    #[rule("<add> ::= <mul>")]
     Add,
+
+    #[rule("<mul> ::= <mul> Mul <cast>")]
+    #[rule("<mul> ::= <mul> Div <cast>")]
+    #[rule("<mul> ::= <mul> Mod <cast>")]
+    #[rule("<mul> ::= <cast>")]
+    Mul,
 
     #[rule("<cast> ::= <unary> As Type")]
     #[rule("<cast> ::= <unary>")]
