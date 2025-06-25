@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-miette = { workspace = true }
+miette = { workspace = true, features = ["fancy"] }
 sb_linker = { workspace = true }
 sb_compiler_parse = { path = "./crates/parse" }
 sb_compiler_semcheck = { path = "./crates/semcheck" }
