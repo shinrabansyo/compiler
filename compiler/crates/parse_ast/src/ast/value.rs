@@ -57,10 +57,15 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
             }
             // 定数
             (Some(SBToken::Num), None) => {
-                Value::CNum {
-                    span: visitor.span(),
-                    value: visitor.expect_leaf().1.as_str().parse().unwrap(),
-                }
+                let num_s = visitor.expect_leaf().1.as_str();
+                let value = match num_s {
+                    "0" => Ok(0),
+                    _ if num_s.starts_with("0b") => i32::from_str_radix(&num_s[2..], 2),
+                    _ if num_s.starts_with("0x") => i32::from_str_radix(&num_s[2..], 16),
+                    _ if num_s.starts_with("0") => i32::from_str_radix(&num_s[1..], 8),
+                    _ => num_s.parse::<i32>(),
+                }.unwrap();
+                Value::CNum { span: visitor.span(), value }
             }
             // 変数
             (Some(SBToken::Ident), None) => {

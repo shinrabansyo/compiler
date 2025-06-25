@@ -127,6 +127,9 @@ pub enum SBToken {
     Char,
     #[token(r"[a-zA-Z_][a-zA-Z0-9_]*")]
     Ident,
+    #[token(r"0b[01]+")]
+    #[token(r"0[0-7]+")]
+    #[token(r"0x[0-9a-fA-F]+")]
     #[token(r"[0-9]+")]
     Num,
 
