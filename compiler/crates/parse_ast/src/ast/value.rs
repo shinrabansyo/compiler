@@ -5,11 +5,15 @@ use super::{Expr, Call, Visitor};
 
 #[derive(Debug)]
 pub enum Value<'src> {
-    Bool {
+    CBool {
         span: Span<'src>,
         value: bool,
     },
-    Const {
+    CChar {
+        span: Span<'src>,
+        value: char,
+    },
+    CNum {
         span: Span<'src>,
         value: i32,
     },
@@ -30,20 +34,30 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
         match visitor.peek() {
             // 論理値
             (Some(SBToken::True), None) => {
-                Value::Bool {
+                Value::CBool {
                     span: visitor.span(),
                     value: true,
                 }
             }
             (Some(SBToken::False), None) => {
-                Value::Bool {
+                Value::CBool {
                     span: visitor.span(),
                     value: false,
                 }
             }
+            // 文字
+            (Some(SBToken::Char), None) => {
+                let c = visitor.expect_leaf().1.as_str().trim_matches('\'');
+                let value = match c {
+                    "\\n" => '\n',
+                    "\\t" => '\t',
+                    c => c.chars().next().unwrap(),
+                };
+                Value::CChar { span: visitor.span(), value }
+            }
             // 定数
             (Some(SBToken::Num), None) => {
-                Value::Const {
+                Value::CNum {
                     span: visitor.span(),
                     value: visitor.expect_leaf().1.as_str().parse().unwrap(),
                 }
@@ -75,8 +89,9 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
 impl<'src> Spanned<'src> for Value<'src> {
     fn span(&self) -> Span<'src> {
         match self {
-            Value::Bool { span, .. } => *span,
-            Value::Const { span, .. } => *span,
+            Value::CBool { span, .. } => *span,
+            Value::CChar { span, .. } => *span,
+            Value::CNum { span, .. } => *span,
             Value::Var { span, .. } => *span,
             Value::Expr { expr } => expr.span(),
             Value::Call { call } => call.span(),

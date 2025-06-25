@@ -26,16 +26,13 @@ where
 
     for (path, body) in entries {
         print!("Testing {:?} ... ", path);
-        let result = panic::catch_unwind(|| test_fn(&body));
+        let result = panic::catch_unwind(|| test_fn(&body)).unwrap();
         match result {
             Ok(_) if expect == Expect::Err => {
                 panic!("Failed (expected Error, but got Ok)");
             }
-            Ok(Err(e)) if expect == Expect::Ok => {
-                println!("Failed (expected Ok, but got Error)\n{:?}", e);
-            }
             Err(e) if expect == Expect::Ok => {
-                panic!("Failed (expected Ok, but got panic)\n{:?}", e);
+                panic!("Failed (expected Ok, but got Error)\n{:?}", e);
             }
             _ => println!("Ok"),
         }

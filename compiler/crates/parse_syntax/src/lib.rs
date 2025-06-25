@@ -45,26 +45,27 @@ pub enum SBToken {
     Semicolon,
 
     // 予約語
-    #[token("fn" ir_omit)]
+    #[token(r"fn" ir_omit)]
     Fn,
-    #[token("var", ir_omit)]
+    #[token(r"var", ir_omit)]
     Var,
-    #[token("return", ir_omit)]
+    #[token(r"return", ir_omit)]
     Return,
-    #[token("if", ir_omit)]
+    #[token(r"if", ir_omit)]
     If,
-    #[token("else", ir_omit)]
+    #[token(r"else", ir_omit)]
     Else,
-    #[token("while", ir_omit)]
+    #[token(r"while", ir_omit)]
     While,
-    #[token("for", ir_omit)]
+    #[token(r"for", ir_omit)]
     For,
-    #[token("asm!", ir_omit)]
+    #[token(r"asm!", ir_omit)]
     Asm,
-    #[token("bool")]
-    #[token("i8")]
-    #[token("i16")]
-    #[token("i32")]
+    #[token(r"bool")]
+    #[token(r"char")]
+    #[token(r"i8")]
+    #[token(r"i16")]
+    #[token(r"i32")]
     Type,
 
     // 演算子
@@ -114,14 +115,16 @@ pub enum SBToken {
     Plus,
     #[token(r"\-")]
     Minus,
-    #[token("as", ir_omit)]
+    #[token(r"as", ir_omit)]
     As,
 
     // リテラル
-    #[token("true")]
+    #[token(r"true")]
     True,
-    #[token("false")]
+    #[token(r"false")]
     False,
+    #[token(r"'([a-zA-Z0-9_@]|\\n|\\t)'")]
+    Char,
     #[token(r"[a-zA-Z_][a-zA-Z0-9_]*")]
     Ident,
     #[token(r"[0-9]+")]
@@ -269,6 +272,7 @@ pub enum SBRule {
 
     #[rule("<value> ::= True")]
     #[rule("<value> ::= False")]
+    #[rule("<value> ::= Char")]
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]
     #[rule("<value> ::= ParenL <expr> ParenR")]

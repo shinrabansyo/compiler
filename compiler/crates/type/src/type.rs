@@ -9,6 +9,7 @@ pub enum Type {
     // プリミティブ
     Void,
     Bool,
+    Char,
     I8,
     I16,
     I32,
@@ -36,6 +37,12 @@ impl Typed for Type {
                     Arc::new(Type::Bool)
                 });
                 Arc::clone(&BOOL)
+            }
+            Type::Char => {
+                static CHAR: LazyLock<Arc<Type>> = LazyLock::new(|| {
+                    Arc::new(Type::Char)
+                });
+                Arc::clone(&CHAR)
             }
             Type::I8 => {
                 static I8: LazyLock<Arc<Type>> = LazyLock::new(|| {

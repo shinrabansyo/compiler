@@ -11,9 +11,9 @@ use sb_linker::link;
 use utils::{Expect, test_dir};
 use sb_compiler::compile;
 
-fn test_code(input: &str) -> Result<(), i32> {
+fn test_code(input: &str) -> miette::Result<()> {
     // コンパイル
-    let objs = compile(input).unwrap();
+    let objs = compile(input)?;
     let mut buf = vec![];
     Object::dump(&mut buf, &objs).unwrap();
     let objs = Cursor::new(buf);
@@ -47,7 +47,7 @@ fn test_code(input: &str) -> Result<(), i32> {
     if r10 == 0 {
         Ok(())
     } else {
-        Err(r10)
+        Err(miette::miette!("main returned {}", r10))
     }
 }
 

@@ -3,7 +3,7 @@ use std::sync::Arc;
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_type::r#type::{Bool, NumConst, Type};
+use sb_compiler_type::r#type::{Bool, Char, NumConst, Type};
 use sb_compiler_type::Typed;
 
 use super::{Expr, Call, SemCheck, Dep};
@@ -33,14 +33,21 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
         Self: Sized,
     {
         match value {
-            ast::Value::Bool { span, value } => {
+            ast::Value::CBool { span, value } => {
                 Ok(Value::Const {
                     span,
                     value: if value { 1 } else { 0 },
                     value_ty: Bool.ty(),
                 })
             }
-            ast::Value::Const { span, value } => {
+            ast::Value::CChar { span, value } => {
+                Ok(Value::Const {
+                    span,
+                    value: value as i32,
+                    value_ty: Char.ty(),
+                })
+            }
+            ast::Value::CNum { span, value } => {
                 Ok(Value::Const {
                     span,
                     value,
