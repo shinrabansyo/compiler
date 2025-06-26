@@ -1,12 +1,11 @@
 use sb_compiler_lirgen_ir::LirBlock;
 use sb_compiler_semcheck_hir::Block;
 
-use crate::{GenContext, ZERO_REG};
-use super::lirgen_stmt;
+use super::{GenContext, ZERO_REG, lirgen_stmt};
 
-pub fn lirgen_block(ctx: &mut GenContext, block: &Block) -> LirBlock {
+pub fn lirgen_block(ctx: &mut GenContext, block: Block) -> LirBlock {
     let lirs = block.stmts
-        .iter()
+        .into_iter()
         .map(|ast| lirgen_stmt(ctx, ast))
         .collect();
 

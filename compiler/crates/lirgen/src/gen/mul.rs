@@ -1,13 +1,12 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Blt, Bne, Jmp, JmpLabel, Li, Sub};
 use sb_compiler_semcheck_hir::Mul as MulHir;
 
-use crate::{GenContext, ZERO_REG};
-use super::lirgen_cast;
+use super::{GenContext, ZERO_REG, lirgen_cast};
 
-pub fn lirgen_mul(ctx: &mut GenContext, add: &MulHir) -> LirBlock {
+pub fn lirgen_mul(ctx: &mut GenContext, add: MulHir) -> LirBlock {
     let (result_reg, lirs) = match add {
         MulHir::Multiply { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_mul(ctx, lhs);
+            let lir_lhs = lirgen_mul(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_cast(ctx, rhs);
@@ -39,7 +38,7 @@ pub fn lirgen_mul(ctx: &mut GenContext, add: &MulHir) -> LirBlock {
             )
         }
         MulHir::Divide { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_mul(ctx, lhs);
+            let lir_lhs = lirgen_mul(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_cast(ctx, rhs);
@@ -72,7 +71,7 @@ pub fn lirgen_mul(ctx: &mut GenContext, add: &MulHir) -> LirBlock {
             )
         }
         MulHir::Modulo { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_mul(ctx, lhs);
+            let lir_lhs = lirgen_mul(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_cast(ctx, rhs);

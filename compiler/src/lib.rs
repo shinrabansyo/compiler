@@ -3,25 +3,23 @@ use sb_linker::obj::Object;
 use sb_compiler_parse::parse;
 use sb_compiler_semcheck::semcheck;
 use sb_compiler_lirgen::lirgen;
-use sb_compiler_codegen::codegen;
-use sb_compiler_opt::optimize;
+use sb_compiler_objgen::objgen;
 
-pub fn compile(input: &str) -> miette::Result<Vec<Object>> {
-    // 1. 構文解析 (&str -> AST)
-    let ast = parse(input)?;
+type Texts<'name, 'src> = Vec<(&'name str, &'src str)>;
+type Objects = Vec<Object>;
 
-    // 2. 意味解析 (AST -> HIR)
-    let hir = semcheck(ast)?;
+pub fn compile<'name, 'src>(inputs: Texts) -> miette::Result<Objects> {
+    // 1. 構文解析 ([&str] -> [AST])
+    let asts = parse(inputs)?;
 
-    // 3. LIR生成 (HIR -> [LIR])
-    let lir = lirgen(&hir);
+    // 2. 意味解析 ([AST] -> [HIR])
+    let hirs = semcheck(asts)?;
 
-    // 4. コード生成 & 最適化 ([LIR] -> [Obj] -> [Obj])
-    let objs = lir
-        .into_iter()
-        .map(codegen)
-        .map(optimize)
-        .collect::<Vec<_>>();
+    // 3. LIR 生成 ([HIR] -> [LIR])
+    let lirs = lirgen(hirs);
+
+    // 4. オブジェクトファイル生成 ([LIR] -> [Obj])
+    let objs = objgen(lirs);
 
     Ok(objs)
 }

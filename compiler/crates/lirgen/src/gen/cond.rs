@@ -1,13 +1,12 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Beq, Bne, Blt, Ble, JmpLabel, Li};
 use sb_compiler_semcheck_hir::Cond;
 
-use crate::{GenContext, ZERO_REG};
-use super::lirgen_bit_shift;
+use super::{GenContext, ZERO_REG, lirgen_bit_shift};
 
-pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
+pub fn lirgen_cond(ctx: &mut GenContext, cond: Cond) -> LirBlock {
     let (result_reg, lirs) = match cond {
         Cond::Eq { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_cond(ctx, lhs);
+            let lir_lhs = lirgen_cond(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_bit_shift(ctx, rhs);
@@ -34,7 +33,7 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
             )
         }
         Cond::Neq { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_cond(ctx, lhs);
+            let lir_lhs = lirgen_cond(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_bit_shift(ctx, rhs);
@@ -61,7 +60,7 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
             )
         }
         Cond::Lt { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_cond(ctx, lhs);
+            let lir_lhs = lirgen_cond(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_bit_shift(ctx, rhs);
@@ -88,7 +87,7 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
             )
         }
         Cond::Lte { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_cond(ctx, lhs);
+            let lir_lhs = lirgen_cond(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_bit_shift(ctx, rhs);
@@ -115,7 +114,7 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
             )
         }
         Cond::Gt { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_cond(ctx, lhs);
+            let lir_lhs = lirgen_cond(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_bit_shift(ctx, rhs);
@@ -142,7 +141,7 @@ pub fn lirgen_cond(ctx: &mut GenContext, cond: &Cond) -> LirBlock {
             )
         }
         Cond::Gte { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_cond(ctx, lhs);
+            let lir_lhs = lirgen_cond(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_bit_shift(ctx, rhs);

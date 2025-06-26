@@ -12,7 +12,7 @@ use super::{Value, SemCheck, Dep};
 #[derive(Debug)]
 pub struct Call<'src> {
     pub span: Span<'src>,
-    pub ident: Span<'src>,
+    pub name: String,
     pub args: Vec<Value<'src>>,
     pub ty: Arc<Type>,
 }
@@ -29,13 +29,14 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Call<'src>> for Call<'src> {
         }
 
         // 型チェック
-        let fn_name = format!(".{}", call.ident.as_str());
+        let mod_name = ctx.name.as_str().split(".").collect::<Vec<_>>()[1];
+        let fn_name = format!(".{}.{}", mod_name, call.ident.as_str());
         let fn_ty = TypeDeclChecker::find(&ctx.type_decl, &fn_name).await?;
         let ty = ty_can_call(&fn_ty, &args)?;
 
         Ok(Call {
             span: call.span,
-            ident: call.ident,
+            name: fn_name,
             args,
             ty,
         })

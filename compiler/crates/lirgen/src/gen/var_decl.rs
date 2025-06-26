@@ -4,8 +4,8 @@ use sb_compiler_semcheck_hir::VarDecl;
 use crate::GenContext;
 use super::lirgen_expr;
 
-pub fn lirgen_var_decl(ctx: &mut GenContext, var_decl: &VarDecl) -> LirBlock {
-    let lir_expr = lirgen_expr(ctx, &var_decl.expr);
+pub fn lirgen_var_decl(ctx: &mut GenContext, var_decl: VarDecl) -> LirBlock {
+    let lir_expr = lirgen_expr(ctx, var_decl.expr);
     let reg_expr = lir_expr.result_reg();
 
     ctx.set_var_reg(var_decl.var.symbol, reg_expr);

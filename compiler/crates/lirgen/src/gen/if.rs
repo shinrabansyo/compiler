@@ -1,20 +1,19 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel, Nop};
 use sb_compiler_semcheck_hir::If;
 
-use crate::{GenContext, ZERO_REG};
-use super::{lirgen_expr, lirgen_block, lirgen_stmt};
+use super::{GenContext, ZERO_REG, lirgen_expr, lirgen_block, lirgen_stmt};
 
-pub fn lirgen_if(ctx: &mut GenContext, r#if: &If) -> LirBlock {
+pub fn lirgen_if(ctx: &mut GenContext, r#if: If) -> LirBlock {
     // 条件節
-    let lir_cond = lirgen_expr(ctx, &r#if.cond);
+    let lir_cond = lirgen_expr(ctx, r#if.cond);
     let reg_cond = lir_cond.result_reg();
 
     // True ブロック
-    let lir_true_block = lirgen_block(ctx, &r#if.block);
+    let lir_true_block = lirgen_block(ctx, r#if.block);
 
     // False ブロック
-    let lir_else_block = if let Some(else_stmt) = &r#if.else_stmt {
-        lirgen_stmt(ctx, else_stmt)
+    let lir_else_block = if let Some(else_stmt) = r#if.else_stmt {
+        lirgen_stmt(ctx, *else_stmt)
     } else {
         lir!(Nop)
     };

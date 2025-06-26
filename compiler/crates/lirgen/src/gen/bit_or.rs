@@ -4,10 +4,10 @@ use sb_compiler_semcheck_hir::BitOr;
 use crate::GenContext;
 use super::lirgen_bit_xor;
 
-pub fn lirgen_bit_or(ctx: &mut GenContext, bit_or: &BitOr) -> LirBlock {
+pub fn lirgen_bit_or(ctx: &mut GenContext, bit_or: BitOr) -> LirBlock {
     let (result_reg, lirs) = match bit_or {
         BitOr::Or { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_bit_or(ctx, lhs);
+            let lir_lhs = lirgen_bit_or(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_bit_xor(ctx, rhs);

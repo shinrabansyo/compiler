@@ -9,8 +9,7 @@ sb_linker = { workspace = true }
 sb_compiler_parse = { path = "./crates/parse" }
 sb_compiler_semcheck = { path = "./crates/semcheck" }
 sb_compiler_lirgen = { path = "./crates/lirgen" }
-sb_compiler_codegen = { path = "./crates/codegen" }
-sb_compiler_opt = { path = "./crates/opt" }
+sb_compiler_objgen = { path = "./crates/objgen" }
 sb_compiler_utils = { path = "./crates/utils" }
 
 [dev-dependencies]

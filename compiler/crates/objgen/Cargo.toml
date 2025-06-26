@@ -1,0 +1,10 @@
+[package]
+name = "sb_compiler_objgen"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sb_linker = { workspace = true }
+sb_compiler_lirgen_ir = { path = "../lirgen_ir" }
+sb_compiler_objgen_code = { path ="../objgen_code" }
+sb_compiler_objgen_opt = { path = "../objgen_opt" }

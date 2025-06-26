@@ -12,7 +12,7 @@ use super::{ArgumentDef, Block, Stmt, SemCheck, InDep};
 #[derive(Debug)]
 pub struct FuncDef<'src> {
     pub span: Span<'src>,
-    pub ident: Span<'src>,
+    pub name: String,
     pub args: Vec<ArgumentDef<'src>>,
     pub ret_ty: Option<Span<'src>>,
     pub block: Block<'src>,
@@ -25,6 +25,9 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
     {
         // 名前空間を作成
         ctx.name.push(func_def.ident.as_str());
+
+        // 関数名
+        let fn_name = ctx.name.as_str().to_string();
 
         // 引数の意味解析
         let mut args = vec![];
@@ -66,7 +69,7 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
 
         Ok(FuncDef {
             span: func_def.span,
-            ident: func_def.ident,
+            name: fn_name,
             args,
             ret_ty: func_def.ret_ty,
             block,

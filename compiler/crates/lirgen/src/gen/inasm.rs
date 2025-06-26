@@ -1,9 +1,9 @@
 use sb_compiler_semcheck_hir::{InlineAsm, InlineAsmInst, InlineAsmOperand};
 use sb_compiler_lirgen_ir::*;
 
-use crate::{GenContext, ZERO_REG};
+use super::{GenContext, ZERO_REG};
 
-pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: &InlineAsm) -> LirBlock {
+pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: InlineAsm) -> LirBlock {
     let mut use_reg = |operand: &InlineAsmOperand| {
         match operand {
             InlineAsmOperand::Reg { num, .. } => *num as u32,
