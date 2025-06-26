@@ -5,21 +5,21 @@ use sb_compiler_semcheck::semcheck;
 use sb_compiler_lirgen::lirgen;
 use sb_compiler_objgen::objgen;
 
-pub fn compile<'name, 'src, I>(inputs: I) -> miette::Result<Vec<Object>>
-where
-    I: Iterator<Item = (&'name str, &'src str)>,
-{
+type Texts<'name, 'src> = Vec<(&'name str, &'src str)>;
+type Objects = Vec<Object>;
+
+pub fn compile<'name, 'src>(inputs: Texts) -> miette::Result<Objects> {
     // 1. 構文解析 ([&str] -> [AST])
     let asts = parse(inputs)?;
 
     // 2. 意味解析 ([AST] -> [HIR])
-    let hirs = semcheck(asts.into_iter())?;
+    let hirs = semcheck(asts)?;
 
-    // 3. LIR生成 ([HIR] -> [LIR])
-    let lirs = lirgen(hirs.into_iter());
+    // 3. LIR 生成 ([HIR] -> [LIR])
+    let lirs = lirgen(hirs);
 
-    // 4. コード生成 & 最適化 ([LIR] -> [Obj])
-    let objs = objgen(lirs.into_iter());
+    // 4. オブジェクトファイル生成 ([LIR] -> [Obj])
+    let objs = objgen(lirs);
 
     Ok(objs)
 }

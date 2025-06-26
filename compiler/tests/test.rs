@@ -12,12 +12,8 @@ use utils::{Expect, test_dir};
 use sb_compiler::compile;
 
 fn test_code(input: &str) -> miette::Result<()> {
-    let input = [
-        ("test", input),
-    ].into_iter();
-
     // コンパイル
-    let objs = compile(input)?;
+    let objs = compile(vec![("test", input)])?;
     let mut buf = vec![];
     Object::dump(&mut buf, &objs).unwrap();
     let objs = Cursor::new(buf);

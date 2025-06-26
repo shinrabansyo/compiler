@@ -18,10 +18,10 @@ const PARSER: LazyCell<Processor<SBLang>> = LazyCell::new(|| {
     loader()
 });
 
-pub fn parse<'name, 'src, I>(inputs: I) -> miette::Result<Vec<(&'name str, Program<'src>)>>
-where
-    I: Iterator<Item = (&'name str, &'src str)>,
-{
+type Texts<'name, 'src> = Vec<(&'name str, &'src str)>;
+type ASTs<'name, 'src> = Vec<(&'name str, Program<'src>)>;
+
+pub fn parse<'name, 'src>(inputs: Texts<'name, 'src>) -> miette::Result<ASTs<'name, 'src>> {
     let parse = |input| {
         let cst = match PARSER.process::<CSTree<_>>(input) {
             Ok(cst) => cst,
@@ -33,6 +33,7 @@ where
     };
 
     inputs
+        .into_iter()
         .map(|(name, input)| (name, parse(input)))
         .map(|(name, ast)| ast.map(|ast| (name, ast)))
         .compose()
