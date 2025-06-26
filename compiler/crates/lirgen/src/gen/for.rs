@@ -1,8 +1,7 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel};
 use sb_compiler_semcheck_hir::For;
 
-use crate::{GenContext, ZERO_REG};
-use super::{lirgen_expr, lirgen_block, lirgen_var_decl};
+use super::{GenContext, ZERO_REG, lirgen_expr, lirgen_block, lirgen_var_decl};
 
 pub fn lirgen_for(ctx: &mut GenContext, r#for: &For) -> LirBlock {
     // 初期化節

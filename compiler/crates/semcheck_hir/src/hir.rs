@@ -35,7 +35,7 @@ mod unary;          pub use unary::Unary;
 mod value;          pub use value::Value;
 mod call;           pub use call::Call;
 
-// AST --(check)--> HIR 用トレイト
+// AST -> HIR 用トレイト
 use std::future::Future;
 use std::pin::Pin;
 use sb_compiler_semcheck_impl::SemCheckContext;

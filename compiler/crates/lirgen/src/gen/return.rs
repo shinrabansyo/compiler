@@ -1,8 +1,7 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Add, FnReturn};
 use sb_compiler_semcheck_hir::Return;
 
-use crate::{GenContext, ZERO_REG, RET_REG};
-use super::lirgen_expr;
+use super::{GenContext, RET_REG, ZERO_REG, lirgen_expr};
 
 pub fn lirgen_return(ctx: &mut GenContext, r#return: &Return) -> LirBlock {
     let lir_expr = lirgen_expr(ctx, &r#return.expr);

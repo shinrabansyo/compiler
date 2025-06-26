@@ -1,8 +1,7 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel};
 use sb_compiler_semcheck_hir::While;
 
-use crate::{GenContext, ZERO_REG};
-use super::{lirgen_expr, lirgen_block};
+use super::{GenContext, ZERO_REG, lirgen_expr, lirgen_block};
 
 pub fn lirgen_while(ctx: &mut GenContext, r#while: &While) -> LirBlock {
     // 条件節

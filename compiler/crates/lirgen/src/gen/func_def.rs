@@ -1,8 +1,7 @@
 use sb_compiler_lirgen_ir::{lir, Add, LirBlock, LirTopElem, FnEpilogue, FnPrologue};
 use sb_compiler_semcheck_hir::FuncDef;
 
-use crate::{GenContext, ZERO_REG};
-use super::lirgen_block;
+use super::{GenContext, ZERO_REG, lirgen_block};
 
 pub fn lirgen_func_def(ctx: &mut GenContext, func: &FuncDef) -> LirTopElem {
     // 引数の初期化

@@ -1,8 +1,7 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel, Li};
 use sb_compiler_semcheck_hir::LogicAnd;
 
-use crate::{GenContext, ZERO_REG};
-use super::lirgen_bit_or;
+use super::{GenContext, ZERO_REG, lirgen_bit_or};
 
 pub fn lirgen_logic_and(ctx: &mut GenContext, logic_and: &LogicAnd) -> LirBlock {
     let (result_reg, lirs) = match logic_and {

@@ -1,8 +1,7 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Call, Li};
 use sb_compiler_semcheck_hir::Value;
 
-use crate::{GenContext, ZERO_REG, RET_REG, FARG_REG_BASE};
-use super::lirgen_expr;
+use super::{GenContext, FARG_REG_BASE, RET_REG, ZERO_REG, lirgen_expr};
 
 pub fn lirgen_value(ctx: &mut GenContext, value: &Value) -> LirBlock {
     let (result_reg, lirs) = match value {

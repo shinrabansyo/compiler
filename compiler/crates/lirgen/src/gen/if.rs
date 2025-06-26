@@ -1,8 +1,7 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Bne, JmpLabel, Nop};
 use sb_compiler_semcheck_hir::If;
 
-use crate::{GenContext, ZERO_REG};
-use super::{lirgen_expr, lirgen_block, lirgen_stmt};
+use super::{GenContext, ZERO_REG, lirgen_expr, lirgen_block, lirgen_stmt};
 
 pub fn lirgen_if(ctx: &mut GenContext, r#if: &If) -> LirBlock {
     // 条件節

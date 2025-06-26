@@ -1,8 +1,7 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Sub, ShiftL, ShiftR, ShiftRa};
 use sb_compiler_semcheck_hir::Assign;
 
-use crate::{GenContext, ZERO_REG};
-use super::lirgen_logic_or;
+use super::{GenContext, ZERO_REG, lirgen_logic_or};
 
 pub fn lirgen_assign(ctx: &mut GenContext, assign: &Assign) -> LirBlock {
     let (result_reg, lirs) = match assign {

@@ -1,8 +1,7 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Blt, Bne, Jmp, JmpLabel, Li, Sub};
 use sb_compiler_semcheck_hir::Mul as MulHir;
 
-use crate::{GenContext, ZERO_REG};
-use super::lirgen_cast;
+use super::{GenContext, ZERO_REG, lirgen_cast};
 
 pub fn lirgen_mul(ctx: &mut GenContext, add: &MulHir) -> LirBlock {
     let (result_reg, lirs) = match add {
