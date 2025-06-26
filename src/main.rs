@@ -14,7 +14,8 @@ fn main() -> miette::Result<()> {
 
     let path = env::args().nth(1).unwrap();
     let input = fs::read_to_string(&path).into_diagnostic()?;
-    let objs = compile(&input)?;
+    let input = [("main", input.as_str())].into_iter();
+    let objs = compile(input)?;
 
     let path = env::args().nth(2).unwrap();
     let mut f = File::create(&path).into_diagnostic()?;
