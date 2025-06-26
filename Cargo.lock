@@ -1310,9 +1310,8 @@ version = "0.1.0"
 dependencies = [
  "miette",
  "sb_assembler",
- "sb_compiler_codegen",
  "sb_compiler_lirgen",
- "sb_compiler_opt",
+ "sb_compiler_objgen",
  "sb_compiler_parse",
  "sb_compiler_semcheck",
  "sb_compiler_utils",
@@ -1326,16 +1325,6 @@ version = "0.1.0"
 dependencies = [
  "miette",
  "sb_compiler",
- "sb_linker",
-]
-
-[[package]]
-name = "sb_compiler_codegen"
-version = "0.1.0"
-dependencies = [
- "sb_compiler_lirgen",
- "sb_compiler_lirgen_ir",
- "sb_compiler_parse",
  "sb_linker",
 ]
 
@@ -1357,7 +1346,27 @@ name = "sb_compiler_lirgen_ir"
 version = "0.1.0"
 
 [[package]]
-name = "sb_compiler_opt"
+name = "sb_compiler_objgen"
+version = "0.1.0"
+dependencies = [
+ "sb_compiler_lirgen_ir",
+ "sb_compiler_objgen_code",
+ "sb_compiler_objgen_opt",
+ "sb_linker",
+]
+
+[[package]]
+name = "sb_compiler_objgen_code"
+version = "0.1.0"
+dependencies = [
+ "sb_compiler_lirgen",
+ "sb_compiler_lirgen_ir",
+ "sb_compiler_parse",
+ "sb_linker",
+]
+
+[[package]]
+name = "sb_compiler_objgen_opt"
 version = "0.1.0"
 dependencies = [
  "sb_linker",
