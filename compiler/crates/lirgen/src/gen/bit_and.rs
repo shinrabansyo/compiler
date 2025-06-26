@@ -4,10 +4,10 @@ use sb_compiler_semcheck_hir::BitAnd;
 use crate::GenContext;
 use super::lirgen_cond;
 
-pub fn lirgen_bit_and(ctx: &mut GenContext, bit_and: &BitAnd) -> LirBlock {
+pub fn lirgen_bit_and(ctx: &mut GenContext, bit_and: BitAnd) -> LirBlock {
     let (result_reg, lirs) = match bit_and {
         BitAnd::And { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_bit_and(ctx, lhs);
+            let lir_lhs = lirgen_bit_and(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_cond(ctx, rhs);

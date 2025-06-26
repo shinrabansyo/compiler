@@ -3,7 +3,7 @@ use sb_compiler_lirgen_ir::*;
 
 use super::{GenContext, ZERO_REG};
 
-pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: &InlineAsm) -> LirBlock {
+pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: InlineAsm) -> LirBlock {
     let mut use_reg = |operand: &InlineAsmOperand| {
         match operand {
             InlineAsmOperand::Reg { num, .. } => *num as u32,

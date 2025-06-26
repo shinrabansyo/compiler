@@ -11,7 +11,7 @@ type LIRs = Vec<LirTopElem>;
 pub fn lirgen(hirs: HIRs) -> LIRs {
     let lirgen = |hir| {
         let mut ctx = GenContext::default();
-        lirgen_program(&mut ctx, &hir)
+        lirgen_program(&mut ctx, hir)
     };
 
     hirs.into_iter()

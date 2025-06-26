@@ -4,10 +4,10 @@ use sb_compiler_semcheck_hir::Add as AddHir;
 use crate::GenContext;
 use super::lirgen_mul;
 
-pub fn lirgen_add(ctx: &mut GenContext, add: &AddHir) -> LirBlock {
+pub fn lirgen_add(ctx: &mut GenContext, add: AddHir) -> LirBlock {
     let (result_reg, lirs) = match add {
         AddHir::Plus { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_add(ctx, lhs);
+            let lir_lhs = lirgen_add(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_mul(ctx, rhs);
@@ -25,7 +25,7 @@ pub fn lirgen_add(ctx: &mut GenContext, add: &AddHir) -> LirBlock {
             )
         }
         AddHir::Minus { lhs, rhs, .. } => {
-            let lir_lhs = lirgen_add(ctx, lhs);
+            let lir_lhs = lirgen_add(ctx, *lhs);
             let reg_lhs = lir_lhs.result_reg();
 
             let lir_rhs = lirgen_mul(ctx, rhs);

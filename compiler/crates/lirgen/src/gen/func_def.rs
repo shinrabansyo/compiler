@@ -3,7 +3,7 @@ use sb_compiler_semcheck_hir::FuncDef;
 
 use super::{GenContext, ZERO_REG, lirgen_block};
 
-pub fn lirgen_func_def(ctx: &mut GenContext, func: &FuncDef) -> LirTopElem {
+pub fn lirgen_func_def(ctx: &mut GenContext, func: FuncDef) -> LirTopElem {
     // 引数の初期化
     let mut lirs = vec![];
     for (idx, arg) in func.args.iter().enumerate() {
@@ -17,7 +17,7 @@ pub fn lirgen_func_def(ctx: &mut GenContext, func: &FuncDef) -> LirTopElem {
     };
 
     // 本体
-    let lir_body = lirgen_block(ctx, &func.block);
+    let lir_body = lirgen_block(ctx, func.block);
 
     // LirBlock 構成
     let lir_block = LirBlock::Single {
@@ -31,7 +31,7 @@ pub fn lirgen_func_def(ctx: &mut GenContext, func: &FuncDef) -> LirTopElem {
     };
 
     LirTopElem::Function {
-        name: func.ident.as_str().to_string(),
+        name: func.name,
         body: lir_block,
     }
 }

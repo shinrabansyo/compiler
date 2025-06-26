@@ -4,7 +4,7 @@ use std::io::Cursor;
 
 use sb_assembler::assemble;
 use sb_emulator::Emulator;
-use sb_linker::config::Config;
+use sb_linker::config::{Config, General};
 use sb_linker::obj::Object;
 use sb_linker::link;
 
@@ -19,7 +19,13 @@ fn test_code(input: &str) -> miette::Result<()> {
     let objs = Cursor::new(buf);
 
     // リンク
-    let asm = link(Config::default(), vec![objs]).unwrap();
+    let link_config = Config {
+        general: General {
+            main: ".test.main".to_string(),
+            stack_addr: 0x0000_0100,
+        }
+    };
+    let asm = link(link_config, vec![objs]).unwrap();
 
     // アセンブル
     let (dmem, imem) = assemble(&asm).unwrap();

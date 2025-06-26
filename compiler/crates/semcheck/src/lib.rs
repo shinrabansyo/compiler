@@ -9,12 +9,14 @@ type HIRs<'src> = Vec<hir::Program<'src>>;
 
 pub fn semcheck<'name, 'src>(asts: ASTs<'name, 'src>) -> miette::Result<HIRs<'src>> {
     let (_, semcheck_ctx) = SemCheckServer::new();
-    let semcheck = |ast| {
-        hir::Program::check(semcheck_ctx.clone(), ast)
+    let semcheck = |(name, ast)| {
+        let mut ctx = semcheck_ctx.clone();
+        ctx.name.push(name);
+        hir::Program::check(ctx, ast)
     };
 
     asts.into_iter()
-        .map(|(_, ast)| semcheck(ast))
+        .map(semcheck)
         .join_all()
         .block_on()
         .compose()
