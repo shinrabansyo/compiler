@@ -1495,6 +1495,7 @@ name = "sb_compiler_type"
 version = "0.1.0"
 dependencies = [
  "miette",
+ "sb_compiler_parse_ast",
  "sb_compiler_parse_cst",
  "thiserror 2.0.12",
 ]

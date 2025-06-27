@@ -1,5 +1,7 @@
 use std::sync::{Arc, LazyLock};
 
+use sb_compiler_parse_ast as ast;
+
 use super::Typed;
 
 pub use Type::*;
@@ -22,10 +24,23 @@ pub enum Type {
     },
 }
 
+impl<'src> From<ast::Type<'src>> for Type {
+    fn from(ast: ast::Type<'src>) -> Self {
+        match ast {
+            // プリミティブ
+            ast::Type::Bool(_) => Type::Bool,
+            ast::Type::Char(_) => Type::Char,
+            ast::Type::I8(_) => Type::I8,
+            ast::Type::I16(_) => Type::I16,
+            ast::Type::I32(_) => Type::I32,
+        }
+    }
+}
+
 impl Typed for Type {
     fn ty(&self) -> Arc<Type> {
         match self {
-            // プリミティブ型
+            // プリミティブ
             Type::Void => {
                 static VOID: LazyLock<Arc<Type>> = LazyLock::new(|| {
                     Arc::new(Type::Void)
