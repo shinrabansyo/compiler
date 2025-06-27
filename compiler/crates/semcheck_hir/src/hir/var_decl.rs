@@ -29,7 +29,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
         // 型検査
         let var_ty = match &var_decl.ty {
             Some(ty) => {
-                let var_ty = TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?;
+                let var_ty = TypeDeclChecker::find(&ctx.type_decl, ty.span().as_str()).await?;
                 ty_equals(var_ty.as_ref().clone(), &expr)?;
                 var_ty
             }

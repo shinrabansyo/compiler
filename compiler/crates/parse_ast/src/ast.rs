@@ -6,6 +6,9 @@ mod top;            pub use top::Top;
 mod func_def;       pub use func_def::FuncDef;
 mod argument_def;   pub use argument_def::ArgumentDef;
 
+// 型
+mod r#type;         pub use r#type::Type;
+
 // 文
 mod block;          pub use block::Block;
 mod stmt;           pub use stmt::Stmt;

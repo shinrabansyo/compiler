@@ -32,7 +32,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cast<'src>> for Cast<'src> {
                 let unary = Unary::check(ctx, unary).await?;
 
                 // 型チェック
-                let ty = TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?;
+                let ty = TypeDeclChecker::find(&ctx.type_decl, ty.span().as_str()).await?;
                 ty_cast(&unary, &ty)?;
 
                 Ok(Cast::Casting { span, unary, ty })

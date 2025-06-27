@@ -21,7 +21,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::ArgumentDef<'src>> for ArgumentDef<'src>
         Self: Sized,
     {
         // 型存在チェック
-        let ty = TypeDeclChecker::find(&ctx.type_decl, &arg.ty.as_str()).await?;
+        let ty = TypeDeclChecker::find(&ctx.type_decl, &arg.ty.span().as_str()).await?;
 
         // 変数宣言
         let var = VarDeclChecker::register(
