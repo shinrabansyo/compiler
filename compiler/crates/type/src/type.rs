@@ -33,6 +33,8 @@ impl<'src> From<ast::Type<'src>> for Type {
             ast::Type::I8(_) => Type::I8,
             ast::Type::I16(_) => Type::I16,
             ast::Type::I32(_) => Type::I32,
+
+            _ => panic!(""),
         }
     }
 }

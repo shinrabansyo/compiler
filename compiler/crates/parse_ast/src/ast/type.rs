@@ -11,17 +11,46 @@ pub enum Type<'src> {
     I8(Span<'src>),
     I16(Span<'src>),
     I32(Span<'src>),
+
+    // アドレス
+    Addr {
+        span: Span<'src>,
+        innter_ty: Box<Type<'src>>
+    },
+    DataAddr {
+        span: Span<'src>,
+        innter_ty: Box<Type<'src>>
+    },
+    InstAddr {
+        span: Span<'src>,
+        innter_ty: Box<Type<'src>>
+    },
 }
 
 impl<'src> From<Visitor<'src>> for Type<'src> {
-    fn from(visitor: Visitor<'src>) -> Self {
-        match visitor.peek() {
+    fn from(mut visitor: Visitor<'src>) -> Self {
+        let span = visitor.span();
+        match visitor.expect_leaf() {
             // プリミティブ
-            (Some(SBToken::BoolTy), None) => Type::Bool(visitor.span()),
-            (Some(SBToken::CharTy), None) => Type::Char(visitor.span()),
-            (Some(SBToken::I8Ty), None) => Type::I8(visitor.span()),
-            (Some(SBToken::I16Ty), None) => Type::I16(visitor.span()),
-            (Some(SBToken::I32Ty), None) => Type::I32(visitor.span()),
+            (SBToken::BoolTy, _) => Type::Bool(span),
+            (SBToken::CharTy, _) => Type::Char(span),
+            (SBToken::I8Ty, _) => Type::I8(span),
+            (SBToken::I16Ty, _) => Type::I16(span),
+            (SBToken::I32Ty, _) => Type::I32(span),
+
+            // アドレス
+            (SBToken::AddrTy, _) => Type::Addr {
+                span: visitor.span(),
+                innter_ty: Box::new(visitor.expect_node::<Type>()),
+            },
+            (SBToken::DataAddrTy, _) => Type::DataAddr {
+                span: visitor.span(),
+                innter_ty: Box::new(visitor.expect_node::<Type>()),
+            },
+            (SBToken::InstAddrTy, _) => Type::InstAddr {
+                span: visitor.span(),
+                innter_ty: Box::new(visitor.expect_node::<Type>()),
+            },
 
             _ => unreachable!(),
         }
@@ -31,11 +60,17 @@ impl<'src> From<Visitor<'src>> for Type<'src> {
 impl<'src> Spanned<'src> for Type<'src> {
     fn span(&self) -> Span<'src> {
         match self {
+            // プリミティブ
             Type::Bool(span) => *span,
             Type::Char(span) => *span,
             Type::I8(span) => *span,
             Type::I16(span) => *span,
             Type::I32(span) => *span,
+
+            // アドレス
+            Type::Addr { span, .. } => *span,
+            Type::DataAddr { span, .. } => *span,
+            Type::InstAddr { span, .. } => *span,
         }
     }
 }

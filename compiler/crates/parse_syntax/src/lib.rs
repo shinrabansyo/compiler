@@ -71,6 +71,12 @@ pub enum SBToken {
     I16Ty,
     #[token(r"i32")]
     I32Ty,
+    #[token(r"Addr")]
+    AddrTy,
+    #[token(r"DataAddr")]
+    DataAddrTy,
+    #[token(r"InstAddr")]
+    InstAddrTy,
 
     // 演算子
     #[token(r"==")]
@@ -180,6 +186,9 @@ pub enum SBRule {
     #[rule("<type> ::= I8Ty")]
     #[rule("<type> ::= I16Ty")]
     #[rule("<type> ::= I32Ty")]
+    #[rule("<type> ::= AddrTy Lt <type> Gt")]
+    #[rule("<type> ::= DataAddrTy Lt <type> Gt")]
+    #[rule("<type> ::= InstAddrTy Lt <type> Gt")]
     Type,
 
     // 文
