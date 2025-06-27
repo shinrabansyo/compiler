@@ -285,20 +285,15 @@ pub enum SBRule {
     #[rule("<unary> ::= <value>")]
     Unary,
 
+    #[rule("<value_list> ::= <value_list> Comma <value>")]
+    #[rule("<value_list> ::= <value>")]
+    #[rule("<value_list> ::= ")]
     #[rule("<value> ::= True")]
     #[rule("<value> ::= False")]
     #[rule("<value> ::= Char")]
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]
+    #[rule("<value> ::= Ident ParenL <value_list> ParenR")]
     #[rule("<value> ::= ParenL <expr> ParenR")]
-    #[rule("<value> ::= <call>")]
     Value,
-
-    #[rule("<call> ::= Ident ParenL <arg_list> ParenR")]
-    Call,
-
-    #[rule("<arg_list> ::= <arg_list> Comma <value>")]
-    #[rule("<arg_list> ::= <value>")]
-    #[rule("<arg_list> ::= ")]
-    ArgList,
 }

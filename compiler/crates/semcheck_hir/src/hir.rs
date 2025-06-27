@@ -33,7 +33,6 @@ mod mul;            pub use mul::Mul;
 mod cast;           pub use cast::Cast;
 mod unary;          pub use unary::Unary;
 mod value;          pub use value::Value;
-mod call;           pub use call::Call;
 
 // AST -> HIR 用トレイト
 use std::future::Future;

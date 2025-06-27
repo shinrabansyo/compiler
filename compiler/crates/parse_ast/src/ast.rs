@@ -33,7 +33,6 @@ mod mul;            pub use mul::Mul;
 mod cast;           pub use cast::Cast;
 mod unary;          pub use unary::Unary;
 mod value;          pub use value::Value;
-mod call;           pub use call::Call;
 
 // AST -> CST ビジター
 use sb_compiler_parse_cst::CSTreeVisitor;
