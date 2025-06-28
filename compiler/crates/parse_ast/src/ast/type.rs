@@ -15,15 +15,15 @@ pub enum Type<'src> {
     // アドレス
     Addr {
         span: Span<'src>,
-        innter_ty: Box<Type<'src>>
+        inner_ty: Box<Type<'src>>
     },
     DataAddr {
         span: Span<'src>,
-        innter_ty: Box<Type<'src>>
+        inner_ty: Box<Type<'src>>
     },
     InstAddr {
         span: Span<'src>,
-        innter_ty: Box<Type<'src>>
+        inner_ty: Box<Type<'src>>
     },
 }
 
@@ -39,18 +39,24 @@ impl<'src> From<Visitor<'src>> for Type<'src> {
             (SBToken::I32Ty, _) => Type::I32(span),
 
             // アドレス
-            (SBToken::AddrTy, _) => Type::Addr {
-                span: visitor.span(),
-                innter_ty: Box::new(visitor.expect_node::<Type>()),
-            },
-            (SBToken::DataAddrTy, _) => Type::DataAddr {
-                span: visitor.span(),
-                innter_ty: Box::new(visitor.expect_node::<Type>()),
-            },
-            (SBToken::InstAddrTy, _) => Type::InstAddr {
-                span: visitor.span(),
-                innter_ty: Box::new(visitor.expect_node::<Type>()),
-            },
+            (SBToken::AddrTy, _) => {
+                let _ = visitor.expect_leaf(); // '<'
+                let inner_ty = Box::new(visitor.expect_node::<Type>());
+                let _ = visitor.expect_leaf(); // '>'
+                Type::Addr { span, inner_ty }
+            }
+            (SBToken::DataAddrTy, _) => {
+                let _ = visitor.expect_leaf(); // '<'
+                let inner_ty = Box::new(visitor.expect_node::<Type>());
+                let _ = visitor.expect_leaf(); // '>'
+                Type::DataAddr { span, inner_ty }
+            }
+            (SBToken::InstAddrTy, _) => {
+                let _ = visitor.expect_leaf(); // '<'
+                let inner_ty = Box::new(visitor.expect_node::<Type>());
+                let _ = visitor.expect_leaf(); // '>'
+                Type::InstAddr { span, inner_ty }
+            }
 
             _ => unreachable!(),
         }
