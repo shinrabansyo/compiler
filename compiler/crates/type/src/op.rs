@@ -1,6 +1,6 @@
 // 判断
 mod cast;       pub use cast::ty_cast;
-mod equals;     pub use equals::{ty_equals, ty_equals2};
+mod equals;     pub use equals::{ty_equals, ty_equals_arith2};
 
 // 演算
 mod det;        pub use det::ty_det_arith2;
