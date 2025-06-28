@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_type::op::ty_infer2;
+use sb_compiler_type::op::ty_det_arith2;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
 
@@ -45,7 +45,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitShift<'src>> for BitShift<'src> {
                 let rhs = Add::check(ctx, rhs).await?;
 
                 // 型決定
-                let ty = ty_infer2(&lhs, &rhs)?;
+                let ty = ty_det_arith2(&lhs, &rhs)?;
 
                 Ok(BitShift::L { span, lhs, rhs, ty })
             }
@@ -55,7 +55,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitShift<'src>> for BitShift<'src> {
                 let rhs = Add::check(ctx, rhs).await?;
 
                 // 型決定
-                let ty = ty_infer2(&lhs, &rhs)?;
+                let ty = ty_det_arith2(&lhs, &rhs)?;
 
                 Ok(BitShift::R { span, lhs, rhs, ty })
             }
@@ -65,7 +65,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitShift<'src>> for BitShift<'src> {
                 let rhs = Add::check(ctx, rhs).await?;
 
                 // 型決定
-                let ty = ty_infer2(&lhs, &rhs)?;
+                let ty = ty_det_arith2(&lhs, &rhs)?;
 
                 Ok(BitShift::Ra { span, lhs, rhs, ty })
             }
