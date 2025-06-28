@@ -40,8 +40,9 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             .iter()
             .map(|arg| arg.ty())
             .collect::<Vec<_>>();
-        let ret_ty = match &func_def.ret_ty {
-            Some(ty) => TypeDeclChecker::find(&ctx.type_decl, ty.span().as_str()).await?,
+        let ret_ty = match func_def.ret_ty {
+            // Some(ty) => TypeDeclChecker::find(&ctx.type_decl, &ty).await?,
+            Some(ty) => Type::from(ty).ty(),
             None => Void.ty(),
         };
         let fn_ty = Arc::new(Function {

@@ -9,7 +9,7 @@ where
     A: Typed + Spanned<'src>,
 {
     match (&ty, a.ty().as_ref()) {
-        // プリミティブ型
+        // プリミティブ
         (Void,     Void)     => Ok(()),
         (Bool,     Bool)     => Ok(()),
         (Char,     Char)     => Ok(()),
@@ -23,6 +23,11 @@ where
         (NumConst, I16)      => Ok(()),
         (NumConst, I32)      => Ok(()),
         (NumConst, NumConst) => Ok(()),
+
+        // アドレス
+        (Addr(_),     Addr(_))     => Ok(()),
+        (DataAddr(_), DataAddr(_)) => Ok(()),
+        (InstAddr(_), InstAddr(_)) => Ok(()),
 
         // 比較失敗
         _ => Err(TypeError::new_mismatch(ty, a))
@@ -35,7 +40,7 @@ where
     B: Typed + Spanned<'src>,
 {
     match (a.ty().as_ref(), b.ty().as_ref()) {
-        // プリミティブ型
+        // プリミティブ
         (Void,     Void)     => Ok(()),
         (Bool,     Bool)     => Ok(()),
         (Char,     Char)     => Ok(()),
@@ -49,6 +54,11 @@ where
         (NumConst, I16)      => Ok(()),
         (NumConst, I32)      => Ok(()),
         (NumConst, NumConst) => Ok(()),
+
+        // アドレス
+        (Addr(_),     Addr(_))     => Ok(()),
+        (DataAddr(_), DataAddr(_)) => Ok(()),
+        (InstAddr(_), InstAddr(_)) => Ok(()),
 
         // 比較失敗
         _ => Err(TypeError::new_mismatch2(a, b))

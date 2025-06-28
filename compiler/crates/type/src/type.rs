@@ -17,6 +17,11 @@ pub enum Type {
     I32,
     NumConst,
 
+    // アドレス
+    Addr(Arc<Type>),
+    DataAddr(Arc<Type>),
+    InstAddr(Arc<Type>),
+
     // 関数
     Function {
         args: Vec<Arc<Type>>,
@@ -34,7 +39,19 @@ impl<'src> From<ast::Type<'src>> for Type {
             ast::Type::I16(_) => Type::I16,
             ast::Type::I32(_) => Type::I32,
 
-            _ => panic!(""),
+            // アドレス
+            ast::Type::Addr { inner_ty, .. } => {
+                let inner_ty = Type::from(*inner_ty);
+                Type::Addr(Arc::new(inner_ty))
+            }
+            ast::Type::DataAddr { inner_ty, .. } => {
+                let inner_ty = Type::from(*inner_ty);
+                Type::DataAddr(Arc::new(inner_ty))
+            }
+            ast::Type::InstAddr { inner_ty, .. } => {
+                let inner_ty = Type::from(*inner_ty);
+                Type::InstAddr(Arc::new(inner_ty))
+            }
         }
     }
 }
@@ -85,6 +102,17 @@ impl Typed for Type {
                 });
                 Arc::clone(&NUM_CONST)
             },
+
+            // アドレス
+            Type::Addr(inner_ty) => {
+                Arc::new(Type::Addr(Arc::clone(inner_ty)))
+            }
+            Type::DataAddr(inner_ty) => {
+                Arc::new(Type::DataAddr(Arc::clone(inner_ty)))
+            }
+            Type::InstAddr(inner_ty) => {
+                Arc::new(Type::InstAddr(Arc::clone(inner_ty)))
+            }
 
             // 関数
             Type::Function { args, ret_ty } => {

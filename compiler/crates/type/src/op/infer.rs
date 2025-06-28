@@ -12,7 +12,7 @@ where
 {
     let a_ty = a.ty();
     match a_ty.as_ref() {
-        // プリミティブ型
+        // プリミティブ
         Void     => Ok(a_ty),
         Bool     => Ok(a_ty),
         I8       => Ok(a_ty),
@@ -20,6 +20,11 @@ where
         I32      => Ok(a_ty),
         Char     => Ok(a_ty),
         NumConst => Ok(I32.ty()),
+
+        // アドレス
+        Addr(_)     => Ok(a_ty),
+        DataAddr(_) => Ok(a_ty),
+        InstAddr(_) => Ok(a_ty),
 
         // 推論失敗
         _ => panic!(""),
@@ -34,7 +39,7 @@ where
     let a_ty = a.ty();
     let b_ty = b.ty();
     match (a_ty.as_ref(), b_ty.as_ref()) {
-        // プリミティブ型
+        // プリミティブ
         (Void,     Void)     => Ok(a_ty),
         (Bool,     Bool)     => Ok(a_ty),
         (Char,     Char)     => Ok(a_ty),
@@ -48,6 +53,15 @@ where
         (NumConst, I16)      => Ok(b_ty),
         (NumConst, I32)      => Ok(b_ty),
         (NumConst, NumConst) => Ok(a_ty),
+
+        // アドレス
+        (Addr(_),     Addr(_))     => Ok(a_ty),
+        (Addr(_),     DataAddr(_)) => Ok(b_ty),
+        (Addr(_),     InstAddr(_)) => Ok(b_ty),
+        (DataAddr(_), Addr(_))     => Ok(a_ty),
+        (DataAddr(_), DataAddr(_)) => Ok(a_ty),
+        (InstAddr(_), Addr(_))     => Ok(a_ty),
+        (InstAddr(_), InstAddr(_)) => Ok(a_ty),
 
         // 推論失敗
         _ => Err(TypeError::new_infer2_failed(a, b)),
