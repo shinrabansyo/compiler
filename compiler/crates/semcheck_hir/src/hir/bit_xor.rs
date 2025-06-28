@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_type::op::ty_infer2;
+use sb_compiler_type::op::ty_det_arith2;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
 
@@ -33,7 +33,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::BitXor<'src>> for BitXor<'src> {
                 let rhs = BitAnd::check(ctx, rhs).await?;
 
                 // 型決定
-                let ty = ty_infer2(&lhs, &rhs)?;
+                let ty = ty_det_arith2(&lhs, &rhs)?;
 
                 Ok(BitXor::Xor { span, lhs, rhs, ty })
             }

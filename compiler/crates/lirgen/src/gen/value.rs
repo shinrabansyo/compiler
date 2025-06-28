@@ -17,15 +17,15 @@ pub fn lirgen_value(ctx: &mut GenContext, value: Value) -> LirBlock {
             let reg_expr = lir_expr.result_reg();
             (reg_expr, vec![lir_expr])
         }
-        Value::Call { call, .. } => {
+        Value::Call { name, args, .. } => {
             let mut lirs = vec![];
-            for (idx, value) in call.args.into_iter().enumerate() {
+            for (idx, value) in args.into_iter().enumerate() {
                 let lir_arg = lirgen_value(ctx, value);
                 let reg_arg = lir_arg.result_reg();
                 lirs.push(lir_arg);
                 lirs.push(lir!(Add FARG_REG_BASE + idx as u32, ZERO_REG, reg_arg));
             }
-            lirs.push(lir!(Call(call.name)));
+            lirs.push(lir!(Call(name)));
             (RET_REG, lirs)
         }
     };

@@ -1,13 +1,13 @@
 use sb_compiler_parse_cst::{Span, Spanned};
 
-use super::{Unary, Visitor};
+use super::{Type, Unary, Visitor};
 
 #[derive(Debug)]
 pub enum Cast<'src> {
     Casting {
         span: Span<'src>,
         unary: Unary<'src>,
-        ty: Span<'src>,
+        ty: Type<'src>,
     },
     Unary {
         unary: Unary<'src>
@@ -26,7 +26,7 @@ impl<'src> From<Visitor<'src>> for Cast<'src> {
         // キャスト指示付き
         let span = visitor.span();
         let unary = visitor.expect_node::<Unary>();
-        let ty = visitor.expect_leaf().1;
+        let ty = visitor.expect_node::<Type>();
 
         Cast::Casting { span, unary, ty }
     }

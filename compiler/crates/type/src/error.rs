@@ -52,8 +52,8 @@ pub enum TypeError {
         b: Arc<Type>,
     },
 
-    #[error("Cannot infer type from '{a:?}' and '{b:?}'")]
-    Infer2Failed {
+    #[error("Cannot determine type from '{a:?}' and '{b:?}'")]
+    Det2Failed {
         #[source_code]
         src: String,
 
@@ -107,12 +107,12 @@ impl TypeError {
         }.into()
     }
 
-    pub fn new_infer2_failed<'src, A, B>(a: &A, b: &B) -> miette::Report
+    pub fn new_det2_failed<'src, A, B>(a: &A, b: &B) -> miette::Report
     where
         A: Typed + Spanned<'src>,
         B: Typed + Spanned<'src>,
     {
-        TypeError::Infer2Failed {
+        TypeError::Det2Failed {
             src: a.span().src.to_string(),
             a_span: a.span().into(),
             a: a.ty().as_ref().clone(),

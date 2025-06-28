@@ -3,7 +3,6 @@ use std::sync::Arc;
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
 
@@ -21,7 +20,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::ArgumentDef<'src>> for ArgumentDef<'src>
         Self: Sized,
     {
         // 型存在チェック
-        let ty = TypeDeclChecker::find(&ctx.type_decl, &arg.ty.as_str()).await?;
+        let ty = Type::from(arg.ty).ty();
 
         // 変数宣言
         let var = VarDeclChecker::register(

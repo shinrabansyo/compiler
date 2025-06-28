@@ -62,11 +62,21 @@ pub enum SBToken {
     #[token(r"asm!", ir_omit)]
     Asm,
     #[token(r"bool")]
+    BoolTy,
     #[token(r"char")]
+    CharTy,
     #[token(r"i8")]
+    I8Ty,
     #[token(r"i16")]
+    I16Ty,
     #[token(r"i32")]
-    Type,
+    I32Ty,
+    #[token(r"Addr")]
+    AddrTy,
+    #[token(r"DataAddr")]
+    DataAddrTy,
+    #[token(r"InstAddr")]
+    InstAddrTy,
 
     // 演算子
     #[token(r"==")]
@@ -161,14 +171,25 @@ pub enum SBRule {
 
     // 定義
     #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR <block>")]
-    #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR Allow Type <block>")]
+    #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR Allow <type> <block>")]
     FuncDef,
 
     #[rule("<arg_def_list> ::= <arg_def_list> Comma <arg_def>")]
     #[rule("<arg_def_list> ::= <arg_def>")]
     #[rule("<arg_def_list> ::= ")]
-    #[rule("<arg_def> ::= Ident Colon Type")]
+    #[rule("<arg_def> ::= Ident Colon <type>")]
     ArgumentDef,
+
+    // 型
+    #[rule("<type> ::= BoolTy")]
+    #[rule("<type> ::= CharTy")]
+    #[rule("<type> ::= I8Ty")]
+    #[rule("<type> ::= I16Ty")]
+    #[rule("<type> ::= I32Ty")]
+    #[rule("<type> ::= AddrTy Lt <type> Gt")]
+    #[rule("<type> ::= DataAddrTy Lt <type> Gt")]
+    #[rule("<type> ::= InstAddrTy Lt <type> Gt")]
+    Type,
 
     // 文
     #[rule("<block> ::= BraceL <stmt_list> BraceR")]
@@ -186,7 +207,7 @@ pub enum SBRule {
     #[rule("<stmt> ::= <inasm>")]
     Stmt,
 
-    #[rule("<var_decl> ::= Var Ident Colon Type Assign <expr>")]
+    #[rule("<var_decl> ::= Var Ident Colon <type> Assign <expr>")]
     #[rule("<var_decl> ::= Var Ident Assign <expr>")]
     VarDecl,
 
@@ -275,7 +296,7 @@ pub enum SBRule {
     #[rule("<mul> ::= <cast>")]
     Mul,
 
-    #[rule("<cast> ::= <unary> As Type")]
+    #[rule("<cast> ::= <unary> As <type>")]
     #[rule("<cast> ::= <unary>")]
     Cast,
 
@@ -285,20 +306,15 @@ pub enum SBRule {
     #[rule("<unary> ::= <value>")]
     Unary,
 
+    #[rule("<value_list> ::= <value_list> Comma <value>")]
+    #[rule("<value_list> ::= <value>")]
+    #[rule("<value_list> ::= ")]
     #[rule("<value> ::= True")]
     #[rule("<value> ::= False")]
     #[rule("<value> ::= Char")]
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]
+    #[rule("<value> ::= Ident ParenL <value_list> ParenR")]
     #[rule("<value> ::= ParenL <expr> ParenR")]
-    #[rule("<value> ::= <call>")]
     Value,
-
-    #[rule("<call> ::= Ident ParenL <arg_list> ParenR")]
-    Call,
-
-    #[rule("<arg_list> ::= <arg_list> Comma <value>")]
-    #[rule("<arg_list> ::= <value>")]
-    #[rule("<arg_list> ::= ")]
-    ArgList,
 }

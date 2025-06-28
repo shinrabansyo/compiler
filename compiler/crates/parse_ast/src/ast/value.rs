@@ -1,7 +1,7 @@
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::{SBToken, SBRule};
 
-use super::{Expr, Call, Visitor};
+use super::{Expr, Visitor};
 
 #[derive(Debug)]
 pub enum Value<'src> {
@@ -21,12 +21,14 @@ pub enum Value<'src> {
         span: Span<'src>,
         name: Span<'src>,
     },
+    Call {
+        span: Span<'src>,
+        ident: Span<'src>,
+        args: Vec<Value<'src>>,
+    },
     Expr {
         expr: Box<Expr<'src>>,
     },
-    Call {
-        call: Call<'src>,
-    }
 }
 
 impl<'src> From<Visitor<'src>> for Value<'src> {
@@ -67,23 +69,28 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
                 }.unwrap();
                 Value::CNum { span: visitor.span(), value }
             }
-            // 変数
+            // 変数 or 関数呼び出し
             (Some(SBToken::Ident), None) => {
-                Value::Var {
-                    span: visitor.span(),
-                    name: visitor.expect_leaf().1,
+                let span = visitor.span();
+                let ident = visitor.expect_leaf().1;
+                match visitor.peek() {
+                    // 変数
+                    (None, None) => Value::Var {
+                        span,
+                        name: ident,
+                    },
+                    // 関数呼び出し
+                    _ => Value::Call {
+                        span,
+                        ident,
+                        args: visitor.expect_nodes::<Value>(),
+                    },
                 }
             }
             // 括弧
             (None, Some(SBRule::Expr)) => {
                 Value::Expr {
                     expr: Box::new(visitor.expect_node::<Expr>()),
-                }
-            }
-            // 関数呼び出し
-            (None, Some(SBRule::Call)) => {
-                Value::Call {
-                    call: visitor.expect_node::<Call>(),
                 }
             }
             _ => unreachable!(),
@@ -98,8 +105,8 @@ impl<'src> Spanned<'src> for Value<'src> {
             Value::CChar { span, .. } => *span,
             Value::CNum { span, .. } => *span,
             Value::Var { span, .. } => *span,
+            Value::Call { span, .. } => *span,
             Value::Expr { expr } => expr.span(),
-            Value::Call { call } => call.span(),
         }
     }
 }

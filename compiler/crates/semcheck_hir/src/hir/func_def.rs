@@ -14,7 +14,7 @@ pub struct FuncDef<'src> {
     pub span: Span<'src>,
     pub name: String,
     pub args: Vec<ArgumentDef<'src>>,
-    pub ret_ty: Option<Span<'src>>,
+    pub ret_ty: Arc<Type>,
     pub block: Block<'src>,
 }
 
@@ -40,8 +40,9 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             .iter()
             .map(|arg| arg.ty())
             .collect::<Vec<_>>();
-        let ret_ty = match &func_def.ret_ty {
-            Some(ty) => TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?,
+        let ret_ty = match func_def.ret_ty {
+            // Some(ty) => TypeDeclChecker::find(&ctx.type_decl, &ty).await?,
+            Some(ty) => Type::from(ty).ty(),
             None => Void.ty(),
         };
         let fn_ty = Arc::new(Function {
@@ -71,7 +72,7 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             span: func_def.span,
             name: fn_name,
             args,
-            ret_ty: func_def.ret_ty,
+            ret_ty,
             block,
         })
     }

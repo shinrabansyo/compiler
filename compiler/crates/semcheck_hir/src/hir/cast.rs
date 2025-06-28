@@ -2,7 +2,6 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
 use sb_compiler_type::op::ty_cast;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
@@ -32,7 +31,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cast<'src>> for Cast<'src> {
                 let unary = Unary::check(ctx, unary).await?;
 
                 // 型チェック
-                let ty = TypeDeclChecker::find(&ctx.type_decl, ty.as_str()).await?;
+                let ty = Type::from(ty).ty();
                 ty_cast(&unary, &ty)?;
 
                 Ok(Cast::Casting { span, unary, ty })

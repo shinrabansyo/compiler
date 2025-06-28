@@ -1,13 +1,13 @@
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_parse_syntax::SBToken;
+use sb_compiler_parse_syntax::SBRule;
 
-use super::{Expr, Visitor};
+use super::{Expr, Type, Visitor};
 
 #[derive(Debug)]
 pub struct VarDecl<'src> {
     pub span: Span<'src>,
     pub ident: Span<'src>,
-    pub ty: Option<Span<'src>>,
+    pub ty: Option<Type<'src>>,
     pub expr: Expr<'src>,
 }
 
@@ -17,9 +17,9 @@ impl<'src> From<Visitor<'src>> for VarDecl<'src> {
         let ident = visitor.expect_leaf().1;
         let ty = visitor
             .peek()
-            .0
-            .filter(|token| token != &SBToken::Assign)
-            .and_then(|_| Some(visitor.expect_leaf().1));
+            .1
+            .filter(|rule| rule == &SBRule::Type)
+            .and_then(|_| Some(visitor.expect_node::<Type>()));
         let _ = visitor.expect_leaf();  // '='
         let expr = visitor.expect_node::<Expr>();
 

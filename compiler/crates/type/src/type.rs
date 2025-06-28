@@ -1,5 +1,7 @@
 use std::sync::{Arc, LazyLock};
 
+use sb_compiler_parse_ast as ast;
+
 use super::Typed;
 
 pub use Type::*;
@@ -15,6 +17,11 @@ pub enum Type {
     I32,
     NumConst,
 
+    // アドレス
+    Addr(Arc<Type>),
+    DataAddr(Arc<Type>),
+    InstAddr(Arc<Type>),
+
     // 関数
     Function {
         args: Vec<Arc<Type>>,
@@ -22,10 +29,37 @@ pub enum Type {
     },
 }
 
+impl<'src> From<ast::Type<'src>> for Type {
+    fn from(ast: ast::Type<'src>) -> Self {
+        match ast {
+            // プリミティブ
+            ast::Type::Bool(_) => Type::Bool,
+            ast::Type::Char(_) => Type::Char,
+            ast::Type::I8(_) => Type::I8,
+            ast::Type::I16(_) => Type::I16,
+            ast::Type::I32(_) => Type::I32,
+
+            // アドレス
+            ast::Type::Addr { inner_ty, .. } => {
+                let inner_ty = Type::from(*inner_ty);
+                Type::Addr(Arc::new(inner_ty))
+            }
+            ast::Type::DataAddr { inner_ty, .. } => {
+                let inner_ty = Type::from(*inner_ty);
+                Type::DataAddr(Arc::new(inner_ty))
+            }
+            ast::Type::InstAddr { inner_ty, .. } => {
+                let inner_ty = Type::from(*inner_ty);
+                Type::InstAddr(Arc::new(inner_ty))
+            }
+        }
+    }
+}
+
 impl Typed for Type {
     fn ty(&self) -> Arc<Type> {
         match self {
-            // プリミティブ型
+            // プリミティブ
             Type::Void => {
                 static VOID: LazyLock<Arc<Type>> = LazyLock::new(|| {
                     Arc::new(Type::Void)
@@ -68,6 +102,17 @@ impl Typed for Type {
                 });
                 Arc::clone(&NUM_CONST)
             },
+
+            // アドレス
+            Type::Addr(inner_ty) => {
+                Arc::new(Type::Addr(Arc::clone(inner_ty)))
+            }
+            Type::DataAddr(inner_ty) => {
+                Arc::new(Type::DataAddr(Arc::clone(inner_ty)))
+            }
+            Type::InstAddr(inner_ty) => {
+                Arc::new(Type::InstAddr(Arc::clone(inner_ty)))
+            }
 
             // 関数
             Type::Function { args, ret_ty } => {

@@ -6,6 +6,9 @@ mod top;            pub use top::Top;
 mod func_def;       pub use func_def::FuncDef;
 mod argument_def;   pub use argument_def::ArgumentDef;
 
+// 型
+mod r#type;         pub use r#type::Type;
+
 // 文
 mod block;          pub use block::Block;
 mod stmt;           pub use stmt::Stmt;
@@ -33,7 +36,6 @@ mod mul;            pub use mul::Mul;
 mod cast;           pub use cast::Cast;
 mod unary;          pub use unary::Unary;
 mod value;          pub use value::Value;
-mod call;           pub use call::Call;
 
 // AST -> CST ビジター
 use sb_compiler_parse_cst::CSTreeVisitor;
