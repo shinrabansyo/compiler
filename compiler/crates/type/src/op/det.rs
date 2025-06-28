@@ -31,11 +31,17 @@ where
 
         // アドレス
         (Addr(_),     Addr(_))     => Ok(lhs_ty),
+        (Addr(_),     I32)         => Ok(lhs_ty),
+        (Addr(_),     NumConst)    => Ok(lhs_ty),
         (Addr(_),     DataAddr(_)) => Ok(rhs_ty),
         (Addr(_),     InstAddr(_)) => Ok(rhs_ty),
         (DataAddr(_), Addr(_))     => Ok(lhs_ty),
+        (DataAddr(_), I32)         => Ok(lhs_ty),
+        (DataAddr(_), NumConst)    => Ok(lhs_ty),
         (DataAddr(_), DataAddr(_)) => Ok(lhs_ty),
         (InstAddr(_), Addr(_))     => Ok(lhs_ty),
+        (InstAddr(_), I32)         => Ok(lhs_ty),
+        (InstAddr(_), NumConst)    => Ok(lhs_ty),
         (InstAddr(_), InstAddr(_)) => Ok(lhs_ty),
 
         // 推論失敗

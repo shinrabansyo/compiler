@@ -34,12 +34,12 @@ where
     }
 }
 
-pub fn ty_equals2<'src, A, B>(a: &A, b: &B) -> miette::Result<()>
+pub fn ty_equals_arith2<'src, L, R>(lhs: &L, rhs: &R) -> miette::Result<()>
 where
-    A: Typed + Spanned<'src>,
-    B: Typed + Spanned<'src>,
+    L: Typed + Spanned<'src>,
+    R: Typed + Spanned<'src>,
 {
-    match (a.ty().as_ref(), b.ty().as_ref()) {
+    match (lhs.ty().as_ref(), rhs.ty().as_ref()) {
         // プリミティブ
         (Void,     Void)     => Ok(()),
         (Bool,     Bool)     => Ok(()),
@@ -57,10 +57,16 @@ where
 
         // アドレス
         (Addr(_),     Addr(_))     => Ok(()),
+        (Addr(_),     I32)         => Ok(()),
+        (Addr(_),     NumConst)    => Ok(()),
         (DataAddr(_), DataAddr(_)) => Ok(()),
+        (DataAddr(_), I32)         => Ok(()),
+        (DataAddr(_), NumConst)    => Ok(()),
         (InstAddr(_), InstAddr(_)) => Ok(()),
+        (InstAddr(_), I32)         => Ok(()),
+        (InstAddr(_), NumConst)    => Ok(()),
 
         // 比較失敗
-        _ => Err(TypeError::new_mismatch2(a, b))
+        _ => Err(TypeError::new_mismatch2(lhs, rhs))
     }
 }
