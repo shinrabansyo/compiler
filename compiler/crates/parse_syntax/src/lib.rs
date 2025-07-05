@@ -89,6 +89,12 @@ pub enum SBToken {
     PlusAssign,
     #[token(r"\-=")]
     MinusAssign,
+    #[token(r"\*=")]
+    MulAssign,
+    #[token(r"/=")]
+    DivAssign,
+    #[token(r"%=")]
+    ModAssign,
     #[token(r"<<=")]
     ShiftLAssign,
     #[token(r">>>=")]
@@ -247,6 +253,9 @@ pub enum SBRule {
     #[rule("<assign> ::= Ident Assign <assign>")]
     #[rule("<assign> ::= Ident PlusAssign <assign>")]
     #[rule("<assign> ::= Ident MinusAssign <assign>")]
+    #[rule("<assign> ::= Ident MulAssign <assign>")]
+    #[rule("<assign> ::= Ident DivAssign <assign>")]
+    #[rule("<assign> ::= Ident ModAssign <assign>")]
     #[rule("<assign> ::= Ident ShiftLAssign <assign>")]
     #[rule("<assign> ::= Ident ShiftRaAssign <assign>")]
     #[rule("<assign> ::= Ident ShiftRAssign <assign>")]
