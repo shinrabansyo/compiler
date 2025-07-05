@@ -3,12 +3,12 @@ use sb_compiler_semcheck_hir::FuncDef;
 
 use super::{GenContext, ZERO_REG, lirgen_block};
 
-pub fn lirgen_func_def(ctx: &mut GenContext, func: FuncDef) -> LirTopElem {
+pub fn lirgen_func_def<'src>(ctx: &mut GenContext<'src>, func: FuncDef<'src>) -> LirTopElem {
     // 引数の初期化
     let mut lirs = vec![];
     for (idx, arg) in func.args.iter().enumerate() {
         let reg_arg = ctx.alloc_reg();
-        ctx.set_var_reg(arg.var.symbol, reg_arg);
+        ctx.set_var_reg(arg.var.clone(), reg_arg);
         lirs.push(lir!(Add reg_arg, ZERO_REG, (10 + idx) as u32));
     }
     let lir_init_args_block = LirBlock::Single {

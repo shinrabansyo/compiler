@@ -4,7 +4,7 @@ use sb_compiler_semcheck_hir::BitXor;
 use crate::GenContext;
 use super::lirgen_bit_and;
 
-pub fn lirgen_bit_xor(ctx: &mut GenContext, bit_xor: BitXor) -> LirBlock {
+pub fn lirgen_bit_xor<'src>(ctx: &mut GenContext<'src>, bit_xor: BitXor<'src>) -> LirBlock {
     let (result_reg, lirs) = match bit_xor {
         BitXor::Xor { lhs, rhs, .. } => {
             let lir_lhs = lirgen_bit_xor(ctx, *lhs);

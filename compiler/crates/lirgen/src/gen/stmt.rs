@@ -7,7 +7,7 @@ use super::{
     lirgen_if, lirgen_while, lirgen_for, lirgen_inline_asm
 };
 
-pub fn lirgen_stmt(ctx: &mut GenContext, stmt: Stmt) -> LirBlock {
+pub fn lirgen_stmt<'src>(ctx: &mut GenContext<'src>, stmt: Stmt<'src>) -> LirBlock {
     match stmt {
         Stmt::VarDecl { var_decl, .. } => {
             lirgen_var_decl(ctx, var_decl)

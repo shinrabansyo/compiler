@@ -3,7 +3,7 @@ use sb_compiler_semcheck_hir::LogicOr;
 
 use super::{GenContext, ZERO_REG, lirgen_logic_and};
 
-pub fn lirgen_logic_or(ctx: &mut GenContext, logic_or: LogicOr) -> LirBlock {
+pub fn lirgen_logic_or<'src>(ctx: &mut GenContext<'src>, logic_or: LogicOr<'src>) -> LirBlock {
     let (result_reg, lirs) = match logic_or {
         LogicOr::Or { lhs, rhs, .. } => {
             let lir_lhs = lirgen_logic_or(ctx, *lhs);

@@ -3,14 +3,14 @@ use sb_compiler_semcheck_hir::Value;
 
 use super::{GenContext, FARG_REG_BASE, RET_REG, ZERO_REG, lirgen_expr};
 
-pub fn lirgen_value(ctx: &mut GenContext, value: Value) -> LirBlock {
+pub fn lirgen_value<'src>(ctx: &mut GenContext<'src>, value: Value<'src>) -> LirBlock {
     let (result_reg, lirs) = match value {
         Value::Const { value, .. } => {
             let reg_imm = ctx.alloc_reg();
             (reg_imm, vec![lir!(Li(value) reg_imm)])
         }
         Value::Var { var, .. } => {
-            (ctx.ref_var_reg(&var.symbol).unwrap(), vec![])
+            (ctx.ref_var_reg(&var).unwrap(), vec![])
         }
         Value::Expr { expr, .. } => {
             let lir_expr = lirgen_expr(ctx, *expr);

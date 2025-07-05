@@ -3,7 +3,7 @@ use sb_compiler_semcheck_hir::Block;
 
 use super::{GenContext, ZERO_REG, lirgen_stmt};
 
-pub fn lirgen_block(ctx: &mut GenContext, block: Block) -> LirBlock {
+pub fn lirgen_block<'src>(ctx: &mut GenContext<'src>, block: Block<'src>) -> LirBlock {
     let lirs = block.stmts
         .into_iter()
         .map(|ast| lirgen_stmt(ctx, ast))

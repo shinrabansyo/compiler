@@ -12,6 +12,7 @@ fn main() -> i32 {
     if (!test_02()) { return 2; }
     if (!test_03()) { return 3; }
     if (!test_04()) { return 4; }
+    if (!test_05()) { return 5; }
 
     // 正常時は 0
     return 0;
@@ -58,4 +59,27 @@ fn test_04() -> bool {
     var t = 20;
     var sum = a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t;
     return sum == 210;
+}
+
+fn test_05() -> bool {
+    var a = 10;
+    {
+        var b = 20;
+        {
+            var c = 30;
+            if (a + b + c != 60) {
+                return false;
+            }
+        }
+        var c = 40;
+        if (a + b + c != 70) {
+            return false;
+        }
+    }
+    var b = 50;
+    var c = 60;
+    if (a + b + c != 120) {
+        return false;
+    }
+    return true;
 }

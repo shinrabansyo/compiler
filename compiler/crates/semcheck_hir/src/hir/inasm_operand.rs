@@ -30,13 +30,18 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineAsmOp
                 Ok(InlineAsmOperand::Reg { span, num })
             }
             ast::InlineAsmOperandL::Var { name } => {
-                // 変数宣言
-                let var = VarDeclChecker::register(
-                    &mut ctx.var_decl,
-                    &name,
-                    I32.ty(),
-                ).unwrap();
-
+                // 変数参照 or 宣言
+                let var = VarDeclChecker::find(&mut ctx.var_decl, &name).await;
+                let var = match var {
+                    Ok(var) => var,
+                    Err(_) => {
+                        VarDeclChecker::register(
+                            &mut ctx.var_decl,
+                            &name,
+                            I32.ty(),
+                        ).unwrap()
+                    }
+                };
                 Ok(InlineAsmOperand::Var { var })
             }
         }

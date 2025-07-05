@@ -5,9 +5,6 @@ use std::sync::{Arc, Mutex};
 
 use petgraph::algo::astar;
 use petgraph::graph::{Graph, NodeIndex};
-use string_interner::backend::StringBackend;
-use string_interner::symbol::SymbolU32;
-use string_interner::StringInterner;
 
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_async::prelude::*;
@@ -17,12 +14,20 @@ use sb_compiler_type::Typed;
 
 use error::VarDeclError;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Hash)]
 pub struct Var<'src> {
-    pub symbol: SymbolU32,
+    pub id: NodeIndex,
     pub span: Span<'src>,
     pub ty: Arc<Type>,
 }
+
+impl PartialEq for Var<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+
+impl Eq for Var<'_> {}
 
 impl<'src> Spanned<'src> for Var<'src> {
     fn span(&self) -> Span<'src> {
@@ -44,7 +49,6 @@ pub struct VarDeclContext<'src> {
 
 #[derive(Debug)]
 pub struct VarDeclChecker<'src> {
-    interner: StringInterner<StringBackend>,
     graph: Graph<Var<'src>, ()>,
     root_node: NodeIndex,
     nodes: HashMap<Var<'src>, NodeIndex>,
@@ -52,10 +56,6 @@ pub struct VarDeclChecker<'src> {
 
 impl<'src> VarDeclChecker<'src> {
     pub fn new() -> (Arc<Mutex<Self>>, VarDeclContext<'src>) {
-        // インターン化環境 (root: `.`)
-        let mut interner = StringInterner::default();
-        let root_symbol = interner.get_or_intern(".");
-
         // ルート用の疑似変数
         let root_span = Span {
             src: ".",
@@ -63,7 +63,7 @@ impl<'src> VarDeclChecker<'src> {
             full: (0, 1),
         };
         let root_var = Var {
-            symbol: root_symbol,
+            id: NodeIndex::new(0),
             span: root_span,
             ty: Arc::new(I32),
         };
@@ -71,10 +71,10 @@ impl<'src> VarDeclChecker<'src> {
         // 変数参照グラフ
         let mut graph = Graph::new();
         let root_node = graph.add_node(root_var.clone());
+        graph.node_weight_mut(root_node).unwrap().id = root_node;
 
         // チェッカ, コンテキスト (複数の async 文脈で共有するために Arc, Mutex でラップ)
         let checker = Arc::new(Mutex::new(VarDeclChecker {
-            interner,
             graph,
             root_node,
             nodes: HashMap::from([(root_var, root_node)]),
@@ -91,20 +91,21 @@ impl<'src> VarDeclChecker<'src> {
         let mut checker = ctx.checker.lock().unwrap();
 
         // 1. 変数名を登録
-        let var_symbol = checker.interner.get_or_intern(span.as_str());
-        let var = Var {
-            symbol: var_symbol,
+        let mut var = Var {
+            id: NodeIndex::new(0),
             span: *span,
             ty,
         };
 
-        // 2. 参照グラフに追加
+        // 2. 参照グラフにノードを追加
         let from = checker.graph.add_node(var.clone());
+        var.id = from;
+        *checker.graph.node_weight_mut(from).unwrap() = var.clone();
+
+        // 3. あああ
         let to = ctx.node;
         checker.graph.add_edge(from, to, ());
         checker.nodes.insert(var.clone(), from);
-
-        // 3. 以降の文脈で最新の変数を参照できるように更新
         ctx.node = from;
 
         Ok(var)
@@ -114,13 +115,7 @@ impl<'src> VarDeclChecker<'src> {
     pub fn find<'a>(ctx: &'a VarDeclContext<'src>, span: &'a Span<'src>) -> miette::Result<Var<'src>> {
         let checker = ctx.checker.lock().unwrap();
 
-        // 1. 変数名を検索
-        let var_symbol = match checker.interner.get(span.as_str()) {
-            Some(symbol) => symbol,
-            None => return Err(VarDeclError::new_not_declared(*span)),
-        };
-
-        // 2. 可視変数の洗い出し
+        // 1. 可視変数の洗い出し
         let from = ctx.node;
         let to = checker.root_node;
         let waypoints = astar(
@@ -131,10 +126,10 @@ impl<'src> VarDeclChecker<'src> {
             |_| 0,      // 連結を確認するだけなので辺の重みは無視
         ).unwrap().1;
 
-        // 3. 経路を順に見て，初めて見つけた変数を検索結果とする
+        // 2. 経路を順に見て，初めて見つけた変数を検索結果とする
         for waypoint in waypoints {
             let waypoint_var = checker.graph.node_weight(waypoint).unwrap();
-            if var_symbol == waypoint_var.symbol {
+            if span.as_str() == waypoint_var.span.as_str() {
                 return Ok(waypoint_var.clone());
             }
         }
