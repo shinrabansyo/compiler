@@ -24,7 +24,7 @@ pub enum Value<'src> {
     Call {
         span: Span<'src>,
         ident: Span<'src>,
-        args: Vec<Value<'src>>,
+        args: Vec<Expr<'src>>,
     },
     Expr {
         expr: Box<Expr<'src>>,
@@ -83,7 +83,7 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
                     _ => Value::Call {
                         span,
                         ident,
-                        args: visitor.expect_nodes::<Value>(),
+                        args: visitor.expect_nodes::<Expr>(),
                     },
                 }
             }

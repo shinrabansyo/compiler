@@ -24,7 +24,7 @@ pub enum Value<'src> {
     Call {
         span: Span<'src>,
         name: String,
-        args: Vec<Value<'src>>,
+        args: Vec<Expr<'src>>,
         ty: Arc<Type>,
     },
     Expr {
@@ -69,7 +69,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                 // 実引数を順に意味解析
                 let mut checked_args = vec![];
                 for arg in args {
-                    checked_args.push(Value::check(ctx, arg).await?);
+                    checked_args.push(Expr::check(ctx, arg).await?);
                 }
 
                 // 型チェック

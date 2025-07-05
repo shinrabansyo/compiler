@@ -238,6 +238,9 @@ pub enum SBRule {
     InlineAsmInst,
 
     // 式
+    #[rule("<expr_list> ::= <expr_list> Comma <expr>")]
+    #[rule("<expr_list> ::= <expr>")]
+    #[rule("<expr_list> ::= ")]
     #[rule("<expr> ::= <assign>")]
     Expr,
 
@@ -306,15 +309,12 @@ pub enum SBRule {
     #[rule("<unary> ::= <value>")]
     Unary,
 
-    #[rule("<value_list> ::= <value_list> Comma <value>")]
-    #[rule("<value_list> ::= <value>")]
-    #[rule("<value_list> ::= ")]
     #[rule("<value> ::= True")]
     #[rule("<value> ::= False")]
     #[rule("<value> ::= Char")]
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]
-    #[rule("<value> ::= Ident ParenL <value_list> ParenR")]
+    #[rule("<value> ::= Ident ParenL <expr_list> ParenR")]
     #[rule("<value> ::= ParenL <expr> ParenR")]
     Value,
 }

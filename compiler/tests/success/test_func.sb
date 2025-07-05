@@ -21,7 +21,7 @@ fn test_01() -> bool {
 }
 
 fn test_02() -> bool {
-    return test_02_fn(1, 2) == 3;
+    return test_02_fn(1, 2 * 3) == 7;
 }
 
 fn test_02_fn(a: i32, b: i32) -> i32 {

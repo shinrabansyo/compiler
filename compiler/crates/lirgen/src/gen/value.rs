@@ -20,7 +20,7 @@ pub fn lirgen_value<'src>(ctx: &mut GenContext<'src>, value: Value<'src>) -> Lir
         Value::Call { name, args, .. } => {
             let mut lirs = vec![];
             for (idx, value) in args.into_iter().enumerate() {
-                let lir_arg = lirgen_value(ctx, value);
+                let lir_arg = lirgen_expr(ctx, value);
                 let reg_arg = lir_arg.result_reg();
                 lirs.push(lir_arg);
                 lirs.push(lir!(Add FARG_REG_BASE + idx as u32, ZERO_REG, reg_arg));
