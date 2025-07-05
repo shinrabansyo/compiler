@@ -102,7 +102,6 @@ impl<'src, Lang: CFL> CSTreeVisitor<'src, Lang> {
     fn pop_spawn(&mut self) -> Option<CSTreeVisitor<'src, Lang>> {
         match self.pop_front() {
             Some(tree) => {
-                // println!("Popping tree: {:?}\n\n", tree);
                 Some(CSTreeVisitor { cst: Some(tree) })
             }
             None => None,

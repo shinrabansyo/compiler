@@ -3,7 +3,7 @@ use sb_compiler_semcheck_hir::Cond;
 
 use super::{GenContext, ZERO_REG, lirgen_bit_shift};
 
-pub fn lirgen_cond(ctx: &mut GenContext, cond: Cond) -> LirBlock {
+pub fn lirgen_cond<'src>(ctx: &mut GenContext<'src>, cond: Cond<'src>) -> LirBlock {
     let (result_reg, lirs) = match cond {
         Cond::Eq { lhs, rhs, .. } => {
             let lir_lhs = lirgen_cond(ctx, *lhs);

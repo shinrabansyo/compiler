@@ -3,7 +3,7 @@ use sb_compiler_semcheck_hir::Unary;
 
 use super::{GenContext, ZERO_REG, lirgen_value};
 
-pub fn lirgen_unary(ctx: &mut GenContext, unary: Unary) -> LirBlock {
+pub fn lirgen_unary<'src>(ctx: &mut GenContext<'src>, unary: Unary<'src>) -> LirBlock {
     let (result_reg, lirs) = match unary {
         Unary::Not { value, .. } => {
             let lir_value = lirgen_value(ctx, value);

@@ -3,7 +3,7 @@ use sb_compiler_semcheck_hir::While;
 
 use super::{GenContext, ZERO_REG, lirgen_expr, lirgen_block};
 
-pub fn lirgen_while(ctx: &mut GenContext, r#while: While) -> LirBlock {
+pub fn lirgen_while<'src>(ctx: &mut GenContext<'src>, r#while: While<'src>) -> LirBlock {
     // 条件節
     let lir_cond = lirgen_expr(ctx, r#while.cond);
     let reg_cond = lir_cond.result_reg();

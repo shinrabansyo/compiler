@@ -4,7 +4,7 @@ use sb_compiler_semcheck_hir::BitShift;
 use crate::GenContext;
 use super::lirgen_add;
 
-pub fn lirgen_bit_shift(ctx: &mut GenContext, bit_shift: BitShift) -> LirBlock {
+pub fn lirgen_bit_shift<'src>(ctx: &mut GenContext<'src>, bit_shift: BitShift<'src>) -> LirBlock {
     let (result_reg, lirs) = match bit_shift {
         BitShift::L { lhs, rhs, .. } => {
             let lir_lhs = lirgen_bit_shift(ctx, *lhs);

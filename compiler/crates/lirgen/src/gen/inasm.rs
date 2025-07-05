@@ -3,16 +3,16 @@ use sb_compiler_lirgen_ir::*;
 
 use super::{GenContext, ZERO_REG};
 
-pub fn lirgen_inline_asm(ctx: &mut GenContext, inline_asm: InlineAsm) -> LirBlock {
-    let mut use_reg = |operand: &InlineAsmOperand| {
+pub fn lirgen_inline_asm<'src>(ctx: &mut GenContext<'src>, inline_asm: InlineAsm<'src>) -> LirBlock {
+    let mut use_reg = |operand: &InlineAsmOperand<'src>| {
         match operand {
             InlineAsmOperand::Reg { num, .. } => *num as u32,
             InlineAsmOperand::Var { var } => {
-                if let Some(reg) = ctx.ref_var_reg(&var.symbol) {
+                if let Some(reg) = ctx.ref_var_reg(&var) {
                     reg
                 } else {
                     let reg = ctx.alloc_reg();
-                    ctx.set_var_reg(var.symbol, reg);
+                    ctx.set_var_reg(var.clone(), reg);
                     reg
                 }
             }

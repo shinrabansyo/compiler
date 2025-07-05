@@ -3,7 +3,7 @@ use sb_compiler_semcheck_hir::LogicAnd;
 
 use super::{GenContext, ZERO_REG, lirgen_bit_or};
 
-pub fn lirgen_logic_and(ctx: &mut GenContext, logic_and: LogicAnd) -> LirBlock {
+pub fn lirgen_logic_and<'src>(ctx: &mut GenContext<'src>, logic_and: LogicAnd<'src>) -> LirBlock {
     let (result_reg, lirs) = match logic_and {
         LogicAnd::And { lhs, rhs, .. } => {
             let lir_lhs = lirgen_logic_and(ctx, *lhs);

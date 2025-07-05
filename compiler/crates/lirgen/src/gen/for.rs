@@ -3,7 +3,7 @@ use sb_compiler_semcheck_hir::For;
 
 use super::{GenContext, ZERO_REG, lirgen_expr, lirgen_block, lirgen_var_decl};
 
-pub fn lirgen_for(ctx: &mut GenContext, r#for: For) -> LirBlock {
+pub fn lirgen_for<'src>(ctx: &mut GenContext<'src>, r#for: For<'src>) -> LirBlock {
     // 初期化節
     let lir_init = lirgen_var_decl(ctx, r#for.init);
 

@@ -18,6 +18,5 @@ members = [
 miette = "7.6.0"
 thiserror = "2.0.3"
 serde = "1.0.215"
-string-interner = "0.19.0"
 copager = { git = "https://github.com/Tsukuba-Programming-Lab/Copager", rev = "0e26c8373c5a0bff919d807026f141224e19a036" }
 sb_linker = { git = "https://github.com/Shinrabansyo/linker", rev = "cf37bd33892f7911054b6d7a2ed229af67007dc3" }

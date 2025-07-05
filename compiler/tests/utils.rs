@@ -29,10 +29,12 @@ where
         let result = panic::catch_unwind(|| test_fn(&body)).unwrap();
         match result {
             Ok(_) if expect == Expect::Err => {
-                panic!("Failed (expected Error, but got Ok)");
+                println!("Failed (expected Error, but got Ok)");
+                panic!("");
             }
             Err(e) if expect == Expect::Ok => {
-                panic!("Failed (expected Ok, but got Error)\n{:?}", e);
+                println!("Failed (expected Ok, but got Error)\n{:?}", e);
+                panic!("");
             }
             _ => println!("Ok"),
         }
