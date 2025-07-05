@@ -45,6 +45,7 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
             let reg_rhs = lir_rhs.result_reg();
 
             let reg_one = ctx.alloc_reg();
+            let reg_lhs_copy = ctx.alloc_reg();
             let reg_result = ctx.alloc_reg();
 
             let label_cond = ctx.alloc_label();
@@ -55,16 +56,17 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
                 vec![
                     lir_lhs,
                     lir_rhs,
+                    lir!(Add reg_lhs_copy, ZERO_REG, reg_lhs),
                     lir!(Li(1) reg_one),
                     lir!(Li(0) reg_result),
                     lir!(Label label_cond),
                     lir!(Bne(12) ZERO_REG, reg_rhs, ZERO_REG),
                     lir!(JmpLabel(label_end)),
-                    lir!(Blt(12) ZERO_REG, reg_lhs, reg_rhs),
+                    lir!(Blt(12) ZERO_REG, reg_lhs_copy, reg_rhs),
                     lir!(Jmp(12)),
                     lir!(JmpLabel(label_end)),
                     lir!(Add reg_result, reg_result, reg_one),
-                    lir!(Sub reg_lhs, reg_lhs, reg_rhs),
+                    lir!(Sub reg_lhs_copy, reg_lhs_copy, reg_rhs),
                     lir!(JmpLabel(label_cond)),
                     lir!(Label label_end),
                 ],
@@ -77,22 +79,25 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
             let lir_rhs = lirgen_cast(ctx, rhs);
             let reg_rhs = lir_rhs.result_reg();
 
+            let reg_result = ctx.alloc_reg();
+
             let label_cond = ctx.alloc_label();
             let label_end = ctx.alloc_label();
 
             (
-                reg_lhs,
+                reg_result,
                 vec![
                     lir_lhs,
                     lir_rhs,
+                    lir!(Add reg_result, ZERO_REG, reg_lhs),
                     lir!(Label label_cond),
                     lir!(Bne(18) ZERO_REG, reg_rhs, ZERO_REG),
-                    lir!(Add reg_lhs, ZERO_REG, ZERO_REG),
+                    lir!(Add reg_result, ZERO_REG, ZERO_REG),
                     lir!(JmpLabel(label_end)),
-                    lir!(Blt(12) ZERO_REG, reg_lhs, reg_rhs),
+                    lir!(Blt(12) ZERO_REG, reg_result, reg_rhs),
                     lir!(Jmp(12)),
                     lir!(JmpLabel(label_end)),
-                    lir!(Sub reg_lhs, reg_lhs, reg_rhs),
+                    lir!(Sub reg_result, reg_result, reg_rhs),
                     lir!(JmpLabel(label_cond)),
                     lir!(Label label_end),
                 ],
