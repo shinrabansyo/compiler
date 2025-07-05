@@ -1,4 +1,5 @@
 use sb_compiler_parse_cst::{Span, Spanned};
+use sb_compiler_utils::primitive::i32;
 
 use super::{InlineAsmOperandL, InlineAsmOperandR, Visitor};
 
@@ -65,7 +66,7 @@ impl<'src> From<Visitor<'src>> for InlineAsmInst<'src> {
                 let rd = $visitor.expect_node::<OperandL>();
                 let _ = $visitor.expect_leaf();  // '='
                 let rs1 = $visitor.expect_node::<OperandR>();
-                let imm = $visitor.expect_leaf().1.as_str().parse().unwrap();
+                let imm = i32::from_str($visitor.expect_leaf().1.as_str()).unwrap();
                 InlineAsmInst::$inst { span, rd, rs1, imm }
             }};
         }
@@ -74,7 +75,7 @@ impl<'src> From<Visitor<'src>> for InlineAsmInst<'src> {
             ($inst:ident $visitor:ident) => {{
                 let span = $visitor.span();
                 let rs1 = $visitor.expect_node::<OperandR>();
-                let imm = $visitor.expect_leaf().1.as_str().parse().unwrap();
+                let imm = i32::from_str($visitor.expect_leaf().1.as_str()).unwrap();
                 let _ = $visitor.expect_leaf();     // '='
                 let rs2 = $visitor.expect_node::<OperandR>();
                 InlineAsmInst::$inst { span, rs1, rs2, imm }
@@ -99,7 +100,7 @@ impl<'src> From<Visitor<'src>> for InlineAsmInst<'src> {
                     rd: $visitor.expect_node::<OperandL>(),
                     rs1: $visitor.expect_node::<OperandR>(),
                     rs2: $visitor.expect_node::<OperandR>(),
-                    imm: $visitor.expect_leaf().1.as_str().parse().unwrap(),
+                    imm: i32::from_str($visitor.expect_leaf().1.as_str()).unwrap(),
                 }
             }};
         }

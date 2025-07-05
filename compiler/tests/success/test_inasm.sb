@@ -14,6 +14,9 @@ fn main() -> i32 {
     if (!test_04()) { return 4; }
     if (!test_05()) { return 5; }
     if (!test_06()) { return 6; }
+    if (!test_07()) { return 7; }
+    if (!test_08()) { return 8; }
+    if (!test_09()) { return 9; }
 
     // 正常時は 0
     return 0;
@@ -86,4 +89,28 @@ fn test_06() -> bool {
         out R0[0] = R4
     }
     return true;
+}
+
+fn test_07() -> bool {
+    var result = 0;
+    asm! {
+        addi result = R0, 0b10
+    }
+    return result == 0b10;
+}
+
+fn test_08() -> bool {
+    var result = 0;
+    asm! {
+        addi result = R0, 010
+    }
+    return result == 010;
+}
+
+fn test_09() -> bool {
+    var result = 0;
+    asm! {
+        addi result = R0, 0x10
+    }
+    return result == 0x10;
 }
