@@ -13,6 +13,9 @@ fn main() -> i32 {
     if (!test_03()) { return 3; }
     if (!test_04()) { return 4; }
     if (!test_05()) { return 5; }
+    if (!test_06()) { return 6; }
+    if (!test_07()) { return 7; }
+    if (!test_08()) { return 8; }
 
     // 正常時は 0
     return 0;
@@ -37,12 +40,30 @@ fn test_03() -> bool {
 }
 
 fn test_04() -> bool {
+    var value = 10;
+    value *= 2;
+    return value == 20;
+}
+
+fn test_05() -> bool {
+    var value = 20;
+    value /= 2;
+    return value == 10;
+}
+
+fn test_06() -> bool {
+    var value = 12;
+    value %= 5;
+    return value == 2;
+}
+
+fn test_07() -> bool {
     var value = 1;
     value <<= 4;
     return value == 16;
 }
 
-fn test_05() -> bool {
+fn test_08() -> bool {
     var value = 16;
     value >>= 4;
     return value == 1;

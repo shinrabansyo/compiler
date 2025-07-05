@@ -20,6 +20,21 @@ pub enum Assign<'src> {
         ident: Span<'src>,
         assign: Box<Assign<'src>>,
     },
+    Mul {
+        span: Span<'src>,
+        ident: Span<'src>,
+        assign: Box<Assign<'src>>,
+    },
+    Div {
+        span: Span<'src>,
+        ident: Span<'src>,
+        assign: Box<Assign<'src>>,
+    },
+    Mod {
+        span: Span<'src>,
+        ident: Span<'src>,
+        assign: Box<Assign<'src>>,
+    },
     ShiftL {
         span: Span<'src>,
         ident: Span<'src>,
@@ -73,6 +88,27 @@ impl<'src> From<Visitor<'src>> for Assign<'src> {
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
+            SBToken::MulAssign => {
+                Assign::Mul {
+                    span: visitor.span(),
+                    ident,
+                    assign: Box::new(visitor.expect_node::<Assign>()),
+                }
+            }
+            SBToken::DivAssign => {
+                Assign::Div {
+                    span: visitor.span(),
+                    ident,
+                    assign: Box::new(visitor.expect_node::<Assign>()),
+                }
+            }
+            SBToken::ModAssign => {
+                Assign::Mod {
+                    span: visitor.span(),
+                    ident,
+                    assign: Box::new(visitor.expect_node::<Assign>()),
+                }
+            }
             SBToken::ShiftLAssign => {
                 Assign::ShiftL {
                     span: visitor.span(),
@@ -105,6 +141,9 @@ impl<'src> Spanned<'src> for Assign<'src> {
             Assign::Normal { span, .. } => *span,
             Assign::Plus { span, .. } => *span,
             Assign::Minus { span, .. } => *span,
+            Assign::Mul { span, .. } => *span,
+            Assign::Div { span, .. } => *span,
+            Assign::Mod { span, .. } => *span,
             Assign::ShiftL { span, .. } => *span,
             Assign::ShiftR { span, .. } => *span,
             Assign::ShiftRa { span, .. } => *span,
