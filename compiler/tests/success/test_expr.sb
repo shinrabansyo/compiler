@@ -112,7 +112,7 @@ fn test_13() -> bool {
 fn test_14() -> bool {
     var a = 12;
     var b = 0;
-    return (a / b) == 0;
+    return (a / b) == -1;
 }
 
 fn test_15() -> bool {
@@ -124,5 +124,5 @@ fn test_15() -> bool {
 fn test_16() -> bool {
     var a = 13;
     var b = 0;
-    return (a % b) == 0;
+    return (a % b) == a;
 }
