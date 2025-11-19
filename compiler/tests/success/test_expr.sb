@@ -24,6 +24,12 @@ fn main() -> i32 {
     if (!test_14()) { return 14; }
     if (!test_15()) { return 15; }
     if (!test_16()) { return 16; }
+    if (!test_17()) { return 17; }
+    if (!test_18()) { return 18; }
+    if (!test_19()) { return 19; }
+    if (!test_20()) { return 20; }
+    if (!test_21()) { return 21; }
+    if (!test_22()) { return 22; }
 
     // 正常時は 0
     return 0;
@@ -111,18 +117,54 @@ fn test_13() -> bool {
 
 fn test_14() -> bool {
     var a = 12;
-    var b = 0;
-    return (a / b) == 0;
+    var b = -4;
+    return (a / b) == -3;
 }
 
 fn test_15() -> bool {
+    var a = -12;
+    var b = 4;
+    return (a / b) == -3;
+}
+
+fn test_16() -> bool {
+    var a = -12;
+    var b = -4;
+    return (a / b) == 3;
+}
+
+fn test_17() -> bool {
+    var a = 12;
+    var b = 0;
+    return (a / b) == -1;
+}
+
+fn test_18() -> bool {
     var a = 13;
     var b = 5;
     return (a % b) == 3;
 }
 
-fn test_16() -> bool {
+fn test_19() -> bool {
+    var a = 13;
+    var b = -5;
+    return (a % b) == 3;
+}
+
+fn test_20() -> bool {
+    var a = -13;
+    var b = 5;
+    return (a % b) == -3;
+}
+
+fn test_21() -> bool {
+    var a = -13;
+    var b = -5;
+    return (a % b) == -3;
+}
+
+fn test_22() -> bool {
     var a = 13;
     var b = 0;
-    return (a % b) == 0;
+    return (a % b) == a;
 }
