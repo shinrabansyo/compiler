@@ -1,4 +1,4 @@
-use sb_compiler_lirgen_ir::{lir, LirBlock, Add, And, Beq, Ble, Bne, JmpLabel, Li, Or, Sub, ShiftL, ShiftR};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Add, And, Beq, Ble, Bne, JmpLabel, Li, Or, Sub, ShiftL, ShiftR, Xor};
 use sb_compiler_semcheck_hir::Mul as MulHir;
 
 use super::{GenContext, ZERO_REG, lirgen_cast};
@@ -71,17 +71,6 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
             let lir_rhs = lirgen_cast(ctx, rhs);
             let reg_rhs = lir_rhs.result_reg();
 
-            let reg_one = ctx.alloc_reg();
-            let reg_cnt = ctx.alloc_reg();
-            let reg_adivi = ctx.alloc_reg();
-            let reg_bmuli = ctx.alloc_reg();
-            let reg_1muli = ctx.alloc_reg();
-            let reg_result = ctx.alloc_reg();
-
-            let label_cond = ctx.alloc_label();
-            let label_decr = ctx.alloc_label();
-            let label_end = ctx.alloc_label();
-
             // # 除算の疑似コード (a / b)
             //        0011
             //      ----------
@@ -111,7 +100,34 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
             // label_end:
             //   ...
 
-            let lir_div_body = LirBlock::Multiple {
+            let reg_sign = ctx.alloc_reg();
+            let reg_thirtyone = ctx.alloc_reg();
+
+            let lir_sign_check = LirBlock::Single {
+                result_reg: 0,
+                lirs: vec![
+                    lir!(Xor reg_sign, reg_lhs, reg_rhs),
+                    lir!(Li(31) reg_thirtyone),
+                    lir!(ShiftR reg_sign, reg_sign, reg_thirtyone),
+                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_lhs),
+                    lir!(Sub reg_lhs, ZERO_REG, reg_lhs),
+                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_rhs),
+                    lir!(Sub reg_rhs, ZERO_REG, reg_rhs),
+                ],
+            };
+
+            let reg_one = ctx.alloc_reg();
+            let reg_cnt = ctx.alloc_reg();
+            let reg_adivi = ctx.alloc_reg();
+            let reg_bmuli = ctx.alloc_reg();
+            let reg_1muli = ctx.alloc_reg();
+            let reg_result = ctx.alloc_reg();
+
+            let label_cond = ctx.alloc_label();
+            let label_decr = ctx.alloc_label();
+            let label_end = ctx.alloc_label();
+
+            let lir_div = LirBlock::Multiple {
                 lirs: vec![
                     lir!(Li(1) reg_one),
                     lir!(Li(0) reg_result),
@@ -132,7 +148,15 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
                 ],
             };
 
-            (reg_result, vec![lir_lhs, lir_rhs, lir_div_body])
+            let lir_sign_apply = LirBlock::Single {
+                result_reg: 0,
+                lirs: vec![
+                    lir!(Beq(12) ZERO_REG, ZERO_REG, reg_sign),
+                    lir!(Sub reg_result, ZERO_REG, reg_result),
+                ],
+            };
+
+            (reg_result, vec![lir_lhs, lir_rhs, lir_sign_check, lir_div, lir_sign_apply])
         }
         MulHir::Modulo { lhs, rhs, .. } => {
             let lir_lhs = lirgen_mul(ctx, *lhs);
@@ -141,17 +165,6 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
             let lir_rhs = lirgen_cast(ctx, rhs);
             let reg_rhs = lir_rhs.result_reg();
 
-            let reg_one = ctx.alloc_reg();
-            let reg_cnt = ctx.alloc_reg();
-            let reg_adivi = ctx.alloc_reg();
-            let reg_bmuli = ctx.alloc_reg();
-            let reg_1muli = ctx.alloc_reg();
-            let reg_result = ctx.alloc_reg();
-
-            let label_cond = ctx.alloc_label();
-            let label_decr = ctx.alloc_label();
-            let label_end = ctx.alloc_label();
-
             // # 除算の疑似コード (a / b)
             //        0011
             //      ----------
@@ -181,7 +194,33 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
             // label_end:
             //   ...
 
-            let lir_div_body = LirBlock::Multiple {
+            let reg_sign = ctx.alloc_reg();
+            let reg_thirtyone = ctx.alloc_reg();
+
+            let lir_sign_check = LirBlock::Single {
+                result_reg: 0,
+                lirs: vec![
+                    lir!(Li(31) reg_thirtyone),
+                    lir!(ShiftR reg_sign, reg_lhs, reg_thirtyone),
+                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_lhs),
+                    lir!(Sub reg_lhs, ZERO_REG, reg_lhs),
+                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_rhs),
+                    lir!(Sub reg_rhs, ZERO_REG, reg_rhs),
+                ],
+            };
+
+            let reg_one = ctx.alloc_reg();
+            let reg_cnt = ctx.alloc_reg();
+            let reg_adivi = ctx.alloc_reg();
+            let reg_bmuli = ctx.alloc_reg();
+            let reg_1muli = ctx.alloc_reg();
+            let reg_result = ctx.alloc_reg();
+
+            let label_cond = ctx.alloc_label();
+            let label_decr = ctx.alloc_label();
+            let label_end = ctx.alloc_label();
+
+            let lir_div = LirBlock::Multiple {
                 lirs: vec![
                     lir!(Li(1) reg_one),
                     lir!(Li(0) reg_result),
@@ -202,7 +241,15 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
                 ],
             };
 
-            (reg_lhs, vec![lir_lhs, lir_rhs, lir_div_body])
+            let lir_sign_apply = LirBlock::Single {
+                result_reg: 0,
+                lirs: vec![
+                    lir!(Beq(12) ZERO_REG, ZERO_REG, reg_sign),
+                    lir!(Sub reg_lhs, ZERO_REG, reg_lhs),
+                ],
+            };
+
+            (reg_lhs, vec![lir_lhs, lir_rhs, lir_sign_check, lir_div, lir_sign_apply])
         }
         MulHir::Cast { value, .. } => {
             return lirgen_cast(ctx, value);
