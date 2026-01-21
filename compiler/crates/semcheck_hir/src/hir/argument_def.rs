@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
+use sb_compiler_semcheck_impl_vardecl::{Var, var_register};
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
 
@@ -23,11 +23,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::ArgumentDef<'src>> for ArgumentDef<'src>
         let ty = Type::from(arg.ty).ty();
 
         // 変数宣言
-        let var = VarDeclChecker::register(
-            &mut ctx.var_decl,
-            &arg.ident,
-            ty,
-        )?;
+        let var = var_register(&mut ctx.var, &arg.ident, ty,).await?;
 
         Ok(ArgumentDef { span: arg.span, var })
     }

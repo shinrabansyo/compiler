@@ -8,7 +8,7 @@ type ASTs<'name, 'src> = Vec<(&'name str, ast::Program<'src>)>;
 type HIRs<'src> = Vec<hir::Program<'src>>;
 
 pub fn semcheck<'name, 'src>(asts: ASTs<'name, 'src>) -> miette::Result<HIRs<'src>> {
-    let (_, semcheck_ctx) = SemCheckServer::new();
+    let (semcheck_ctx, _) = SemCheckServer::new();
     let semcheck = |(name, ast)| {
         let mut ctx = semcheck_ctx.clone();
         ctx.name.push(name);
