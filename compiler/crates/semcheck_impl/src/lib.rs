@@ -1,15 +1,12 @@
-mod name;
-
 use std::sync::{Arc, Mutex};
 
 use sb_compiler_semcheck_impl_var::{VarContext, VarGraph};
 use sb_compiler_semcheck_impl_type::{TypeContext, TypeTree};
-
-use name::Name;
+use sb_compiler_utils::str::PartedString;
 
 #[derive(Clone)]
 pub struct SemCheckContext<'src> {
-    pub name: Name,
+    pub name: PartedString,
     pub var: VarContext<'src>,
     pub r#type: TypeContext,
 }
@@ -28,7 +25,7 @@ impl<'src> SemCheckDataStore<'src> {
 
         // 意味解析用コンテキスト，データの準備
         let ctx = SemCheckContext {
-            name: Name::new::<64>(),
+            name: PartedString::new::<64>(),
             var: VarContext::from(Arc::clone(&var_graph)),
             r#type: TypeContext::from(Arc::clone(&type_tree)),
         };

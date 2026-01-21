@@ -1,15 +1,15 @@
 use std::cmp::max;
 
 #[derive(Debug, Clone)]
-pub struct Name {
+pub struct PartedString {
     raw: Vec<u8>,
 }
 
-impl Name {
-    pub fn new<const SIZE: usize>() -> Name {
+impl PartedString {
+    pub fn new<const SIZE: usize>() -> PartedString {
         let mut raw = Vec::with_capacity(SIZE);
         raw.push(b'.');
-        Name { raw }
+        PartedString { raw }
     }
 
     pub fn push(&mut self, elem: &str) {
@@ -36,11 +36,11 @@ impl Name {
 
 #[cfg(test)]
 mod tests {
-    use super::Name;
+    use super::PartedString;
 
     #[test]
     fn test_push_pop() {
-        let mut name = Name::new::<32>();
+        let mut name = PartedString::new::<32>();
         assert_eq!(name.as_str(), ".");
 
         name.push("aaa");

@@ -1461,6 +1461,7 @@ version = "0.1.0"
 dependencies = [
  "sb_compiler_semcheck_impl_type",
  "sb_compiler_semcheck_impl_var",
+ "sb_compiler_utils",
 ]
 
 [[package]]
