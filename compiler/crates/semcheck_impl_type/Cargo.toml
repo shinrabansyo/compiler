@@ -1,5 +1,5 @@
 [package]
-name = "sb_compiler_semcheck_impl_typedecl"
+name = "sb_compiler_semcheck_impl_type"
 version = "0.1.0"
 edition = "2021"
 

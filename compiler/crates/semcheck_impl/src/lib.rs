@@ -3,7 +3,7 @@ mod name;
 use std::sync::{Arc, Mutex};
 
 use sb_compiler_semcheck_impl_var::{VarContext, VarGraph};
-use sb_compiler_semcheck_impl_typedecl::{TypeContext, TypeTree};
+use sb_compiler_semcheck_impl_type::{TypeContext, TypeTree};
 
 use name::Name;
 
