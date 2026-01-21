@@ -2,13 +2,13 @@ use petgraph::algo::astar;
 
 use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_async::prelude::*;
-use sb_compiler_semcheck_async_macros::failable_as_async;
+use sb_compiler_semcheck_async_macros::communicable;
 
 use crate::data::Var;
 use crate::func::VarContext;
 use crate::error::VarError;
 
-#[failable_as_async]
+#[communicable]
 pub async fn var_find<'a, 'src>(
     ctx: &'a VarContext<'src>,
     span: &'a Span<'src>,

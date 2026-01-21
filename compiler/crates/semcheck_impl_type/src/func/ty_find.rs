@@ -1,13 +1,13 @@
 use std::sync::Arc;
 
 use sb_compiler_semcheck_async::prelude::*;
-use sb_compiler_semcheck_async_macros::failable_as_async;
+use sb_compiler_semcheck_async_macros::communicable;
 use sb_compiler_type::r#type::*;
 
 use crate::func::TypeContext;
 use crate::error::TypeDeclError;
 
-#[failable_as_async]
+#[communicable]
 pub async fn ty_find<'a>(ctx: &'a TypeContext, name: &'a str) -> miette::Result<Arc<Type>> {
     let mut tree = ctx.tree.lock().unwrap();
 

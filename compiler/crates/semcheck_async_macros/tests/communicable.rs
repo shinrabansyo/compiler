@@ -2,14 +2,14 @@ use std::future::Future;
 use std::pin::Pin;
 
 use sb_compiler_semcheck_async::prelude::*;
-use sb_compiler_semcheck_async_macros::failable_as_async;
+use sb_compiler_semcheck_async_macros::communicable;
 
-#[failable_as_async('a)]
+#[communicable]
 fn return_0<'a>(num_s: &'a str) -> Option<i32> {
     num_s.parse().ok()
 }
 
-#[failable_as_async('a)]
+#[communicable]
 fn return_1<'a>(num_s: &'a str) -> Option<i32> {
     static mut CNT: i32 = 0;
 
@@ -21,7 +21,7 @@ fn return_1<'a>(num_s: &'a str) -> Option<i32> {
     }
 }
 
-#[failable_as_async]
+#[communicable]
 fn return_inf(_: &str) -> Option<i32> {
     None
 }
