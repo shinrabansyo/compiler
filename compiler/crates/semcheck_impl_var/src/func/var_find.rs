@@ -5,15 +5,15 @@ use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::failable_as_async;
 
 use crate::data::Var;
-use crate::func::Context;
+use crate::func::VarContext;
 use crate::error::VarError;
 
 #[failable_as_async]
 pub async fn var_find<'a, 'src>(
-    ctx: &'a Context<'src>,
+    ctx: &'a VarContext<'src>,
     span: &'a Span<'src>,
 ) -> miette::Result<Var<'src>> {
-    let checker = ctx.checker.lock().unwrap();
+    let checker = ctx.graph.lock().unwrap();
 
     // 1. 可視変数の洗い出し
     let from = ctx.node;

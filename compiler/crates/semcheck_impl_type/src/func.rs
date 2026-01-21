@@ -9,15 +9,15 @@ pub use ty_register::ty_register;
 pub use ty_find::ty_find;
 
 #[derive(Clone)]
-pub struct Context {
+pub struct TypeContext {
     tree: Arc<Mutex<TypeTree>>,
     pub(crate) current_pos: usize,
 }
 
-impl From<Arc<Mutex<TypeTree>>> for Context {
+impl From<Arc<Mutex<TypeTree>>> for TypeContext {
     fn from(tree: Arc<Mutex<TypeTree>>) -> Self {
         let root_node = tree.lock().unwrap().root_node;
-        Context {
+        TypeContext {
             tree,
             current_pos: root_node,
         }

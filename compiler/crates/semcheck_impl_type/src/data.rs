@@ -10,7 +10,7 @@ use sb_compiler_semcheck_async::block_on;
 use sb_compiler_type::r#type::*;
 use sb_compiler_type::Typed;
 
-use crate::func::{Context, ty_register};
+use crate::func::{TypeContext, ty_register};
 
 pub struct TypeTree {
     pub(crate) interner: StringInterner<StringBackend>,
@@ -39,7 +39,7 @@ impl TypeTree {
         }));
 
         // プリミティブ型の登録
-        let mut ctx = Context::from(Arc::clone(&tree));
+        let mut ctx = TypeContext::from(Arc::clone(&tree));
         block_on(async {
             ty_register(&mut ctx, "bool", Bool.ty()).await.unwrap();
             ty_register(&mut ctx, "char", Char.ty()).await.unwrap();

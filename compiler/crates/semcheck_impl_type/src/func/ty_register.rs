@@ -2,10 +2,10 @@ use std::sync::Arc;
 
 use sb_compiler_type::r#type::Type;
 
-use crate::func::Context;
+use crate::func::TypeContext;
 use crate::error::TypeDeclError;
 
-pub async fn ty_register(ctx: &mut Context, name: &str, ty: Arc<Type>) -> miette::Result<()> {
+pub async fn ty_register(ctx: &mut TypeContext, name: &str, ty: Arc<Type>) -> miette::Result<()> {
     let mut tree = ctx.tree.lock().unwrap();
 
     // 1. 型名を登録

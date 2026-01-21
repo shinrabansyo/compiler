@@ -6,14 +6,14 @@ use sb_compiler_parse_cst::Span;
 use sb_compiler_type::r#type::Type;
 
 use crate::data::Var;
-use crate::func::Context;
+use crate::func::VarContext;
 
 pub async fn var_register<'src>(
-    ctx: &mut Context<'src>,
+    ctx: &mut VarContext<'src>,
     span: &Span<'src>,
     ty: Arc<Type>,
 ) -> miette::Result<Var<'src>> {
-    let mut checker = ctx.checker.lock().unwrap();
+    let mut checker = ctx.graph.lock().unwrap();
 
     // 1. 変数名を登録
     let mut var = Var {

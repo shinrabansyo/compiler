@@ -11,15 +11,15 @@ pub use var_register::var_register;
 pub use var_find::var_find;
 
 #[derive(Debug, Clone)]
-pub struct Context<'src> {
-    checker: Arc<Mutex<VarGraph<'src>>>,
+pub struct VarContext<'src> {
+    graph: Arc<Mutex<VarGraph<'src>>>,
     node: NodeIndex,
 }
 
-impl<'src> From<Arc<Mutex<VarGraph<'src>>>> for Context<'src> {
-    fn from(checker: Arc<Mutex<VarGraph<'src>>>) -> Self {
-        let node = checker.lock().unwrap().root_node;
-        Context { checker, node }
+impl<'src> From<Arc<Mutex<VarGraph<'src>>>> for VarContext<'src> {
+    fn from(graph: Arc<Mutex<VarGraph<'src>>>) -> Self {
+        let node = graph.lock().unwrap().root_node;
+        VarContext { graph, node }
     }
 }
 
