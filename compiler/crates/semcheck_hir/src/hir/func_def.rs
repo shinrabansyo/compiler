@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
+use sb_compiler_semcheck_impl_typedecl::ty_register;
 use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::{Function, Type, Void};
 use sb_compiler_type::Typed;
@@ -49,11 +49,7 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             args: arg_tys,
             ret_ty: ret_ty.ty(),
         });
-        TypeDeclChecker::register(
-            &mut ctx.type_decl,
-            ctx.name.as_str(),
-            fn_ty,
-        )?;
+        ty_register(&mut ctx.r#type, fn_name.as_str(), fn_ty).await?;
 
         // ブロックの意味解析 & 型チェック
         let block = Block::check(ctx.clone(), func_def.block).await?;
