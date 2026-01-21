@@ -1,5 +1,5 @@
 [package]
-name = "sb_compiler_semcheck_impl_vardecl"
+name = "sb_compiler_semcheck_impl_var"
 version = "0.1.0"
 edition = "2021"
 
