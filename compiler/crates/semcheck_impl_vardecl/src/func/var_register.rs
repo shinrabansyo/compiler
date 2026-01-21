@@ -27,7 +27,7 @@ pub async fn var_register<'src>(
     var.id = from;
     *checker.graph.node_weight_mut(from).unwrap() = var.clone();
 
-    // 3. あああ
+    // 3. 追加したノードを追跡可能にする
     let to = ctx.node;
     checker.graph.add_edge(from, to, ());
     checker.nodes.insert(var.clone(), from);
