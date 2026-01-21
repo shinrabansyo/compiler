@@ -23,20 +23,3 @@ impl From<Arc<Mutex<TypeTree>>> for TypeContext {
         }
     }
 }
-
-// #[cfg(test)]
-// mod tests {
-//     use sb_compiler_semcheck_async::block_on;
-//     use sb_compiler_type::r#type::*;
-
-//     use super::TypeDeclChecker;
-
-//     #[test]
-//     fn test_ok() {
-//         let (_, ctx) = TypeDeclChecker::new();
-
-//         block_on(async {
-//             assert_eq!(*TypeDeclChecker::find(&ctx, "i32").await.unwrap(), I32);
-//         });
-//     }
-// }
