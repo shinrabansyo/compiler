@@ -1,12 +1,8 @@
-mod ty_register;
-mod ty_find;
+pub mod decl;
 
 use std::sync::{Arc, Mutex};
 
 use crate::data::TypeTree;
-
-pub use ty_register::{ty_register, ty_register_in_mod};
-pub use ty_find::{ty_find, ty_find_from_mod};
 
 #[derive(Clone)]
 pub struct TypeContext {

@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_type::ty_register_in_mod;
+use sb_compiler_semcheck_impl_type::decl::ty_register_in_mod;
 use sb_compiler_type::op::ty_equals;
 use sb_compiler_type::r#type::{Function, Type, Void};
 use sb_compiler_type::Typed;

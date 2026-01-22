@@ -6,7 +6,7 @@ use sb_compiler_semcheck_async_macros::communicable;
 use sb_compiler_type::r#type::Type;
 
 use crate::func::TypeContext;
-use crate::error::TypeDeclError;
+use super::error::TypeDeclError;
 
 #[communicable]
 pub async fn ty_find<'a, 'src>(

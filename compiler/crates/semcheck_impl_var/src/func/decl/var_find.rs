@@ -6,7 +6,7 @@ use sb_compiler_semcheck_async_macros::communicable;
 
 use crate::data::Var;
 use crate::func::VarContext;
-use crate::error::VarDeclError;
+use super::error::VarDeclError;
 
 #[communicable]
 pub async fn var_find<'a, 'src>(

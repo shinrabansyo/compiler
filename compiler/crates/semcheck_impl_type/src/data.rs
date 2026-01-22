@@ -10,7 +10,8 @@ use sb_compiler_semcheck_async::block_on;
 use sb_compiler_type::r#type::*;
 use sb_compiler_type::Typed;
 
-use crate::func::{TypeContext, ty_register};
+use crate::func::decl::ty_register;
+use crate::func::TypeContext;
 
 pub struct TypeTree {
     pub(crate) interner: StringInterner<StringBackend>,

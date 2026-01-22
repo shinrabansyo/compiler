@@ -2,7 +2,8 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_var::{Var, var_find};
+use sb_compiler_semcheck_impl_var::decl::var_find;
+use sb_compiler_semcheck_impl_var::Var;
 use sb_compiler_type::op::ty_equals_arith2;
 use sb_compiler_type::r#type::Type;
 use sb_compiler_type::Typed;
