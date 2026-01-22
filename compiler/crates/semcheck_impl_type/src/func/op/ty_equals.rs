@@ -1,8 +1,7 @@
 use sb_compiler_parse_cst::Spanned;
 
-use crate::error::TypeError;
 use crate::r#type::*;
-use crate::Typed;
+use super::error::TypeOpError;
 
 pub fn ty_equals<'src, A>(ty: Type, a: &A) -> miette::Result<()>
 where
@@ -30,7 +29,7 @@ where
         (InstAddr(_), InstAddr(_)) => Ok(()),
 
         // 比較失敗
-        _ => Err(TypeError::new_mismatch(ty, a))
+        _ => Err(TypeOpError::new_mismatch(ty, a))
     }
 }
 
@@ -67,6 +66,6 @@ where
         (InstAddr(_), NumConst)    => Ok(()),
 
         // 比較失敗
-        _ => Err(TypeError::new_mismatch2(lhs, rhs))
+        _ => Err(TypeOpError::new_mismatch2(lhs, rhs))
     }
 }

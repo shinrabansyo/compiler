@@ -3,7 +3,7 @@ use std::sync::Arc;
 use petgraph::prelude::NodeIndex;
 
 use sb_compiler_parse_cst::Span;
-use sb_compiler_type::r#type::Type;
+use sb_compiler_semcheck_impl_type::Type;
 
 use crate::data::Var;
 use crate::func::VarContext;

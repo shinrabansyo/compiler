@@ -1,8 +1,7 @@
 use sb_compiler_parse_cst::Spanned;
 
-use crate::error::TypeError;
 use crate::r#type::*;
-use crate::Typed;
+use super::error::TypeOpError;
 
 pub fn ty_cast<'src, F, T>(from: &F, to: &T) -> miette::Result<()>
 where
@@ -49,6 +48,6 @@ where
         (InstAddr(_), Addr(_))     => Ok(()),
 
         // キャスト失敗
-        _ => Err(TypeError::new_cast_failed(from, to)),
+        _ => Err(TypeOpError::new_cast_failed(from, to)),
     }
 }

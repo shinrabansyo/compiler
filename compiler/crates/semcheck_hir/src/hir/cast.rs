@@ -2,9 +2,8 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_type::op::ty_cast;
-use sb_compiler_type::r#type::Type;
-use sb_compiler_type::Typed;
+use sb_compiler_semcheck_impl_type::op::ty_cast;
+use sb_compiler_semcheck_impl_type::{Typed, Type};
 
 use super::{Unary, SemCheck, Dep};
 

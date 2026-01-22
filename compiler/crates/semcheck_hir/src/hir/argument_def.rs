@@ -4,8 +4,7 @@ use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_var::decl::var_register;
 use sb_compiler_semcheck_impl_var::Var;
-use sb_compiler_type::r#type::Type;
-use sb_compiler_type::Typed;
+use sb_compiler_semcheck_impl_type::{Typed, Type};
 
 use super::{SemCheck, Dep};
 

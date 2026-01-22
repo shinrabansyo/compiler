@@ -3,9 +3,9 @@ use std::sync::Arc;
 use sb_compiler_parse_cst::Span;
 use sb_compiler_semcheck_async::prelude::*;
 use sb_compiler_semcheck_async_macros::communicable;
-use sb_compiler_type::r#type::Type;
 
 use crate::func::TypeContext;
+use crate::r#type::Type;
 use super::error::TypeDeclError;
 
 #[communicable]

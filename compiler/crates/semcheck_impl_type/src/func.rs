@@ -1,4 +1,7 @@
 pub mod decl;
+pub mod r#fn;
+pub mod infer;
+pub mod op;
 
 use std::sync::{Arc, Mutex};
 

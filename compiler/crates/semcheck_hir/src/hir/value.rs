@@ -5,9 +5,8 @@ use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_var::decl::var_find;
 use sb_compiler_semcheck_impl_var::Var;
 use sb_compiler_semcheck_impl_type::decl::ty_find_from_mod;
-use sb_compiler_type::op::ty_can_call;
-use sb_compiler_type::r#type::{Bool, Char, NumConst, Type};
-use sb_compiler_type::Typed;
+use sb_compiler_semcheck_impl_type::r#fn::ty_can_call;
+use sb_compiler_semcheck_impl_type::{Typed, Type, Bool, Char, NumConst};
 
 use super::{Expr, SemCheck, Dep};
 

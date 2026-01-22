@@ -3,9 +3,8 @@ pub use std::sync::Arc;
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_type::decl::ty_find;
-use sb_compiler_type::op::ty_can_return;
-use sb_compiler_type::r#type::Type;
-use sb_compiler_type::Typed;
+use sb_compiler_semcheck_impl_type::r#fn::ty_can_return;
+use sb_compiler_semcheck_impl_type::{Typed, Type};
 
 use super::{Expr, SemCheck, Dep};
 

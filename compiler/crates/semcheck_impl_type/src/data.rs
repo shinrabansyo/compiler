@@ -7,11 +7,10 @@ use string_interner::symbol::SymbolU32;
 use string_interner::StringInterner;
 
 use sb_compiler_semcheck_async::block_on;
-use sb_compiler_type::r#type::*;
-use sb_compiler_type::Typed;
 
 use crate::func::decl::ty_register;
 use crate::func::TypeContext;
+use crate::r#type::*;
 
 pub struct TypeTree {
     pub(crate) interner: StringInterner<StringBackend>,

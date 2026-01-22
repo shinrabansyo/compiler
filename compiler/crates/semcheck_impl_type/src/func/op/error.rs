@@ -13,7 +13,7 @@ use crate::Typed;
     code(semantics::ty::check),
     url("this link is not working yet"),
 )]
-pub enum TypeError {
+pub enum TypeOpError {
     #[error("Cannot cast from type '{from:?}' to '{to:?}'")]
     CastFailed {
         #[source_code]
@@ -67,13 +67,13 @@ pub enum TypeError {
     }
 }
 
-impl TypeError {
+impl TypeOpError {
     pub fn new_cast_failed<'src, F, T>(from: &F, to: &T) -> miette::Report
     where
         F: Typed + Spanned<'src>,
         T: Typed,
     {
-        TypeError::CastFailed {
+        TypeOpError::CastFailed {
             src: from.span().src.to_string(),
             from_span: from.span().into(),
             from: from.ty(),
@@ -85,7 +85,7 @@ impl TypeError {
     where
         A: Typed + Spanned<'src>,
     {
-        TypeError::Mismatch {
+        TypeOpError::Mismatch {
             src: a.span().src.to_string(),
             a_span: a.span().into(),
             a: a.ty(),
@@ -98,7 +98,7 @@ impl TypeError {
         A: Typed + Spanned<'src>,
         B: Typed + Spanned<'src>,
     {
-        TypeError::Mismatch2 {
+        TypeOpError::Mismatch2 {
             src: a.span().src.to_string(),
             a_span: a.span().into(),
             a: a.ty(),
@@ -112,7 +112,7 @@ impl TypeError {
         A: Typed + Spanned<'src>,
         B: Typed + Spanned<'src>,
     {
-        TypeError::Det2Failed {
+        TypeOpError::Det2Failed {
             src: a.span().src.to_string(),
             a_span: a.span().into(),
             a: a.ty().as_ref().clone(),

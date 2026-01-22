@@ -2,9 +2,8 @@ use std::sync::Arc;
 
 use sb_compiler_parse_cst::Spanned;
 
-use crate::error::TypeError;
 use crate::r#type::*;
-use crate::Typed;
+use super::error::TypeOpError;
 
 pub fn ty_det_arith2<'src, L, R>(lhs: &L, rhs: &R) -> miette::Result<Arc<Type>>
 where
@@ -45,6 +44,6 @@ where
         (InstAddr(_), InstAddr(_)) => Ok(lhs_ty),
 
         // 推論失敗
-        _ => Err(TypeError::new_det2_failed(lhs, rhs)),
+        _ => Err(TypeOpError::new_det2_failed(lhs, rhs)),
     }
 }

@@ -3,8 +3,7 @@ use std::sync::Arc;
 use sb_compiler_parse_cst::Spanned;
 
 use crate::r#type::*;
-use crate::Typed;
-use super::ty_equals;
+use crate::func::op::ty_equals;
 
 pub fn ty_can_call<'src, C, A>(callee: &C, args: &[A]) -> miette::Result<Arc<Type>>
 where

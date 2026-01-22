@@ -4,9 +4,7 @@ use std::sync::{Arc, Mutex};
 use petgraph::graph::{Graph, NodeIndex};
 
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_type::r#type::*;
-use sb_compiler_type::Typed;
-
+use sb_compiler_semcheck_impl_type::{Typed, Type, I32};
 
 #[derive(Debug, Clone, Hash)]
 pub struct Var<'src> {

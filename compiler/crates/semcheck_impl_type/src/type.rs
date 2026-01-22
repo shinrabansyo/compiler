@@ -2,7 +2,9 @@ use std::sync::{Arc, LazyLock};
 
 use sb_compiler_parse_ast as ast;
 
-use super::Typed;
+pub trait Typed {
+    fn ty(&self) -> Arc<Type>;
+}
 
 pub use Type::*;
 

@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
 use sb_compiler_parse_cst::Span;
-use sb_compiler_type::r#type::Type;
 
 use crate::func::TypeContext;
+use crate::r#type::Type;
 use super::error::TypeDeclError;
 
 pub async fn ty_register<'src>(
