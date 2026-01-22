@@ -8,7 +8,7 @@ use sb_compiler_parse_cst::Span;
     code(semantics::variable::declaration),
     url("this link is not working yet"),
 )]
-pub enum VarError {
+pub enum VarDeclError {
     #[error("Variable '{name}' is not declared in this scope.")]
     NotDeclared {
         #[source_code]
@@ -19,9 +19,9 @@ pub enum VarError {
     },
 }
 
-impl VarError {
+impl VarDeclError {
     pub fn new_not_declared(span: Span) -> miette::Report {
-        VarError::NotDeclared {
+        VarDeclError::NotDeclared {
             src: span.src.to_string(),
             span: span.into(),
             name: span.as_str().to_string(),
