@@ -13,8 +13,10 @@ pub enum VarDeclError {
     NotDeclared {
         #[source_code]
         src: String,
+
         #[label("here")]
         span: SourceSpan,
+
         name: String,
     },
 }

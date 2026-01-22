@@ -10,16 +10,16 @@ use crate::Typed;
 
 #[derive(Debug, Error, Diagnostic)]
 #[diagnostic(
-    code(semantics::ty::check),
+    code(semantics::ty::op),
     url("this link is not working yet"),
 )]
 pub enum TypeOpError {
-    #[error("Cannot cast from type '{from:?}' to '{to:?}'")]
+    #[error("Cannot cast from '{from:?}' to '{to:?}'")]
     CastFailed {
         #[source_code]
         src: String,
 
-        #[label("This is type of '{from:?}'")]
+        #[label("This is '{from:?}'")]
         from_span: SourceSpan,
         from: Arc<Type>,
 
@@ -31,7 +31,7 @@ pub enum TypeOpError {
         #[source_code]
         src: String,
 
-        #[label("This is type of '{a:?}'")]
+        #[label("This is '{a:?}'")]
         a_span: SourceSpan,
         a: Arc<Type>,
 
@@ -43,27 +43,27 @@ pub enum TypeOpError {
         #[source_code]
         src: String,
 
-        #[label("This is type of '{a:?}'")]
+        #[label("This is '{a:?}'")]
         a_span: SourceSpan,
         a: Arc<Type>,
 
-        #[label("This is type of '{b:?}'")]
+        #[label("This is '{b:?}'")]
         b_span: SourceSpan,
         b: Arc<Type>,
     },
 
-    #[error("Cannot determine type from '{a:?}' and '{b:?}'")]
+    #[error("Cannot determine type from '{from:?}' and '{to:?}'")]
     Det2Failed {
         #[source_code]
         src: String,
 
-        #[label("This is type of '{a:?}'")]
-        a_span: SourceSpan,
-        a: Type,
+        #[label("This is '{from:?}'")]
+        from_span: SourceSpan,
+        from: Type,
 
-        #[label("This is type of '{b:?}'")]
-        b_span: SourceSpan,
-        b: Type,
+        #[label("This is '{to:?}'")]
+        to_span: SourceSpan,
+        to: Type,
     }
 }
 
@@ -107,17 +107,17 @@ impl TypeOpError {
         }.into()
     }
 
-    pub fn new_det2_failed<'src, A, B>(a: &A, b: &B) -> miette::Report
+    pub fn new_det2_failed<'src, F, T>(from: &F, to: &T) -> miette::Report
     where
-        A: Typed + Spanned<'src>,
-        B: Typed + Spanned<'src>,
+        F: Typed + Spanned<'src>,
+        T: Typed + Spanned<'src>,
     {
         TypeOpError::Det2Failed {
-            src: a.span().src.to_string(),
-            a_span: a.span().into(),
-            a: a.ty().as_ref().clone(),
-            b_span: b.span().into(),
-            b: b.ty().as_ref().clone(),
+            src: from.span().src.to_string(),
+            from_span: from.span().into(),
+            from: from.ty().as_ref().clone(),
+            to_span: to.span().into(),
+            to: to.ty().as_ref().clone(),
         }.into()
     }
 }

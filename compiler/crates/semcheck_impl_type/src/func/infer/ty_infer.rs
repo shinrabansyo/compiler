@@ -1,29 +1,30 @@
 use std::sync::Arc;
 
+use sb_compiler_parse_cst::Spanned;
 use crate::r#type::*;
-use crate::Typed;
+use super::error::TypeInferError;
 
-pub fn ty_infer<A>(a: &A) -> miette::Result<Arc<Type>>
+pub fn ty_infer<'src, F>(from: &F) -> miette::Result<Arc<Type>>
 where
-    A: Typed,
+    F: Typed + Spanned<'src>,
 {
-    let a_ty = a.ty();
-    match a_ty.as_ref() {
+    let from_ty = from.ty();
+    match from_ty.as_ref() {
         // プリミティブ
-        Void     => Ok(a_ty),
-        Bool     => Ok(a_ty),
-        I8       => Ok(a_ty),
-        I16      => Ok(a_ty),
-        I32      => Ok(a_ty),
-        Char     => Ok(a_ty),
+        Void     => Ok(from_ty),
+        Bool     => Ok(from_ty),
+        I8       => Ok(from_ty),
+        I16      => Ok(from_ty),
+        I32      => Ok(from_ty),
+        Char     => Ok(from_ty),
         NumConst => Ok(I32.ty()),
 
         // アドレス
-        Addr(_)     => Ok(a_ty),
-        DataAddr(_) => Ok(a_ty),
-        InstAddr(_) => Ok(a_ty),
+        Addr(_)     => Ok(from_ty),
+        DataAddr(_) => Ok(from_ty),
+        InstAddr(_) => Ok(from_ty),
 
         // 推論失敗
-        _ => panic!(""),
+        _ => Err(TypeInferError::new_infer_failed(from)),
     }
 }

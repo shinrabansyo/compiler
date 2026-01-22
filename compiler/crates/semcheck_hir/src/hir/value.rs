@@ -4,7 +4,6 @@ use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_var::decl::var_find;
 use sb_compiler_semcheck_impl_var::Var;
-use sb_compiler_semcheck_impl_type::decl::ty_find_from_mod;
 use sb_compiler_semcheck_impl_type::r#fn::ty_can_call;
 use sb_compiler_semcheck_impl_type::{Typed, Type, Bool, Char, NumConst};
 
@@ -73,12 +72,12 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                 }
 
                 // 型チェック
-                let (fn_ty, fn_name) = ty_find_from_mod(
+                let (ty, fn_name) = ty_can_call(
                     &ctx.r#type,
-                    ctx.name.as_parent_str(),
+                    &ctx.name.as_parent_str(),
                     ident,
+                    &checked_args
                 ).await?;
-                let ty = ty_can_call(&fn_ty, &checked_args)?;
 
                 Ok(Value::Call {
                     span,
