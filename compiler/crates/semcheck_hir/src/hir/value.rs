@@ -3,7 +3,7 @@ use std::sync::Arc;
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_var::{Var, var_find};
-use sb_compiler_semcheck_impl_type::ty_find;
+use sb_compiler_semcheck_impl_type::ty_find_from_mod;
 use sb_compiler_type::op::ty_can_call;
 use sb_compiler_type::r#type::{Bool, Char, NumConst, Type};
 use sb_compiler_type::Typed;
@@ -73,9 +73,11 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                 }
 
                 // 型チェック
-                let mod_name = ctx.name.as_str().split(".").collect::<Vec<_>>()[1];
-                let fn_name = format!(".{}.{}", mod_name, ident.as_str());
-                let fn_ty = ty_find(&ctx.r#type, &fn_name).await?;
+                let (fn_ty, fn_name) = ty_find_from_mod(
+                    &ctx.r#type,
+                    ctx.name.as_parent_str(),
+                    ident,
+                ).await?;
                 let ty = ty_can_call(&fn_ty, &checked_args)?;
 
                 Ok(Value::Call {

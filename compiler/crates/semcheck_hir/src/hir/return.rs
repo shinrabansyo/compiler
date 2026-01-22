@@ -24,9 +24,8 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Return<'src>> for Return<'src> {
         // 式の意味解析
         let expr = Expr::check(ctx, r#return.expr).await?;
 
-        // // 戻り値の型をチェック
-        let fn_name = ctx.name.as_str();
-        let fn_ty = ty_find(&ctx.r#type, fn_name).await?;
+        // 戻り値の型をチェック
+        let fn_ty = ty_find(&ctx.r#type, ctx.name.as_str().into()).await?;
         let fn_ret_ty = ty_can_return(&fn_ty, &expr)?;
 
         Ok(Return {

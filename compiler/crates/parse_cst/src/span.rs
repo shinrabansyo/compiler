@@ -53,9 +53,25 @@ where
     }
 }
 
+impl<'a> From<&'a str> for Span<'a> {
+    fn from(s: &'a str) -> Self {
+        Span {
+            src: s,
+            body: (0, s.len()),
+            full: (0, s.len()),
+        }
+    }
+}
+
 impl<'a> Into<SourceSpan> for Span<'a> {
     fn into(self) -> SourceSpan {
         (self.body.0, self.body.1 - self.body.0).into()
+    }
+}
+
+impl<'a> Spanned<'a> for Span<'a> {
+    fn span(&self) -> Span<'a> {
+        *self
     }
 }
 

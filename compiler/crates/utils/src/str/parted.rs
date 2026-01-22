@@ -29,8 +29,24 @@ impl PartedString {
         self.raw.truncate(last_dot_idx);
     }
 
-    pub fn as_str(&mut self) -> &str {
+    pub fn as_str(&self) -> &str {
         unsafe { str::from_utf8_unchecked(self.raw.as_slice()) }
+    }
+
+    pub fn as_parent_str(&self) -> &str {
+        let last_dot_idx = self.raw
+            .iter()
+            .rposition(|&b| b == b'.').unwrap();
+        let last_dot_idx = max(last_dot_idx, 1);
+        unsafe { str::from_utf8_unchecked(&self.raw[..last_dot_idx]) }
+    }
+
+    pub fn as_child_str(&self) -> &str {
+        let last_dot_idx = self.raw
+            .iter()
+            .rposition(|&b| b == b'.').unwrap();
+        let start_idx = last_dot_idx + 1;
+        unsafe { str::from_utf8_unchecked(&self.raw[start_idx..]) }
     }
 }
 

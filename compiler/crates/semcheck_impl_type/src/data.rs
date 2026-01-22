@@ -41,11 +41,11 @@ impl TypeTree {
         // プリミティブ型の登録
         let mut ctx = TypeContext::from(Arc::clone(&tree));
         block_on(async {
-            ty_register(&mut ctx, "bool", Bool.ty()).await.unwrap();
-            ty_register(&mut ctx, "char", Char.ty()).await.unwrap();
-            ty_register(&mut ctx, "i8", I8.ty()).await.unwrap();
-            ty_register(&mut ctx, "i16", I16.ty()).await.unwrap();
-            ty_register(&mut ctx, "i32", I32.ty()).await.unwrap();
+            ty_register(&mut ctx, "bool".into(), Bool.ty()).await.unwrap();
+            ty_register(&mut ctx, "char".into(), Char.ty()).await.unwrap();
+            ty_register(&mut ctx, "i8".into(), I8.ty()).await.unwrap();
+            ty_register(&mut ctx, "i16".into(), I16.ty()).await.unwrap();
+            ty_register(&mut ctx, "i32".into(), I32.ty()).await.unwrap();
         });
         tree.lock().unwrap().root_node = ctx.current_pos;
 
