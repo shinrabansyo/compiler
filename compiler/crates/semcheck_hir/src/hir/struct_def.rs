@@ -1,0 +1,45 @@
+use std::sync::Arc;
+
+use sb_compiler_parse_ast as ast;
+use sb_compiler_parse_cst::{Span, Spanned};
+use sb_compiler_semcheck_impl_type::{Typed, Type, Void};
+
+use super::{FieldDef, SemCheck, InDep};
+
+#[derive(Debug)]
+pub struct StructDef<'src> {
+    pub span: Span<'src>,
+    pub name: String,
+    pub fields: Vec<FieldDef<'src>>,
+}
+
+impl<'src> SemCheck<InDep<'src>, ast::StructDef<'src>> for StructDef<'src> {
+    async fn check0(mut ctx: InDep<'src>, struct_def: ast::StructDef<'src>) -> miette::Result<Self>
+        where
+            Self: Sized
+    {
+        // フィールド要素の意味解析
+        let mut fields = vec![];
+        for field in struct_def.fields {
+            fields.push(FieldDef::check(&mut ctx, field).await?);
+        }
+
+        Ok(StructDef {
+            span: struct_def.span,
+            name: unimplemented!(),
+            fields,
+        })
+    }
+}
+
+impl<'src> Spanned<'src> for StructDef<'src> {
+    fn span(&self) -> Span<'src> {
+        self.span
+    }
+}
+
+impl Typed for StructDef<'_> {
+    fn ty(&self) -> Arc<Type> {
+        Void.ty()
+    }
+}

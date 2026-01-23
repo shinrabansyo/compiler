@@ -6,8 +6,11 @@ use super::lirgen_func_def;
 
 pub fn lirgen_top<'src>(ctx: &mut GenContext<'src>, top: Top<'src>) -> LirTopElem {
     match top {
+        Top::StructDef { .. } => {
+            unimplemented!()
+        },
         Top::FuncDef { func_def, .. } => {
             lirgen_func_def(ctx, func_def)
-        }
+        },
     }
 }

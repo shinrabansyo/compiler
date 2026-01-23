@@ -3,6 +3,8 @@ mod program;        pub use program::Program;
 mod top;            pub use top::Top;
 
 // 定義
+mod struct_def;     pub use struct_def::StructDef;
+mod field_def;      pub use field_def::FieldDef;
 mod func_def;       pub use func_def::FuncDef;
 mod argument_def;   pub use argument_def::ArgumentDef;
 
