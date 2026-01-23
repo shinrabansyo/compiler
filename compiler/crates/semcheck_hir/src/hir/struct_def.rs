@@ -2,6 +2,8 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
+use sb_compiler_semcheck_impl_type::decl::ty_register_in_mod;
+use sb_compiler_semcheck_impl_type::parse::ty_parse_struct;
 use sb_compiler_semcheck_impl_type::{Typed, Type, Void};
 
 use super::{FieldDef, SemCheck, InDep};
@@ -18,6 +20,15 @@ impl<'src> SemCheck<InDep<'src>, ast::StructDef<'src>> for StructDef<'src> {
         where
             Self: Sized
     {
+        // 型登録
+        let struct_ty = ty_parse_struct(&ctx.r#type, &struct_def).await?;
+        let struct_name = ty_register_in_mod(
+            &mut ctx.r#type,
+            ctx.name.as_parent_str(),
+            struct_def.ident,
+            struct_ty,
+        ).await?;
+
         // フィールド要素の意味解析
         let mut fields = vec![];
         for field in struct_def.fields {
@@ -26,7 +37,7 @@ impl<'src> SemCheck<InDep<'src>, ast::StructDef<'src>> for StructDef<'src> {
 
         Ok(StructDef {
             span: struct_def.span,
-            name: unimplemented!(),
+            name: struct_name,
             fields,
         })
     }
