@@ -19,6 +19,9 @@ impl<'src> SemCheck<InDep<'src>, ast::Top<'src>> for Top<'src> {
         Self: Sized,
     {
         match top {
+            ast::Top::StructDef { .. } => {
+                unimplemented!()
+            },
             ast::Top::FuncDef { func_def } => {
                 Ok(Top::FuncDef {
                     func_def: FuncDef::check(ctx, func_def).await?,

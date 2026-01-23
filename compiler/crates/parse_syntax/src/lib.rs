@@ -45,6 +45,8 @@ pub enum SBToken {
     Semicolon,
 
     // 予約語
+    #[token(r"struct", ir_omit)]
+    Struct,
     #[token(r"fn" ir_omit)]
     Fn,
     #[token(r"var", ir_omit)]
@@ -172,10 +174,21 @@ pub enum SBRule {
 
     #[rule("<top_list> ::= <top_list> <top>")]
     #[rule("<top_list> ::= <top>")]
+    #[rule("<top> ::= <struct_def>")]
     #[rule("<top> ::= <func_def>")]
     Top,
 
     // 定義
+    #[rule("<struct_def> ::= Struct Ident BraceL <field_def_list> BraceR")]
+    #[rule("<struct_def> ::= Struct Ident BraceL <field_def_list> Comma BraceR")]
+    StructDef,
+
+    #[rule("<field_def_list> ::= <field_def_list> Comma <field_def>")]
+    #[rule("<field_def_list> ::= <field_def>")]
+    #[rule("<field_def_list> ::= <field_def>")]
+    #[rule("<field_def> ::= Ident Colon <type>")]
+    FieldDef,
+
     #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR <block>")]
     #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR Allow <type> <block>")]
     FuncDef,
