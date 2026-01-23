@@ -1,9 +1,19 @@
 use std::sync::{Arc, LazyLock};
 
-use sb_compiler_parse_ast as ast;
-
 pub trait Typed {
     fn ty(&self) -> Arc<Type>;
+}
+
+impl<T: Typed> Typed for Box<T> {
+    fn ty(&self) -> Arc<Type> {
+        self.as_ref().ty()
+    }
+}
+
+impl<T: Typed> Typed for Arc<T> {
+    fn ty(&self) -> Arc<Type> {
+        self.as_ref().ty()
+    }
 }
 
 pub use Type::*;
@@ -29,33 +39,6 @@ pub enum Type {
         args: Vec<Arc<Type>>,
         ret_ty: Arc<Type>,
     },
-}
-
-impl<'src> From<ast::Type<'src>> for Type {
-    fn from(ast: ast::Type<'src>) -> Self {
-        match ast {
-            // プリミティブ
-            ast::Type::Bool(_) => Type::Bool,
-            ast::Type::Char(_) => Type::Char,
-            ast::Type::I8(_) => Type::I8,
-            ast::Type::I16(_) => Type::I16,
-            ast::Type::I32(_) => Type::I32,
-
-            // アドレス
-            ast::Type::Addr { inner_ty, .. } => {
-                let inner_ty = Type::from(*inner_ty);
-                Type::Addr(Arc::new(inner_ty))
-            }
-            ast::Type::DataAddr { inner_ty, .. } => {
-                let inner_ty = Type::from(*inner_ty);
-                Type::DataAddr(Arc::new(inner_ty))
-            }
-            ast::Type::InstAddr { inner_ty, .. } => {
-                let inner_ty = Type::from(*inner_ty);
-                Type::InstAddr(Arc::new(inner_ty))
-            }
-        }
-    }
 }
 
 impl Typed for Type {
@@ -124,17 +107,5 @@ impl Typed for Type {
                 })
             }
         }
-    }
-}
-
-impl<T: Typed> Typed for Box<T> {
-    fn ty(&self) -> Arc<Type> {
-        self.as_ref().ty()
-    }
-}
-
-impl<T: Typed> Typed for Arc<T> {
-    fn ty(&self) -> Arc<Type> {
-        self.as_ref().ty()
     }
 }

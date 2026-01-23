@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_type::decl::ty_register_in_mod;
+use sb_compiler_semcheck_impl_type::decl::{ty_register_in_mod, ty_link};
 use sb_compiler_semcheck_impl_type::op::ty_equals;
 use sb_compiler_semcheck_impl_type::{Typed, Type, Function, Void};
 
@@ -37,8 +37,7 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             .map(|arg| arg.ty())
             .collect::<Vec<_>>();
         let ret_ty = match func_def.ret_ty {
-            // Some(ty) => TypeDeclChecker::find(&ctx.type_decl, &ty).await?,
-            Some(ty) => Type::from(ty).ty(),
+            Some(ty) => ty_link(&ctx.r#type, ty).await?,
             None => Void.ty(),
         };
         let fn_ty = Arc::new(Function {

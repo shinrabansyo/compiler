@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
+use sb_compiler_semcheck_impl_type::decl::ty_link;
 use sb_compiler_semcheck_impl_type::{Typed, Type};
 
 use super::{SemCheck, Dep};
@@ -14,12 +15,12 @@ pub struct FieldDef<'src> {
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::FieldDef<'src>> for FieldDef<'src> {
-    async fn check0(_: Dep<'_, 'src>, arg: ast::FieldDef<'src>) -> miette::Result<Self>
+    async fn check0(ctx: Dep<'_, 'src>, arg: ast::FieldDef<'src>) -> miette::Result<Self>
     where
         Self: Sized,
     {
-        // 型存在チェック
-        let ty = Type::from(arg.ty).ty();
+        // 型情報取得 (ast::Type -> semcheck_impl_type::Type)
+        let ty = ty_link(&ctx.r#type, arg.ty).await?;
 
         Ok(FieldDef { span: arg.span, ident: arg.ident, ty })
     }

@@ -63,16 +63,6 @@ pub enum SBToken {
     For,
     #[token(r"asm!", ir_omit)]
     Asm,
-    #[token(r"bool")]
-    BoolTy,
-    #[token(r"char")]
-    CharTy,
-    #[token(r"i8")]
-    I8Ty,
-    #[token(r"i16")]
-    I16Ty,
-    #[token(r"i32")]
-    I32Ty,
     #[token(r"Addr")]
     AddrTy,
     #[token(r"DataAddr")]
@@ -200,14 +190,10 @@ pub enum SBRule {
     ArgumentDef,
 
     // 型
-    #[rule("<type> ::= BoolTy")]
-    #[rule("<type> ::= CharTy")]
-    #[rule("<type> ::= I8Ty")]
-    #[rule("<type> ::= I16Ty")]
-    #[rule("<type> ::= I32Ty")]
     #[rule("<type> ::= AddrTy Lt <type> Gt")]
     #[rule("<type> ::= DataAddrTy Lt <type> Gt")]
     #[rule("<type> ::= InstAddrTy Lt <type> Gt")]
+    #[rule("<type> ::= Ident")]
     Type,
 
     // 文

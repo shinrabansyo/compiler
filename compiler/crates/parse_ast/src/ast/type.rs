@@ -5,13 +5,6 @@ use super::Visitor;
 
 #[derive(Debug)]
 pub enum Type<'src> {
-    // プリミティブ
-    Bool(Span<'src>),
-    Char(Span<'src>),
-    I8(Span<'src>),
-    I16(Span<'src>),
-    I32(Span<'src>),
-
     // アドレス
     Addr {
         span: Span<'src>,
@@ -25,19 +18,15 @@ pub enum Type<'src> {
         span: Span<'src>,
         inner_ty: Box<Type<'src>>
     },
+
+    // ユーザ指定 or プリミティブ
+    Term(Span<'src>),
 }
 
 impl<'src> From<Visitor<'src>> for Type<'src> {
     fn from(mut visitor: Visitor<'src>) -> Self {
         let span = visitor.span();
         match visitor.expect_leaf() {
-            // プリミティブ
-            (SBToken::BoolTy, _) => Type::Bool(span),
-            (SBToken::CharTy, _) => Type::Char(span),
-            (SBToken::I8Ty, _) => Type::I8(span),
-            (SBToken::I16Ty, _) => Type::I16(span),
-            (SBToken::I32Ty, _) => Type::I32(span),
-
             // アドレス
             (SBToken::AddrTy, _) => {
                 let _ = visitor.expect_leaf(); // '<'
@@ -58,7 +47,8 @@ impl<'src> From<Visitor<'src>> for Type<'src> {
                 Type::InstAddr { span, inner_ty }
             }
 
-            _ => unreachable!(),
+            // ユーザ指定 or プリミティブ
+            (_, span) => Type::Term(span),
         }
     }
 }
@@ -66,17 +56,13 @@ impl<'src> From<Visitor<'src>> for Type<'src> {
 impl<'src> Spanned<'src> for Type<'src> {
     fn span(&self) -> Span<'src> {
         match self {
-            // プリミティブ
-            Type::Bool(span) => *span,
-            Type::Char(span) => *span,
-            Type::I8(span) => *span,
-            Type::I16(span) => *span,
-            Type::I32(span) => *span,
-
             // アドレス
             Type::Addr { span, .. } => *span,
             Type::DataAddr { span, .. } => *span,
             Type::InstAddr { span, .. } => *span,
+
+            // その他
+            Type::Term(span) => *span,
         }
     }
 }
