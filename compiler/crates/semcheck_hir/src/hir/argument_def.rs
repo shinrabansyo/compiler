@@ -4,7 +4,7 @@ use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_var::decl::var_register;
 use sb_compiler_semcheck_impl_var::Var;
-use sb_compiler_semcheck_impl_type::decl::ty_link;
+use sb_compiler_semcheck_impl_type::parse::ty_parse_type;
 use sb_compiler_semcheck_impl_type::{Typed, Type};
 
 use super::{SemCheck, Dep};
@@ -21,7 +21,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::ArgumentDef<'src>> for ArgumentDef<'src>
         Self: Sized,
     {
         // 型情報取得 (ast::Type -> semcheck_impl_type::Type)
-        let ty = ty_link(&ctx.r#type, arg.ty).await?;
+        let ty = ty_parse_type(&ctx.r#type, arg.ty).await?;
 
         // 変数宣言
         let var = var_register(&mut ctx.var, &arg.ident, ty,).await?;
