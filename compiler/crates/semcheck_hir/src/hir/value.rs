@@ -2,11 +2,10 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
-use sb_compiler_type::op::ty_can_call;
-use sb_compiler_type::r#type::{Bool, Char, NumConst, Type};
-use sb_compiler_type::Typed;
+use sb_compiler_semcheck_impl_var::decl::var_find;
+use sb_compiler_semcheck_impl_var::Var;
+use sb_compiler_semcheck_impl_type::r#fn::ty_can_call;
+use sb_compiler_semcheck_impl_type::{Typed, Type, Bool, Char, NumConst};
 
 use super::{Expr, SemCheck, Dep};
 
@@ -62,7 +61,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
             ast::Value::Var { span, name } => {
                 Ok(Value::Var {
                     span,
-                    var: VarDeclChecker::find(&mut ctx.var_decl, &name).await?,
+                    var: var_find(&mut ctx.var, &name).await?,
                 })
             }
             ast::Value::Call { span, ident, args } => {
@@ -73,10 +72,12 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                 }
 
                 // 型チェック
-                let mod_name = ctx.name.as_str().split(".").collect::<Vec<_>>()[1];
-                let fn_name = format!(".{}.{}", mod_name, ident.as_str());
-                let fn_ty = TypeDeclChecker::find(&ctx.type_decl, &fn_name).await?;
-                let ty = ty_can_call(&fn_ty, &checked_args)?;
+                let (ty, fn_name) = ty_can_call(
+                    &ctx.r#type,
+                    &ctx.name.as_parent_str(),
+                    ident,
+                    &checked_args
+                ).await?;
 
                 Ok(Value::Call {
                     span,

@@ -1,42 +1,36 @@
-mod name;
-
 use std::sync::{Arc, Mutex};
 
-use sb_compiler_semcheck_impl_vardecl::{VarDeclChecker, VarDeclContext};
-use sb_compiler_semcheck_impl_typedecl::{TypeDeclChecker, TypeDeclContext};
-
-use name::Name;
+use sb_compiler_semcheck_impl_var::{VarContext, VarGraph};
+use sb_compiler_semcheck_impl_type::{TypeContext, TypeTree};
+use sb_compiler_utils::str::PartedString;
 
 #[derive(Clone)]
 pub struct SemCheckContext<'src> {
-    pub name: Name,
-    pub var_decl: VarDeclContext<'src>,
-    pub type_decl: TypeDeclContext,
+    pub name: PartedString,
+    pub var: VarContext<'src>,
+    pub r#type: TypeContext,
 }
 
 #[allow(dead_code)]
-pub struct SemCheckServer<'src> {
-    var_decl: Arc<Mutex<VarDeclChecker<'src>>>,
-    type_decl: Arc<Mutex<TypeDeclChecker>>,
+pub struct SemCheckDataStore<'src> {
+    var_graph: Arc<Mutex<VarGraph<'src>>>,
+    type_tree: Arc<Mutex<TypeTree>>,
 }
 
-impl<'src> SemCheckServer<'src> {
-    pub fn new() -> (SemCheckServer<'src>, SemCheckContext<'src>) {
+impl<'src> SemCheckDataStore<'src> {
+    pub fn new() -> (SemCheckContext<'src>, SemCheckDataStore<'src>) {
         // 各種意味チェッカの初期化
-        let (var_decl_checker, var_decl_ctx) = VarDeclChecker::new();
-        let (type_decl_checker, type_decl_ctx) = TypeDeclChecker::new();
+        let var_graph = VarGraph::new();
+        let type_tree = TypeTree::new();
 
-        // サーバ, コンテキストの準備
-        let server = SemCheckServer {
-            var_decl: var_decl_checker,
-            type_decl: type_decl_checker,
+        // 意味解析用コンテキスト，データの準備
+        let ctx = SemCheckContext {
+            name: PartedString::new::<64>(),
+            var: VarContext::from(Arc::clone(&var_graph)),
+            r#type: TypeContext::from(Arc::clone(&type_tree)),
         };
-        let context = SemCheckContext {
-            name: Name::new::<64>(),
-            var_decl: var_decl_ctx,
-            type_decl: type_decl_ctx,
-        };
+        let server = SemCheckDataStore { var_graph, type_tree };
 
-        (server, context)
+        (ctx, server)
     }
 }

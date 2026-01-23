@@ -2,10 +2,8 @@ pub use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
-use sb_compiler_type::op::ty_can_return;
-use sb_compiler_type::r#type::Type;
-use sb_compiler_type::Typed;
+use sb_compiler_semcheck_impl_type::r#fn::ty_can_return;
+use sb_compiler_semcheck_impl_type::{Typed, Type};
 
 use super::{Expr, SemCheck, Dep};
 
@@ -24,10 +22,12 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Return<'src>> for Return<'src> {
         // 式の意味解析
         let expr = Expr::check(ctx, r#return.expr).await?;
 
-        // // 戻り値の型をチェック
-        let fn_name = ctx.name.as_str();
-        let fn_ty = TypeDeclChecker::find(&ctx.type_decl, fn_name).await?;
-        let fn_ret_ty = ty_can_return(&fn_ty, &expr)?;
+        // 戻り値の型をチェック
+        let fn_ret_ty = ty_can_return(
+            &ctx.r#type,
+            ctx.name.as_str().into(),
+            &expr,
+        ).await?;
 
         Ok(Return {
             span: r#return.span,

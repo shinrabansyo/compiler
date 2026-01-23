@@ -1,1 +1,1 @@
-pub mod failable_as_async;
+pub mod communicable;

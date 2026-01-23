@@ -2,10 +2,9 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_typedecl::TypeDeclChecker;
-use sb_compiler_type::op::ty_equals;
-use sb_compiler_type::r#type::{Function, Type, Void};
-use sb_compiler_type::Typed;
+use sb_compiler_semcheck_impl_type::decl::ty_register_in_mod;
+use sb_compiler_semcheck_impl_type::op::ty_equals;
+use sb_compiler_semcheck_impl_type::{Typed, Type, Function, Void};
 
 use super::{ArgumentDef, Block, Stmt, SemCheck, InDep};
 
@@ -25,9 +24,6 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
     {
         // 名前空間を作成
         ctx.name.push(func_def.ident.as_str());
-
-        // 関数名
-        let fn_name = ctx.name.as_str().to_string();
 
         // 引数の意味解析
         let mut args = vec![];
@@ -49,11 +45,12 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
             args: arg_tys,
             ret_ty: ret_ty.ty(),
         });
-        TypeDeclChecker::register(
-            &mut ctx.type_decl,
-            ctx.name.as_str(),
+        let fn_name = ty_register_in_mod(
+            &mut ctx.r#type,
+            ctx.name.as_parent_str(),
+            func_def.ident,
             fn_ty,
-        )?;
+        ).await?;
 
         // ブロックの意味解析 & 型チェック
         let block = Block::check(ctx.clone(), func_def.block).await?;

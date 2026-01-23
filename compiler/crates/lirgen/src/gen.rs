@@ -32,7 +32,7 @@ mod unary;      pub use unary::lirgen_unary;
 mod value;      pub use value::lirgen_value;
 
 // HIR -> AST 用
-use sb_compiler_semcheck_impl_vardecl::Var;
+use sb_compiler_semcheck_impl_var::Var;
 use sb_compiler_utils::collections::LayeredTable;
 
 const ZERO_REG: u32 = 0;

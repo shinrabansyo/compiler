@@ -2,10 +2,10 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_type::op::ty_equals;
-use sb_compiler_type::r#type::{I32, Type};
-use sb_compiler_type::Typed;
+use sb_compiler_semcheck_impl_var::decl::{var_register, var_find};
+use sb_compiler_semcheck_impl_var::Var;
+use sb_compiler_semcheck_impl_type::op::ty_equals;
+use sb_compiler_semcheck_impl_type::{Typed, Type, I32};
 
 use super::{SemCheck, Dep};
 
@@ -31,16 +31,10 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandL<'src>> for InlineAsmOp
             }
             ast::InlineAsmOperandL::Var { name } => {
                 // 変数参照 or 宣言
-                let var = VarDeclChecker::find(&mut ctx.var_decl, &name).await;
+                let var = var_find(&mut ctx.var, &name).await;
                 let var = match var {
                     Ok(var) => var,
-                    Err(_) => {
-                        VarDeclChecker::register(
-                            &mut ctx.var_decl,
-                            &name,
-                            I32.ty(),
-                        ).unwrap()
-                    }
+                    Err(_) => var_register(&mut ctx.var, &name, I32.ty()).await.unwrap(),
                 };
                 Ok(InlineAsmOperand::Var { var })
             }
@@ -59,7 +53,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::InlineAsmOperandR<'src>> for InlineAsmOp
             }
             ast::InlineAsmOperandR::Var { name } => {
                 // 変数の型チェック
-                let var = VarDeclChecker::find(&mut ctx.var_decl, &name).await?;
+                let var = var_find(&mut ctx.var, &name).await?;
                 ty_equals(I32, &var)?;
 
                 Ok(InlineAsmOperand::Var { var })

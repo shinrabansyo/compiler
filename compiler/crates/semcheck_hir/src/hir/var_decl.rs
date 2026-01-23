@@ -2,10 +2,11 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_type::op::{ty_equals, ty_infer};
-use sb_compiler_type::r#type::{Type, Void};
-use sb_compiler_type::Typed;
+use sb_compiler_semcheck_impl_var::decl::var_register;
+use sb_compiler_semcheck_impl_var::Var;
+use sb_compiler_semcheck_impl_type::op::ty_equals;
+use sb_compiler_semcheck_impl_type::infer::ty_infer;
+use sb_compiler_semcheck_impl_type::{Typed, Type, Void};
 
 use super::{Expr, SemCheck, Dep};
 
@@ -36,11 +37,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
         };
 
         // 変数宣言
-        let var = VarDeclChecker::register(
-            &mut ctx.var_decl,
-            &var_decl.ident,
-            var_ty.ty(),
-        )?;
+        let var = var_register(&mut ctx.var, &var_decl.ident, var_ty.ty()).await?;
 
         Ok(VarDecl { span: var_decl.span, var, var_ty, expr })
     }

@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-sb_compiler_semcheck_impl_vardecl = { path = "../semcheck_impl_vardecl" }
-sb_compiler_semcheck_impl_typedecl = { path = "../semcheck_impl_typedecl" }
+sb_compiler_semcheck_impl_var = { path = "../semcheck_impl_var" }
+sb_compiler_semcheck_impl_type = { path = "../semcheck_impl_type" }
+sb_compiler_utils = { path = "../utils" }

@@ -2,10 +2,10 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_vardecl::{Var, VarDeclChecker};
-use sb_compiler_type::op::ty_equals_arith2;
-use sb_compiler_type::r#type::Type;
-use sb_compiler_type::Typed;
+use sb_compiler_semcheck_impl_var::decl::var_find;
+use sb_compiler_semcheck_impl_var::Var;
+use sb_compiler_semcheck_impl_type::op::ty_equals_arith2;
+use sb_compiler_semcheck_impl_type::{Typed, Type};
 
 use super::{LogicOr, SemCheck, Dep};
 
@@ -72,7 +72,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
+                let var = var_find(&mut ctx.var, &ident).await?;
                 ty_equals_arith2(&var, &assign)?;
 
                 Ok(Assign::Normal { span, var, assign })
@@ -82,7 +82,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
+                let var = var_find(&mut ctx.var, &ident).await?;
                 ty_equals_arith2(&var, &assign)?;
 
                 Ok(Assign::Plus { span, var, assign })
@@ -92,7 +92,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
+                let var = var_find(&mut ctx.var, &ident).await?;
                 ty_equals_arith2(&var, &assign)?;
 
                 Ok(Assign::Minus { span, var, assign })
@@ -102,7 +102,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
+                let var = var_find(&mut ctx.var, &ident).await?;
                 ty_equals_arith2(&var, &assign)?;
 
                 Ok(Assign::Mul { span, var, assign })
@@ -112,7 +112,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
+                let var = var_find(&mut ctx.var, &ident).await?;
                 ty_equals_arith2(&var, &assign)?;
 
                 Ok(Assign::Div { span, var, assign })
@@ -122,7 +122,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
+                let var = var_find(&mut ctx.var, &ident).await?;
                 ty_equals_arith2(&var, &assign)?;
 
                 Ok(Assign::Mod { span, var, assign })
@@ -132,7 +132,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
+                let var = var_find(&mut ctx.var, &ident).await?;
                 ty_equals_arith2(&var, &assign)?;
 
                 Ok(Assign::ShiftL { span, var, assign })
@@ -142,7 +142,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
+                let var = var_find(&mut ctx.var, &ident).await?;
                 ty_equals_arith2(&var, &assign)?;
 
                 Ok(Assign::ShiftR { span, var, assign })
@@ -152,7 +152,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = VarDeclChecker::find(&mut ctx.var_decl, &ident).await?;
+                let var = var_find(&mut ctx.var, &ident).await?;
                 ty_equals_arith2(&var, &assign)?;
 
                 Ok(Assign::ShiftRa { span, var, assign })

@@ -1,0 +1,13 @@
+[package]
+name = "sb_compiler_semcheck_impl_var"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+miette = { workspace = true }
+thiserror = { workspace = true }
+petgraph = "0.8.2"
+sb_compiler_parse_cst = { path = "../parse_cst" }
+sb_compiler_semcheck_async = { path = "../semcheck_async" }
+sb_compiler_semcheck_async_macros = { path = "../semcheck_async_macros" }
+sb_compiler_semcheck_impl_type = { path = "../semcheck_impl_type" }

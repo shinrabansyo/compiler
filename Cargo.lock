@@ -1337,7 +1337,7 @@ dependencies = [
  "sb_compiler_parse_cst",
  "sb_compiler_semcheck",
  "sb_compiler_semcheck_hir",
- "sb_compiler_semcheck_impl_vardecl",
+ "sb_compiler_semcheck_impl_var",
  "sb_compiler_utils",
 ]
 
@@ -1449,9 +1449,8 @@ dependencies = [
  "sb_compiler_parse_cst",
  "sb_compiler_semcheck_async",
  "sb_compiler_semcheck_impl",
- "sb_compiler_semcheck_impl_typedecl",
- "sb_compiler_semcheck_impl_vardecl",
- "sb_compiler_type",
+ "sb_compiler_semcheck_impl_type",
+ "sb_compiler_semcheck_impl_var",
  "sb_compiler_utils",
 ]
 
@@ -1459,12 +1458,13 @@ dependencies = [
 name = "sb_compiler_semcheck_impl"
 version = "0.1.0"
 dependencies = [
- "sb_compiler_semcheck_impl_typedecl",
- "sb_compiler_semcheck_impl_vardecl",
+ "sb_compiler_semcheck_impl_type",
+ "sb_compiler_semcheck_impl_var",
+ "sb_compiler_utils",
 ]
 
 [[package]]
-name = "sb_compiler_semcheck_impl_typedecl"
+name = "sb_compiler_semcheck_impl_type"
 version = "0.1.0"
 dependencies = [
  "lctree",
@@ -1473,13 +1473,12 @@ dependencies = [
  "sb_compiler_parse_cst",
  "sb_compiler_semcheck_async",
  "sb_compiler_semcheck_async_macros",
- "sb_compiler_type",
  "string-interner",
  "thiserror 2.0.12",
 ]
 
 [[package]]
-name = "sb_compiler_semcheck_impl_vardecl"
+name = "sb_compiler_semcheck_impl_var"
 version = "0.1.0"
 dependencies = [
  "miette",
@@ -1487,17 +1486,7 @@ dependencies = [
  "sb_compiler_parse_cst",
  "sb_compiler_semcheck_async",
  "sb_compiler_semcheck_async_macros",
- "sb_compiler_type",
- "thiserror 2.0.12",
-]
-
-[[package]]
-name = "sb_compiler_type"
-version = "0.1.0"
-dependencies = [
- "miette",
- "sb_compiler_parse_ast",
- "sb_compiler_parse_cst",
+ "sb_compiler_semcheck_impl_type",
  "thiserror 2.0.12",
 ]
 

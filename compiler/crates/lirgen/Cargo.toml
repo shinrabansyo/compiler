@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 sb_compiler_parse_cst = { path = "../parse_cst" }
 sb_compiler_semcheck_hir = { path = "../semcheck_hir" }
-sb_compiler_semcheck_impl_vardecl = { path = "../semcheck_impl_vardecl" }
+sb_compiler_semcheck_impl_var = { path = "../semcheck_impl_var" }
 sb_compiler_lirgen_ir = { path = "../lirgen_ir" }
 sb_compiler_utils = { path = "../utils" }
 
