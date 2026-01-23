@@ -21,7 +21,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::ArgumentDef<'src>> for ArgumentDef<'src>
         Self: Sized,
     {
         // 型情報取得 (ast::Type -> semcheck_impl_type::Type)
-        let ty = ty_parse_type(&ctx.r#type, arg.ty).await?;
+        let ty = ty_parse_type(&ctx.r#type, &arg.ty).await?;
 
         // 変数宣言
         let var = var_register(&mut ctx.var, &arg.ident, ty,).await?;

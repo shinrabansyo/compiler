@@ -31,7 +31,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cast<'src>> for Cast<'src> {
                 let unary = Unary::check(ctx, unary).await?;
 
                 // 型情報取得 (ast::Type -> semcheck_impl_type::Type)
-                let ty = ty_parse_type(&ctx.r#type, ty).await?;
+                let ty = ty_parse_type(&ctx.r#type, &ty).await?;
                 ty_cast(&unary, &ty)?;
 
                 Ok(Cast::Casting { span, unary, ty })

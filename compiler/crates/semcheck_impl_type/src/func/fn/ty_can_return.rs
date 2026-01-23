@@ -20,7 +20,7 @@ where
     match returnee.as_ref() {
         // 関数
         Function { ret_ty: req_ret_ty, .. } => {
-            if ty_equals(req_ret_ty.as_ref().clone(), ret_ty).is_err() {
+            if ty_equals(req_ret_ty, ret_ty).is_err() {
                 return Err(TypeFnError::new_return_failed(req_ret_ty.as_ref(), ret_ty));
             }
             Ok(req_ret_ty.ty())

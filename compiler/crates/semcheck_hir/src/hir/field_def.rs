@@ -20,7 +20,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::FieldDef<'src>> for FieldDef<'src> {
         Self: Sized,
     {
         // 型情報取得 (ast::Type -> semcheck_impl_type::Type)
-        let ty = ty_parse_type(&ctx.r#type, arg.ty).await?;
+        let ty = ty_parse_type(&ctx.r#type, &arg.ty).await?;
 
         Ok(FieldDef { span: arg.span, ident: arg.ident, ty })
     }

@@ -3,7 +3,6 @@ use miette::{Diagnostic, SourceSpan};
 
 use sb_compiler_parse_cst::Spanned;
 
-use crate::r#type::Type;
 use crate::Typed;
 
 #[derive(Debug, Error, Diagnostic)]
@@ -24,16 +23,16 @@ pub enum TypeOpError {
         to: String,
     },
 
-    #[error("Type mismatch, '{a}' is not compatible with '{ty}'")]
+    #[error("Type mismatch, '{b}' is not compatible with '{a}'")]
     Mismatch {
         #[source_code]
         src: String,
 
-        #[label("This is '{a}'")]
-        a_span: SourceSpan,
-        a: String,
+        #[label("This is '{b}'")]
+        b_span: SourceSpan,
+        b: String,
 
-        ty: String,
+        a: String,
     },
 
     #[error("Type mismatch, '{a}' is not compatible with '{b}'")]
@@ -79,15 +78,16 @@ impl TypeOpError {
         }.into()
     }
 
-    pub fn new_mismatch<'src, A>(ty: Type, a: &A) -> miette::Report
+    pub fn new_mismatch<'src, A, B>(a: &A, b: &B) -> miette::Report
     where
-        A: Typed + Spanned<'src>,
+        A: Typed,
+        B: Typed + Spanned<'src>,
     {
         TypeOpError::Mismatch {
-            src: a.span().src.to_string(),
-            a_span: a.span().into(),
+            src: b.span().src.to_string(),
+            b_span: b.span().into(),
+            b: b.ty().to_string(),
             a: a.ty().to_string(),
-            ty: ty.to_string(),
         }.into()
     }
 

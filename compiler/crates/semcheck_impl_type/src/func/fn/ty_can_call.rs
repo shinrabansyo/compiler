@@ -30,7 +30,7 @@ where
 
             // 引数の型が一致しない場合エラー
             for (req_arg, arg) in req_args.iter().zip(args) {
-                ty_equals(req_arg.as_ref().clone(), arg)?;
+                ty_equals(req_arg, arg)?;
             }
 
             Ok((Arc::clone(ret_ty), fn_name))

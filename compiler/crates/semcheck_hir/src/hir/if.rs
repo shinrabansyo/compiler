@@ -22,7 +22,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::If<'src>> for If<'src> {
     {
         // 条件式の意味解析 & 型チェック
         let cond = Expr::check(ctx, r#if.cond).await?;
-        ty_equals(Bool, &cond)?;
+        ty_equals(&Bool, &cond)?;
 
         // ブロックの意味解析
         let block = Block::check(ctx.clone(), r#if.block).await?;

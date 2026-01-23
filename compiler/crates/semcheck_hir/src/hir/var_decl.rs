@@ -30,8 +30,8 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
         // 型検査
         let var_ty = match var_decl.ty {
             Some(ty) => {
-                let ty = ty_parse_type(&ctx.r#type, ty).await?;
-                ty_equals(ty.as_ref().clone(), &expr)?;
+                let ty = ty_parse_type(&ctx.r#type, &ty).await?;
+                ty_equals(&ty, &expr)?;
                 ty
             }
             None => ty_infer(&expr)?,

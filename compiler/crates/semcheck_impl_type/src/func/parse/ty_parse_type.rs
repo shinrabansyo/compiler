@@ -9,27 +9,27 @@ use crate::r#type::{Type, Typed};
 
 pub fn ty_parse_type<'a, 'src>(
     ctx: &'a TypeContext,
-    ast: ast::Type<'src>,
+    ast: &'a ast::Type<'src>,
 ) -> impl Future<Output = miette::Result<Arc<Type>>> + use <'a, 'src> {
     Box::pin(async move {
         match ast {
             // アドレス
             ast::Type::Addr { inner_ty, .. } => {
-                let inner_ty = ty_parse_type(ctx, *inner_ty).await?;
+                let inner_ty = ty_parse_type(ctx, inner_ty).await?;
                 Ok(Type::Addr(inner_ty).ty())
             }
             ast::Type::DataAddr { inner_ty, .. } => {
-                let inner_ty = ty_parse_type(ctx, *inner_ty).await?;
+                let inner_ty = ty_parse_type(ctx, inner_ty).await?;
                 Ok(Type::DataAddr(inner_ty).ty())
             }
             ast::Type::InstAddr { inner_ty, .. } => {
-                let inner_ty = ty_parse_type(ctx, *inner_ty).await?;
+                let inner_ty = ty_parse_type(ctx, inner_ty).await?;
                 Ok(Type::InstAddr(inner_ty).ty())
             }
 
             // ユーザ指定 or プリミティブ
             ast::Type::Term(span) => {
-                ty_find(ctx, span).await
+                ty_find(ctx, *span).await
             }
         }
     })
