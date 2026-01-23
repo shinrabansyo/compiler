@@ -9,7 +9,7 @@ use sb_compiler_parse_cst::Span;
     url("this link is not working yet"),
 )]
 pub enum TypeDeclError {
-    #[error("'{name}' is already declared.")]
+    #[error("Type '{name}' is already declared.")]
     TypeAlreadyDeclared {
         #[source_code]
         src: String,
@@ -20,7 +20,7 @@ pub enum TypeDeclError {
         name: String,
     },
 
-    #[error("'{name}' is not declared.")]
+    #[error("Type '{name}' is not declared.")]
     TypeNotDeclared {
         #[source_code]
         src: String,
@@ -31,7 +31,7 @@ pub enum TypeDeclError {
         name: String,
     },
 
-    #[error("'{name}' is not declared in this scope.")]
+    #[error("Type '{name}' is not declared in this scope.")]
     TypeNotDeclaredInScope {
         #[source_code]
         src: String,

@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+use std::fmt::Display;
 use std::sync::{Arc, LazyLock};
 
 pub trait Typed {
@@ -5,12 +7,6 @@ pub trait Typed {
 }
 
 impl<T: Typed> Typed for Box<T> {
-    fn ty(&self) -> Arc<Type> {
-        self.as_ref().ty()
-    }
-}
-
-impl<T: Typed> Typed for Arc<T> {
     fn ty(&self) -> Arc<Type> {
         self.as_ref().ty()
     }
@@ -34,11 +30,51 @@ pub enum Type {
     DataAddr(Arc<Type>),
     InstAddr(Arc<Type>),
 
+    // データ構造
+    Struct {
+        name: String,
+        fields: BTreeMap<String, Arc<Type>>,
+    },
+
     // 関数
     Function {
         args: Vec<Arc<Type>>,
         ret_ty: Arc<Type>,
     },
+}
+
+impl Display for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            // プリミティブ
+            Type::Void => write!(f, "void"),
+            Type::Bool => write!(f, "bool"),
+            Type::Char => write!(f, "char"),
+            Type::I8 => write!(f, "i8"),
+            Type::I16 => write!(f, "i16"),
+            Type::I32 => write!(f, "i32"),
+            Type::NumConst => write!(f, "const(num)"),
+
+            // アドレス
+            Type::Addr(inner_ty) => write!(f, "Addr<{}>", inner_ty),
+            Type::DataAddr(inner_ty) => write!(f, "DataAddr<{}>", inner_ty),
+            Type::InstAddr(inner_ty) => write!(f, "InstAddr<{}>", inner_ty),
+
+            // データ構造
+            Type::Struct { name, .. } => {
+                write!(f, "struct {}", name)
+            }
+
+            // 関数
+            Type::Function { args, ret_ty } => {
+                write!(f, "fn(")?;
+                for arg_ty in args {
+                    write!(f, "{}, ", arg_ty)?;
+                }
+                write!(f, ") -> {}", ret_ty)
+            }
+        }
+    }
 }
 
 impl Typed for Type {
@@ -99,6 +135,14 @@ impl Typed for Type {
                 Arc::new(Type::InstAddr(Arc::clone(inner_ty)))
             }
 
+            // データ構造
+            Type::Struct { name, fields } => {
+                let fields = fields.iter()
+                    .map(|(name, ty)| (name.clone(), Arc::clone(ty)))
+                    .collect();
+                Arc::new(Type::Struct { name: name.clone(), fields })
+            }
+
             // 関数
             Type::Function { args, ret_ty } => {
                 Arc::new(Type::Function {
@@ -107,5 +151,11 @@ impl Typed for Type {
                 })
             }
         }
+    }
+}
+
+impl Typed for Arc<Type> {
+    fn ty(&self) -> Arc<Type> {
+        Arc::clone(self)
     }
 }

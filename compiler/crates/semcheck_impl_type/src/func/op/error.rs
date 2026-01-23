@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use thiserror::Error;
 use miette::{Diagnostic, SourceSpan};
 
@@ -14,56 +12,56 @@ use crate::Typed;
     url("this link is not working yet"),
 )]
 pub enum TypeOpError {
-    #[error("Cannot cast from '{from:?}' to '{to:?}'")]
+    #[error("Cannot cast from '{from}' to '{to}'")]
     CastFailed {
         #[source_code]
         src: String,
 
-        #[label("This is '{from:?}'")]
+        #[label("This is '{from}'")]
         from_span: SourceSpan,
-        from: Arc<Type>,
+        from: String,
 
-        to: Arc<Type>,
+        to: String,
     },
 
-    #[error("Type mismatch, '{a:?}' is not compatible with '{ty:?}'")]
+    #[error("Type mismatch, '{a}' is not compatible with '{ty}'")]
     Mismatch {
         #[source_code]
         src: String,
 
-        #[label("This is '{a:?}'")]
+        #[label("This is '{a}'")]
         a_span: SourceSpan,
-        a: Arc<Type>,
+        a: String,
 
-        ty: Type,
+        ty: String,
     },
 
-    #[error("Type mismatch, '{a:?}' is not compatible with '{b:?}'")]
+    #[error("Type mismatch, '{a}' is not compatible with '{b}'")]
     Mismatch2 {
         #[source_code]
         src: String,
 
-        #[label("This is '{a:?}'")]
+        #[label("This is '{a}'")]
         a_span: SourceSpan,
-        a: Arc<Type>,
+        a: String,
 
-        #[label("This is '{b:?}'")]
+        #[label("This is '{b}'")]
         b_span: SourceSpan,
-        b: Arc<Type>,
+        b: String,
     },
 
-    #[error("Cannot determine type from '{from:?}' and '{to:?}'")]
+    #[error("Cannot determine type from '{from}' and '{to}'")]
     Det2Failed {
         #[source_code]
         src: String,
 
-        #[label("This is '{from:?}'")]
+        #[label("This is '{from}'")]
         from_span: SourceSpan,
-        from: Type,
+        from: String,
 
-        #[label("This is '{to:?}'")]
+        #[label("This is '{to}'")]
         to_span: SourceSpan,
-        to: Type,
+        to: String,
     }
 }
 
@@ -76,8 +74,8 @@ impl TypeOpError {
         TypeOpError::CastFailed {
             src: from.span().src.to_string(),
             from_span: from.span().into(),
-            from: from.ty(),
-            to: to.ty(),
+            from: from.ty().to_string(),
+            to: to.ty().to_string(),
         }.into()
     }
 
@@ -88,8 +86,8 @@ impl TypeOpError {
         TypeOpError::Mismatch {
             src: a.span().src.to_string(),
             a_span: a.span().into(),
-            a: a.ty(),
-            ty,
+            a: a.ty().to_string(),
+            ty: ty.to_string(),
         }.into()
     }
 
@@ -101,9 +99,9 @@ impl TypeOpError {
         TypeOpError::Mismatch2 {
             src: a.span().src.to_string(),
             a_span: a.span().into(),
-            a: a.ty(),
+            a: a.ty().to_string(),
             b_span: b.span().into(),
-            b: b.ty(),
+            b: b.ty().to_string(),
         }.into()
     }
 
@@ -115,9 +113,9 @@ impl TypeOpError {
         TypeOpError::Det2Failed {
             src: from.span().src.to_string(),
             from_span: from.span().into(),
-            from: from.ty().as_ref().clone(),
+            from: from.ty().to_string(),
             to_span: to.span().into(),
-            to: to.ty().as_ref().clone(),
+            to: to.ty().to_string(),
         }.into()
     }
 }
