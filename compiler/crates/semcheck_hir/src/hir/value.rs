@@ -91,6 +91,10 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                     expr: Box::new(Expr::check(ctx, *expr).await?),
                 })
             }
+            ast::Value::StructInit { struct_init } => {
+                println!("{:?}", struct_init);
+                unimplemented!();
+            }
         }
     }
 }

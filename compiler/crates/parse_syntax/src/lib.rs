@@ -129,6 +129,8 @@ pub enum SBToken {
     Div,
     #[token(r"%")]
     Mod,
+    #[token(r"@", ir_omit)]
+    At,
     #[token(r"as", ir_omit)]
     As,
 
@@ -322,7 +324,17 @@ pub enum SBRule {
     #[rule("<value> ::= Char")]
     #[rule("<value> ::= Num")]
     #[rule("<value> ::= Ident")]
-    #[rule("<value> ::= Ident ParenL <expr_list> ParenR")]
     #[rule("<value> ::= ParenL <expr> ParenR")]
+    #[rule("<value> ::= Ident ParenL <expr_list> ParenR")]
+    #[rule("<value> ::= <struct_init>")]
     Value,
+
+    #[rule("<struct_init> ::= Ident At <expr> BraceL <struct_field_init_list> BraceR")]
+    #[rule("<struct_init> ::= Ident At <expr> BraceL <struct_field_init_list> Comma BraceR")]
+    StructInit,
+
+    #[rule("<struct_field_init_list> ::= <struct_field_init_list> Comma <struct_field_init>")]
+    #[rule("<struct_field_init_list> ::= <struct_field_init>")]
+    #[rule("<struct_field_init> ::= Ident Colon <expr>")]
+    StructFieldInit,
 }
