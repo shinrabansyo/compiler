@@ -7,7 +7,7 @@ use sb_compiler_semcheck_impl_var::Var;
 use sb_compiler_semcheck_impl_type::r#fn::ty_can_call;
 use sb_compiler_semcheck_impl_type::{Typed, Type, Bool, Char, NumConst};
 
-use super::{Expr, SemCheck, Dep};
+use super::{Expr, StructInit, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum Value<'src> {
@@ -29,6 +29,9 @@ pub enum Value<'src> {
     Expr {
         expr: Box<Expr<'src>>,
     },
+    StructInit  {
+        struct_init: StructInit<'src>,
+    }
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
@@ -92,8 +95,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                 })
             }
             ast::Value::StructInit { struct_init } => {
-                println!("{:?}", struct_init);
-                unimplemented!();
+                Ok(Value::StructInit {
+                    struct_init: StructInit::check(ctx, struct_init).await?,
+                })
             }
         }
     }
@@ -106,6 +110,7 @@ impl<'src> Spanned<'src> for Value<'src> {
             Value::Var { span, .. } => *span,
             Value::Call { span, .. } => *span,
             Value::Expr { expr } => expr.span(),
+            Value::StructInit { struct_init } => struct_init.span(),
         }
     }
 }
@@ -117,6 +122,7 @@ impl Typed for Value<'_> {
             Value::Var { var, .. } => var.ty.ty(),
             Value::Call { ty, .. } => ty.ty(),
             Value::Expr { expr, .. } => expr.ty(),
+            Value::StructInit { struct_init } => struct_init.ty(),
         }
     }
 }

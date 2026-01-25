@@ -28,6 +28,9 @@ pub fn lirgen_value<'src>(ctx: &mut GenContext<'src>, value: Value<'src>) -> Lir
             lirs.push(lir!(Call(name)));
             (RET_REG, lirs)
         }
+        Value::StructInit { .. } => {
+            unimplemented!()
+        }
     };
 
     LirBlock::Single {
