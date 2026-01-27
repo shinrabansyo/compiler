@@ -1,5 +1,5 @@
-mod data;
+mod var;
 mod func;
 
-pub use data::{Var, VarGraph};
+pub use var::Var;
 pub use func::{VarContext, *};
