@@ -1495,6 +1495,7 @@ name = "sb_compiler_utils"
 version = "0.1.0"
 dependencies = [
  "miette",
+ "petgraph",
  "thiserror 2.0.12",
 ]
 
