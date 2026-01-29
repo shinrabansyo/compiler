@@ -1,7 +1,7 @@
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::SBToken;
 
-use super::{Value, Visitor};
+use super::{Type, Value, Visitor};
 
 #[derive(Debug)]
 pub enum Unary<'src> {
@@ -16,6 +16,10 @@ pub enum Unary<'src> {
     Minus {
         span: Span<'src>,
         value: Value<'src>,
+    },
+    SizeOf {
+        span: Span<'src>,
+        ty: Type<'src>,
     },
     Value {
         value: Value<'src>
@@ -51,6 +55,12 @@ impl<'src> From<Visitor<'src>> for Unary<'src> {
                     value: visitor.expect_node::<Value>(),
                 }
             }
+            SBToken::SizeOf => {
+                Unary::SizeOf {
+                    span: visitor.span(),
+                    ty: visitor.expect_node::<Type>(),
+                }
+            }
             _ => unreachable!(),
         }
     }
@@ -62,6 +72,7 @@ impl<'src> Spanned<'src> for Unary<'src> {
             Unary::Not { span, .. } => *span,
             Unary::Plus { span, .. } => *span,
             Unary::Minus { span, .. } => *span,
+            Unary::SizeOf { span, .. } => *span,
             Unary::Value { value } => value.span(),
         }
     }

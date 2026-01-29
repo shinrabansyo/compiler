@@ -46,6 +46,11 @@ pub fn lirgen_unary<'src>(ctx: &mut GenContext<'src>, unary: Unary<'src>) -> Lir
                 ],
             )
         }
+        Unary::SizeOf { size, .. } => {
+            let reg_result = ctx.alloc_reg();
+
+            (reg_result, vec![lir!(Li(size as i32) reg_result)])
+        }
         Unary::Value { value, .. } => {
             return lirgen_value(ctx, value);
         }

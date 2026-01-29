@@ -129,6 +129,8 @@ pub enum SBToken {
     Div,
     #[token(r"%")]
     Mod,
+    #[token(r"sizeof")]
+    SizeOf,
     #[token(r"@", ir_omit)]
     At,
     #[token(r"as", ir_omit)]
@@ -316,6 +318,7 @@ pub enum SBRule {
     #[rule("<unary> ::= Not <value>")]
     #[rule("<unary> ::= Plus <value>")]
     #[rule("<unary> ::= Minus <value>")]
+    #[rule("<unary> ::= SizeOf <type>")]
     #[rule("<unary> ::= <value>")]
     Unary,
 
