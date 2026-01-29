@@ -161,3 +161,35 @@ impl Typed for Arc<Type> {
         Arc::clone(self)
     }
 }
+
+impl Type {
+    pub fn size(&self) -> u32 {
+        match self {
+            // プリミティブ
+            Type::Void => 1,
+            Type::Bool => 1,
+            Type::Char => 1,
+            Type::I8 => 1,
+            Type::I16 => 2,
+            Type::I32 => 4,
+            Type::NumConst => 4,
+
+            // アドレス
+            Type::Addr(_) => 4,
+            Type::DataAddr(_) => 4,
+            Type::InstAddr(_) => 4,
+
+            // データ構造
+            Type::Struct { fields, .. } => {
+                let mut size = 0;
+                for ty in fields.values() {
+                    size += ty.size();
+                }
+                size
+            }
+
+            // 関数
+            Type::Function { .. } => 4,
+        }
+    }
+}
