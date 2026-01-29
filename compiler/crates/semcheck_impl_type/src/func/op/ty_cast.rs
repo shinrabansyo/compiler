@@ -36,16 +36,20 @@ where
         (NumConst, InstAddr(_)) => Ok(()),
 
         // アドレス
-        (Addr(_),     Addr(_))     => Ok(()),
-        (Addr(_),     I32)         => Ok(()),
-        (Addr(_),     DataAddr(_)) => Ok(()),
-        (Addr(_),     InstAddr(_)) => Ok(()),
-        (DataAddr(_), DataAddr(_)) => Ok(()),
-        (DataAddr(_), I32)         => Ok(()),
-        (DataAddr(_), Addr(_))     => Ok(()),
-        (InstAddr(_), InstAddr(_)) => Ok(()),
-        (InstAddr(_), I32)         => Ok(()),
-        (InstAddr(_), Addr(_))     => Ok(()),
+        (Addr(_),     Addr(_))       => Ok(()),
+        (Addr(_),     I32)           => Ok(()),
+        (Addr(_),     DataAddr(_))   => Ok(()),
+        (Addr(_),     InstAddr(_))   => Ok(()),
+        (DataAddr(_), DataAddr(_))   => Ok(()),
+        (DataAddr(_), I32)           => Ok(()),
+        (DataAddr(_), Struct { .. }) => Ok(()),
+        (DataAddr(_), Addr(_))       => Ok(()),
+        (InstAddr(_), InstAddr(_))   => Ok(()),
+        (InstAddr(_), I32)           => Ok(()),
+        (InstAddr(_), Addr(_))       => Ok(()),
+
+        // データ構造
+        (Struct { .. }, DataAddr(_)) => Ok(()),
 
         // キャスト失敗
         _ => Err(TypeOpError::new_cast_failed(from, to)),

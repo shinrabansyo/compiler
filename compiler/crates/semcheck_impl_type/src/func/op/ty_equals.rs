@@ -29,6 +29,9 @@ where
         (DataAddr(_), DataAddr(_)) => Ok(()),
         (InstAddr(_), InstAddr(_)) => Ok(()),
 
+        // データ構造
+        (Struct { .. }, Struct { .. }) => Ok(()),
+
         // 比較失敗
         _ => Err(TypeOpError::new_mismatch(a, b))
     }
