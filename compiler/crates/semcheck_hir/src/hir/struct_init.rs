@@ -37,9 +37,10 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::StructInit<'src>> for StructInit<'src> {
         }
 
         // フィールド初期化部分の型チェック
-        for field_init in &fields {
-            let field_ty = ty_struct_field(&struct_ty, field_init.ident).await?;
+        for field_init in fields.iter_mut() {
+            let (field_ty, offset) = ty_struct_field(&struct_ty, field_init.ident).await?;
             ty_equals(&field_ty, &field_init.expr)?;
+            field_init.offset = offset;
         }
 
         Ok(StructInit {

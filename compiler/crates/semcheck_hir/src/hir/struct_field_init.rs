@@ -11,6 +11,8 @@ pub struct StructFieldInit<'src> {
     pub span: Span<'src>,
     pub ident: Span<'src>,
     pub expr: Expr<'src>,
+    pub offset: u32,
+    pub size: u32,
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::StructFieldInit<'src>> for StructFieldInit<'src> {
@@ -18,22 +20,27 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::StructFieldInit<'src>> for StructFieldIn
     where
         Self: Sized,
     {
+        let expr = Expr::check(ctx, field_init.expr).await?;
+        let size = expr.ty().size();
+
         Ok(StructFieldInit {
             span: field_init.span,
             ident: field_init.ident,
-            expr: Expr::check(ctx, field_init.expr).await?,
+            expr,
+            offset: 0, // 仮 (Struct::check で設定)
+            size,
         })
     }
 }
 
 impl<'src> Spanned<'src> for StructFieldInit<'src> {
     fn span(&self) -> sb_compiler_parse_cst::Span<'src> {
-        unimplemented!()
+        self.span
     }
 }
 
 impl Typed for StructFieldInit<'_> {
     fn ty(&self) -> Arc<Type> {
-        unimplemented!()
+        self.expr.ty()
     }
 }

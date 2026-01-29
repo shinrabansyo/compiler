@@ -140,6 +140,11 @@ impl InstGenerator {
                     LirInst::JmpLabel(label) => inst!(Beq dst, 0, 0, InstLabel(label)),
                     LirInst::Call(label) => inst!(Beq 1, 0, 0, Function(label)),
 
+                    // メモリアクセス
+                    LirInst::Sb(imm) => inst!(Sb dst, src1, imm),
+                    LirInst::Sh(imm) => inst!(Sh dst, src1, imm),
+                    LirInst::Sw(imm) => inst!(Sw dst, src1, imm),
+
                     // 関数
                     LirInst::FnPrologue => unreachable!(),
                     LirInst::FnEpilogue => unreachable!(),

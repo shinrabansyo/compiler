@@ -1,7 +1,7 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Call, Li};
 use sb_compiler_semcheck_hir::Value;
 
-use super::{GenContext, FARG_REG_BASE, RET_REG, ZERO_REG, lirgen_expr};
+use super::{GenContext, FARG_REG_BASE, RET_REG, ZERO_REG, lirgen_expr, lirgen_struct_init};
 
 pub fn lirgen_value<'src>(ctx: &mut GenContext<'src>, value: Value<'src>) -> LirBlock {
     let (result_reg, lirs) = match value {
@@ -28,8 +28,8 @@ pub fn lirgen_value<'src>(ctx: &mut GenContext<'src>, value: Value<'src>) -> Lir
             lirs.push(lir!(Call(name)));
             (RET_REG, lirs)
         }
-        Value::StructInit { .. } => {
-            unimplemented!()
+        Value::StructInit { struct_init, .. } => {
+            return lirgen_struct_init(ctx, struct_init);
         }
     };
 

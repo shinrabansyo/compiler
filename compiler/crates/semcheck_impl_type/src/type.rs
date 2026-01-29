@@ -1,4 +1,3 @@
-use std::collections::BTreeMap;
 use std::fmt::Display;
 use std::sync::{Arc, LazyLock};
 
@@ -33,7 +32,7 @@ pub enum Type {
     // データ構造
     Struct {
         name: String,
-        fields: BTreeMap<String, Arc<Type>>,
+        fields: Vec<(String, Arc<Type>)>,
     },
 
     // 関数
@@ -182,7 +181,7 @@ impl Type {
             // データ構造
             Type::Struct { fields, .. } => {
                 let mut size = 0;
-                for ty in fields.values() {
+                for (_, ty) in fields {
                     size += ty.size();
                 }
                 size
