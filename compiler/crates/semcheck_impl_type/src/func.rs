@@ -13,26 +13,10 @@ use crate::r#type::{Typed, Type, Bool, Char, I8, I16, I32};
 
 use decl::ty_register;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TypeContext<'src> {
     pub(crate) graph: Arc<Mutex<LayeredGraph<(&'src str, Arc<Type>)>>>,
     pub(crate) cur: LayeredGraphCursor,
-}
-
-impl<'src> Clone for TypeContext<'src> {
-    fn clone(&self) -> Self {
-        // Ctx が複製されたとき，新しい型空間を作成する
-        let new_cur = self
-            .graph
-            .lock()
-            .unwrap()
-            .add_undirected_layer(self.cur);
-
-        TypeContext {
-            graph: Arc::clone(&self.graph),
-            cur: new_cur,
-        }
-    }
 }
 
 impl<'src> TypeContext<'src> {
