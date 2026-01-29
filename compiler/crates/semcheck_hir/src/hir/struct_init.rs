@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Spanned, Span};
-use sb_compiler_semcheck_impl_type::decl::ty_find_from_mod;
+use sb_compiler_semcheck_impl_type::decl::ty_find;
 use sb_compiler_semcheck_impl_type::op::ty_equals;
 use sb_compiler_semcheck_impl_type::{Typed, Type, DataAddr};
 
@@ -21,11 +21,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::StructInit<'src>> for StructInit<'src> {
         Self: Sized,
     {
         // 構造体の型取得
-        let (struct_ty, _) = ty_find_from_mod(
-            &ctx.r#type,
-            ctx.name.as_parent_str(),
-            struct_init.ident,
-        ).await?;
+        let struct_ty = ty_find(&ctx.r#type, struct_init.ident).await?;
 
         // アドレス指定部分の意味解析 & 型チェック
         let addr = Expr::check(ctx, *struct_init.addr).await?;

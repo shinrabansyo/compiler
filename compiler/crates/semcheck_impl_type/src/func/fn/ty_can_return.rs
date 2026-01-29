@@ -9,8 +9,8 @@ use crate::func::TypeContext;
 use super::error::TypeFnError;
 
 pub async fn ty_can_return<'src, A>(
-    ctx: &TypeContext,
-    span: Span<'src>,
+    ctx: &TypeContext<'src>,
+    span: Span<'_>,
     ret_ty: &A,
 ) -> miette::Result<Arc<Type>>
 where

@@ -7,7 +7,7 @@ use crate::r#type::{Type, Typed, Function, Void};
 use super::ty_parse_type;
 
 pub async fn ty_parse_func<'a, 'src>(
-    ctx: &'a TypeContext,
+    ctx: &'a TypeContext<'src>,
     ast: &'a ast::FuncDef<'src>,
 ) -> miette::Result<Arc<Type>> {
     // 引数
@@ -24,6 +24,7 @@ pub async fn ty_parse_func<'a, 'src>(
     };
 
     Ok(Arc::new(Function {
+        name: ast.ident.as_str().to_string(),
         args: arg_tys,
         ret_ty: ret_ty.ty(),
     }))

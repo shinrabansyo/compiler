@@ -4,9 +4,9 @@ use sb_compiler_parse_cst::Spanned;
 use crate::r#type::*;
 use super::error::TypeInferError;
 
-pub fn ty_infer<'src, F>(from: &F) -> miette::Result<Arc<Type>>
+pub fn ty_infer<'a, F>(from: &F) -> miette::Result<Arc<Type>>
 where
-    F: Typed + Spanned<'src>,
+    F: Typed + Spanned<'a>,
 {
     let from_ty = from.ty();
     match from_ty.as_ref() {

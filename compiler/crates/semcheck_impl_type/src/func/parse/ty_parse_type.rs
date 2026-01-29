@@ -8,7 +8,7 @@ use crate::func::TypeContext;
 use crate::r#type::{Type, Typed};
 
 pub fn ty_parse_type<'a, 'src>(
-    ctx: &'a TypeContext,
+    ctx: &'a TypeContext<'src>,
     ast: &'a ast::Type<'src>,
 ) -> impl Future<Output = miette::Result<Arc<Type>>> + use <'a, 'src> {
     Box::pin(async move {

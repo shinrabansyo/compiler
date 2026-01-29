@@ -38,6 +38,7 @@ pub enum Type {
 
     // 関数
     Function {
+        name: String,
         args: Vec<Arc<Type>>,
         ret_ty: Arc<Type>,
     },
@@ -66,8 +67,8 @@ impl Display for Type {
             }
 
             // 関数
-            Type::Function { args, ret_ty } => {
-                write!(f, "fn(")?;
+            Type::Function { name, args, ret_ty } => {
+                write!(f, "fn {}(", name)?;
                 for arg_ty in args {
                     write!(f, "{}, ", arg_ty)?;
                 }
@@ -144,8 +145,9 @@ impl Typed for Type {
             }
 
             // 関数
-            Type::Function { args, ret_ty } => {
+            Type::Function { name, args, ret_ty } => {
                 Arc::new(Type::Function {
+                    name: name.clone(),
                     args: args.iter().map(Arc::clone).collect(),
                     ret_ty: Arc::clone(ret_ty),
                 })

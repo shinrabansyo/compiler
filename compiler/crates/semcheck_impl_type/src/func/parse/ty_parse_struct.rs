@@ -7,7 +7,7 @@ use crate::r#type::{Type, Struct};
 use super::ty_parse_type;
 
 pub async fn ty_parse_struct<'a, 'src>(
-    ctx: &'a TypeContext,
+    ctx: &'a TypeContext<'src>,
     ast: &'a ast::StructDef<'src>,
 ) -> miette::Result<Arc<Type>> {
     // フィールド要素

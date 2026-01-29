@@ -12,20 +12,11 @@ pub struct VarContext<'src> {
     cur: LayeredGraphCursor,
 }
 
-impl<'src> VarContext<'src> {
-    pub fn new() -> Self {
-        let (graph, cur) = LayeredGraph::new_with_directed();
-        VarContext {
-            graph: Arc::new(Mutex::new(graph)),
-            cur,
-        }
-    }
-}
-
 impl Clone for VarContext<'_> {
     fn clone(&self) -> Self {
         // Ctx が複製されたとき，新しい変数空間を作成する
-        let new_cur = self.graph
+        let new_cur = self
+            .graph
             .lock()
             .unwrap()
             .add_directed_layer(self.cur);
@@ -33,6 +24,16 @@ impl Clone for VarContext<'_> {
         VarContext {
             graph: Arc::clone(&self.graph),
             cur: new_cur,
+        }
+    }
+}
+
+impl<'src> VarContext<'src> {
+    pub fn new() -> Self {
+        let (graph, cur) = LayeredGraph::new_with_directed();
+        VarContext {
+            graph: Arc::new(Mutex::new(graph)),
+            cur,
         }
     }
 }

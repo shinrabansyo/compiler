@@ -30,17 +30,6 @@ pub enum TypeDeclError {
 
         name: String,
     },
-
-    #[error("Type '{name}' is not declared in this scope.")]
-    TypeNotDeclaredInScope {
-        #[source_code]
-        src: String,
-
-        #[label("here")]
-        span: SourceSpan,
-
-        name: String,
-    },
 }
 
 impl TypeDeclError {
@@ -54,14 +43,6 @@ impl TypeDeclError {
 
     pub fn new_not_declared(span: Span) -> miette::Report {
         TypeDeclError::TypeNotDeclared {
-            src: span.src.to_string(),
-            span: span.into(),
-            name: span.as_str().to_string(),
-        }.into()
-    }
-
-    pub fn new_not_declared_in_scope(span: Span) -> miette::Report {
-        TypeDeclError::TypeNotDeclaredInScope {
             src: span.src.to_string(),
             span: span.into(),
             name: span.as_str().to_string(),

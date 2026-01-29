@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_type::decl::ty_register_in_mod;
+use sb_compiler_semcheck_impl_type::decl::ty_register;
 use sb_compiler_semcheck_impl_type::op::ty_equals;
 use sb_compiler_semcheck_impl_type::parse::{ty_parse_func, ty_parse_type};
 use sb_compiler_semcheck_impl_type::{Typed, Type, Void};
@@ -25,14 +25,12 @@ impl<'src> SemCheck<InDep<'src>, ast::FuncDef<'src>> for FuncDef<'src> {
         // 名前空間を作成
         ctx.name.push(func_def.ident.as_str());
 
+        // 関数名(フルパス)を用意
+        let fn_name = ctx.name.as_str().to_string();
+
         // 関数の型を登録
         let fn_ty = ty_parse_func(&ctx.r#type, &func_def).await?;
-        let fn_name = ty_register_in_mod(
-            &mut ctx.r#type,
-            ctx.name.as_parent_str(),
-            func_def.ident,
-            fn_ty,
-        ).await?;
+        ty_register(&mut ctx.r#type, func_def.ident, fn_ty).await?;
 
         // 引数の意味解析
         let mut args = vec![];

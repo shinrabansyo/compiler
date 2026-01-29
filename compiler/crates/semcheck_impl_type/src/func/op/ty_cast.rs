@@ -3,9 +3,9 @@ use sb_compiler_parse_cst::Spanned;
 use crate::r#type::*;
 use super::error::TypeOpError;
 
-pub fn ty_cast<'src, F, T>(from: &F, to: &T) -> miette::Result<()>
+pub fn ty_cast<'a, F, T>(from: &F, to: &T) -> miette::Result<()>
 where
-    F: Typed + Spanned<'src>,
+    F: Typed + Spanned<'a>,
     T: Typed,
 {
     match (from.ty().as_ref(), to.ty().as_ref()) {

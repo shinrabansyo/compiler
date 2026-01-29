@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_type::decl::ty_register_in_mod;
+use sb_compiler_semcheck_impl_type::decl::ty_register;
 use sb_compiler_semcheck_impl_type::parse::ty_parse_struct;
 use sb_compiler_semcheck_impl_type::{Typed, Type, Void};
 
@@ -11,7 +11,7 @@ use super::{FieldDef, SemCheck, InDep};
 #[derive(Debug)]
 pub struct StructDef<'src> {
     pub span: Span<'src>,
-    pub name: String,
+    pub ident: Span<'src>,
     pub fields: Vec<FieldDef<'src>>,
 }
 
@@ -22,12 +22,7 @@ impl<'src> SemCheck<InDep<'src>, ast::StructDef<'src>> for StructDef<'src> {
     {
         // 型登録
         let struct_ty = ty_parse_struct(&ctx.r#type, &struct_def).await?;
-        let struct_name = ty_register_in_mod(
-            &mut ctx.r#type,
-            ctx.name.as_parent_str(),
-            struct_def.ident,
-            struct_ty,
-        ).await?;
+        ty_register(&mut ctx.r#type, struct_def.ident, struct_ty).await?;
 
         // フィールド要素の意味解析
         let mut fields = vec![];
@@ -37,7 +32,7 @@ impl<'src> SemCheck<InDep<'src>, ast::StructDef<'src>> for StructDef<'src> {
 
         Ok(StructDef {
             span: struct_def.span,
-            name: struct_name,
+            ident: struct_def.ident,
             fields,
         })
     }

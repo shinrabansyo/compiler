@@ -68,6 +68,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                 })
             }
             ast::Value::Call { span, ident, args } => {
+                // 関数名(フルパス)
+                let fn_name = format!(".main.{}", ident.as_str());
+
                 // 実引数を順に意味解析
                 let mut checked_args = vec![];
                 for arg in args {
@@ -75,18 +78,13 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                 }
 
                 // 型チェック
-                let (ty, fn_name) = ty_can_call(
-                    &ctx.r#type,
-                    &ctx.name.as_parent_str(),
-                    ident,
-                    &checked_args
-                ).await?;
+                let fn_ty = ty_can_call(&ctx.r#type, ident, &checked_args).await?;
 
                 Ok(Value::Call {
                     span,
                     name: fn_name,
                     args: checked_args,
-                    ty,
+                    ty: fn_ty,
                 })
             }
             ast::Value::Expr { expr } => {

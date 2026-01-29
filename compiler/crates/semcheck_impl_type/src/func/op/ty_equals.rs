@@ -3,10 +3,10 @@ use sb_compiler_parse_cst::Spanned;
 use crate::r#type::*;
 use super::error::TypeOpError;
 
-pub fn ty_equals<'src, A, B>(a: &A, b: &B) -> miette::Result<()>
+pub fn ty_equals<'a, A, B>(a: &A, b: &B) -> miette::Result<()>
 where
     A: Typed,
-    B: Typed + Spanned<'src>,
+    B: Typed + Spanned<'a>,
 {
     match (a.ty().as_ref(), b.ty().as_ref()) {
         // プリミティブ
