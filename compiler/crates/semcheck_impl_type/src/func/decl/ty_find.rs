@@ -13,10 +13,6 @@ pub async fn ty_find<'a, 'b, 'src>(
     ctx: &'a TypeContext<'src>,
     span: Span<'b>,
 ) -> miette::Result<Arc<Type>> {
-    println!("{:#?}", ctx.graph);
-    println!("serach for type: {}", span.as_str());
-    println!("current cursor: {:?}", ctx.cur);
-
     ctx.graph
         .lock()
         .unwrap()
