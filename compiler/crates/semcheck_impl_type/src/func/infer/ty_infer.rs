@@ -24,6 +24,9 @@ where
         DataAddr(_) => Ok(from_ty),
         InstAddr(_) => Ok(from_ty),
 
+        // データ構造
+        Struct { .. } => Ok(from_ty),
+
         // 推論失敗
         _ => Err(TypeInferError::new_infer_failed(from)),
     }
