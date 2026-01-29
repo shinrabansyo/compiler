@@ -3,6 +3,7 @@ pub mod r#fn;
 pub mod infer;
 pub mod op;
 pub mod parse;
+pub mod r#struct;
 
 use std::sync::{Arc, Mutex};
 

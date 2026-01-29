@@ -4,6 +4,7 @@ use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Spanned, Span};
 use sb_compiler_semcheck_impl_type::decl::ty_find;
 use sb_compiler_semcheck_impl_type::op::ty_equals;
+use sb_compiler_semcheck_impl_type::r#struct::ty_struct_field;
 use sb_compiler_semcheck_impl_type::{Typed, Type, DataAddr};
 
 use super::{Expr, StructFieldInit, SemCheck, Dep};
@@ -13,6 +14,7 @@ pub struct StructInit<'src> {
     pub span: Span<'src>,
     pub addr: Box<Expr<'src>>,
     pub fields: Vec<StructFieldInit<'src>>,
+    pub ty: Arc<Type>,
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::StructInit<'src>> for StructInit<'src> {
@@ -25,20 +27,38 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::StructInit<'src>> for StructInit<'src> {
 
         // アドレス指定部分の意味解析 & 型チェック
         let addr = Expr::check(ctx, *struct_init.addr).await?;
-        ty_equals(&DataAddr(struct_ty), &addr)?;
+        ty_equals(&DataAddr(Arc::clone(&struct_ty)), &addr)?;
 
-        unimplemented!()
+        // フィールド初期化部分の意味解析
+        let mut fields = Vec::new();
+        for field_init in struct_init.fields {
+            let field_init = StructFieldInit::check(ctx, field_init).await?;
+            fields.push(field_init);
+        }
+
+        // フィールド初期化部分の型チェック
+        for field_init in &fields {
+            let field_ty = ty_struct_field(&struct_ty, field_init.ident).await?;
+            ty_equals(&field_ty, &field_init.expr)?;
+        }
+
+        Ok(StructInit {
+            span: struct_init.span,
+            addr: Box::new(addr),
+            fields,
+            ty: struct_ty,
+        })
     }
 }
 
 impl<'src> Spanned<'src> for StructInit<'src> {
     fn span(&self) -> sb_compiler_parse_cst::Span<'src> {
-        unimplemented!()
+        self.span
     }
 }
 
 impl Typed for StructInit<'_> {
     fn ty(&self) -> Arc<Type> {
-        unimplemented!()
+        self.ty.ty()
     }
 }

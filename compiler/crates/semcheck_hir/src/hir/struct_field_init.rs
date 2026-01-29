@@ -9,6 +9,8 @@ use super::{Expr, SemCheck, Dep};
 #[derive(Debug)]
 pub struct StructFieldInit<'src> {
     pub span: Span<'src>,
+    pub ident: Span<'src>,
+    pub expr: Expr<'src>,
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::StructFieldInit<'src>> for StructFieldInit<'src> {
@@ -16,7 +18,11 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::StructFieldInit<'src>> for StructFieldIn
     where
         Self: Sized,
     {
-        unimplemented!()
+        Ok(StructFieldInit {
+            span: field_init.span,
+            ident: field_init.ident,
+            expr: Expr::check(ctx, field_init.expr).await?,
+        })
     }
 }
 
