@@ -32,6 +32,7 @@ mod unary;             pub use unary::lirgen_unary;
 mod value;             pub use value::lirgen_value;
 mod struct_init;       pub use struct_init::lirgen_struct_init;
 mod struct_field_init; pub use struct_field_init::lirgen_struct_field_init;
+mod struct_access;     pub use struct_access::lirgen_struct_access;
 
 // HIR -> AST 用
 use sb_compiler_semcheck_impl_var::Var;

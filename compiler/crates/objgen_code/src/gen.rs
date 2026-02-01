@@ -141,6 +141,9 @@ impl InstGenerator {
                     LirInst::Call(label) => inst!(Beq 1, 0, 0, Function(label)),
 
                     // メモリアクセス
+                    LirInst::Lb(imm) => inst!(Lb dst, src1, imm),
+                    LirInst::Lh(imm) => inst!(Lh dst, src1, imm),
+                    LirInst::Lw(imm) => inst!(Lw dst, src1, imm),
                     LirInst::Sb(imm) => inst!(Sb dst, src1, imm),
                     LirInst::Sh(imm) => inst!(Sh dst, src1, imm),
                     LirInst::Sw(imm) => inst!(Sw dst, src1, imm),

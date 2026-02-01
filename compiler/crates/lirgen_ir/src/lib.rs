@@ -124,6 +124,9 @@ pub enum LirInst {
     Call(String),
 
     // メモリアクセス
+    Lb(i32),
+    Lh(i32),
+    Lw(i32),
     Sb(i32),
     Sh(i32),
     Sw(i32),
