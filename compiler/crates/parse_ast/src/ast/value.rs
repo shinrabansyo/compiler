@@ -2,7 +2,7 @@ use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::{SBToken, SBRule};
 use sb_compiler_utils::primitive::i32;
 
-use super::{Expr, StructInit, Visitor};
+use super::{Expr, StructAccess, StructInit, Visitor};
 
 #[derive(Debug)]
 pub enum Value<'src> {
@@ -32,7 +32,10 @@ pub enum Value<'src> {
     },
     StructInit {
         struct_init: StructInit<'src>,
-    }
+    },
+    StructAccess {
+        struct_access: StructAccess<'src>,
+    },
 }
 
 impl<'src> From<Visitor<'src>> for Value<'src> {
@@ -91,10 +94,15 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
                     expr: Box::new(visitor.expect_node::<Expr>()),
                 }
             }
-            // 構造体初期化
+            // 構造体
             (None, Some(SBRule::StructInit)) => {
                 Value::StructInit {
                     struct_init: visitor.expect_node::<StructInit>(),
+                }
+            }
+            (None, Some(SBRule::StructAccess)) => {
+                Value::StructAccess {
+                    struct_access: visitor.expect_node::<StructAccess>(),
                 }
             }
             _ => unreachable!(),
@@ -112,6 +120,7 @@ impl<'src> Spanned<'src> for Value<'src> {
             Value::Call { span, .. } => *span,
             Value::Expr { expr } => expr.span(),
             Value::StructInit { struct_init } => struct_init.span(),
+            Value::StructAccess { struct_access } => struct_access.span(),
         }
     }
 }

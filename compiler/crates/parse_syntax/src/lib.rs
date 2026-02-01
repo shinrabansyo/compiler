@@ -129,6 +129,8 @@ pub enum SBToken {
     Div,
     #[token(r"%")]
     Mod,
+    #[token(r"\.")]
+    Access,
     #[token(r"sizeof")]
     SizeOf,
     #[token(r"@", ir_omit)]
@@ -330,6 +332,7 @@ pub enum SBRule {
     #[rule("<value> ::= ParenL <expr> ParenR")]
     #[rule("<value> ::= Ident ParenL <expr_list> ParenR")]
     #[rule("<value> ::= <struct_init>")]
+    #[rule("<value> ::= <struct_access>")]
     Value,
 
     #[rule("<struct_init> ::= Ident At <expr> BraceL <struct_field_init_list> BraceR")]
@@ -340,4 +343,7 @@ pub enum SBRule {
     #[rule("<struct_field_init_list> ::= <struct_field_init>")]
     #[rule("<struct_field_init> ::= Ident Colon <expr>")]
     StructFieldInit,
+
+    #[rule("<struct_access> ::= <value> Access Ident")]
+    StructAccess,
 }

@@ -31,7 +31,7 @@ pub enum Value<'src> {
     },
     StructInit  {
         struct_init: StructInit<'src>,
-    }
+    },
 }
 
 impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
@@ -96,6 +96,10 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Value<'src>> for Value<'src> {
                 Ok(Value::StructInit {
                     struct_init: StructInit::check(ctx, struct_init).await?,
                 })
+            }
+            ast::Value::StructAccess { struct_access } => {
+                println!("{:?}", struct_access);
+                todo!()
             }
         }
     }

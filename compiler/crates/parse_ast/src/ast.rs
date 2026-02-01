@@ -40,6 +40,7 @@ mod unary;              pub use unary::Unary;
 mod value;              pub use value::Value;
 mod struct_init;        pub use struct_init::StructInit;
 mod struct_field_init;  pub use struct_field_init::StructFieldInit;
+mod struct_access;      pub use struct_access::StructAccess;
 
 // AST -> CST ビジター
 use sb_compiler_parse_cst::CSTreeVisitor;
