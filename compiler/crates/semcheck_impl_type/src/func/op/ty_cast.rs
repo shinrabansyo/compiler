@@ -52,6 +52,7 @@ where
         (InstAddr(_), Addr(_))       => Ok(()),
 
         // データ構造
+        (Struct { .. }, Addr(_))     => Ok(()),
         (Struct { .. }, DataAddr(_)) => Ok(()),
 
         // キャスト失敗
