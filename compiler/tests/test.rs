@@ -13,7 +13,7 @@ use sb_compiler::compile;
 
 fn test_code(input: &str) -> miette::Result<()> {
     // コンパイル
-    let objs = compile(vec![("test", input)])?;
+    let objs = compile(vec![("main", input)])?;
     let mut buf = vec![];
     Object::dump(&mut buf, &objs).unwrap();
     let objs = Cursor::new(buf);
@@ -21,7 +21,7 @@ fn test_code(input: &str) -> miette::Result<()> {
     // リンク
     let link_config = Config {
         general: General {
-            main: ".test.main".to_string(),
+            main: ".main.main".to_string(),
             stack_addr: 0x0000_0100,
         }
     };
