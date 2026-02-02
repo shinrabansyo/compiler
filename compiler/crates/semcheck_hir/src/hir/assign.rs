@@ -103,7 +103,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 // 型チェック
                 ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Minus { span, lhs, assign })
+                Ok(Assign::Mul { span, lhs, assign })
             }
             ast::Assign::Div { span, lhs, assign } => {
                 // 式の意味解析
@@ -113,7 +113,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 // 型チェック
                 ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Minus { span, lhs, assign })
+                Ok(Assign::Div { span, lhs, assign })
             }
             ast::Assign::Mod { span, lhs, assign } => {
                 // 式の意味解析
@@ -123,7 +123,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 // 型チェック
                 ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Minus { span, lhs, assign })
+                Ok(Assign::Mod { span, lhs, assign })
             }
             ast::Assign::ShiftL { span, lhs, assign } => {
                 // 式の意味解析
@@ -133,7 +133,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 // 型チェック
                 ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Minus { span, lhs, assign })
+                Ok(Assign::ShiftL { span, lhs, assign })
             }
             ast::Assign::ShiftR { span, lhs, assign } => {
                 // 式の意味解析
@@ -143,7 +143,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 // 型チェック
                 ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Minus { span, lhs, assign })
+                Ok(Assign::ShiftR { span, lhs, assign })
             }
             ast::Assign::ShiftRa { span, lhs, assign } => {
                 // 式の意味解析
@@ -153,7 +153,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 // 型チェック
                 ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Minus { span, lhs, assign })
+                Ok(Assign::ShiftRa{ span, lhs, assign })
             }
             ast::Assign::LogicOr { or } => {
                 Ok(Assign::LogicOr {
