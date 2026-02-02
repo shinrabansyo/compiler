@@ -105,7 +105,22 @@ impl InstGenerator {
                     }
                 };
 
-                // 命令変換
+                // 命令変換 (前準備)
+                match inst {
+                    LirInst::Lb(_)
+                    | LirInst::Lh(_)
+                    | LirInst::Lw(_) => {
+                        self.asm_inst.push(inst!(Add 7, 0, src1));
+                    }
+                    LirInst::Sb(_)
+                    | LirInst::Sh(_)
+                    | LirInst::Sw(_) => {
+                        self.asm_inst.push(inst!(Add 7, 0, dst));
+                    }
+                    _ => {},
+                };
+
+                // 命令変換 (本体)
                 let inst = match inst {
                     // Nop
                     LirInst::Nop => inst!(Add 0, 12, 4),
@@ -141,12 +156,12 @@ impl InstGenerator {
                     LirInst::Call(label) => inst!(Beq 1, 0, 0, Function(label)),
 
                     // メモリアクセス
-                    LirInst::Lb(imm) => inst!(Lb dst, src1, imm),
-                    LirInst::Lh(imm) => inst!(Lh dst, src1, imm),
-                    LirInst::Lw(imm) => inst!(Lw dst, src1, imm),
-                    LirInst::Sb(imm) => inst!(Sb dst, src1, imm),
-                    LirInst::Sh(imm) => inst!(Sh dst, src1, imm),
-                    LirInst::Sw(imm) => inst!(Sw dst, src1, imm),
+                    LirInst::Lb(imm) => inst!(Lb dst, 7, imm),
+                    LirInst::Lh(imm) => inst!(Lh dst, 7, imm),
+                    LirInst::Lw(imm) => inst!(Lw dst, 7, imm),
+                    LirInst::Sb(imm) => inst!(Sb 7, src1, imm),
+                    LirInst::Sh(imm) => inst!(Sh 7, src1, imm),
+                    LirInst::Sw(imm) => inst!(Sw 7, src1, imm),
 
                     // 関数
                     LirInst::FnPrologue => unreachable!(),
@@ -193,7 +208,17 @@ impl InstGenerator {
                     LirInst::RawBlt(imm) => inst!(Blt dst, src1, src2, Imm(imm)),
                     LirInst::RawBle(imm) => inst!(Ble dst, src1, src2, Imm(imm)),
                 };
-                self.asm_inst.push(inst);
+                self.asm_inst.push(inst.clone());
+
+                // 命令変換 (後処理)
+                match inst {
+                    Inst::Sb { .. }
+                    | Inst::Sh { .. }
+                    | Inst::Sw { .. } => {
+                        self.asm_inst.push(inst!(Add dst, 0, 7));
+                    }
+                    _ => {},
+                }
 
                 // スタックへの書き戻し
                 if let Some(addr) = dst_needs_wback {

@@ -1,7 +1,7 @@
 use sb_compiler_lirgen_ir::{lir, Lb, Lh, Lw, Sb, Sh, Sw, LirBlock};
 use sb_compiler_semcheck_hir::ValueL;
 
-use super::{GenContext, ADDR_REG, lirgen_struct_access};
+use super::{GenContext, lirgen_struct_access};
 
 pub fn lirgen_value_l<'src>(ctx: &mut GenContext<'src>, value: ValueL<'src>) -> (LirBlock, LirBlock) {
     match value {
@@ -22,12 +22,13 @@ pub fn lirgen_value_l<'src>(ctx: &mut GenContext<'src>, value: ValueL<'src>) -> 
             let size = struct_access.ty.size();
 
             let lir_addr = lirgen_struct_access(ctx, struct_access);
+            let reg_addr = lir_addr.result_reg();
 
             let reg_read = ctx.alloc_reg();
             let lir_read = match size {
-                1 => lir!(Lb(0) reg_read, ADDR_REG),
-                2 => lir!(Lh(0) reg_read, ADDR_REG),
-                4 => lir!(Lw(0) reg_read, ADDR_REG),
+                1 => lir!(Lb(0) reg_read, reg_addr),
+                2 => lir!(Lh(0) reg_read, reg_addr),
+                4 => lir!(Lw(0) reg_read, reg_addr),
                 _ => unreachable!(),
             };
             let lir_read = LirBlock::Single {
@@ -37,9 +38,9 @@ pub fn lirgen_value_l<'src>(ctx: &mut GenContext<'src>, value: ValueL<'src>) -> 
 
             let reg_write = ctx.alloc_reg();
             let lir_write = match size {
-                1 => lir!(Sb(0) ADDR_REG, reg_write),
-                2 => lir!(Sh(0) ADDR_REG, reg_write),
-                4 => lir!(Sw(0) ADDR_REG, reg_write),
+                1 => lir!(Sb(0) reg_addr, reg_write),
+                2 => lir!(Sh(0) reg_addr, reg_write),
+                4 => lir!(Sw(0) reg_addr, reg_write),
                 _ => unreachable!(),
             };
             let lir_write = LirBlock::Single {

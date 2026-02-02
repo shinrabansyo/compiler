@@ -40,7 +40,6 @@ use sb_compiler_semcheck_impl_var::Var;
 use sb_compiler_utils::collections::LayeredTable;
 
 const ZERO_REG: u32 = 0;
-const ADDR_REG: u32 = 7;
 const RET_REG: u32 = 10;
 const FARG_REG_BASE: u32 = 10;
 

@@ -2,7 +2,7 @@ use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Call, Li, Lb, Lh, Lw};
 use sb_compiler_semcheck_hir::ValueR;
 
 use super::{
-    GenContext, ADDR_REG, FARG_REG_BASE, RET_REG, ZERO_REG,
+    GenContext, FARG_REG_BASE, RET_REG, ZERO_REG,
     lirgen_expr, lirgen_struct_init, lirgen_struct_access,
 };
 
@@ -37,12 +37,14 @@ pub fn lirgen_value_r<'src>(ctx: &mut GenContext<'src>, value: ValueR<'src>) -> 
         ValueR::StructAccess { struct_access } => {
             let size = struct_access.ty.size();
 
-            let reg_read = ctx.alloc_reg();
             let lir_addr = lirgen_struct_access(ctx, struct_access);
+            let reg_addr = lir_addr.result_reg();
+
+            let reg_read = ctx.alloc_reg();
             let lir_read = match size {
-                1 => lir!(Lb(0) reg_read, ADDR_REG),
-                2 => lir!(Lh(0) reg_read, ADDR_REG),
-                4 => lir!(Lw(0) reg_read, ADDR_REG),
+                1 => lir!(Lb(0) reg_read, reg_addr),
+                2 => lir!(Lh(0) reg_read, reg_addr),
+                4 => lir!(Lw(0) reg_read, reg_addr),
                 _ => unreachable!(),
             };
 
