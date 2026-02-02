@@ -26,6 +26,7 @@ mod inasm_operand;      pub use inasm_operand::{InlineAsmOperandL, InlineAsmOper
 // 式
 mod expr;               pub use expr::Expr;
 mod assign;             pub use assign::Assign;
+mod value_l;            pub use value_l::ValueL;
 mod logic_or;           pub use logic_or::LogicOr;
 mod logic_and;          pub use logic_and::LogicAnd;
 mod bit_or;             pub use bit_or::BitOr;

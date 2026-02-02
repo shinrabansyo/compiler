@@ -40,13 +40,11 @@ pub enum TypeOpError {
         #[source_code]
         src: String,
 
-        #[label("This is '{a}'")]
-        a_span: SourceSpan,
-        a: String,
-
         #[label("This is '{b}'")]
         b_span: SourceSpan,
         b: String,
+
+        a: String,
     },
 
     #[error("Cannot determine type from '{from}' and '{to}'")]
@@ -93,12 +91,11 @@ impl TypeOpError {
 
     pub fn new_mismatch2<'src, A, B>(a: &A, b: &B) -> miette::Report
     where
-        A: Typed + Spanned<'src>,
+        A: Typed,
         B: Typed + Spanned<'src>,
     {
         TypeOpError::Mismatch2 {
-            src: a.span().src.to_string(),
-            a_span: a.span().into(),
+            src: b.span().src.to_string(),
             a: a.ty().to_string(),
             b_span: b.span().into(),
             b: b.ty().to_string(),

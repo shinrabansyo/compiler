@@ -255,17 +255,21 @@ pub enum SBRule {
     #[rule("<expr> ::= <assign>")]
     Expr,
 
-    #[rule("<assign> ::= Ident Assign <assign>")]
-    #[rule("<assign> ::= Ident PlusAssign <assign>")]
-    #[rule("<assign> ::= Ident MinusAssign <assign>")]
-    #[rule("<assign> ::= Ident MulAssign <assign>")]
-    #[rule("<assign> ::= Ident DivAssign <assign>")]
-    #[rule("<assign> ::= Ident ModAssign <assign>")]
-    #[rule("<assign> ::= Ident ShiftLAssign <assign>")]
-    #[rule("<assign> ::= Ident ShiftRaAssign <assign>")]
-    #[rule("<assign> ::= Ident ShiftRAssign <assign>")]
+    #[rule("<assign> ::= <value_l> Assign <assign>")]
+    #[rule("<assign> ::= <value_l> PlusAssign <assign>")]
+    #[rule("<assign> ::= <value_l> MinusAssign <assign>")]
+    #[rule("<assign> ::= <value_l> MulAssign <assign>")]
+    #[rule("<assign> ::= <value_l> DivAssign <assign>")]
+    #[rule("<assign> ::= <value_l> ModAssign <assign>")]
+    #[rule("<assign> ::= <value_l> ShiftLAssign <assign>")]
+    #[rule("<assign> ::= <value_l> ShiftRaAssign <assign>")]
+    #[rule("<assign> ::= <value_l> ShiftRAssign <assign>")]
     #[rule("<assign> ::= <logic_or>")]
     Assign,
+
+    #[rule("<value_l> ::= Ident")]
+    #[rule("<value_l> ::= <struct_access>")]
+    ValueL,
 
     #[rule("<logic_or> ::= <logic_or> LogicOr <logic_and>")]
     #[rule("<logic_or> ::= <logic_and>")]

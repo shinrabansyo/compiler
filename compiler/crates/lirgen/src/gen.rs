@@ -18,6 +18,7 @@ mod inasm;             pub use inasm::lirgen_inline_asm;
 // 式
 mod expr;              pub use expr::lirgen_expr;
 mod assign;            pub use assign::lirgen_assign;
+mod value_l;           pub use value_l::lirgen_value_l;
 mod logic_or;          pub use logic_or::lirgen_logic_or;
 mod logic_and;         pub use logic_and::lirgen_logic_and;
 mod bit_or;            pub use bit_or::lirgen_bit_or;

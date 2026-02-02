@@ -39,7 +39,7 @@ where
 
 pub fn ty_equals_arith2<'src, L, R>(lhs: &L, rhs: &R) -> miette::Result<()>
 where
-    L: Typed + Spanned<'src>,
+    L: Typed,
     R: Typed + Spanned<'src>,
 {
     match (lhs.ty().as_ref(), rhs.ty().as_ref()) {
