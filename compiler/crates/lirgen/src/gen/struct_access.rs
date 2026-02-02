@@ -11,12 +11,14 @@ pub fn lirgen_struct_access<'src>(ctx: &mut GenContext<'src>, struct_access: Str
     let offset = struct_access.offset as i32;
     let reg_offset = ctx.alloc_reg();
 
+    let reg_addr = ctx.alloc_reg();
+
     LirBlock::Single {
-        result_reg: reg_lhs,
+        result_reg: reg_addr,
         lirs: vec![
             lir_lhs,
             lir!(Li(offset) reg_offset),
-            lir!(Add reg_lhs, reg_lhs, reg_offset),
+            lir!(Add reg_addr, reg_lhs, reg_offset),
         ],
     }
 }
