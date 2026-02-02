@@ -1,28 +1,28 @@
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::SBToken;
 
-use super::{Type, Value, Visitor};
+use super::{Type, ValueR, Visitor};
 
 #[derive(Debug)]
 pub enum Unary<'src> {
     Not {
         span: Span<'src>,
-        value: Value<'src>,
+        value: ValueR<'src>,
     },
     Plus {
         span: Span<'src>,
-        value: Value<'src>,
+        value: ValueR<'src>,
     },
     Minus {
         span: Span<'src>,
-        value: Value<'src>,
+        value: ValueR<'src>,
     },
     SizeOf {
         span: Span<'src>,
         ty: Type<'src>,
     },
-    Value {
-        value: Value<'src>
+    ValueR {
+        value: ValueR<'src>
     },
 }
 
@@ -30,8 +30,8 @@ impl<'src> From<Visitor<'src>> for Unary<'src> {
     fn from(mut visitor: Visitor<'src>) -> Self {
         // 数値のみ
         if visitor.len() == 1 {
-            return Unary::Value {
-                value: visitor.expect_node::<Value>(),
+            return Unary::ValueR {
+                value: visitor.expect_node::<ValueR>(),
             };
         }
 
@@ -40,19 +40,19 @@ impl<'src> From<Visitor<'src>> for Unary<'src> {
             SBToken::Not => {
                 Unary::Not {
                     span: visitor.span(),
-                    value: visitor.expect_node::<Value>(),
+                    value: visitor.expect_node::<ValueR>(),
                 }
             }
             SBToken::Plus => {
                 Unary::Plus {
                     span: visitor.span(),
-                    value: visitor.expect_node::<Value>(),
+                    value: visitor.expect_node::<ValueR>(),
                 }
             }
             SBToken::Minus => {
                 Unary::Minus {
                     span: visitor.span(),
-                    value: visitor.expect_node::<Value>(),
+                    value: visitor.expect_node::<ValueR>(),
                 }
             }
             SBToken::SizeOf => {
@@ -73,7 +73,7 @@ impl<'src> Spanned<'src> for Unary<'src> {
             Unary::Plus { span, .. } => *span,
             Unary::Minus { span, .. } => *span,
             Unary::SizeOf { span, .. } => *span,
-            Unary::Value { value } => value.span(),
+            Unary::ValueR { value } => value.span(),
         }
     }
 }

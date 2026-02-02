@@ -5,7 +5,7 @@ use sb_compiler_utils::primitive::i32;
 use super::{Expr, StructAccess, StructInit, Visitor};
 
 #[derive(Debug)]
-pub enum Value<'src> {
+pub enum ValueR<'src> {
     CBool {
         span: Span<'src>,
         value: bool,
@@ -38,18 +38,18 @@ pub enum Value<'src> {
     },
 }
 
-impl<'src> From<Visitor<'src>> for Value<'src> {
+impl<'src> From<Visitor<'src>> for ValueR<'src> {
     fn from(mut visitor: Visitor<'src>) -> Self {
         match visitor.peek() {
             // 論理値
             (Some(SBToken::True), None) => {
-                Value::CBool {
+                ValueR::CBool {
                     span: visitor.span(),
                     value: true,
                 }
             }
             (Some(SBToken::False), None) => {
-                Value::CBool {
+                ValueR::CBool {
                     span: visitor.span(),
                     value: false,
                 }
@@ -62,13 +62,13 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
                     "\\t" => '\t',
                     c => c.chars().next().unwrap(),
                 };
-                Value::CChar { span: visitor.span(), value }
+                ValueR::CChar { span: visitor.span(), value }
             }
             // 定数
             (Some(SBToken::Num), None) => {
                 let num_s = visitor.expect_leaf().1.as_str();
                 let value = i32::from_str(num_s).unwrap();
-                Value::CNum { span: visitor.span(), value }
+                ValueR::CNum { span: visitor.span(), value }
             }
             // 変数 or 関数呼び出し
             (Some(SBToken::Ident), None) => {
@@ -76,12 +76,12 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
                 let ident = visitor.expect_leaf().1;
                 match visitor.peek() {
                     // 変数
-                    (None, None) => Value::Var {
+                    (None, None) => ValueR::Var {
                         span,
                         name: ident,
                     },
                     // 関数呼び出し
-                    _ => Value::Call {
+                    _ => ValueR::Call {
                         span,
                         ident,
                         args: visitor.expect_nodes::<Expr>(),
@@ -90,18 +90,18 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
             }
             // 括弧
             (None, Some(SBRule::Expr)) => {
-                Value::Expr {
+                ValueR::Expr {
                     expr: Box::new(visitor.expect_node::<Expr>()),
                 }
             }
             // 構造体
             (None, Some(SBRule::StructInit)) => {
-                Value::StructInit {
+                ValueR::StructInit {
                     struct_init: visitor.expect_node::<StructInit>(),
                 }
             }
             (None, Some(SBRule::StructAccess)) => {
-                Value::StructAccess {
+                ValueR::StructAccess {
                     struct_access: visitor.expect_node::<StructAccess>(),
                 }
             }
@@ -110,17 +110,17 @@ impl<'src> From<Visitor<'src>> for Value<'src> {
     }
 }
 
-impl<'src> Spanned<'src> for Value<'src> {
+impl<'src> Spanned<'src> for ValueR<'src> {
     fn span(&self) -> Span<'src> {
         match self {
-            Value::CBool { span, .. } => *span,
-            Value::CChar { span, .. } => *span,
-            Value::CNum { span, .. } => *span,
-            Value::Var { span, .. } => *span,
-            Value::Call { span, .. } => *span,
-            Value::Expr { expr } => expr.span(),
-            Value::StructInit { struct_init } => struct_init.span(),
-            Value::StructAccess { struct_access } => struct_access.span(),
+            ValueR::CBool { span, .. } => *span,
+            ValueR::CChar { span, .. } => *span,
+            ValueR::CNum { span, .. } => *span,
+            ValueR::Var { span, .. } => *span,
+            ValueR::Call { span, .. } => *span,
+            ValueR::Expr { expr } => expr.span(),
+            ValueR::StructInit { struct_init } => struct_init.span(),
+            ValueR::StructAccess { struct_access } => struct_access.span(),
         }
     }
 }

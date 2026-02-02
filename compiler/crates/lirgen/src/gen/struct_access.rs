@@ -2,10 +2,10 @@ use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Lb, Lh, Lw};
 use sb_compiler_semcheck_hir::StructAccess;
 
 use crate::GenContext;
-use super::{ZERO_REG, ADDR_REG, lirgen_value};
+use super::{ZERO_REG, ADDR_REG, lirgen_value_r};
 
 pub fn lirgen_struct_access<'src>(ctx: &mut GenContext<'src>, struct_access: StructAccess<'src>) -> LirBlock {
-    let lir_lhs = lirgen_value(ctx, *struct_access.target);
+    let lir_lhs = lirgen_value_r(ctx, *struct_access.target);
     let reg_lhs = lir_lhs.result_reg();
 
     let lir_addr = lir!(Add ADDR_REG, ZERO_REG, reg_lhs);

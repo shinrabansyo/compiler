@@ -317,23 +317,23 @@ pub enum SBRule {
     #[rule("<cast> ::= <unary>")]
     Cast,
 
-    #[rule("<unary> ::= Not <value>")]
-    #[rule("<unary> ::= Plus <value>")]
-    #[rule("<unary> ::= Minus <value>")]
+    #[rule("<unary> ::= Not <value_r>")]
+    #[rule("<unary> ::= Plus <value_r>")]
+    #[rule("<unary> ::= Minus <value_r>")]
     #[rule("<unary> ::= SizeOf <type>")]
-    #[rule("<unary> ::= <value>")]
+    #[rule("<unary> ::= <value_r>")]
     Unary,
 
-    #[rule("<value> ::= True")]
-    #[rule("<value> ::= False")]
-    #[rule("<value> ::= Char")]
-    #[rule("<value> ::= Num")]
-    #[rule("<value> ::= Ident")]
-    #[rule("<value> ::= ParenL <expr> ParenR")]
-    #[rule("<value> ::= Ident ParenL <expr_list> ParenR")]
-    #[rule("<value> ::= <struct_init>")]
-    #[rule("<value> ::= <struct_access>")]
-    Value,
+    #[rule("<value_r> ::= True")]
+    #[rule("<value_r> ::= False")]
+    #[rule("<value_r> ::= Char")]
+    #[rule("<value_r> ::= Num")]
+    #[rule("<value_r> ::= Ident")]
+    #[rule("<value_r> ::= ParenL <expr> ParenR")]
+    #[rule("<value_r> ::= Ident ParenL <expr_list> ParenR")]
+    #[rule("<value_r> ::= <struct_init>")]
+    #[rule("<value_r> ::= <struct_access>")]
+    ValueR,
 
     #[rule("<struct_init> ::= Ident At <expr> BraceL <struct_field_init_list> BraceR")]
     #[rule("<struct_init> ::= Ident At <expr> BraceL <struct_field_init_list> Comma BraceR")]
@@ -344,6 +344,6 @@ pub enum SBRule {
     #[rule("<struct_field_init> ::= Ident Colon <expr>")]
     StructFieldInit,
 
-    #[rule("<struct_access> ::= <value> Access Ident")]
+    #[rule("<struct_access> ::= <value_r> Access Ident")]
     StructAccess,
 }

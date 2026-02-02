@@ -5,12 +5,12 @@ use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_type::r#struct::ty_struct_field;
 use sb_compiler_semcheck_impl_type::{Typed, Type};
 
-use super::{Value, SemCheck, Dep};
+use super::{ValueR, SemCheck, Dep};
 
 #[derive(Debug)]
 pub struct StructAccess<'src> {
     pub span: Span<'src>,
-    pub target: Box<Value<'src>>,
+    pub target: Box<ValueR<'src>>,
     pub offset: u32,
     pub ty: Arc<Type>,
 }
@@ -21,7 +21,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::StructAccess<'src>> for StructAccess<'sr
             Self: Sized
     {
         // 左辺の意味解析
-        let lhs = Value::check(ctx, *struct_access.lhs).await?;
+        let lhs = ValueR::check(ctx, *struct_access.lhs).await?;
 
         // アクセス対象の情報を取得
         let (rhs_ty, rhs_addr) = ty_struct_field(
