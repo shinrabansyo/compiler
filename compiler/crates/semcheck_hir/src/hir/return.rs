@@ -25,7 +25,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Return<'src>> for Return<'src> {
         // 戻り値の型をチェック
         let fn_ret_ty = ty_can_return(
             &ctx.r#type,
-            ctx.name.as_str().into(),
+            ctx.name.as_child_str().into(),
             &expr,
         ).await?;
 

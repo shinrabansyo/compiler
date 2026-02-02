@@ -6,6 +6,7 @@ use sb_compiler_semcheck_impl_var::decl::var_register;
 use sb_compiler_semcheck_impl_var::Var;
 use sb_compiler_semcheck_impl_type::op::ty_equals;
 use sb_compiler_semcheck_impl_type::infer::ty_infer;
+use sb_compiler_semcheck_impl_type::parse::ty_parse_type;
 use sb_compiler_semcheck_impl_type::{Typed, Type, Void};
 
 use super::{Expr, SemCheck, Dep};
@@ -29,9 +30,9 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::VarDecl<'src>> for VarDecl<'src> {
         // 型検査
         let var_ty = match var_decl.ty {
             Some(ty) => {
-                let var_ty = Type::from(ty).ty();
-                ty_equals(var_ty.as_ref().clone(), &expr)?;
-                var_ty
+                let ty = ty_parse_type(&ctx.r#type, &ty).await?;
+                ty_equals(&ty, &expr)?;
+                ty
             }
             None => ty_infer(&expr)?,
         };

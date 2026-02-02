@@ -2,19 +2,38 @@ pub mod decl;
 
 use std::sync::{Arc, Mutex};
 
-use petgraph::graph::NodeIndex;
+use sb_compiler_utils::collections::{LayeredGraph, LayeredGraphCursor};
 
-use crate::data::VarGraph;
+use crate::var::Var;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct VarContext<'src> {
-    graph: Arc<Mutex<VarGraph<'src>>>,
-    node: NodeIndex,
+    graph: Arc<Mutex<LayeredGraph<Var<'src>>>>,
+    cur: LayeredGraphCursor,
 }
 
-impl<'src> From<Arc<Mutex<VarGraph<'src>>>> for VarContext<'src> {
-    fn from(graph: Arc<Mutex<VarGraph<'src>>>) -> Self {
-        let node = graph.lock().unwrap().root_node;
-        VarContext { graph, node }
+impl Clone for VarContext<'_> {
+    fn clone(&self) -> Self {
+        // Ctx が複製されたとき，新しい変数空間を作成する
+        let new_cur = self
+            .graph
+            .lock()
+            .unwrap()
+            .add_directed_layer(self.cur);
+
+        VarContext {
+            graph: Arc::clone(&self.graph),
+            cur: new_cur,
+        }
+    }
+}
+
+impl<'src> VarContext<'src> {
+    pub fn new() -> Self {
+        let (graph, cur) = LayeredGraph::new_with_directed();
+        VarContext {
+            graph: Arc::new(Mutex::new(graph)),
+            cur,
+        }
     }
 }

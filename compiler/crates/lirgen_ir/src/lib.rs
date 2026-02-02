@@ -123,6 +123,14 @@ pub enum LirInst {
     JmpLabel(u32),
     Call(String),
 
+    // メモリアクセス
+    Lb(i32),
+    Lh(i32),
+    Lw(i32),
+    Sb(i32),
+    Sh(i32),
+    Sw(i32),
+
     // 関数
     FnPrologue,
     FnEpilogue,

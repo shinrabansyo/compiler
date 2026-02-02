@@ -1,12 +1,12 @@
 use sb_compiler_lirgen_ir::{lir, LirBlock, Beq, JmpLabel, Li, Sub};
 use sb_compiler_semcheck_hir::Unary;
 
-use super::{GenContext, ZERO_REG, lirgen_value};
+use super::{GenContext, ZERO_REG, lirgen_value_r};
 
 pub fn lirgen_unary<'src>(ctx: &mut GenContext<'src>, unary: Unary<'src>) -> LirBlock {
     let (result_reg, lirs) = match unary {
         Unary::Not { value, .. } => {
-            let lir_value = lirgen_value(ctx, value);
+            let lir_value = lirgen_value_r(ctx, value);
             let reg_value = lir_value.result_reg();
 
             let reg_result = ctx.alloc_reg();
@@ -29,13 +29,13 @@ pub fn lirgen_unary<'src>(ctx: &mut GenContext<'src>, unary: Unary<'src>) -> Lir
             )
         }
         Unary::Plus { value, .. } => {
-            let lir_value = lirgen_value(ctx, value);
+            let lir_value = lirgen_value_r(ctx, value);
             let reg_value = lir_value.result_reg();
 
             (reg_value, vec![lir_value])
         }
         Unary::Minus { value, .. } => {
-            let lir_value = lirgen_value(ctx, value);
+            let lir_value = lirgen_value_r(ctx, value);
             let reg_value = lir_value.result_reg();
 
             (
@@ -46,8 +46,13 @@ pub fn lirgen_unary<'src>(ctx: &mut GenContext<'src>, unary: Unary<'src>) -> Lir
                 ],
             )
         }
-        Unary::Value { value, .. } => {
-            return lirgen_value(ctx, value);
+        Unary::SizeOf { size, .. } => {
+            let reg_result = ctx.alloc_reg();
+
+            (reg_result, vec![lir!(Li(size as i32) reg_result)])
+        }
+        Unary::ValueR { value, .. } => {
+            return lirgen_value_r(ctx, value);
         }
     };
 

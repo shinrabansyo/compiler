@@ -1,53 +1,53 @@
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::SBToken;
 
-use super::{LogicOr, Visitor};
+use super::{LogicOr, ValueL, Visitor};
 
 #[derive(Debug)]
 pub enum Assign<'src> {
     Normal {
         span: Span<'src>,
-        ident: Span<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     Plus {
         span: Span<'src>,
-        ident: Span<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     Minus {
         span: Span<'src>,
-        ident: Span<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     Mul {
         span: Span<'src>,
-        ident: Span<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     Div {
         span: Span<'src>,
-        ident: Span<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     Mod {
         span: Span<'src>,
-        ident: Span<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftL {
         span: Span<'src>,
-        ident: Span<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftR {
         span: Span<'src>,
-        ident: Span<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftRa {
         span: Span<'src>,
-        ident: Span<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     LogicOr {
@@ -65,68 +65,68 @@ impl<'src> From<Visitor<'src>> for Assign<'src> {
         }
 
         // 演算子付き
-        let ident = visitor.expect_leaf().1;
+        let lhs = visitor.expect_node::<ValueL>();
         match visitor.expect_leaf().0 {
             SBToken::Assign => {
                 Assign::Normal {
                     span: visitor.span(),
-                    ident,
+                    lhs,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::PlusAssign => {
                 Assign::Plus {
                     span: visitor.span(),
-                    ident,
+                    lhs,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::MinusAssign => {
                 Assign::Minus {
                     span: visitor.span(),
-                    ident,
+                    lhs,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::MulAssign => {
                 Assign::Mul {
                     span: visitor.span(),
-                    ident,
+                    lhs,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::DivAssign => {
                 Assign::Div {
                     span: visitor.span(),
-                    ident,
+                    lhs,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::ModAssign => {
                 Assign::Mod {
                     span: visitor.span(),
-                    ident,
+                    lhs,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::ShiftLAssign => {
                 Assign::ShiftL {
                     span: visitor.span(),
-                    ident,
+                    lhs,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::ShiftRAssign => {
                 Assign::ShiftR {
                     span: visitor.span(),
-                    ident,
+                    lhs,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }
             SBToken::ShiftRaAssign => {
                 Assign::ShiftRa {
                     span: visitor.span(),
-                    ident,
+                    lhs,
                     assign: Box::new(visitor.expect_node::<Assign>()),
                 }
             }

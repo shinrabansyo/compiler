@@ -3,9 +3,9 @@ use sb_compiler_parse_cst::Spanned;
 use crate::r#type::*;
 use super::error::TypeOpError;
 
-pub fn ty_cast<'src, F, T>(from: &F, to: &T) -> miette::Result<()>
+pub fn ty_cast<'a, F, T>(from: &F, to: &T) -> miette::Result<()>
 where
-    F: Typed + Spanned<'src>,
+    F: Typed + Spanned<'a>,
     T: Typed,
 {
     match (from.ty().as_ref(), to.ty().as_ref()) {
@@ -26,6 +26,9 @@ where
         (I16,      I32)         => Ok(()),
         (I32,      I32)         => Ok(()),
         (I32,      Bool)        => Ok(()),
+        (I32,      Addr(_))     => Ok(()),
+        (I32,      DataAddr(_)) => Ok(()),
+        (I32,      InstAddr(_)) => Ok(()),
         (NumConst, Bool)        => Ok(()),
         (NumConst, Char)        => Ok(()),
         (NumConst, I8)          => Ok(()),
@@ -36,16 +39,21 @@ where
         (NumConst, InstAddr(_)) => Ok(()),
 
         // アドレス
-        (Addr(_),     Addr(_))     => Ok(()),
-        (Addr(_),     I32)         => Ok(()),
-        (Addr(_),     DataAddr(_)) => Ok(()),
-        (Addr(_),     InstAddr(_)) => Ok(()),
-        (DataAddr(_), DataAddr(_)) => Ok(()),
-        (DataAddr(_), I32)         => Ok(()),
-        (DataAddr(_), Addr(_))     => Ok(()),
-        (InstAddr(_), InstAddr(_)) => Ok(()),
-        (InstAddr(_), I32)         => Ok(()),
-        (InstAddr(_), Addr(_))     => Ok(()),
+        (Addr(_),     Addr(_))       => Ok(()),
+        (Addr(_),     I32)           => Ok(()),
+        (Addr(_),     DataAddr(_))   => Ok(()),
+        (Addr(_),     InstAddr(_))   => Ok(()),
+        (DataAddr(_), DataAddr(_))   => Ok(()),
+        (DataAddr(_), I32)           => Ok(()),
+        (DataAddr(_), Struct { .. }) => Ok(()),
+        (DataAddr(_), Addr(_))       => Ok(()),
+        (InstAddr(_), InstAddr(_))   => Ok(()),
+        (InstAddr(_), I32)           => Ok(()),
+        (InstAddr(_), Addr(_))       => Ok(()),
+
+        // データ構造
+        (Struct { .. }, Addr(_))     => Ok(()),
+        (Struct { .. }, DataAddr(_)) => Ok(()),
 
         // キャスト失敗
         _ => Err(TypeOpError::new_cast_failed(from, to)),

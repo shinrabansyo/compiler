@@ -2,58 +2,56 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_var::decl::var_find;
-use sb_compiler_semcheck_impl_var::Var;
 use sb_compiler_semcheck_impl_type::op::ty_equals_arith2;
 use sb_compiler_semcheck_impl_type::{Typed, Type};
 
-use super::{LogicOr, SemCheck, Dep};
+use super::{LogicOr, ValueL, SemCheck, Dep};
 
 #[derive(Debug)]
 pub enum Assign<'src> {
     Normal {
         span: Span<'src>,
-        var: Var<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     Plus {
         span: Span<'src>,
-        var: Var<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     Minus {
         span: Span<'src>,
-        var: Var<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     Mul {
         span: Span<'src>,
-        var: Var<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     Div {
         span: Span<'src>,
-        var: Var<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     Mod {
         span: Span<'src>,
-        var: Var<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftL {
         span: Span<'src>,
-        var: Var<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftR {
         span: Span<'src>,
-        var: Var<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     ShiftRa {
         span: Span<'src>,
-        var: Var<'src>,
+        lhs: ValueL<'src>,
         assign: Box<Assign<'src>>,
     },
     LogicOr {
@@ -67,95 +65,95 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
         Self: Sized,
     {
         match assign {
-            ast::Assign::Normal { span, ident, assign } => {
-                // 式の意味解析
+            ast::Assign::Normal { span, lhs, assign } => {
+                // 両辺の意味解析
+                let lhs = ValueL::check(ctx, lhs).await?;
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = var_find(&mut ctx.var, &ident).await?;
-                ty_equals_arith2(&var, &assign)?;
+                ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Normal { span, var, assign })
+                Ok(Assign::Normal { span, lhs, assign })
             }
-            ast::Assign::Plus { span, ident, assign } => {
+            ast::Assign::Plus { span, lhs, assign } => {
                 // 式の意味解析
+                let lhs = ValueL::check(ctx, lhs).await?;
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = var_find(&mut ctx.var, &ident).await?;
-                ty_equals_arith2(&var, &assign)?;
+                ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Plus { span, var, assign })
+                Ok(Assign::Plus { span, lhs, assign })
             }
-            ast::Assign::Minus { span, ident, assign } => {
+            ast::Assign::Minus { span, lhs, assign } => {
                 // 式の意味解析
+                let lhs = ValueL::check(ctx, lhs).await?;
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = var_find(&mut ctx.var, &ident).await?;
-                ty_equals_arith2(&var, &assign)?;
+                ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Minus { span, var, assign })
+                Ok(Assign::Minus { span, lhs, assign })
             }
-            ast::Assign::Mul { span, ident, assign } => {
+            ast::Assign::Mul { span, lhs, assign } => {
                 // 式の意味解析
+                let lhs = ValueL::check(ctx, lhs).await?;
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = var_find(&mut ctx.var, &ident).await?;
-                ty_equals_arith2(&var, &assign)?;
+                ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Mul { span, var, assign })
+                Ok(Assign::Mul { span, lhs, assign })
             }
-            ast::Assign::Div { span, ident, assign } => {
+            ast::Assign::Div { span, lhs, assign } => {
                 // 式の意味解析
+                let lhs = ValueL::check(ctx, lhs).await?;
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = var_find(&mut ctx.var, &ident).await?;
-                ty_equals_arith2(&var, &assign)?;
+                ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Div { span, var, assign })
+                Ok(Assign::Div { span, lhs, assign })
             }
-            ast::Assign::Mod { span, ident, assign } => {
+            ast::Assign::Mod { span, lhs, assign } => {
                 // 式の意味解析
+                let lhs = ValueL::check(ctx, lhs).await?;
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = var_find(&mut ctx.var, &ident).await?;
-                ty_equals_arith2(&var, &assign)?;
+                ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::Mod { span, var, assign })
+                Ok(Assign::Mod { span, lhs, assign })
             }
-            ast::Assign::ShiftL { span, ident, assign } => {
+            ast::Assign::ShiftL { span, lhs, assign } => {
                 // 式の意味解析
+                let lhs = ValueL::check(ctx, lhs).await?;
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = var_find(&mut ctx.var, &ident).await?;
-                ty_equals_arith2(&var, &assign)?;
+                ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::ShiftL { span, var, assign })
+                Ok(Assign::ShiftL { span, lhs, assign })
             }
-            ast::Assign::ShiftR { span, ident, assign } => {
+            ast::Assign::ShiftR { span, lhs, assign } => {
                 // 式の意味解析
+                let lhs = ValueL::check(ctx, lhs).await?;
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = var_find(&mut ctx.var, &ident).await?;
-                ty_equals_arith2(&var, &assign)?;
+                ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::ShiftR { span, var, assign })
+                Ok(Assign::ShiftR { span, lhs, assign })
             }
-            ast::Assign::ShiftRa { span, ident, assign } => {
+            ast::Assign::ShiftRa { span, lhs, assign } => {
                 // 式の意味解析
+                let lhs = ValueL::check(ctx, lhs).await?;
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                let var = var_find(&mut ctx.var, &ident).await?;
-                ty_equals_arith2(&var, &assign)?;
+                ty_equals_arith2(&lhs.ty(), &assign)?;
 
-                Ok(Assign::ShiftRa { span, var, assign })
+                Ok(Assign::ShiftRa{ span, lhs, assign })
             }
             ast::Assign::LogicOr { or } => {
                 Ok(Assign::LogicOr {
@@ -186,15 +184,15 @@ impl<'src> Spanned<'src> for Assign<'src> {
 impl Typed for Assign<'_> {
     fn ty(&self) -> Arc<Type> {
         match self {
-            Assign::Normal { var, .. } => var.ty.ty(),
-            Assign::Plus { var, .. } => var.ty.ty(),
-            Assign::Minus { var, .. } => var.ty.ty(),
-            Assign::Mul { var, .. } => var.ty.ty(),
-            Assign::Div { var, .. } => var.ty.ty(),
-            Assign::Mod { var, .. } => var.ty.ty(),
-            Assign::ShiftL { var, .. } => var.ty.ty(),
-            Assign::ShiftR { var, .. } => var.ty.ty(),
-            Assign::ShiftRa { var, .. } => var.ty.ty(),
+            Assign::Normal { lhs, .. } => lhs.ty(),
+            Assign::Plus { lhs, .. } => lhs.ty(),
+            Assign::Minus { lhs, .. } => lhs.ty(),
+            Assign::Mul { lhs, .. } => lhs.ty(),
+            Assign::Div { lhs, .. } => lhs.ty(),
+            Assign::Mod { lhs, .. } => lhs.ty(),
+            Assign::ShiftL { lhs, .. } => lhs.ty(),
+            Assign::ShiftR { lhs, .. } => lhs.ty(),
+            Assign::ShiftRa { lhs, .. } => lhs.ty(),
             Assign::LogicOr { or } => or.ty(),
         }
     }

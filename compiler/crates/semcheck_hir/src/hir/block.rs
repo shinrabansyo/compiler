@@ -2,6 +2,8 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
+use sb_compiler_semcheck_impl_var::decl::var_new_space;
+use sb_compiler_semcheck_impl_type::decl::ty_new_space;
 use sb_compiler_semcheck_impl_type::{Typed, Type, Void};
 
 use super::{Stmt, SemCheck, InDep};
@@ -17,6 +19,10 @@ impl<'src> SemCheck<InDep<'src>, ast::Block<'src>> for Block<'src> {
     where
         Self: Sized,
     {
+        // ブロック内に新しい変数・型空間を作成
+        var_new_space(&mut ctx.var).await?;
+        ty_new_space(&mut ctx.r#type).await?;
+
         // 文を順に意味解析
         let mut stmts = vec![];
         for stmt in block.stmts {

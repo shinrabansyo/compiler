@@ -3,11 +3,12 @@ use sb_compiler_parse_cst::Spanned;
 use crate::r#type::*;
 use super::error::TypeOpError;
 
-pub fn ty_equals<'src, A>(ty: Type, a: &A) -> miette::Result<()>
+pub fn ty_equals<'a, A, B>(a: &A, b: &B) -> miette::Result<()>
 where
-    A: Typed + Spanned<'src>,
+    A: Typed,
+    B: Typed + Spanned<'a>,
 {
-    match (&ty, a.ty().as_ref()) {
+    match (a.ty().as_ref(), b.ty().as_ref()) {
         // プリミティブ
         (Void,     Void)     => Ok(()),
         (Bool,     Bool)     => Ok(()),
@@ -28,14 +29,17 @@ where
         (DataAddr(_), DataAddr(_)) => Ok(()),
         (InstAddr(_), InstAddr(_)) => Ok(()),
 
+        // データ構造
+        (Struct { .. }, Struct { .. }) => Ok(()),
+
         // 比較失敗
-        _ => Err(TypeOpError::new_mismatch(ty, a))
+        _ => Err(TypeOpError::new_mismatch(a, b))
     }
 }
 
 pub fn ty_equals_arith2<'src, L, R>(lhs: &L, rhs: &R) -> miette::Result<()>
 where
-    L: Typed + Spanned<'src>,
+    L: Typed,
     R: Typed + Spanned<'src>,
 {
     match (lhs.ty().as_ref(), rhs.ty().as_ref()) {

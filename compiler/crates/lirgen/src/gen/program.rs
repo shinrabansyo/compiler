@@ -7,6 +7,6 @@ use super::lirgen_top;
 pub fn lirgen_program<'src>(ctx: &mut GenContext<'src>, program: Program<'src>) -> Vec<LirTopElem> {
     program.top_elems
         .into_iter()
-        .map(|ast| lirgen_top(ctx, ast))
+        .filter_map(|ast| lirgen_top(ctx, ast))
         .collect()
 }

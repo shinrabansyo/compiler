@@ -1,9 +1,14 @@
+use std::fmt::Display;
 use std::sync::{Arc, LazyLock};
-
-use sb_compiler_parse_ast as ast;
 
 pub trait Typed {
     fn ty(&self) -> Arc<Type>;
+}
+
+impl<T: Typed> Typed for Box<T> {
+    fn ty(&self) -> Arc<Type> {
+        self.as_ref().ty()
+    }
 }
 
 pub use Type::*;
@@ -24,35 +29,49 @@ pub enum Type {
     DataAddr(Arc<Type>),
     InstAddr(Arc<Type>),
 
+    // データ構造
+    Struct {
+        name: String,
+        fields: Vec<(String, Arc<Type>)>,
+    },
+
     // 関数
     Function {
+        name: String,
         args: Vec<Arc<Type>>,
         ret_ty: Arc<Type>,
     },
 }
 
-impl<'src> From<ast::Type<'src>> for Type {
-    fn from(ast: ast::Type<'src>) -> Self {
-        match ast {
+impl Display for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
             // プリミティブ
-            ast::Type::Bool(_) => Type::Bool,
-            ast::Type::Char(_) => Type::Char,
-            ast::Type::I8(_) => Type::I8,
-            ast::Type::I16(_) => Type::I16,
-            ast::Type::I32(_) => Type::I32,
+            Type::Void => write!(f, "void"),
+            Type::Bool => write!(f, "bool"),
+            Type::Char => write!(f, "char"),
+            Type::I8 => write!(f, "i8"),
+            Type::I16 => write!(f, "i16"),
+            Type::I32 => write!(f, "i32"),
+            Type::NumConst => write!(f, "const(num)"),
 
             // アドレス
-            ast::Type::Addr { inner_ty, .. } => {
-                let inner_ty = Type::from(*inner_ty);
-                Type::Addr(Arc::new(inner_ty))
+            Type::Addr(inner_ty) => write!(f, "Addr<{}>", inner_ty),
+            Type::DataAddr(inner_ty) => write!(f, "DataAddr<{}>", inner_ty),
+            Type::InstAddr(inner_ty) => write!(f, "InstAddr<{}>", inner_ty),
+
+            // データ構造
+            Type::Struct { name, .. } => {
+                write!(f, "struct {}", name)
             }
-            ast::Type::DataAddr { inner_ty, .. } => {
-                let inner_ty = Type::from(*inner_ty);
-                Type::DataAddr(Arc::new(inner_ty))
-            }
-            ast::Type::InstAddr { inner_ty, .. } => {
-                let inner_ty = Type::from(*inner_ty);
-                Type::InstAddr(Arc::new(inner_ty))
+
+            // 関数
+            Type::Function { name, args, ret_ty } => {
+                write!(f, "fn {}(", name)?;
+                for arg_ty in args {
+                    write!(f, "{}, ", arg_ty)?;
+                }
+                write!(f, ") -> {}", ret_ty)
             }
         }
     }
@@ -116,9 +135,18 @@ impl Typed for Type {
                 Arc::new(Type::InstAddr(Arc::clone(inner_ty)))
             }
 
+            // データ構造
+            Type::Struct { name, fields } => {
+                let fields = fields.iter()
+                    .map(|(name, ty)| (name.clone(), Arc::clone(ty)))
+                    .collect();
+                Arc::new(Type::Struct { name: name.clone(), fields })
+            }
+
             // 関数
-            Type::Function { args, ret_ty } => {
+            Type::Function { name, args, ret_ty } => {
                 Arc::new(Type::Function {
+                    name: name.clone(),
                     args: args.iter().map(Arc::clone).collect(),
                     ret_ty: Arc::clone(ret_ty),
                 })
@@ -127,14 +155,40 @@ impl Typed for Type {
     }
 }
 
-impl<T: Typed> Typed for Box<T> {
+impl Typed for Arc<Type> {
     fn ty(&self) -> Arc<Type> {
-        self.as_ref().ty()
+        Arc::clone(self)
     }
 }
 
-impl<T: Typed> Typed for Arc<T> {
-    fn ty(&self) -> Arc<Type> {
-        self.as_ref().ty()
+impl Type {
+    pub fn size(&self) -> u32 {
+        match self {
+            // プリミティブ
+            Type::Void => 1,
+            Type::Bool => 1,
+            Type::Char => 1,
+            Type::I8 => 1,
+            Type::I16 => 2,
+            Type::I32 => 4,
+            Type::NumConst => 4,
+
+            // アドレス
+            Type::Addr(_) => 4,
+            Type::DataAddr(_) => 4,
+            Type::InstAddr(_) => 4,
+
+            // データ構造
+            Type::Struct { fields, .. } => {
+                let mut size = 0;
+                for (_, ty) in fields {
+                    size += ty.size();
+                }
+                size
+            }
+
+            // 関数
+            Type::Function { .. } => 4,
+        }
     }
 }

@@ -1,11 +1,8 @@
-use std::sync::Arc;
-
 use thiserror::Error;
 use miette::{Diagnostic, SourceSpan};
 
 use sb_compiler_parse_cst::{Span, Spanned};
 
-use crate::r#type::Type;
 use crate::Typed;
 
 #[derive(Debug, Error, Diagnostic)]
@@ -26,16 +23,16 @@ pub enum TypeFnError {
         got: usize,
     },
 
-    #[error("Function requires a return type matching '{requires:?}', but got '{ret:?}'")]
+    #[error("Function requires a return type matching '{requires}', but got '{ret}'")]
     ReturnFailed {
         #[source_code]
         src: String,
 
-        #[label("This is '{ret:?}'")]
+        #[label("This is '{ret}'")]
         ret_span: SourceSpan,
-        ret: Arc<Type>,
+        ret: String,
 
-        requires: Arc<Type>,
+        requires: String,
     },
 }
 
@@ -57,8 +54,8 @@ impl TypeFnError {
         TypeFnError::ReturnFailed {
             src: ret.span().src.to_string(),
             ret_span: ret.span().into(),
-            ret: ret.ty(),
-            requires: requires.ty(),
+            ret: ret.ty().to_string(),
+            requires: requires.ty().to_string(),
         }.into()
     }
 }

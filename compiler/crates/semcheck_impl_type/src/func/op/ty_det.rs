@@ -5,10 +5,10 @@ use sb_compiler_parse_cst::Spanned;
 use crate::r#type::*;
 use super::error::TypeOpError;
 
-pub fn ty_det_arith2<'src, L, R>(lhs: &L, rhs: &R) -> miette::Result<Arc<Type>>
+pub fn ty_det_arith2<'a, L, R>(lhs: &L, rhs: &R) -> miette::Result<Arc<Type>>
 where
-    L: Typed + Spanned<'src>,
-    R: Typed + Spanned<'src>,
+    L: Typed + Spanned<'a>,
+    R: Typed + Spanned<'a>,
 {
     let lhs_ty = lhs.ty();
     let rhs_ty = rhs.ty();

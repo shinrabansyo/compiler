@@ -2,23 +2,42 @@ pub mod decl;
 pub mod r#fn;
 pub mod infer;
 pub mod op;
+pub mod parse;
+pub mod r#struct;
 
 use std::sync::{Arc, Mutex};
 
-use crate::data::TypeTree;
+use sb_compiler_semcheck_async::block_on;
+use sb_compiler_utils::collections::{LayeredGraph, LayeredGraphCursor};
 
-#[derive(Clone)]
-pub struct TypeContext {
-    tree: Arc<Mutex<TypeTree>>,
-    pub(crate) current_pos: usize,
+use crate::r#type::{Typed, Type, Bool, Char, I8, I16, I32};
+
+use decl::ty_register;
+
+#[derive(Debug, Clone)]
+pub struct TypeContext<'src> {
+    pub(crate) graph: Arc<Mutex<LayeredGraph<(&'src str, Arc<Type>)>>>,
+    pub(crate) cur: LayeredGraphCursor,
 }
 
-impl From<Arc<Mutex<TypeTree>>> for TypeContext {
-    fn from(tree: Arc<Mutex<TypeTree>>) -> Self {
-        let root_node = tree.lock().unwrap().root_node;
-        TypeContext {
-            tree,
-            current_pos: root_node,
-        }
+impl<'src> TypeContext<'src> {
+    pub fn new() -> Self {
+        // 型空間の初期化
+        let (graph, cur) = LayeredGraph::new_with_undirected();
+        let mut ctx = TypeContext {
+            graph: Arc::new(Mutex::new(graph)),
+            cur,
+        };
+
+        // プリミティブ型の登録
+        block_on(async {
+            ty_register(&mut ctx, "bool".into(), Bool.ty()).await.unwrap();
+            ty_register(&mut ctx, "char".into(), Char.ty()).await.unwrap();
+            ty_register(&mut ctx, "i8".into(), I8.ty()).await.unwrap();
+            ty_register(&mut ctx, "i16".into(), I16.ty()).await.unwrap();
+            ty_register(&mut ctx, "i32".into(), I32.ty()).await.unwrap();
+        });
+
+        ctx
     }
 }

@@ -31,7 +31,7 @@ impl<'src> SemCheck<InDep<'src>, ast::For<'src>> for For<'src> {
 
         // 条件式の意味解析 & 型チェック
         let cond = Expr::check(&mut ctx, r#for.cond).await?;
-        ty_equals(Bool, &cond)?;
+        ty_equals(&Bool, &cond)?;
 
         Ok(For { span, init, cond, incr, block })
     }

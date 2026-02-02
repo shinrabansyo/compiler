@@ -45,6 +45,8 @@ pub enum SBToken {
     Semicolon,
 
     // 予約語
+    #[token(r"struct", ir_omit)]
+    Struct,
     #[token(r"fn" ir_omit)]
     Fn,
     #[token(r"var", ir_omit)]
@@ -61,16 +63,6 @@ pub enum SBToken {
     For,
     #[token(r"asm!", ir_omit)]
     Asm,
-    #[token(r"bool")]
-    BoolTy,
-    #[token(r"char")]
-    CharTy,
-    #[token(r"i8")]
-    I8Ty,
-    #[token(r"i16")]
-    I16Ty,
-    #[token(r"i32")]
-    I32Ty,
     #[token(r"Addr")]
     AddrTy,
     #[token(r"DataAddr")]
@@ -137,6 +129,12 @@ pub enum SBToken {
     Div,
     #[token(r"%")]
     Mod,
+    #[token(r"\.")]
+    Access,
+    #[token(r"sizeof")]
+    SizeOf,
+    #[token(r"@", ir_omit)]
+    At,
     #[token(r"as", ir_omit)]
     As,
 
@@ -172,10 +170,21 @@ pub enum SBRule {
 
     #[rule("<top_list> ::= <top_list> <top>")]
     #[rule("<top_list> ::= <top>")]
+    #[rule("<top> ::= <struct_def>")]
     #[rule("<top> ::= <func_def>")]
     Top,
 
     // 定義
+    #[rule("<struct_def> ::= Struct Ident BraceL <field_def_list> BraceR")]
+    #[rule("<struct_def> ::= Struct Ident BraceL <field_def_list> Comma BraceR")]
+    StructDef,
+
+    #[rule("<field_def_list> ::= <field_def_list> Comma <field_def>")]
+    #[rule("<field_def_list> ::= <field_def>")]
+    #[rule("<field_def_list> ::= <field_def>")]
+    #[rule("<field_def> ::= Ident Colon <type>")]
+    FieldDef,
+
     #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR <block>")]
     #[rule("<func_def> ::= Fn Ident ParenL <arg_def_list> ParenR Allow <type> <block>")]
     FuncDef,
@@ -187,14 +196,10 @@ pub enum SBRule {
     ArgumentDef,
 
     // 型
-    #[rule("<type> ::= BoolTy")]
-    #[rule("<type> ::= CharTy")]
-    #[rule("<type> ::= I8Ty")]
-    #[rule("<type> ::= I16Ty")]
-    #[rule("<type> ::= I32Ty")]
     #[rule("<type> ::= AddrTy Lt <type> Gt")]
     #[rule("<type> ::= DataAddrTy Lt <type> Gt")]
     #[rule("<type> ::= InstAddrTy Lt <type> Gt")]
+    #[rule("<type> ::= Ident")]
     Type,
 
     // 文
@@ -250,17 +255,21 @@ pub enum SBRule {
     #[rule("<expr> ::= <assign>")]
     Expr,
 
-    #[rule("<assign> ::= Ident Assign <assign>")]
-    #[rule("<assign> ::= Ident PlusAssign <assign>")]
-    #[rule("<assign> ::= Ident MinusAssign <assign>")]
-    #[rule("<assign> ::= Ident MulAssign <assign>")]
-    #[rule("<assign> ::= Ident DivAssign <assign>")]
-    #[rule("<assign> ::= Ident ModAssign <assign>")]
-    #[rule("<assign> ::= Ident ShiftLAssign <assign>")]
-    #[rule("<assign> ::= Ident ShiftRaAssign <assign>")]
-    #[rule("<assign> ::= Ident ShiftRAssign <assign>")]
+    #[rule("<assign> ::= <value_l> Assign <assign>")]
+    #[rule("<assign> ::= <value_l> PlusAssign <assign>")]
+    #[rule("<assign> ::= <value_l> MinusAssign <assign>")]
+    #[rule("<assign> ::= <value_l> MulAssign <assign>")]
+    #[rule("<assign> ::= <value_l> DivAssign <assign>")]
+    #[rule("<assign> ::= <value_l> ModAssign <assign>")]
+    #[rule("<assign> ::= <value_l> ShiftLAssign <assign>")]
+    #[rule("<assign> ::= <value_l> ShiftRaAssign <assign>")]
+    #[rule("<assign> ::= <value_l> ShiftRAssign <assign>")]
     #[rule("<assign> ::= <logic_or>")]
     Assign,
+
+    #[rule("<value_l> ::= Ident")]
+    #[rule("<value_l> ::= <struct_access>")]
+    ValueL,
 
     #[rule("<logic_or> ::= <logic_or> LogicOr <logic_and>")]
     #[rule("<logic_or> ::= <logic_and>")]
@@ -312,18 +321,33 @@ pub enum SBRule {
     #[rule("<cast> ::= <unary>")]
     Cast,
 
-    #[rule("<unary> ::= Not <value>")]
-    #[rule("<unary> ::= Plus <value>")]
-    #[rule("<unary> ::= Minus <value>")]
-    #[rule("<unary> ::= <value>")]
+    #[rule("<unary> ::= Not <value_r>")]
+    #[rule("<unary> ::= Plus <value_r>")]
+    #[rule("<unary> ::= Minus <value_r>")]
+    #[rule("<unary> ::= SizeOf <type>")]
+    #[rule("<unary> ::= <value_r>")]
     Unary,
 
-    #[rule("<value> ::= True")]
-    #[rule("<value> ::= False")]
-    #[rule("<value> ::= Char")]
-    #[rule("<value> ::= Num")]
-    #[rule("<value> ::= Ident")]
-    #[rule("<value> ::= Ident ParenL <expr_list> ParenR")]
-    #[rule("<value> ::= ParenL <expr> ParenR")]
-    Value,
+    #[rule("<value_r> ::= True")]
+    #[rule("<value_r> ::= False")]
+    #[rule("<value_r> ::= Char")]
+    #[rule("<value_r> ::= Num")]
+    #[rule("<value_r> ::= Ident")]
+    #[rule("<value_r> ::= ParenL <expr> ParenR")]
+    #[rule("<value_r> ::= Ident ParenL <expr_list> ParenR")]
+    #[rule("<value_r> ::= <struct_init>")]
+    #[rule("<value_r> ::= <struct_access>")]
+    ValueR,
+
+    #[rule("<struct_init> ::= Ident At <expr> BraceL <struct_field_init_list> BraceR")]
+    #[rule("<struct_init> ::= Ident At <expr> BraceL <struct_field_init_list> Comma BraceR")]
+    StructInit,
+
+    #[rule("<struct_field_init_list> ::= <struct_field_init_list> Comma <struct_field_init>")]
+    #[rule("<struct_field_init_list> ::= <struct_field_init>")]
+    #[rule("<struct_field_init> ::= Ident Colon <expr>")]
+    StructFieldInit,
+
+    #[rule("<struct_access> ::= <value_r> Access Ident")]
+    StructAccess,
 }
