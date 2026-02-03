@@ -35,18 +35,6 @@ pub enum TypeOpError {
         a: String,
     },
 
-    #[error("Type mismatch, '{a}' is not compatible with '{b}'")]
-    Mismatch2 {
-        #[source_code]
-        src: String,
-
-        #[label("This is '{b}'")]
-        b_span: SourceSpan,
-        b: String,
-
-        a: String,
-    },
-
     #[error("Cannot determine type from '{from}' and '{to}'")]
     Det2Failed {
         #[source_code]
@@ -86,19 +74,6 @@ impl TypeOpError {
             b_span: b.span().into(),
             b: b.ty().to_string(),
             a: a.ty().to_string(),
-        }.into()
-    }
-
-    pub fn new_mismatch2<'src, A, B>(a: &A, b: &B) -> miette::Report
-    where
-        A: Typed,
-        B: Typed + Spanned<'src>,
-    {
-        TypeOpError::Mismatch2 {
-            src: b.span().src.to_string(),
-            a: a.ty().to_string(),
-            b_span: b.span().into(),
-            b: b.ty().to_string(),
         }.into()
     }
 

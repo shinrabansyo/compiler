@@ -19,57 +19,26 @@ where
         (I16,      NumConst) => Ok(()),
         (I32,      I32)      => Ok(()),
         (I32,      NumConst) => Ok(()),
+        (NumConst, NumConst) => Ok(()),
         (NumConst, I8)       => Ok(()),
         (NumConst, I16)      => Ok(()),
         (NumConst, I32)      => Ok(()),
-        (NumConst, NumConst) => Ok(()),
+        (NumConst, RawAddr)  => Ok(()),
+        (NumConst, DataAddr(_)) => Ok(()),
+        (NumConst, InstAddr(_)) => Ok(()),
 
         // アドレス
         (RawAddr,     RawAddr)     => Ok(()),
+        (RawAddr,     NumConst)    => Ok(()),
         (DataAddr(_), DataAddr(_)) => Ok(()),
+        (DataAddr(_), NumConst)    => Ok(()),
         (InstAddr(_), InstAddr(_)) => Ok(()),
+        (InstAddr(_), NumConst)    => Ok(()),
 
         // データ構造
         (Struct { .. }, Struct { .. }) => Ok(()),
 
         // 比較失敗
         _ => Err(TypeOpError::new_mismatch(a, b))
-    }
-}
-
-pub fn ty_equals_arith2<'src, L, R>(lhs: &L, rhs: &R) -> miette::Result<()>
-where
-    L: Typed,
-    R: Typed + Spanned<'src>,
-{
-    match (lhs.ty().as_ref(), rhs.ty().as_ref()) {
-        // プリミティブ
-        (Void,     Void)     => Ok(()),
-        (Bool,     Bool)     => Ok(()),
-        (Char,     Char)     => Ok(()),
-        (I8,       I8)       => Ok(()),
-        (I8,       NumConst) => Ok(()),
-        (I16,      I16)      => Ok(()),
-        (I16,      NumConst) => Ok(()),
-        (I32,      I32)      => Ok(()),
-        (I32,      NumConst) => Ok(()),
-        (NumConst, I8)       => Ok(()),
-        (NumConst, I16)      => Ok(()),
-        (NumConst, I32)      => Ok(()),
-        (NumConst, NumConst) => Ok(()),
-
-        // アドレス
-        (RawAddr,     RawAddr)     => Ok(()),
-        (RawAddr,     I32)         => Ok(()),
-        (RawAddr,     NumConst)    => Ok(()),
-        (DataAddr(_), DataAddr(_)) => Ok(()),
-        (DataAddr(_), I32)         => Ok(()),
-        (DataAddr(_), NumConst)    => Ok(()),
-        (InstAddr(_), InstAddr(_)) => Ok(()),
-        (InstAddr(_), I32)         => Ok(()),
-        (InstAddr(_), NumConst)    => Ok(()),
-
-        // 比較失敗
-        _ => Err(TypeOpError::new_mismatch2(lhs, rhs))
     }
 }

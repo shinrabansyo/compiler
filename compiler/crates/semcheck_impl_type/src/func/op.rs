@@ -5,4 +5,4 @@ mod error;
 
 pub use ty_cast::ty_cast;
 pub use ty_det::ty_det_arith2;
-pub use ty_equals::{ty_equals, ty_equals_arith2};
+pub use ty_equals::ty_equals;

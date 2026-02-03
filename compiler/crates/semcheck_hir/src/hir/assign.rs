@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_type::op::ty_equals_arith2;
+use sb_compiler_semcheck_impl_type::op::ty_equals;
 use sb_compiler_semcheck_impl_type::{Typed, Type};
 
 use super::{LogicOr, ValueL, SemCheck, Dep};
@@ -71,7 +71,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                ty_equals_arith2(&lhs.ty(), &assign)?;
+                ty_equals(&lhs.ty(), &assign)?;
 
                 Ok(Assign::Normal { span, lhs, assign })
             }
@@ -81,7 +81,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                ty_equals_arith2(&lhs.ty(), &assign)?;
+                ty_equals(&lhs.ty(), &assign)?;
 
                 Ok(Assign::Plus { span, lhs, assign })
             }
@@ -91,7 +91,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                ty_equals_arith2(&lhs.ty(), &assign)?;
+                ty_equals(&lhs.ty(), &assign)?;
 
                 Ok(Assign::Minus { span, lhs, assign })
             }
@@ -101,7 +101,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                ty_equals_arith2(&lhs.ty(), &assign)?;
+                ty_equals(&lhs.ty(), &assign)?;
 
                 Ok(Assign::Mul { span, lhs, assign })
             }
@@ -111,7 +111,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                ty_equals_arith2(&lhs.ty(), &assign)?;
+                ty_equals(&lhs.ty(), &assign)?;
 
                 Ok(Assign::Div { span, lhs, assign })
             }
@@ -121,7 +121,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                ty_equals_arith2(&lhs.ty(), &assign)?;
+                ty_equals(&lhs.ty(), &assign)?;
 
                 Ok(Assign::Mod { span, lhs, assign })
             }
@@ -131,7 +131,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                ty_equals_arith2(&lhs.ty(), &assign)?;
+                ty_equals(&lhs.ty(), &assign)?;
 
                 Ok(Assign::ShiftL { span, lhs, assign })
             }
@@ -141,7 +141,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                ty_equals_arith2(&lhs.ty(), &assign)?;
+                ty_equals(&lhs.ty(), &assign)?;
 
                 Ok(Assign::ShiftR { span, lhs, assign })
             }
@@ -151,7 +151,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Assign<'src>> for Assign<'src> {
                 let assign = Box::new(Assign::check(ctx, *assign).await?);
 
                 // 型チェック
-                ty_equals_arith2(&lhs.ty(), &assign)?;
+                ty_equals(&lhs.ty(), &assign)?;
 
                 Ok(Assign::ShiftRa{ span, lhs, assign })
             }
