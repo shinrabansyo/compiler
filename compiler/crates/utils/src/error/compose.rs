@@ -2,14 +2,16 @@ use miette::{Diagnostic, Report};
 use thiserror::Error;
 
 #[derive(Debug, Error, Diagnostic)]
-#[error("Compilation failed")]
+#[error("{msg}")]
 pub struct ComposedError {
     #[related]
     errs: Vec<Report>,
+    msg: String,
 }
 
 pub trait ErrComposer<T> {
     fn compose(self) -> miette::Result<Vec<T>>;
+    fn compose_or_else(self, msg: &str) -> miette::Result<Vec<T>>;
 }
 
 impl<I, T> ErrComposer<T> for I
@@ -17,6 +19,10 @@ where
     I: Iterator<Item = Result<T, Report>>,
 {
     fn compose(self) -> miette::Result<Vec<T>> {
+        self.compose_or_else("Some error(s) occurred")
+    }
+
+    fn compose_or_else(self, msg: &str) -> miette::Result<Vec<T>> {
         let mut results = vec![];
         let mut errs = vec![];
         for item in self {
@@ -29,7 +35,7 @@ where
         if errs.is_empty() {
             Ok(results)
         } else {
-            Err(ComposedError { errs }.into())
+            Err(ComposedError { errs, msg: msg.into(), }.into())
         }
     }
 }

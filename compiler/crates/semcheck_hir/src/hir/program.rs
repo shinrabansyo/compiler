@@ -26,7 +26,7 @@ impl<'src> SemCheck<InDep<'src>, ast::Program<'src>> for Program<'src> {
             .map(|top| Top::check(ctx.clone(), top))
             .join_all()
             .await
-            .compose()?;
+            .compose_or_else(&format!("Module '{}' has some errors.", ctx.name))?;
 
         Ok(Program { span: program.span, top_elems })
     }
