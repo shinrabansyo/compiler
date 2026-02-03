@@ -2,7 +2,7 @@ use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_parse_syntax::{SBToken, SBRule};
 use sb_compiler_utils::primitive::i32;
 
-use super::{Expr, StructAccess, StructInit, Visitor};
+use super::{Call, Expr, StructAccess, StructInit, Visitor};
 
 #[derive(Debug)]
 pub enum ValueR<'src> {
@@ -22,13 +22,11 @@ pub enum ValueR<'src> {
         span: Span<'src>,
         name: Span<'src>,
     },
-    Call {
-        span: Span<'src>,
-        ident: Span<'src>,
-        args: Vec<Expr<'src>>,
-    },
     Expr {
         expr: Box<Expr<'src>>,
+    },
+    Call {
+        call: Call<'src>,
     },
     StructInit {
         struct_init: StructInit<'src>,
@@ -70,28 +68,23 @@ impl<'src> From<Visitor<'src>> for ValueR<'src> {
                 let value = i32::from_str(num_s).unwrap();
                 ValueR::CNum { span: visitor.span(), value }
             }
-            // 変数 or 関数呼び出し
+            // 変数
             (Some(SBToken::Ident), None) => {
-                let span = visitor.span();
-                let ident = visitor.expect_leaf().1;
-                match visitor.peek() {
-                    // 変数
-                    (None, None) => ValueR::Var {
-                        span,
-                        name: ident,
-                    },
-                    // 関数呼び出し
-                    _ => ValueR::Call {
-                        span,
-                        ident,
-                        args: visitor.expect_nodes::<Expr>(),
-                    },
+                ValueR::Var {
+                    span: visitor.span(),
+                    name: visitor.expect_leaf().1,
                 }
             }
-            // 括弧
+            // 括弧付きの式
             (None, Some(SBRule::Expr)) => {
                 ValueR::Expr {
                     expr: Box::new(visitor.expect_node::<Expr>()),
+                }
+            }
+            // 関数呼び出し
+            (None, Some(SBRule::Call)) => {
+                ValueR::Call {
+                    call: visitor.expect_node::<Call>(),
                 }
             }
             // 構造体
@@ -117,8 +110,8 @@ impl<'src> Spanned<'src> for ValueR<'src> {
             ValueR::CChar { span, .. } => *span,
             ValueR::CNum { span, .. } => *span,
             ValueR::Var { span, .. } => *span,
-            ValueR::Call { span, .. } => *span,
             ValueR::Expr { expr } => expr.span(),
+            ValueR::Call { call } => call.span(),
             ValueR::StructInit { struct_init } => struct_init.span(),
             ValueR::StructAccess { struct_access } => struct_access.span(),
         }

@@ -1,10 +1,7 @@
-use sb_compiler_lirgen_ir::{lir, LirBlock, Add, Call, Li, Lb, Lh, Lw};
+use sb_compiler_lirgen_ir::{lir, LirBlock, Li, Lb, Lh, Lw};
 use sb_compiler_semcheck_hir::ValueR;
 
-use super::{
-    GenContext, FARG_REG_BASE, RET_REG, ZERO_REG,
-    lirgen_expr, lirgen_struct_init, lirgen_struct_access,
-};
+use super::{GenContext, lirgen_call, lirgen_expr, lirgen_struct_init, lirgen_struct_access};
 
 pub fn lirgen_value_r<'src>(ctx: &mut GenContext<'src>, value: ValueR<'src>) -> LirBlock {
     let (result_reg, lirs) = match value {
@@ -20,16 +17,8 @@ pub fn lirgen_value_r<'src>(ctx: &mut GenContext<'src>, value: ValueR<'src>) -> 
             let reg_expr = lir_expr.result_reg();
             (reg_expr, vec![lir_expr])
         }
-        ValueR::Call { name, args, .. } => {
-            let mut lirs = vec![];
-            for (idx, value) in args.into_iter().enumerate() {
-                let lir_arg = lirgen_expr(ctx, value);
-                let reg_arg = lir_arg.result_reg();
-                lirs.push(lir_arg);
-                lirs.push(lir!(Add FARG_REG_BASE + idx as u32, ZERO_REG, reg_arg));
-            }
-            lirs.push(lir!(Call(name)));
-            (RET_REG, lirs)
+        ValueR::Call { call } => {
+            return lirgen_call(ctx, call);
         }
         ValueR::StructInit { struct_init, .. } => {
             return lirgen_struct_init(ctx, struct_init);

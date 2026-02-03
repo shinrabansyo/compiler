@@ -334,10 +334,13 @@ pub enum SBRule {
     #[rule("<value_r> ::= Num")]
     #[rule("<value_r> ::= Ident")]
     #[rule("<value_r> ::= ParenL <expr> ParenR")]
-    #[rule("<value_r> ::= Ident ParenL <expr_list> ParenR")]
+    #[rule("<value_r> ::= <call>")]
     #[rule("<value_r> ::= <struct_init>")]
     #[rule("<value_r> ::= <struct_access>")]
     ValueR,
+
+    #[rule("<call> ::= Ident ParenL <expr_list> ParenR")]
+    Call,
 
     #[rule("<struct_init> ::= Ident At <expr> BraceL <struct_field_init_list> BraceR")]
     #[rule("<struct_init> ::= Ident At <expr> BraceL <struct_field_init_list> Comma BraceR")]

@@ -31,6 +31,7 @@ mod mul;               pub use mul::lirgen_mul;
 mod cast;              pub use cast::lirgen_cast;
 mod unary;             pub use unary::lirgen_unary;
 mod value_r;           pub use value_r::lirgen_value_r;
+mod call;              pub use call::lirgen_call;
 mod struct_init;       pub use struct_init::lirgen_struct_init;
 mod struct_field_init; pub use struct_field_init::lirgen_struct_field_init;
 mod struct_access;     pub use struct_access::lirgen_struct_access;
