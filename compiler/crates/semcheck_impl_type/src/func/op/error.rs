@@ -35,18 +35,18 @@ pub enum TypeOpError {
         a: String,
     },
 
-    #[error("Cannot determine type from '{from}' and '{to}'")]
-    Det2Failed {
+    #[error("Cannot perform operation between '{a}' and '{b}'")]
+    Arith2Failed {
         #[source_code]
         src: String,
 
-        #[label("This is '{from}'")]
-        from_span: SourceSpan,
-        from: String,
+        #[label("This is '{a}'")]
+        a_span: SourceSpan,
+        a: String,
 
-        #[label("This is '{to}'")]
-        to_span: SourceSpan,
-        to: String,
+        #[label("This is '{b}'")]
+        b_span: SourceSpan,
+        b: String,
     }
 }
 
@@ -77,17 +77,17 @@ impl TypeOpError {
         }.into()
     }
 
-    pub fn new_det2_failed<'src, F, T>(from: &F, to: &T) -> miette::Report
+    pub fn new_arith2_failed<'src, A, B>(a: &A, b: &B) -> miette::Report
     where
-        F: Typed + Spanned<'src>,
-        T: Typed + Spanned<'src>,
+        A: Typed + Spanned<'src>,
+        B: Typed + Spanned<'src>,
     {
-        TypeOpError::Det2Failed {
-            src: from.span().src.to_string(),
-            from_span: from.span().into(),
-            from: from.ty().to_string(),
-            to_span: to.span().into(),
-            to: to.ty().to_string(),
+        TypeOpError::Arith2Failed {
+            src: a.span().src.to_string(),
+            a_span: a.span().into(),
+            a: a.ty().to_string(),
+            b_span: b.span().into(),
+            b: b.ty().to_string(),
         }.into()
     }
 }

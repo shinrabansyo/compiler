@@ -5,7 +5,7 @@ use sb_compiler_parse_cst::Spanned;
 use crate::r#type::*;
 use super::error::TypeOpError;
 
-pub fn ty_det_arith2<'a, L, R>(lhs: &L, rhs: &R) -> miette::Result<Arc<Type>>
+pub fn ty_arith2<'a, L, R>(lhs: &L, rhs: &R) -> miette::Result<Arc<Type>>
 where
     L: Typed + Spanned<'a>,
     R: Typed + Spanned<'a>,
@@ -44,6 +44,6 @@ where
         (InstAddr(_), InstAddr(_)) => Ok(lhs_ty),
 
         // 推論失敗
-        _ => Err(TypeOpError::new_det2_failed(lhs, rhs)),
+        _ => Err(TypeOpError::new_arith2_failed(lhs, rhs)),
     }
 }
