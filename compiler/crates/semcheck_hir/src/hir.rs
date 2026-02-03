@@ -36,6 +36,7 @@ mod mul;                pub use mul::Mul;
 mod cast;               pub use cast::Cast;
 mod unary;              pub use unary::Unary;
 mod value_r;            pub use value_r::ValueR;
+mod call;               pub use call::Call;
 mod struct_init;        pub use struct_init::StructInit;
 mod struct_field_init;  pub use struct_field_init::StructFieldInit;
 mod struct_access;      pub use struct_access::StructAccess;
