@@ -20,7 +20,7 @@ where
         NumConst => Ok(I32.ty()),
 
         // アドレス
-        Addr(_)     => Ok(from_ty),
+        RawAddr     => Ok(from_ty),
         DataAddr(_) => Ok(from_ty),
         InstAddr(_) => Ok(from_ty),
 

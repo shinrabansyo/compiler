@@ -25,7 +25,7 @@ where
         (NumConst, NumConst) => Ok(()),
 
         // アドレス
-        (Addr(_),     Addr(_))     => Ok(()),
+        (RawAddr,     RawAddr)     => Ok(()),
         (DataAddr(_), DataAddr(_)) => Ok(()),
         (InstAddr(_), InstAddr(_)) => Ok(()),
 
@@ -59,9 +59,9 @@ where
         (NumConst, NumConst) => Ok(()),
 
         // アドレス
-        (Addr(_),     Addr(_))     => Ok(()),
-        (Addr(_),     I32)         => Ok(()),
-        (Addr(_),     NumConst)    => Ok(()),
+        (RawAddr,     RawAddr)     => Ok(()),
+        (RawAddr,     I32)         => Ok(()),
+        (RawAddr,     NumConst)    => Ok(()),
         (DataAddr(_), DataAddr(_)) => Ok(()),
         (DataAddr(_), I32)         => Ok(()),
         (DataAddr(_), NumConst)    => Ok(()),
