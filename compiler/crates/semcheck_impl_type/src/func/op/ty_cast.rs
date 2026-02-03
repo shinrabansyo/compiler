@@ -27,28 +27,21 @@ where
         (I32,      I32)         => Ok(()),
         (I32,      Bool)        => Ok(()),
         (I32,      RawAddr)     => Ok(()),
-        (I32,      DataAddr(_)) => Ok(()),
-        (I32,      InstAddr(_)) => Ok(()),
         (NumConst, Bool)        => Ok(()),
         (NumConst, Char)        => Ok(()),
         (NumConst, I8)          => Ok(()),
         (NumConst, I16)         => Ok(()),
         (NumConst, I32)         => Ok(()),
         (NumConst, RawAddr)     => Ok(()),
-        (NumConst, InstAddr(_)) => Ok(()),
-        (NumConst, DataAddr(_)) => Ok(()),
 
         // アドレス
         (RawAddr,     RawAddr)       => Ok(()),
-        (RawAddr,     I32)           => Ok(()),
         (RawAddr,     DataAddr(_))   => Ok(()),
         (RawAddr,     InstAddr(_))   => Ok(()),
         (DataAddr(_), DataAddr(_))   => Ok(()),
-        (DataAddr(_), I32)           => Ok(()),
         (DataAddr(_), Struct { .. }) => Ok(()),
         (DataAddr(_), RawAddr)       => Ok(()),
         (InstAddr(_), InstAddr(_))   => Ok(()),
-        (InstAddr(_), I32)           => Ok(()),
         (InstAddr(_), RawAddr)       => Ok(()),
 
         // データ構造
