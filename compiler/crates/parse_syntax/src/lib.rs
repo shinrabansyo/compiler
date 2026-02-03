@@ -61,7 +61,7 @@ pub enum SBToken {
     While,
     #[token(r"for", ir_omit)]
     For,
-    #[token(r"asm!", ir_omit)]
+    #[token(r"asm", ir_omit)]
     Asm,
     #[token(r"Addr")]
     AddrTy,
