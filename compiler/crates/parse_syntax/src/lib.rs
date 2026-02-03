@@ -63,8 +63,8 @@ pub enum SBToken {
     For,
     #[token(r"asm", ir_omit)]
     Asm,
-    #[token(r"Addr")]
-    AddrTy,
+    #[token(r"RawAddr")]
+    RawAddrTy,
     #[token(r"DataAddr")]
     DataAddrTy,
     #[token(r"InstAddr")]
@@ -196,7 +196,7 @@ pub enum SBRule {
     ArgumentDef,
 
     // 型
-    #[rule("<type> ::= AddrTy Lt <type> Gt")]
+    #[rule("<type> ::= RawAddrTy")]
     #[rule("<type> ::= DataAddrTy Lt <type> Gt")]
     #[rule("<type> ::= InstAddrTy Lt <type> Gt")]
     #[rule("<type> ::= Ident")]

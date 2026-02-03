@@ -5,7 +5,7 @@ use sb_compiler_parse_cst::Spanned;
 use crate::r#type::*;
 use super::error::TypeOpError;
 
-pub fn ty_det_arith2<'a, L, R>(lhs: &L, rhs: &R) -> miette::Result<Arc<Type>>
+pub fn ty_arith2<'a, L, R>(lhs: &L, rhs: &R) -> miette::Result<Arc<Type>>
 where
     L: Typed + Spanned<'a>,
     R: Typed + Spanned<'a>,
@@ -29,21 +29,21 @@ where
         (NumConst, NumConst) => Ok(lhs_ty),
 
         // アドレス
-        (Addr(_),     Addr(_))     => Ok(lhs_ty),
-        (Addr(_),     I32)         => Ok(lhs_ty),
-        (Addr(_),     NumConst)    => Ok(lhs_ty),
-        (Addr(_),     DataAddr(_)) => Ok(rhs_ty),
-        (Addr(_),     InstAddr(_)) => Ok(rhs_ty),
-        (DataAddr(_), Addr(_))     => Ok(lhs_ty),
+        (RawAddr,     RawAddr)     => Ok(lhs_ty),
+        (RawAddr,     I32)         => Ok(lhs_ty),
+        (RawAddr,     NumConst)    => Ok(lhs_ty),
+        (RawAddr,     DataAddr(_)) => Ok(rhs_ty),
+        (RawAddr,     InstAddr(_)) => Ok(rhs_ty),
+        (DataAddr(_), RawAddr)     => Ok(lhs_ty),
         (DataAddr(_), I32)         => Ok(lhs_ty),
         (DataAddr(_), NumConst)    => Ok(lhs_ty),
         (DataAddr(_), DataAddr(_)) => Ok(lhs_ty),
-        (InstAddr(_), Addr(_))     => Ok(lhs_ty),
+        (InstAddr(_), RawAddr)     => Ok(lhs_ty),
         (InstAddr(_), I32)         => Ok(lhs_ty),
         (InstAddr(_), NumConst)    => Ok(lhs_ty),
         (InstAddr(_), InstAddr(_)) => Ok(lhs_ty),
 
         // 推論失敗
-        _ => Err(TypeOpError::new_det2_failed(lhs, rhs)),
+        _ => Err(TypeOpError::new_arith2_failed(lhs, rhs)),
     }
 }

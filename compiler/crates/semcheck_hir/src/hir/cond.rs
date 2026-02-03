@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_type::op::ty_equals_arith2;
+use sb_compiler_semcheck_impl_type::op::ty_equals;
 use sb_compiler_semcheck_impl_type::{Typed, Type, Bool};
 
 use super::{BitShift, SemCheck, Dep};
@@ -51,50 +51,62 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cond<'src>> for Cond<'src> {
     {
         match cond {
             ast::Cond::Eq { span, lhs, rhs } => {
-                // 式の意味解析 & 型チェック
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals_arith2(&lhs, &rhs)?;
+
+                // 型チェック
+                ty_equals(&lhs, &rhs)?;
 
                 Ok(Cond::Eq { span, lhs, rhs })
             }
             ast::Cond::Neq { span, lhs, rhs } => {
-                // 式の意味解析 & 型チェック
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals_arith2(&lhs, &rhs)?;
+
+                // 型チェック
+                ty_equals(&lhs, &rhs)?;
 
                 Ok(Cond::Neq { span, lhs, rhs })
             }
             ast::Cond::Lt { span, lhs, rhs } => {
-                // 式の意味解析 & 型チェック
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals_arith2(&lhs, &rhs)?;
+
+                // 型チェック
+                ty_equals(&lhs, &rhs)?;
 
                 Ok(Cond::Lt { span, lhs, rhs })
             }
             ast::Cond::Lte { span, lhs, rhs } => {
-                // 式の意味解析 & 型チェック
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals_arith2(&lhs, &rhs)?;
+
+                // 型チェック
+                ty_equals(&lhs, &rhs)?;
 
                 Ok(Cond::Lte { span, lhs, rhs })
             }
             ast::Cond::Gt { span, lhs, rhs } => {
-                // 式の意味解析 & 型チェック
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals_arith2(&lhs, &rhs)?;
+
+                // 型チェック
+                ty_equals(&lhs, &rhs)?;
 
                 Ok(Cond::Gt { span, lhs, rhs })
             }
             ast::Cond::Gte { span, lhs, rhs } => {
-                // 式の意味解析 & 型チェック
+                // 式の意味解析
                 let lhs = Box::new(Cond::check(ctx, *lhs).await?);
                 let rhs = BitShift::check(ctx, rhs).await?;
-                ty_equals_arith2(&lhs, &rhs)?;
+
+                // 型チェック
+                ty_equals(&lhs, &rhs)?;
 
                 Ok(Cond::Gte { span, lhs, rhs })
             }

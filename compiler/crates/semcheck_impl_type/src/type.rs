@@ -25,7 +25,7 @@ pub enum Type {
     NumConst,
 
     // アドレス
-    Addr(Arc<Type>),
+    RawAddr,
     DataAddr(Arc<Type>),
     InstAddr(Arc<Type>),
 
@@ -56,7 +56,7 @@ impl Display for Type {
             Type::NumConst => write!(f, "const(num)"),
 
             // アドレス
-            Type::Addr(inner_ty) => write!(f, "Addr<{}>", inner_ty),
+            Type::RawAddr => write!(f, "RawAddr"),
             Type::DataAddr(inner_ty) => write!(f, "DataAddr<{}>", inner_ty),
             Type::InstAddr(inner_ty) => write!(f, "InstAddr<{}>", inner_ty),
 
@@ -125,8 +125,11 @@ impl Typed for Type {
             },
 
             // アドレス
-            Type::Addr(inner_ty) => {
-                Arc::new(Type::Addr(Arc::clone(inner_ty)))
+            Type::RawAddr => {
+                static RAW_ADDR: LazyLock<Arc<Type>> = LazyLock::new(|| {
+                    Arc::new(Type::RawAddr)
+                });
+                Arc::clone(&RAW_ADDR)
             }
             Type::DataAddr(inner_ty) => {
                 Arc::new(Type::DataAddr(Arc::clone(inner_ty)))
@@ -174,7 +177,7 @@ impl Type {
             Type::NumConst => 4,
 
             // アドレス
-            Type::Addr(_) => 4,
+            Type::RawAddr => 4,
             Type::DataAddr(_) => 4,
             Type::InstAddr(_) => 4,
 
