@@ -22,15 +22,14 @@ type Texts<'name, 'src> = Vec<(&'name str, &'src str)>;
 type ASTs<'name, 'src> = Vec<(&'name str, Program<'src>)>;
 
 pub fn parse<'name, 'src>(inputs: Texts<'name, 'src>) -> miette::Result<ASTs<'name, 'src>> {
-    let parse = |input| {
-        let cst = match PARSER.process::<CSTree<_>>(input) {
-            Ok(cst) => cst,
-            Err(err) => return Err(miette::miette!("Failed to parse input: {}", err)),
-        };
+    fn parse<'src>(input: &'src str) -> miette::Result<Program<'src>> {
+        let cst = PARSER
+            .process::<CSTree<_>>(input)
+            .map_err(|err| miette::miette!("Parsing failed: {}", err))?;
         let visitor = CSTreeVisitor::from(cst);
         let ast = Program::from(visitor);
         Ok(ast)
-    };
+    }
 
     inputs
         .into_iter()

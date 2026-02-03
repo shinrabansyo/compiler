@@ -19,5 +19,5 @@ pub fn semcheck<'name, 'src>(asts: ASTs<'name, 'src>) -> miette::Result<HIRs<'sr
         .map(semcheck)
         .join_all()
         .block_on()
-        .compose()
+        .compose_with("Semantic checking failed.")
 }
