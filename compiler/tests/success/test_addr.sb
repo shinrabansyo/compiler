@@ -9,20 +9,12 @@ fn main() -> i32 {
 
     // テスト実行
     if (!test_01()) { return 1; }
-    if (!test_02()) { return 1; }
 
     // 正常時は 0
     return 0;
 }
 
 fn test_01() -> bool {
-    var addr = 124 as Addr<char>;
-    var addr = addr as Addr<char>;
-    return addr as i32 == 124;
-}
-
-fn test_02() -> bool {
-    var addr = 124 as Addr<char>;
-    var addr = addr as InstAddr<char>;
-    return addr as i32 == 124;
+    var addr = 124 as RawAddr;
+    return addr == 124;
 }
