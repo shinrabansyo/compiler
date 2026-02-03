@@ -2,7 +2,7 @@
 
 fn main() -> i32 {
     // r10 レジスタを 0 以外の値にする
-    asm! {
+    asm {
         addi R4 = R0, 9999
         add R10 = R0, R4
     }
@@ -24,7 +24,7 @@ fn main() -> i32 {
 
 fn test_01() -> bool {
     var result = 0;
-    asm! {
+    asm {
         addi R4 = R0, 1
         add result = R0, R4
     }
@@ -33,7 +33,7 @@ fn test_01() -> bool {
 
 fn test_02() -> bool {
     var result = 0;
-    asm! {
+    asm {
         addi R4 = R0, 10
         addi R5 = R0, 10
         addi R6 = R0, 1
@@ -48,7 +48,7 @@ fn test_02() -> bool {
 
 fn test_03() -> bool {
     var result = 0;
-    asm! {
+    asm {
         addi R4 = R0, 10
         addi R5 = R0, 10
 
@@ -67,7 +67,7 @@ fn test_03() -> bool {
 
 fn test_04() -> bool {
     var result = 0;
-    asm! {
+    asm {
         addi R4 = R0, 1
         sw R0[0] = R4
         lw result = R0[0]
@@ -77,14 +77,14 @@ fn test_04() -> bool {
 
 fn test_05() -> bool {
     var result = 1;
-    asm! {
+    asm {
         in result = R0[0]
     }
     return result == 0;
 }
 
 fn test_06() -> bool {
-    asm! {
+    asm {
         addi R4 = R0, 98
         out R0[0] = R4
     }
@@ -93,7 +93,7 @@ fn test_06() -> bool {
 
 fn test_07() -> bool {
     var result = 0;
-    asm! {
+    asm {
         addi result = R0, 0b10
     }
     return result == 0b10;
@@ -101,7 +101,7 @@ fn test_07() -> bool {
 
 fn test_08() -> bool {
     var result = 0;
-    asm! {
+    asm {
         addi result = R0, 010
     }
     return result == 010;
@@ -109,7 +109,7 @@ fn test_08() -> bool {
 
 fn test_09() -> bool {
     var result = 0;
-    asm! {
+    asm {
         addi result = R0, 0x10
     }
     return result == 0x10;

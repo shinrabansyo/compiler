@@ -2,7 +2,7 @@
 
 fn main() -> i32 {
     // r10 レジスタを 0 以外の値にする
-    asm! {
+    asm {
         addi R4 = R0, 9999
         add R10 = R0, R4
     }
