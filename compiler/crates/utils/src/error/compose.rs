@@ -11,7 +11,7 @@ pub struct ComposedError {
 
 pub trait ErrComposer<T> {
     fn compose(self) -> miette::Result<Vec<T>>;
-    fn compose_or_else(self, msg: &str) -> miette::Result<Vec<T>>;
+    fn compose_with(self, msg: &str) -> miette::Result<Vec<T>>;
 }
 
 impl<I, T> ErrComposer<T> for I
@@ -19,10 +19,10 @@ where
     I: Iterator<Item = Result<T, Report>>,
 {
     fn compose(self) -> miette::Result<Vec<T>> {
-        self.compose_or_else("Some error(s) occurred")
+        self.compose_with("Some errors occurred")
     }
 
-    fn compose_or_else(self, msg: &str) -> miette::Result<Vec<T>> {
+    fn compose_with(self, msg: &str) -> miette::Result<Vec<T>> {
         let mut results = vec![];
         let mut errs = vec![];
         for item in self {
