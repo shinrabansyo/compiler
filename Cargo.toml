@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 miette = { workspace = true, features = ["fancy"] }
+bpaf = { version = "0.8.1", features = ["derive"] }
 sb_linker = { workspace = true }
 sb_compiler = { path = "./compiler" }
 
