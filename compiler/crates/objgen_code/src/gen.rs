@@ -109,13 +109,12 @@ impl InstGenerator {
                 match inst {
                     LirInst::Lb(_)
                     | LirInst::Lh(_)
-                    | LirInst::Lw(_) => {
-                        self.asm_inst.push(inst!(Add 7, 0, src1));
-                    }
-                    LirInst::Sb(_)
+                    | LirInst::Lw(_)
+                    | LirInst::Sb(_)
                     | LirInst::Sh(_)
-                    | LirInst::Sw(_) => {
-                        self.asm_inst.push(inst!(Add 7, 0, dst));
+                    | LirInst::Sw(_)
+                    => {
+                        self.asm_inst.push(inst!(Add 7, 0, src1));
                     }
                     _ => {},
                 };
@@ -159,9 +158,9 @@ impl InstGenerator {
                     LirInst::Lb(imm) => inst!(Lb dst, 7, imm),
                     LirInst::Lh(imm) => inst!(Lh dst, 7, imm),
                     LirInst::Lw(imm) => inst!(Lw dst, 7, imm),
-                    LirInst::Sb(imm) => inst!(Sb 7, src1, imm),
-                    LirInst::Sh(imm) => inst!(Sh 7, src1, imm),
-                    LirInst::Sw(imm) => inst!(Sw 7, src1, imm),
+                    LirInst::Sb(imm) => inst!(Sb 7, src2, imm),
+                    LirInst::Sh(imm) => inst!(Sh 7, src2, imm),
+                    LirInst::Sw(imm) => inst!(Sw 7, src2, imm),
 
                     // 関数
                     LirInst::FnPrologue => unreachable!(),
