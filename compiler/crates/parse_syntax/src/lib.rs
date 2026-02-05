@@ -63,11 +63,11 @@ pub enum SBToken {
     For,
     #[token(r"asm", ir_omit)]
     Asm,
-    #[token(r"RawAddr")]
+    #[token(r"addr")]
     RawAddrTy,
-    #[token(r"DataAddr")]
+    #[token(r"daddr")]
     DataAddrTy,
-    #[token(r"InstAddr")]
+    #[token(r"iaddr")]
     InstAddrTy,
 
     // 演算子
