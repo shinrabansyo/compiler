@@ -41,9 +41,7 @@ where
         (RawAddr,     Struct { .. }) => Ok(()),
         (DataAddr(_), DataAddr(_))   => Ok(()),
         (DataAddr(_), Struct { .. }) => Ok(()),
-        (DataAddr(_), RawAddr)       => Ok(()),
         (InstAddr(_), InstAddr(_))   => Ok(()),
-        (InstAddr(_), RawAddr)       => Ok(()),
 
         // データ構造
         (Struct { .. }, RawAddr)     => Ok(()),
