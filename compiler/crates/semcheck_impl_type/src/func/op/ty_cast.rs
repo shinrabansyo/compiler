@@ -43,10 +43,6 @@ where
         (DataAddr(_), Struct { .. }) => Ok(()),
         (InstAddr(_), InstAddr(_))   => Ok(()),
 
-        // データ構造
-        (Struct { .. }, RawAddr)     => Ok(()),
-        (Struct { .. }, DataAddr(_)) => Ok(()),
-
         // キャスト失敗
         _ => Err(TypeOpError::new_cast_failed(from, to)),
     }
