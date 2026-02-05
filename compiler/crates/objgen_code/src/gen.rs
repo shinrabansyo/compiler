@@ -210,15 +210,15 @@ impl InstGenerator {
                 };
                 self.asm_inst.push(inst.clone());
 
-                // 命令変換 (後処理)
-                match inst {
-                    Inst::Sb { .. }
-                    | Inst::Sh { .. }
-                    | Inst::Sw { .. } => {
-                        self.asm_inst.push(inst!(Add dst, 0, 7));
-                    }
-                    _ => {},
-                }
+                // // 命令変換 (後処理)
+                // match inst {
+                //     Inst::Sb { .. }
+                //     | Inst::Sh { .. }
+                //     | Inst::Sw { .. } => {
+                //         self.asm_inst.push(inst!(Add dst, 0, 7));
+                //     }
+                //     _ => {},
+                // }
 
                 // スタックへの書き戻し
                 if let Some(addr) = dst_needs_wback {
