@@ -14,9 +14,9 @@ pub fn lirgen_struct_field_init<'src>(
 
     let offset = struct_field_init.offset as i32;
     let lir_write = match struct_field_init.size {
-        1 => lir!(Sb(offset) reg_addr, reg_expr),
-        2 => lir!(Sh(offset) reg_addr, reg_expr),
-        4 => lir!(Sw(offset) reg_addr, reg_expr),
+        1 => lir!(Sb(offset) 0, reg_addr, reg_expr),
+        2 => lir!(Sh(offset) 0, reg_addr, reg_expr),
+        4 => lir!(Sw(offset) 0, reg_addr, reg_expr),
         _ => unreachable!(),
     };
 

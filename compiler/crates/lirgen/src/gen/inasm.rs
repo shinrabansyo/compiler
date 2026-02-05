@@ -71,19 +71,19 @@ pub fn lirgen_inline_asm<'src>(ctx: &mut GenContext<'src>, inline_asm: InlineAsm
 
             // S-形式
             InlineAsmInst::Sw { rs1, rs2, imm, .. } => {
-                lir!(RawSw(*imm) use_reg(rs1), use_reg(rs2))
+                lir!(RawSw(*imm) 0, use_reg(rs1), use_reg(rs2))
             }
             InlineAsmInst::Sh { rs1, rs2, imm, .. } => {
-                lir!(RawSh(*imm) use_reg(rs1), use_reg(rs2))
+                lir!(RawSh(*imm) 0, use_reg(rs1), use_reg(rs2))
             }
             InlineAsmInst::Sb { rs1, rs2, imm, .. } => {
-                lir!(RawSb(*imm) use_reg(rs1), use_reg(rs2))
+                lir!(RawSb(*imm) 0, use_reg(rs1), use_reg(rs2))
             }
             InlineAsmInst::Isb { rs1, rs2, imm, .. } => {
-                lir!(RawIsb(*imm) use_reg(rs1), use_reg(rs2))
+                lir!(RawIsb(*imm) 0, use_reg(rs1), use_reg(rs2))
             }
             InlineAsmInst::Out { rs1, rs2, imm, .. } => {
-                lir!(RawOut(*imm) use_reg(rs1), use_reg(rs2))
+                lir!(RawOut(*imm) 0, use_reg(rs1), use_reg(rs2))
             }
 
             // R-形式

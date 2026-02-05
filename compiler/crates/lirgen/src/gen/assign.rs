@@ -9,16 +9,15 @@ pub fn lirgen_assign<'src>(ctx: &mut GenContext<'src>, assign: Assign<'src>) -> 
             let lir_assign = lirgen_assign(ctx, *assign);
             let reg_assign = lir_assign.result_reg();
 
-            let lir_lhs = lirgen_value_l(ctx, lhs);
-            let reg_lhs = (lir_lhs.0.result_reg(), lir_lhs.1.result_reg());
+            let (_, lir_lhs) = lirgen_value_l(ctx, lhs);
+            let reg_lhs = lir_lhs.result_reg();
 
             (
-                reg_lhs.1,
+                reg_lhs,
                 vec![
-                    lir_lhs.0,
                     lir_assign,
-                    lir!(Add reg_lhs.1, ZERO_REG, reg_assign),
-                    lir_lhs.1,
+                    lir!(Add reg_lhs, ZERO_REG, reg_assign),
+                    lir_lhs,
                 ],
             )
         }

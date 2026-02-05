@@ -38,9 +38,9 @@ pub fn lirgen_value_l<'src>(ctx: &mut GenContext<'src>, value: ValueL<'src>) -> 
 
             let reg_write = ctx.alloc_reg();
             let lir_write = match size {
-                1 => lir!(Sb(0) reg_addr, reg_write),
-                2 => lir!(Sh(0) reg_addr, reg_write),
-                4 => lir!(Sw(0) reg_addr, reg_write),
+                1 => lir!(Sb(0) 0, reg_addr, reg_write),
+                2 => lir!(Sh(0) 0, reg_addr, reg_write),
+                4 => lir!(Sw(0) 0, reg_addr, reg_write),
                 _ => unreachable!(),
             };
             let lir_write = LirBlock::Single {
