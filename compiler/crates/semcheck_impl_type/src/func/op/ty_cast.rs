@@ -38,6 +38,7 @@ where
         (RawAddr,     RawAddr)       => Ok(()),
         (RawAddr,     DataAddr(_))   => Ok(()),
         (RawAddr,     InstAddr(_))   => Ok(()),
+        (RawAddr,     Struct { .. }) => Ok(()),
         (DataAddr(_), DataAddr(_))   => Ok(()),
         (DataAddr(_), Struct { .. }) => Ok(()),
         (DataAddr(_), RawAddr)       => Ok(()),
