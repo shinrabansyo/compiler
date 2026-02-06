@@ -7,32 +7,32 @@ use super::{BitShift, Visitor};
 pub enum Cond<'src> {
     Eq {
         span: Span<'src>,
-        lhs: Box<Cond<'src>>,
+        lhs: BitShift<'src>,
         rhs: BitShift<'src>,
     },
     Neq {
         span: Span<'src>,
-        lhs: Box<Cond<'src>>,
+        lhs: BitShift<'src>,
         rhs: BitShift<'src>,
     },
     Lt {
         span: Span<'src>,
-        lhs: Box<Cond<'src>>,
+        lhs: BitShift<'src>,
         rhs: BitShift<'src>,
     },
     Lte {
         span: Span<'src>,
-        lhs: Box<Cond<'src>>,
+        lhs: BitShift<'src>,
         rhs: BitShift<'src>,
     },
     Gt {
         span: Span<'src>,
-        lhs: Box<Cond<'src>>,
+        lhs: BitShift<'src>,
         rhs: BitShift<'src>,
     },
     Gte {
         span: Span<'src>,
-        lhs: Box<Cond<'src>>,
+        lhs: BitShift<'src>,
         rhs: BitShift<'src>,
     },
     BitShift {
@@ -50,7 +50,7 @@ impl<'src> From<Visitor<'src>> for Cond<'src> {
         }
 
         // 演算子付き
-        let lhs = Box::new(visitor.expect_node::<Cond>());
+        let lhs = visitor.expect_node::<BitShift>();
         match visitor.expect_leaf().0 {
             SBToken::Eq => {
                 Cond::Eq {

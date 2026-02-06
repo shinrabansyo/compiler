@@ -291,12 +291,12 @@ pub enum SBRule {
     #[rule("<bit_and> ::= <cond>")]
     BitAnd,
 
-    #[rule("<cond> ::= <cond> Eq <bit_shift>")]
-    #[rule("<cond> ::= <cond> Neq <bit_shift>")]
-    #[rule("<cond> ::= <cond> Lt <bit_shift>")]
-    #[rule("<cond> ::= <cond> Lte <bit_shift>")]
-    #[rule("<cond> ::= <cond> Gt <bit_shift>")]
-    #[rule("<cond> ::= <cond> Gte <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Eq <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Neq <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Lt <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Lte <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Gt <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Gte <bit_shift>")]
     #[rule("<cond> ::= <bit_shift>")]
     Cond,
 
