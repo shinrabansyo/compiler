@@ -317,14 +317,14 @@ pub enum SBRule {
     #[rule("<mul> ::= <cast>")]
     Mul,
 
-    #[rule("<cast> ::= <unary> As <type>")]
+    #[rule("<cast> ::= <unary> As Ident")]
     #[rule("<cast> ::= <unary>")]
     Cast,
 
     #[rule("<unary> ::= Not <value_r>")]
     #[rule("<unary> ::= Plus <value_r>")]
     #[rule("<unary> ::= Minus <value_r>")]
-    #[rule("<unary> ::= SizeOf <type>")]
+    #[rule("<unary> ::= SizeOf ParenL <type> ParenR")]
     #[rule("<unary> ::= <value_r>")]
     Unary,
 

@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
-use sb_compiler_semcheck_impl_type::parse::ty_parse_type;
+use sb_compiler_semcheck_impl_type::decl::ty_find;
 use sb_compiler_semcheck_impl_type::op::ty_cast;
 use sb_compiler_semcheck_impl_type::{Typed, Type};
 
@@ -31,7 +31,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Cast<'src>> for Cast<'src> {
                 let unary = Unary::check(ctx, unary).await?;
 
                 // 型情報取得 (ast::Type -> semcheck_impl_type::Type)
-                let ty = ty_parse_type(&ctx.r#type, &ty).await?;
+                let ty = ty_find(&ctx.r#type, ty).await?;
                 ty_cast(&unary, &ty)?;
 
                 Ok(Cast::Casting { span, unary, ty })
