@@ -17,6 +17,10 @@ pub enum Unary<'src> {
         span: Span<'src>,
         value: ValueR<'src>,
     },
+    Addr {
+        span: Span<'src>,
+        value: ValueR<'src>,
+    },
     SizeOf {
         span: Span<'src>,
         ty: Type<'src>,
@@ -55,6 +59,12 @@ impl<'src> From<Visitor<'src>> for Unary<'src> {
                     value: visitor.expect_node::<ValueR>(),
                 }
             }
+            SBToken::BitAnd => {
+                Unary::Addr {
+                    span: visitor.span(),
+                    value: visitor.expect_node::<ValueR>(),
+                }
+            }
             SBToken::SizeOf => {
                 Unary::SizeOf {
                     span: visitor.span(),
@@ -72,6 +82,7 @@ impl<'src> Spanned<'src> for Unary<'src> {
             Unary::Not { span, .. } => *span,
             Unary::Plus { span, .. } => *span,
             Unary::Minus { span, .. } => *span,
+            Unary::Addr { span, .. } => *span,
             Unary::SizeOf { span, .. } => *span,
             Unary::ValueR { value } => value.span(),
         }

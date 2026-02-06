@@ -323,6 +323,7 @@ pub enum SBRule {
     #[rule("<unary> ::= Not <value_r>")]
     #[rule("<unary> ::= Plus <value_r>")]
     #[rule("<unary> ::= Minus <value_r>")]
+    #[rule("<unary> ::= BitAnd <value_r>")]
     #[rule("<unary> ::= SizeOf ParenL <type> ParenR")]
     #[rule("<unary> ::= <value_r>")]
     Unary,
