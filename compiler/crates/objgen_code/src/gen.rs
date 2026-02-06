@@ -189,7 +189,7 @@ impl InstGenerator {
                     LirInst::RawSh(imm) => inst!(Sh dst, src1, imm),
                     LirInst::RawSb(imm) => inst!(Sb dst, src1, imm),
                     LirInst::RawIsb(_) => todo!(),
-                    LirInst::RawOut(imm) => inst!(Out dst, src1, imm),
+                    LirInst::RawOut(imm) => inst!(Out src1, src2, imm),
 
                     // インラインアセンブリ (R-形式)
                     LirInst::RawAdd => inst!(Add dst, src1, src2),
@@ -208,16 +208,6 @@ impl InstGenerator {
                     LirInst::RawBle(imm) => inst!(Ble dst, src1, src2, Imm(imm)),
                 };
                 self.asm_inst.push(inst.clone());
-
-                // // 命令変換 (後処理)
-                // match inst {
-                //     Inst::Sb { .. }
-                //     | Inst::Sh { .. }
-                //     | Inst::Sw { .. } => {
-                //         self.asm_inst.push(inst!(Add dst, 0, 7));
-                //     }
-                //     _ => {},
-                // }
 
                 // スタックへの書き戻し
                 if let Some(addr) = dst_needs_wback {
