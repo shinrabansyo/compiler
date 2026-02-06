@@ -23,13 +23,10 @@ where
         (NumConst, I8)       => Ok(()),
         (NumConst, I16)      => Ok(()),
         (NumConst, I32)      => Ok(()),
-        (NumConst, RawAddr)  => Ok(()),
         (NumConst, DataAddr(_)) => Ok(()),
         (NumConst, InstAddr(_)) => Ok(()),
 
         // アドレス
-        (RawAddr,     RawAddr)     => Ok(()),
-        (RawAddr,     NumConst)    => Ok(()),
         (DataAddr(_), DataAddr(_)) => Ok(()),
         (DataAddr(_), NumConst)    => Ok(()),
         (InstAddr(_), InstAddr(_)) => Ok(()),

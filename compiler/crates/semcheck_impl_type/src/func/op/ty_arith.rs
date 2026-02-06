@@ -29,16 +29,9 @@ where
         (NumConst, NumConst) => Ok(lhs_ty),
 
         // アドレス
-        (RawAddr,     RawAddr)     => Ok(lhs_ty),
-        (RawAddr,     I32)         => Ok(lhs_ty),
-        (RawAddr,     NumConst)    => Ok(lhs_ty),
-        (RawAddr,     DataAddr(_)) => Ok(rhs_ty),
-        (RawAddr,     InstAddr(_)) => Ok(rhs_ty),
-        (DataAddr(_), RawAddr)     => Ok(lhs_ty),
         (DataAddr(_), I32)         => Ok(lhs_ty),
         (DataAddr(_), NumConst)    => Ok(lhs_ty),
         (DataAddr(_), DataAddr(_)) => Ok(lhs_ty),
-        (InstAddr(_), RawAddr)     => Ok(lhs_ty),
         (InstAddr(_), I32)         => Ok(lhs_ty),
         (InstAddr(_), NumConst)    => Ok(lhs_ty),
         (InstAddr(_), InstAddr(_)) => Ok(lhs_ty),

@@ -6,9 +6,6 @@ use super::Visitor;
 #[derive(Debug)]
 pub enum Type<'src> {
     // アドレス
-    RawAddr {
-        span: Span<'src>,
-    },
     DataAddr {
         span: Span<'src>,
         inner_ty: Option<Box<Type<'src>>>,
@@ -27,7 +24,6 @@ impl<'src> From<Visitor<'src>> for Type<'src> {
         let span = visitor.span();
         match (visitor.expect_leaf(), visitor.peek().0) {
             // アドレス
-            ((SBToken::RawAddrTy, _), _) => Type::RawAddr { span },
             ((SBToken::DataAddrTy, _), None) => {
                 Type::DataAddr { span, inner_ty: None }
             }
@@ -57,11 +53,10 @@ impl<'src> Spanned<'src> for Type<'src> {
     fn span(&self) -> Span<'src> {
         match self {
             // アドレス
-            Type::RawAddr { span, .. } => *span,
             Type::DataAddr { span, .. } => *span,
             Type::InstAddr { span, .. } => *span,
 
-            // その他
+            // ユーザ指定 or プリミティブ
             Type::Term(span) => *span,
         }
     }
