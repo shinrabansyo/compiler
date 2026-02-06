@@ -16,11 +16,17 @@ pub fn ty_parse_type<'a, 'src>(
             // アドレス
             ast::Type::RawAddr { .. } => Ok(RawAddr.ty()),
             ast::Type::DataAddr { inner_ty, .. } => {
-                let inner_ty = ty_parse_type(ctx, inner_ty).await?;
+                let inner_ty = match inner_ty {
+                    Some(ty) => Some(ty_parse_type(ctx, ty).await?),
+                    None => None,
+                };
                 Ok(DataAddr(inner_ty).ty())
             }
             ast::Type::InstAddr { inner_ty, .. } => {
-                let inner_ty = ty_parse_type(ctx, inner_ty).await?;
+                let inner_ty = match inner_ty {
+                    Some(ty) => Some(ty_parse_type(ctx, ty).await?),
+                    None => None,
+                };
                 Ok(InstAddr(inner_ty).ty())
             }
 

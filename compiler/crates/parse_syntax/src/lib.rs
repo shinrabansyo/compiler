@@ -197,7 +197,9 @@ pub enum SBRule {
 
     // 型
     #[rule("<type> ::= RawAddrTy")]
+    #[rule("<type> ::= DataAddrTy")]
     #[rule("<type> ::= DataAddrTy Lt <type> Gt")]
+    #[rule("<type> ::= InstAddrTy")]
     #[rule("<type> ::= InstAddrTy Lt <type> Gt")]
     #[rule("<type> ::= Ident")]
     Type,

@@ -11,11 +11,11 @@ pub enum Type<'src> {
     },
     DataAddr {
         span: Span<'src>,
-        inner_ty: Box<Type<'src>>
+        inner_ty: Option<Box<Type<'src>>>,
     },
     InstAddr {
         span: Span<'src>,
-        inner_ty: Box<Type<'src>>
+        inner_ty: Option<Box<Type<'src>>>,
     },
 
     // ユーザ指定 or プリミティブ
@@ -25,24 +25,30 @@ pub enum Type<'src> {
 impl<'src> From<Visitor<'src>> for Type<'src> {
     fn from(mut visitor: Visitor<'src>) -> Self {
         let span = visitor.span();
-        match visitor.expect_leaf() {
+        match (visitor.expect_leaf(), visitor.peek().0) {
             // アドレス
-            (SBToken::RawAddrTy, _) => Type::RawAddr { span },
-            (SBToken::DataAddrTy, _) => {
+            ((SBToken::RawAddrTy, _), _) => Type::RawAddr { span },
+            ((SBToken::DataAddrTy, _), None) => {
+                Type::DataAddr { span, inner_ty: None }
+            }
+            ((SBToken::DataAddrTy, _), Some(_)) => {
                 let _ = visitor.expect_leaf(); // '<'
-                let inner_ty = Box::new(visitor.expect_node::<Type>());
+                let inner_ty = Some(Box::new(visitor.expect_node::<Type>()));
                 let _ = visitor.expect_leaf(); // '>'
                 Type::DataAddr { span, inner_ty }
             }
-            (SBToken::InstAddrTy, _) => {
+            ((SBToken::InstAddrTy, _), None) => {
+                Type::InstAddr { span, inner_ty: None }
+            }
+            ((SBToken::InstAddrTy, _), Some(_)) => {
                 let _ = visitor.expect_leaf(); // '<'
-                let inner_ty = Box::new(visitor.expect_node::<Type>());
+                let inner_ty = Some(Box::new(visitor.expect_node::<Type>()));
                 let _ = visitor.expect_leaf(); // '>'
                 Type::InstAddr { span, inner_ty }
             }
 
             // ユーザ指定 or プリミティブ
-            (_, span) => Type::Term(span),
+            ((_, span), _) => Type::Term(span),
         }
     }
 }
