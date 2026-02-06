@@ -10,6 +10,12 @@ use coloring::coloring;
 use deps_graph::build_deps_graph;
 use lifetime::analyze_lifetime;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum MapTo {
+    Reg(u8),
+    Stack(u32),
+}
+
 #[derive(Debug, Default)]
 pub struct RegMap {
     spilled_regs: u32,
@@ -33,15 +39,10 @@ impl RegMap {
     pub fn get(&self, key: &u32) -> MapTo {
         match self.map.get(key) {
             Some(value) => *value,
-            None => MapTo::Reg(*key as u8),
+            None if *key < 20 => MapTo::Reg(*key as u8),
+            None => panic!("RegMap does not contain key: {}", key),
         }
     }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum MapTo {
-    Reg(u8),
-    Stack(u32),
 }
 
 pub fn mapping(lir: &LirTopElem, usable_regs: &[u8]) -> RegMap {
