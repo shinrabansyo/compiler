@@ -15,14 +15,23 @@ struct CliOptions {
     output: PathBuf,
     /// Input file
     #[bpaf(positional("INPUT"))]
-    input: PathBuf,
+    input: Vec<PathBuf>,
 }
 
 fn main() -> miette::Result<()> {
     let opts = cli_options().to_options().run();
 
-    let input = fs::read_to_string(&opts.input).into_diagnostic()?;
-    let objs = compile(vec![("main", &input)])?;
+    let inputs = opts
+        .input
+        .iter()
+        .map(|path| fs::read_to_string(&path).into_diagnostic())
+        .collect::<miette::Result<Vec<_>>>()?;
+    let inputs = inputs
+        .iter()
+        .map(|src| ("main", src.as_str()))
+        .collect();
+    let objs = compile(inputs)?;
+
     let mut f = File::create(&opts.output).into_diagnostic()?;
     Object::dump(&mut f, &objs).unwrap();
 
