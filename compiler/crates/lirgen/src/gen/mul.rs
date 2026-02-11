@@ -12,6 +12,8 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
             let lir_rhs = lirgen_cast(ctx, rhs);
             let reg_rhs = lir_rhs.result_reg();
 
+            let reg_lhs_copy = ctx.alloc_reg();
+            let reg_rhs_copy = ctx.alloc_reg();
             let reg_one = ctx.alloc_reg();
             let reg_pprd = ctx.alloc_reg();
             let reg_cnt = ctx.alloc_reg();
@@ -46,18 +48,20 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
                 vec![
                     lir_lhs,
                     lir_rhs,
+                    lir!(Add reg_lhs_copy, ZERO_REG, reg_lhs),
+                    lir!(Add reg_rhs_copy, ZERO_REG, reg_rhs),
                     lir!(Li(0) reg_result),
                     lir!(Li(32) reg_cnt),
                     lir!(Li(1) reg_one),
                     lir!(Label label_cond),
                     lir!(Bne(12) ZERO_REG, reg_cnt, ZERO_REG),
                     lir!(JmpLabel(label_end)),
-                    lir!(And reg_pprd, reg_rhs, reg_one),
+                    lir!(And reg_pprd, reg_rhs_copy, reg_one),
                     lir!(Sub reg_pprd, ZERO_REG, reg_pprd),
-                    lir!(And reg_pprd, reg_lhs, reg_pprd),
+                    lir!(And reg_pprd, reg_lhs_copy, reg_pprd),
                     lir!(Add reg_result, reg_result, reg_pprd),
-                    lir!(ShiftL reg_lhs, reg_lhs, reg_one),
-                    lir!(ShiftR reg_rhs, reg_rhs, reg_one),
+                    lir!(ShiftL reg_lhs_copy, reg_lhs_copy, reg_one),
+                    lir!(ShiftR reg_rhs_copy, reg_rhs_copy, reg_one),
                     lir!(Sub reg_cnt, reg_cnt, reg_one),
                     lir!(JmpLabel(label_cond)),
                     lir!(Label label_end),
@@ -100,19 +104,23 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
             // label_end:
             //   ...
 
+            let reg_lhs_copy = ctx.alloc_reg();
+            let reg_rhs_copy = ctx.alloc_reg();
             let reg_sign = ctx.alloc_reg();
             let reg_thirtyone = ctx.alloc_reg();
 
             let lir_sign_check = LirBlock::Single {
                 result_reg: 0,
                 lirs: vec![
-                    lir!(Xor reg_sign, reg_lhs, reg_rhs),
+                    lir!(Add reg_lhs_copy, ZERO_REG, reg_lhs),
+                    lir!(Add reg_rhs_copy, ZERO_REG, reg_rhs),
+                    lir!(Xor reg_sign, reg_lhs_copy, reg_rhs_copy),
                     lir!(Li(31) reg_thirtyone),
                     lir!(ShiftR reg_sign, reg_sign, reg_thirtyone),
-                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_lhs),
-                    lir!(Sub reg_lhs, ZERO_REG, reg_lhs),
-                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_rhs),
-                    lir!(Sub reg_rhs, ZERO_REG, reg_rhs),
+                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_lhs_copy),
+                    lir!(Sub reg_lhs_copy, ZERO_REG, reg_lhs_copy),
+                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_rhs_copy),
+                    lir!(Sub reg_rhs_copy, ZERO_REG, reg_rhs_copy),
                 ],
             };
 
@@ -133,11 +141,11 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
                     lir!(Li(0) reg_result),
                     lir!(Li(31) reg_cnt),
                     lir!(Label label_cond),
-                    lir!(ShiftR reg_adivi, reg_lhs, reg_cnt),
-                    lir!(Ble(12) ZERO_REG, reg_rhs, reg_adivi),
+                    lir!(ShiftR reg_adivi, reg_lhs_copy, reg_cnt),
+                    lir!(Ble(12) ZERO_REG, reg_rhs_copy, reg_adivi),
                     lir!(JmpLabel(label_decr)),
-                    lir!(ShiftL reg_bmuli, reg_rhs, reg_cnt),
-                    lir!(Sub reg_lhs, reg_lhs, reg_bmuli),
+                    lir!(ShiftL reg_bmuli, reg_rhs_copy, reg_cnt),
+                    lir!(Sub reg_lhs_copy, reg_lhs_copy, reg_bmuli),
                     lir!(ShiftL reg_1muli, reg_one, reg_cnt),
                     lir!(Or reg_result, reg_result, reg_1muli),
                     lir!(Label label_decr),
@@ -194,18 +202,22 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
             // label_end:
             //   ...
 
+            let reg_lhs_copy = ctx.alloc_reg();
+            let reg_rhs_copy = ctx.alloc_reg();
             let reg_sign = ctx.alloc_reg();
             let reg_thirtyone = ctx.alloc_reg();
 
             let lir_sign_check = LirBlock::Single {
                 result_reg: 0,
                 lirs: vec![
+                    lir!(Add reg_lhs_copy, ZERO_REG, reg_lhs),
+                    lir!(Add reg_rhs_copy, ZERO_REG, reg_rhs),
                     lir!(Li(31) reg_thirtyone),
-                    lir!(ShiftR reg_sign, reg_lhs, reg_thirtyone),
-                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_lhs),
-                    lir!(Sub reg_lhs, ZERO_REG, reg_lhs),
-                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_rhs),
-                    lir!(Sub reg_rhs, ZERO_REG, reg_rhs),
+                    lir!(ShiftR reg_sign, reg_lhs_copy, reg_thirtyone),
+                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_lhs_copy),
+                    lir!(Sub reg_lhs_copy, ZERO_REG, reg_lhs_copy),
+                    lir!(Ble(12) ZERO_REG, ZERO_REG, reg_rhs_copy),
+                    lir!(Sub reg_rhs_copy, ZERO_REG, reg_rhs_copy),
                 ],
             };
 
@@ -226,11 +238,11 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
                     lir!(Li(0) reg_result),
                     lir!(Li(31) reg_cnt),
                     lir!(Label label_cond),
-                    lir!(ShiftR reg_adivi, reg_lhs, reg_cnt),
-                    lir!(Ble(12) ZERO_REG, reg_rhs, reg_adivi),
+                    lir!(ShiftR reg_adivi, reg_lhs_copy, reg_cnt),
+                    lir!(Ble(12) ZERO_REG, reg_rhs_copy, reg_adivi),
                     lir!(JmpLabel(label_decr)),
-                    lir!(ShiftL reg_bmuli, reg_rhs, reg_cnt),
-                    lir!(Sub reg_lhs, reg_lhs, reg_bmuli),
+                    lir!(ShiftL reg_bmuli, reg_rhs_copy, reg_cnt),
+                    lir!(Sub reg_lhs_copy, reg_lhs_copy, reg_bmuli),
                     lir!(ShiftL reg_1muli, reg_one, reg_cnt),
                     lir!(Or reg_result, reg_result, reg_1muli),
                     lir!(Label label_decr),
@@ -245,11 +257,11 @@ pub fn lirgen_mul<'src>(ctx: &mut GenContext<'src>, add: MulHir<'src>) -> LirBlo
                 result_reg: 0,
                 lirs: vec![
                     lir!(Beq(12) ZERO_REG, ZERO_REG, reg_sign),
-                    lir!(Sub reg_lhs, ZERO_REG, reg_lhs),
+                    lir!(Sub reg_lhs_copy, ZERO_REG, reg_lhs_copy),
                 ],
             };
 
-            (reg_lhs, vec![lir_lhs, lir_rhs, lir_sign_check, lir_div, lir_sign_apply])
+            (reg_lhs_copy, vec![lir_lhs, lir_rhs, lir_sign_check, lir_div, lir_sign_apply])
         }
         MulHir::Cast { value, .. } => {
             return lirgen_cast(ctx, value);
