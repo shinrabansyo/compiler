@@ -106,6 +106,7 @@ where
             }
             LirBlock::Multiple { lirs } => {
                 // 1. Multiple スコープを開始
+                let is_top_layer = self.layered_alive_regs.is_empty();
                 self.layered_alive_regs.push(HashSet::new());
 
                 // 2. 子ノードを解析
@@ -116,11 +117,13 @@ where
                 // 3. Multiple スコープを終了
                 self.layered_alive_regs.pop();
 
-                // 4. 終了記録を延期したレジスタを記録
-                self.end_point
-                    .last_mut()
-                    .unwrap()
-                    .extend(self.will_be_destroyed_regs.drain(..));
+                // 4. 終了記録を延期したレジスタを記録 (Multiple レイヤの最上位のみで行う)
+                if is_top_layer {
+                    self.end_point
+                        .last_mut()
+                        .unwrap()
+                        .extend(self.will_be_destroyed_regs.drain(..));
+                }
             }
             LirBlock::Inst { dst, .. } => {
                 // 1. 誕生したレジスタとして dst を記録
