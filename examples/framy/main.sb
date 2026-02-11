@@ -1,0 +1,50 @@
+fn main() {
+    // 16色 モードでデバイスを初期化
+    init_display_16();
+
+    // パレットの設定
+    var white   = 0; set_pallet(white,   255, 255, 255);
+    var black   = 1; set_pallet(black,     0,   0,   0);
+    var crimson = 2; set_pallet(crimson, 160,   0,   0);
+    var red     = 3; set_pallet(red,     255,   0,   0);
+    var orange  = 4; set_pallet(orange,  255, 165,   0);
+    var green   = 5; set_pallet(green,     0, 200,   0);
+    var cyan    = 6; set_pallet(cyan,      0, 180, 255);
+    var purple  = 7; set_pallet(purple,  128,   0, 180);
+    var yellow  = 8; set_pallet(yellow,  255, 255,   0);
+    var blue    = 9; set_pallet(blue,      0,   0, 255);
+
+    // 背景
+    draw_rect(0, 0, 128, 128, white);
+
+    // フレーミー (左耳)
+    draw_rect_line(19, 14, 16, 20, orange);
+
+    // フレーミー (右耳)
+    draw_rect_line(51, 14, 20, 20, red);
+
+    // フレーミー (顔)
+    draw_rect_line(28, 25, 32, 32, crimson);
+
+    // フレーミー (目)
+    draw_rect(36, 41, 2, 2, black);
+    draw_rect(52, 41, 2, 2, black);
+
+    // フレーミー (鼻)
+    draw_rect_line(14, 49, 19, 8, green);
+
+    // フレーミー (鼻先)
+    draw_rect(15, 50, 7, 3, cyan);
+
+    // フレーミー (体)
+    draw_rect_line(52, 53, 56, 22, blue);
+
+    // フレーミー (足)
+    draw_rect_line(54, 73, 10, 19, purple);
+    draw_rect_line(68, 76, 10, 19, purple);
+    draw_rect_line(92, 73, 10, 19, purple);
+    draw_rect_line(106, 76, 10, 19, purple);
+
+    // フレーミー (しっぽ)
+    draw_rect_line(102, 49, 18, 8, yellow);
+}
