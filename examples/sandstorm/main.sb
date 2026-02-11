@@ -1,0 +1,33 @@
+fn main() {
+    // 16色 モードでデバイスを初期化
+    init_display_16();
+
+    // パレットの設定
+    set_pallet( 0, 255, 255, 255);   // rgb(255, 255, 255)
+    set_pallet( 1,   0,   0, 255);   // rgb(0, 0, 255)
+    set_pallet( 2, 255,   0,   0);   // rgb(255, 0, 0)
+    set_pallet( 3,   0, 255,   0);   // rgb(0, 255, 0)
+    set_pallet( 4, 255, 255,   0);   // rgb(255, 255, 0)
+    set_pallet( 5, 255,   0, 255);   // rgb(255, 0, 255)
+    set_pallet( 6,   0, 255, 255);   // rgb(0, 255, 255)
+    set_pallet( 7, 255, 128,   0);   // rgb(255, 128, 0)
+    set_pallet( 8, 255,   0, 128);  // rgb(255, 0, 128)
+    set_pallet( 9, 128,   0, 255);  // rgb(128, 0, 255)
+    set_pallet(10,   0, 128, 255);  // rgb(0, 128, 255)
+    set_pallet(11,   0, 255, 128);  // rgb(0, 255, 128)
+    set_pallet(12, 128, 255,   0);  // rgb(128, 255, 0)
+    set_pallet(13, 128, 255, 255);  // rgb(128, 255, 255)
+    set_pallet(14, 128, 255, 128);  // rgb(128, 255, 128)
+    set_pallet(15, 128, 128, 128);  // rgb(128, 128, 128)
+
+    // 乱数
+    var rand = 0x12345678;
+
+    // 画面全体を塗りつぶす
+    for (var y = 0; y < 128; y += 1) {
+        for (var x = 0; x < 128; x += 1) {
+            rand = rand_xorshift(rand);
+            draw_pixel(x, y, rand & 0xFF);
+        }
+    }
+}
