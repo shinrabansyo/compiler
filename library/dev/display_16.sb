@@ -19,3 +19,82 @@ fn draw_pixel(x: i32, y: i32, color: i32) {
         out R7[0] = color
     }
 }
+
+fn draw_hline(x0: i32, x1: i32, y: i32, color: i32) {
+    for (var x = x0; x <= x1; x += 1) {
+        draw_pixel(x, y, color);
+    }
+}
+
+fn draw_vline(x: i32, y0: i32, y1: i32, color: i32) {
+    for (var y = y0; y <= y1; y += 1) {
+        draw_pixel(x, y, color);
+    }
+}
+
+fn draw_rect(x: i32, y: i32, w: i32, h: i32, color: i32) {
+    for (var j = 0; j < h; j += 1) {
+        for (var i = 0; i < w; i += 1) {
+            draw_pixel(x + i, y + j, color);
+        }
+    }
+}
+
+fn draw_rect_line(x: i32, y: i32, w: i32, h: i32, color: i32) {
+    for (var i = 0; i < w; i += 1) {
+        draw_pixel(x + i, y, color);
+        draw_pixel(x + i, y + h - 1, color);
+    }
+    for (var j = 0; j < h; j += 1) {
+        draw_pixel(x, y + j, color);
+        draw_pixel(x + w - 1, y + j, color);
+    }
+}
+
+fn draw_circle(cx: i32, cy: i32, r: i32, color: i32) {
+    var x = 0;
+    var y = r;
+    var d = 1 - r;
+
+    while (x <= y) {
+        draw_hline(cx - x, cx + x, cy + y, color);
+        draw_hline(cx - x, cx + x, cy - y, color);
+        draw_hline(cx - y, cx + y, cy + x, color);
+        draw_hline(cx - y, cx + y, cy - x, color);
+
+        if (d < 0) {
+            d += 2 * x + 3;
+        } else {
+            d += 2 * (x - y) + 5;
+            y -= 1;
+        }
+
+        x += 1;
+    }
+}
+
+fn draw_circle_line(cx: i32, cy: i32, r: i32, color: i32) {
+    var x = 0;
+    var y = r;
+    var d = 1 - r;
+
+    while (x <= y) {
+        draw_pixel(cx + x, cy + y, color);
+        draw_pixel(cx - x, cy + y, color);
+        draw_pixel(cx + x, cy - y, color);
+        draw_pixel(cx - x, cy - y, color);
+        draw_pixel(cx + y, cy + x, color);
+        draw_pixel(cx - y, cy + x, color);
+        draw_pixel(cx + y, cy - x, color);
+        draw_pixel(cx - y, cy - x, color);
+
+        if (d < 0) {
+            d += 2 * x + 3;
+        } else {
+            d += 2 * (x - y) + 5;
+            y -= 1;
+        }
+
+        x += 1;
+    }
+}
