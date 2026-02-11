@@ -1,0 +1,36 @@
+struct Vec2 {
+    x: i32,
+    y: i32,
+}
+
+fn vec2_new(x: i32, y: i32) -> Vec2 {
+    var addr = malloc(sizeof(Vec2));
+    return Vec2 @ addr {
+        x: x,
+        y: y,
+    };
+}
+
+fn vec2_free(v: Vec2) {
+    free(&v);
+}
+
+fn vec2_dot(a: Vec2, b: Vec2) -> i32 {
+    return a.x * b.x + a.y * b.y;
+}
+
+fn main() {
+    // 0x1000 バイトの大きさのヒープ領域を準備
+    init_heap_area(0x1000);
+
+    // Vec2 を準備
+    var a = vec2_new(1, 2);
+    var b = vec2_new(3, 4);
+
+    // 内積を計算して出力
+    println_i32(vec2_dot(a, b));
+
+    // メモリ解放
+    vec2_free(a);
+    vec2_free(b);
+}
