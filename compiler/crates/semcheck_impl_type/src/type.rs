@@ -25,9 +25,8 @@ pub enum Type {
     NumConst,
 
     // アドレス
-    RawAddr,
-    DataAddr(Arc<Type>),
-    InstAddr(Arc<Type>),
+    DataAddr(Option<Arc<Type>>),
+    InstAddr(Option<Arc<Type>>),
 
     // データ構造
     Struct {
@@ -56,9 +55,10 @@ impl Display for Type {
             Type::NumConst => write!(f, "const(num)"),
 
             // アドレス
-            Type::RawAddr => write!(f, "RawAddr"),
-            Type::DataAddr(inner_ty) => write!(f, "DataAddr<{}>", inner_ty),
-            Type::InstAddr(inner_ty) => write!(f, "InstAddr<{}>", inner_ty),
+            Type::DataAddr(None) => write!(f, "daddr"),
+            Type::DataAddr(Some(inner_ty)) => write!(f, "daddr<{}>", inner_ty),
+            Type::InstAddr(None) => write!(f, "iaddr"),
+            Type::InstAddr(Some(inner_ty)) => write!(f, "iaddr<{}>", inner_ty),
 
             // データ構造
             Type::Struct { name, .. } => {
@@ -125,17 +125,11 @@ impl Typed for Type {
             },
 
             // アドレス
-            Type::RawAddr => {
-                static RAW_ADDR: LazyLock<Arc<Type>> = LazyLock::new(|| {
-                    Arc::new(Type::RawAddr)
-                });
-                Arc::clone(&RAW_ADDR)
-            }
             Type::DataAddr(inner_ty) => {
-                Arc::new(Type::DataAddr(Arc::clone(inner_ty)))
+                Arc::new(Type::DataAddr(inner_ty.as_ref().map(Arc::clone)))
             }
             Type::InstAddr(inner_ty) => {
-                Arc::new(Type::InstAddr(Arc::clone(inner_ty)))
+                Arc::new(Type::InstAddr(inner_ty.as_ref().map(Arc::clone)))
             }
 
             // データ構造
@@ -177,7 +171,6 @@ impl Type {
             Type::NumConst => 4,
 
             // アドレス
-            Type::RawAddr => 4,
             Type::DataAddr(_) => 4,
             Type::InstAddr(_) => 4,
 

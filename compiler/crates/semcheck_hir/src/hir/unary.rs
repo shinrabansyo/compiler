@@ -4,7 +4,7 @@ use sb_compiler_parse_ast as ast;
 use sb_compiler_parse_cst::{Span, Spanned};
 use sb_compiler_semcheck_impl_type::parse::ty_parse_type;
 use sb_compiler_semcheck_impl_type::op::ty_equals;
-use sb_compiler_semcheck_impl_type::{Typed, Type, Bool, I32};
+use sb_compiler_semcheck_impl_type::{Typed, Type, Bool, I32, DataAddr};
 
 use super::{ValueR, SemCheck, Dep};
 
@@ -19,6 +19,10 @@ pub enum Unary<'src> {
         value: ValueR<'src>,
     },
     Minus {
+        span: Span<'src>,
+        value: ValueR<'src>,
+    },
+    Addr {
         span: Span<'src>,
         value: ValueR<'src>,
     },
@@ -56,6 +60,12 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::Unary<'src>> for Unary<'src> {
                     value: ValueR::check(ctx, value).await?,
                 })
             }
+            ast::Unary::Addr { span, value } => {
+                Ok(Unary::Addr {
+                    span,
+                    value: ValueR::check(ctx, value).await?,
+                })
+            }
             ast::Unary::SizeOf { span, ty } => {
                 Ok(Unary::SizeOf {
                     span,
@@ -77,6 +87,7 @@ impl<'src> Spanned<'src> for Unary<'src> {
             Unary::Not { span, .. } => *span,
             Unary::Plus { span, .. } => *span,
             Unary::Minus { span, .. } => *span,
+            Unary::Addr { span, .. } => *span,
             Unary::SizeOf { span, .. } => *span,
             Unary::ValueR { value, .. } => value.span(),
         }
@@ -89,6 +100,7 @@ impl Typed for Unary<'_> {
             Unary::Not { value, .. } => value.ty(),
             Unary::Plus { value, .. } => value.ty(),
             Unary::Minus { value, .. } => value.ty(),
+            Unary::Addr { value, .. } => DataAddr(Some(value.ty())).ty(),
             Unary::SizeOf { .. } => I32.ty(),
             Unary::ValueR { value, .. } => value.ty(),
         }

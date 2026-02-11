@@ -5,7 +5,7 @@ use sb_compiler_parse_ast as ast;
 
 use crate::func::decl::ty_find;
 use crate::func::TypeContext;
-use crate::r#type::{Type, Typed, RawAddr, DataAddr, InstAddr};
+use crate::r#type::{Type, Typed, DataAddr, InstAddr};
 
 pub fn ty_parse_type<'a, 'src>(
     ctx: &'a TypeContext<'src>,
@@ -14,13 +14,18 @@ pub fn ty_parse_type<'a, 'src>(
     Box::pin(async move {
         match ast {
             // アドレス
-            ast::Type::RawAddr { .. } => Ok(RawAddr.ty()),
             ast::Type::DataAddr { inner_ty, .. } => {
-                let inner_ty = ty_parse_type(ctx, inner_ty).await?;
+                let inner_ty = match inner_ty {
+                    Some(ty) => Some(ty_parse_type(ctx, ty).await?),
+                    None => None,
+                };
                 Ok(DataAddr(inner_ty).ty())
             }
             ast::Type::InstAddr { inner_ty, .. } => {
-                let inner_ty = ty_parse_type(ctx, inner_ty).await?;
+                let inner_ty = match inner_ty {
+                    Some(ty) => Some(ty_parse_type(ctx, ty).await?),
+                    None => None,
+                };
                 Ok(InstAddr(inner_ty).ty())
             }
 

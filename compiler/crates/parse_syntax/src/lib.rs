@@ -63,8 +63,6 @@ pub enum SBToken {
     For,
     #[token(r"asm", ir_omit)]
     Asm,
-    #[token(r"addr")]
-    RawAddrTy,
     #[token(r"daddr")]
     DataAddrTy,
     #[token(r"iaddr")]
@@ -196,8 +194,9 @@ pub enum SBRule {
     ArgumentDef,
 
     // 型
-    #[rule("<type> ::= RawAddrTy")]
+    #[rule("<type> ::= DataAddrTy")]
     #[rule("<type> ::= DataAddrTy Lt <type> Gt")]
+    #[rule("<type> ::= InstAddrTy")]
     #[rule("<type> ::= InstAddrTy Lt <type> Gt")]
     #[rule("<type> ::= Ident")]
     Type,
@@ -291,12 +290,12 @@ pub enum SBRule {
     #[rule("<bit_and> ::= <cond>")]
     BitAnd,
 
-    #[rule("<cond> ::= <cond> Eq <bit_shift>")]
-    #[rule("<cond> ::= <cond> Neq <bit_shift>")]
-    #[rule("<cond> ::= <cond> Lt <bit_shift>")]
-    #[rule("<cond> ::= <cond> Lte <bit_shift>")]
-    #[rule("<cond> ::= <cond> Gt <bit_shift>")]
-    #[rule("<cond> ::= <cond> Gte <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Eq <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Neq <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Lt <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Lte <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Gt <bit_shift>")]
+    #[rule("<cond> ::= <bit_shift> Gte <bit_shift>")]
     #[rule("<cond> ::= <bit_shift>")]
     Cond,
 
@@ -317,14 +316,15 @@ pub enum SBRule {
     #[rule("<mul> ::= <cast>")]
     Mul,
 
-    #[rule("<cast> ::= <unary> As <type>")]
+    #[rule("<cast> ::= <unary> As Ident")]
     #[rule("<cast> ::= <unary>")]
     Cast,
 
     #[rule("<unary> ::= Not <value_r>")]
     #[rule("<unary> ::= Plus <value_r>")]
     #[rule("<unary> ::= Minus <value_r>")]
-    #[rule("<unary> ::= SizeOf <type>")]
+    #[rule("<unary> ::= BitAnd <value_r>")]
+    #[rule("<unary> ::= SizeOf ParenL <type> ParenR")]
     #[rule("<unary> ::= <value_r>")]
     Unary,
 

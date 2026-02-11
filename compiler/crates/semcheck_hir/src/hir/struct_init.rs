@@ -27,7 +27,7 @@ impl<'src> SemCheck<Dep<'_, 'src>, ast::StructInit<'src>> for StructInit<'src> {
 
         // アドレス指定部分の意味解析 & 型チェック
         let addr = Expr::check(ctx, *struct_init.addr).await?;
-        ty_equals(&DataAddr(Arc::clone(&struct_ty)), &addr)?;
+        ty_equals(&DataAddr(Some(Arc::clone(&struct_ty))), &addr)?;
 
         // フィールド初期化部分の意味解析
         let mut fields = Vec::new();
