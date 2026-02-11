@@ -100,7 +100,7 @@ impl Typed for Unary<'_> {
             Unary::Not { value, .. } => value.ty(),
             Unary::Plus { value, .. } => value.ty(),
             Unary::Minus { value, .. } => value.ty(),
-            Unary::Addr { value, .. } => Arc::new(DataAddr(Some(value.ty()))),
+            Unary::Addr { value, .. } => DataAddr(Some(value.ty())).ty(),
             Unary::SizeOf { .. } => I32.ty(),
             Unary::ValueR { value, .. } => value.ty(),
         }
