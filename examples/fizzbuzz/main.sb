@@ -1,50 +1,38 @@
-fn main() {
-    var num: i32 = 0;
-    for (num = 1; num < 20; num += 1) {
-        if (mod(num, 15) == 0) {
-            fizzbuzz();
-        } else if (mod(num, 3) == 0) {
-            fizz();
-        } else if (mod(num, 5) == 0) {
-            buzz();
-        }
-    }
-}
-
-fn mod(a: i32, b: i32) -> i32 {
-    while (a >= b) {
-        a -= b;
-    }
-    return a;
-}
-
 fn fizz() {
-    out(0, 102); // 'f'
-    out(0, 105); // 'i'
-    out(0, 122); // 'z'
-    out(0, 122); // 'z'
-    out(0, 10);  // \n
-    return 0;
+    print_char('F');
+    print_char('i');
+    print_char('z');
+    println_char('z');
 }
 
 fn buzz() {
-    out(0, 98);  // 'b'
-    out(0, 117); // 'u'
-    out(0, 122); // 'z'
-    out(0, 122); // 'z'
-    out(0, 10);  // \n
-    return 0;
+    print_char('B');
+    print_char('u');
+    print_char('z');
+    println_char('z');
 }
 
 fn fizzbuzz() {
-    out(0, 102); // 'f'
-    out(0, 105); // 'i'
-    out(0, 122); // 'z'
-    out(0, 122); // 'z'
-    out(0, 98);  // 'b'
-    out(0, 117); // 'u'
-    out(0, 122); // 'z'
-    out(0, 122); // 'z'
-    out(0, 10);  // \n
-    return 0;
+    print_char('F');
+    print_char('i');
+    print_char('z');
+    print_char('z');
+    print_char('B');
+    print_char('u');
+    print_char('z');
+    println_char('z');
+}
+
+fn main() {
+    for (var num = 3; num <= 50; num += 1) {
+        if (num % 15 == 0) {
+            fizzbuzz();
+        } else if (num % 5 == 0) {
+            fizz();
+        } else if (num % 3 == 0) {
+            buzz();
+        } else {
+            println_i32(num);
+        }
+    }
 }
