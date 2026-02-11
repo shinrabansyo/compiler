@@ -152,8 +152,8 @@ pub enum SBToken {
     Num,
 
     // 制御用
-    #[token(r"^( |\t|\n|(//(.*)\n))*", pre_trivia)]
-    #[token(r"^( |\t|)*(//(.*)\n)", post_trivia)]
+    #[token(r"^( |\t|\r|\n|(//(.*)(\r|\n)))*", pre_trivia)]
+    #[token(r"^( |\t|)*(//(.*)(\r|\n))", post_trivia)]
     Trivia,
 }
 
