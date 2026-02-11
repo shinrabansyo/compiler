@@ -1,0 +1,6 @@
+fn rand_xorshift(x: i32) -> i32 {
+    x = x ^ (x << 13);
+    x = x ^ (x >> 7);
+    x = x ^ (x << 17);
+    return x;
+}

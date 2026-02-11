@@ -1,0 +1,21 @@
+fn init_display_16() {
+    asm {
+        addi T0 = R0, 2
+        out R0[6] = T0
+    }
+}
+
+fn set_pallet(id: i32, r: i32, g: i32, b: i32) {
+    var value = (id << 24) | (r << 16) | (g << 8) | b;
+    asm {
+        out R0[7] = value
+    }
+}
+
+fn draw_pixel(x: i32, y: i32, color: i32) {
+    var addr = 0x10000000 + x + (y << 7);
+    asm {
+        add R7 = R0, addr
+        out R7[0] = color
+    }
+}
