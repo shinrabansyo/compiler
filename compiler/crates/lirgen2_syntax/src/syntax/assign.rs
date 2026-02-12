@@ -1,25 +1,24 @@
-use crate::inst::Inst;
 use crate::var::{LirVar, LirVarIssuer};
 use super::LirSyntax;
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct Assign<I: Inst> {
+pub struct Assign<S: LirSyntax> {
     dst: LirVar,
-    inst: I,
+    rhs: S,
 }
 
-impl<I: Inst> LirSyntax for Assign<I> {
+impl<S: LirSyntax> LirSyntax for Assign<S> {
     fn process(&self, ctx: &mut LirVarIssuer) {
         ctx.issue(&self.dst);
         print!("let {:?} = ", self.dst);
-        self.inst.process();
+        self.rhs.process(ctx);
     }
 }
 
-impl<I: Inst> Assign<I> {
-    pub fn new(inst: I) -> (LirVar, Self) {
+impl<S: LirSyntax> Assign<S> {
+    pub fn new(rhs: S) -> (LirVar, Self) {
         let dst = LirVar::new();
-        let assign = Assign { dst: dst.clone(), inst };
+        let assign = Assign { dst: dst.clone(), rhs };
         (dst, assign)
     }
 }

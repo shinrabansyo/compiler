@@ -1,4 +1,3 @@
-pub mod inst;
 pub mod var;
 pub mod syntax;
 

@@ -1,3 +1,4 @@
+mod inst;       pub use inst::*;
 mod assign;     pub use assign::Assign;
 mod terminal;   pub use terminal::Terminal;
 
@@ -8,7 +9,6 @@ where
     Self: Sized,
 {
     fn process(&self, ctx: &mut LirVarIssuer);
-    fn is_terminal(&self) -> bool { false }
 }
 
 #[derive(Debug)]
@@ -38,12 +38,7 @@ where
 {
     fn process(&self, ctx: &mut LirVarIssuer) {
         self.as_ref().process(ctx);
-        if let Some(next) = &self.next {
-            if next.is_terminal() {
-                return;
-            }
-            next.process(ctx);
-        }
+        self.next.as_ref().unwrap().process(ctx);
     }
 }
 

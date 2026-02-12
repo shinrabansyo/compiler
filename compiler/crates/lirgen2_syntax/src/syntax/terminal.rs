@@ -6,5 +6,4 @@ pub struct Terminal;
 
 impl LirSyntax for Terminal {
     fn process(&self, _: &mut LirVarIssuer) { }
-    fn is_terminal(&self) -> bool { true }
 }
