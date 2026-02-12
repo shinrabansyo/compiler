@@ -1,7 +1,7 @@
-use sb_compiler_lirgen2_lir::inst::{Add, Li};
-use sb_compiler_lirgen2_lir::var::LirVarIssuer;
-use sb_compiler_lirgen2_lir::prelude::*;
-use sb_compiler_lirgen2_lir_macros::lir;
+use sb_compiler_lirgen2_syntax::inst::{Add, Li};
+use sb_compiler_lirgen2_syntax::var::LirVarIssuer;
+use sb_compiler_lirgen2_syntax::prelude::*;
+use sb_compiler_lirgen2_syntax_macros::lir;
 
 #[test]
 fn assign_1() {

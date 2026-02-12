@@ -1,0 +1,6 @@
+[package]
+name = "sb_compiler_lirgen2_ssa"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

@@ -1361,32 +1361,26 @@ dependencies = [
 name = "sb_compiler_lirgen2"
 version = "0.1.0"
 dependencies = [
- "sb_compiler_lirgen2_lir",
- "sb_compiler_lirgen2_lir_macros",
- "sb_compiler_parse_cst",
- "sb_compiler_semcheck_hir",
- "sb_compiler_semcheck_impl_var",
- "sb_compiler_utils",
+ "sb_compiler_lirgen2_syntax",
 ]
 
 [[package]]
-name = "sb_compiler_lirgen2_lir"
+name = "sb_compiler_lirgen2_ssa"
+version = "0.1.0"
+
+[[package]]
+name = "sb_compiler_lirgen2_syntax"
 version = "0.1.0"
 dependencies = [
- "sb_compiler_lirgen_ir",
- "sb_compiler_parse",
- "sb_compiler_parse_cst",
- "sb_compiler_semcheck",
- "sb_compiler_semcheck_hir",
- "sb_compiler_semcheck_impl_var",
- "sb_compiler_utils",
+ "sb_compiler_lirgen2_ssa",
+ "sb_compiler_lirgen2_syntax_macros",
 ]
 
 [[package]]
-name = "sb_compiler_lirgen2_lir_macros"
+name = "sb_compiler_lirgen2_syntax_macros"
 version = "0.1.0"
 dependencies = [
- "sb_compiler_lirgen2_lir",
+ "sb_compiler_lirgen2_syntax",
 ]
 
 [[package]]
