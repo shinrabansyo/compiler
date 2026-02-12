@@ -1,0 +1,7 @@
+[package]
+name = "sb_compiler_lirgen2_lir_macros"
+version = "0.1.0"
+edition = "2021"
+
+[dev-dependencies]
+sb_compiler_lirgen2_lir = { path = "../lirgen2_lir" }

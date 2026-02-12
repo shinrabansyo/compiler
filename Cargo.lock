@@ -1325,6 +1325,7 @@ dependencies = [
  "miette",
  "sb_assembler",
  "sb_compiler_lirgen",
+ "sb_compiler_lirgen2",
  "sb_compiler_objgen",
  "sb_compiler_parse",
  "sb_compiler_semcheck",
@@ -1354,6 +1355,38 @@ dependencies = [
  "sb_compiler_semcheck_hir",
  "sb_compiler_semcheck_impl_var",
  "sb_compiler_utils",
+]
+
+[[package]]
+name = "sb_compiler_lirgen2"
+version = "0.1.0"
+dependencies = [
+ "sb_compiler_lirgen2_lir",
+ "sb_compiler_lirgen2_lir_macros",
+ "sb_compiler_parse_cst",
+ "sb_compiler_semcheck_hir",
+ "sb_compiler_semcheck_impl_var",
+ "sb_compiler_utils",
+]
+
+[[package]]
+name = "sb_compiler_lirgen2_lir"
+version = "0.1.0"
+dependencies = [
+ "sb_compiler_lirgen_ir",
+ "sb_compiler_parse",
+ "sb_compiler_parse_cst",
+ "sb_compiler_semcheck",
+ "sb_compiler_semcheck_hir",
+ "sb_compiler_semcheck_impl_var",
+ "sb_compiler_utils",
+]
+
+[[package]]
+name = "sb_compiler_lirgen2_lir_macros"
+version = "0.1.0"
+dependencies = [
+ "sb_compiler_lirgen2_lir",
 ]
 
 [[package]]
