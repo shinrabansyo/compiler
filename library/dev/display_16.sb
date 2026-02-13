@@ -13,9 +13,14 @@ fn set_pallet(id: i32, r: i32, g: i32, b: i32) {
 }
 
 fn draw_pixel(x: i32, y: i32, color: i32) {
-    var addr = 0x10000000 + x + (y << 7);
+    var x = x >> 1;
+    var color = ((color & 0x0F) << 4) | (color & 0x0F);
+    var addr1 = 0x10000000 + x + (y << 6);
+    var addr2 = 0x10000000 + x + ((y + 1) << 6);
     asm {
-        add R7 = R0, addr
+        add R7 = R0, addr1
+        out R7[0] = color
+        add R7 = R0, addr2
         out R7[0] = color
     }
 }
