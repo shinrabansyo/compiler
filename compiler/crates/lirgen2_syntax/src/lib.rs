@@ -1,4 +1,6 @@
-pub mod var;
+mod var;
+
+pub mod translate;
 pub mod syntax;
 
 pub mod prelude {

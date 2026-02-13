@@ -4,7 +4,7 @@ use std::rc::Rc;
 
 #[derive(Clone, PartialEq, Eq)]
 pub struct LirVar {
-    inner: Rc<RefCell<Option<u32>>>,
+    pub(crate) inner: Rc<RefCell<Option<u32>>>,
 }
 
 impl Debug for LirVar {
