@@ -1,7 +1,0 @@
-[package]
-name = "sb_compiler_lirgen2_syntax_macros"
-version = "0.1.0"
-edition = "2021"
-
-[dev-dependencies]
-sb_compiler_lirgen2_syntax = { path = "../lirgen2_syntax" }

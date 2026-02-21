@@ -1,8 +1,8 @@
 [package]
-name = "sb_compiler_lirgen2_syntax"
+name = "sb_compiler_lirgen2_front"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-sb_compiler_lirgen2_syntax_macros = { path = "../lirgen2_syntax_macros" }
+sb_compiler_lirgen2_front_macros = { path = "../lirgen2_front_macros" }
 sb_compiler_lirgen2_ssa = { path = "../lirgen2_ssa" }

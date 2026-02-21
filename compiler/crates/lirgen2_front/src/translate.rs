@@ -1,7 +1,7 @@
 use crate::var::LirVar;
 
 pub trait Translatable {
-    fn translate(&self, ctx: &mut TranslateContext);
+    fn translate(&mut self, ctx: &mut TranslateContext);
 }
 
 pub struct TranslateContext {
@@ -16,7 +16,7 @@ impl TranslateContext {
     }
 
     pub fn issue_var(&mut self, var: &mut LirVar) {
-        var.inner.borrow_mut().replace(self.issued_var_count);
+        var.set(self.issued_var_count);
         self.issued_var_count += 1;
     }
 }

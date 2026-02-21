@@ -4,7 +4,7 @@ use std::rc::Rc;
 
 #[derive(Clone, PartialEq, Eq)]
 pub struct LirVar {
-    pub(crate) inner: Rc<RefCell<Option<u32>>>,
+    inner: Rc<RefCell<Option<u32>>>,
 }
 
 impl Debug for LirVar {
@@ -23,22 +23,12 @@ impl LirVar {
         }
     }
 
-    pub fn id(&self) -> u32 {
+    pub(crate) fn set(&self, id: u32) {
+        assert!(self.inner.borrow().is_none(), "LirVar is already set");
+        *self.inner.borrow_mut() = Some(id);
+    }
+
+    pub(crate) fn id(&self) -> u32 {
         *self.inner.borrow().as_ref().unwrap()
-    }
-}
-
-pub struct LirVarIssuer {
-    next_id: u32,
-}
-
-impl LirVarIssuer {
-    pub fn new() -> Self {
-        LirVarIssuer { next_id: 0 }
-    }
-
-    pub fn issue(&mut self, var: &LirVar) {
-        var.inner.borrow_mut().replace(self.next_id);
-        self.next_id += 1;
     }
 }

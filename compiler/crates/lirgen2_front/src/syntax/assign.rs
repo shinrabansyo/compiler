@@ -1,4 +1,5 @@
-use crate::var::{LirVar, LirVarIssuer};
+use crate::translate::{Translatable, TranslateContext};
+use crate::var::LirVar;
 use super::LirSyntax;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -7,11 +8,11 @@ pub struct Assign<S: LirSyntax> {
     rhs: S,
 }
 
-impl<S: LirSyntax> LirSyntax for Assign<S> {
-    fn process(&self, ctx: &mut LirVarIssuer) {
-        ctx.issue(&self.dst);
+impl<S: LirSyntax> Translatable for Assign<S> {
+    fn translate(&mut self, ctx: &mut TranslateContext) {
+        ctx.issue_var(&mut self.dst);
         print!("let {:?} = ", self.dst);
-        self.rhs.process(ctx);
+        self.rhs.translate(ctx);
     }
 }
 

@@ -4,14 +4,14 @@ macro_rules! lir {
     (let $dst:ident = $rhs:expr ; $($remain:tt)*) => {{
         let ($dst, stmt) = Assign::new($rhs);
         let next = lir!($($remain)*);
-        LirSyntaxNode::wrap(stmt).chain(next)
+        Lir::wrap(stmt).chain(next)
     }};
 
     // <stmt> ::= <inst> ;
     ($stmt:expr ; $($remain:tt)*) => {{
         let (_, stmt) = Assign::new($stmt);
         let next = lir!($($remain)*);
-        LirSyntaxNode::wrap(stmt).chain(next)
+        Lir::wrap(stmt).chain(next)
     }};
 
     // EOF

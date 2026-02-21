@@ -1,5 +1,5 @@
-use crate::var::{LirVar, LirVarIssuer};
-use crate::syntax::LirSyntax;
+use crate::translate::{Translatable, TranslateContext};
+use crate::var::LirVar;
 
 #[derive(Debug)]
 pub struct Add {
@@ -7,8 +7,8 @@ pub struct Add {
     pub src2: LirVar,
 }
 
-impl LirSyntax for Add {
-    fn process(&self, _: &mut LirVarIssuer) {
+impl Translatable for Add {
+    fn translate(&mut self, _: &mut TranslateContext) {
         println!("Add {:?}, {:?}", self.src1, self.src2);
     }
 }
