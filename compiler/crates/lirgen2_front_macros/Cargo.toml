@@ -5,3 +5,4 @@ edition = "2021"
 
 [dev-dependencies]
 sb_compiler_lirgen2_front = { path = "../lirgen2_front" }
+sb_compiler_lirgen2_front_dbg = { path = "../lirgen2_front_dbg" }

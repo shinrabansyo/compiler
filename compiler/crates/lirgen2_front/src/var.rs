@@ -23,12 +23,11 @@ impl LirVar {
         }
     }
 
-    pub(crate) fn set(&self, id: u32) {
-        assert!(self.inner.borrow().is_none(), "LirVar is already set");
+    pub fn set(&self, id: u32) {
         *self.inner.borrow_mut() = Some(id);
     }
 
-    pub(crate) fn id(&self) -> u32 {
+    pub fn id(&self) -> u32 {
         *self.inner.borrow().as_ref().unwrap()
     }
 }

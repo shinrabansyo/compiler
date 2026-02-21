@@ -1373,10 +1373,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "sb_compiler_lirgen2_front_dbg"
+version = "0.1.0"
+dependencies = [
+ "sb_compiler_lirgen2_front",
+]
+
+[[package]]
 name = "sb_compiler_lirgen2_front_macros"
 version = "0.1.0"
 dependencies = [
  "sb_compiler_lirgen2_front",
+ "sb_compiler_lirgen2_front_dbg",
 ]
 
 [[package]]

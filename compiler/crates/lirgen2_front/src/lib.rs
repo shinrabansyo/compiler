@@ -15,6 +15,16 @@ where
     next: Option<Next>,
 }
 
+impl<T, Next> AsRef<T> for Lir<T, Next>
+where
+    T: LirSyntax,
+    Next: LirSyntax,
+{
+    fn as_ref(&self) -> &T {
+        &self.syntax
+    }
+}
+
 impl<T, Next> Translatable for Lir<T, Next>
 where
     T: LirSyntax,
@@ -40,7 +50,7 @@ where
         self
     }
 
-    pub fn next(self) -> Next {
-        self.next.unwrap()
+    pub fn next(&self) -> &Next {
+        self.next.as_ref().unwrap()
     }
 }

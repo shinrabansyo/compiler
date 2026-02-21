@@ -4,8 +4,8 @@ use super::LirSyntax;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct Assign<S: LirSyntax> {
-    dst: LirVar,
-    rhs: S,
+    pub dst: LirVar,
+    pub rhs: S,
 }
 
 impl<S: LirSyntax> Translatable for Assign<S> {
