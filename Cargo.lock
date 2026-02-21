@@ -1361,7 +1361,8 @@ dependencies = [
 name = "sb_compiler_lirgen2"
 version = "0.1.0"
 dependencies = [
- "sb_compiler_lirgen2_front",
+ "sb_compiler_lirgen2_front_dbg",
+ "sb_compiler_lirgen2_gen",
 ]
 
 [[package]]
@@ -1385,6 +1386,13 @@ version = "0.1.0"
 dependencies = [
  "sb_compiler_lirgen2_front",
  "sb_compiler_lirgen2_front_dbg",
+]
+
+[[package]]
+name = "sb_compiler_lirgen2_gen"
+version = "0.1.0"
+dependencies = [
+ "sb_compiler_lirgen2_front",
 ]
 
 [[package]]
